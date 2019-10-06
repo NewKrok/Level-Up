@@ -1,19 +1,21 @@
 package demo.game;
 
+import demo.game.character.BaseCharacter;
+import demo.game.character.Skeleton;
 import h2d.Scene;
-import h2d.col.Point;
 import h3d.Vector;
 import h3d.mat.Data.Wrap;
 import h3d.mat.Material;
 import h3d.pass.DefaultShadowMap;
 import h3d.prim.Cube;
-import h3d.scene.CameraController;
+import h3d.prim.Cylinder;
 import h3d.scene.Graphics;
-import demo.game.character.BaseCharacter;
 import h3d.scene.Mesh;
 import h3d.scene.fwd.DirLight;
+import haxe.Timer;
 import hpp.heaps.Base2dStage;
 import hpp.heaps.Base2dState;
+import hpp.util.GeomUtil;
 import hpp.util.GeomUtil.SimplePoint;
 import hxd.Event;
 import hxd.Res;
@@ -30,8 +32,13 @@ class GameState extends Base2dState
 
 	var debugMapBlocks:Graphics;
 	var g:Graphics;
+	var camPosition:SimplePoint = { x: 0, y: 0 };
+	var isMoveTriggerOn:Bool = false;
+	var lastMovePosition:SimplePoint = { x: 0, y: 0 };
 
 	var characters:Array<BaseCharacter>;
+	var playerCharacter:BaseCharacter;
+	var targetMarker:Mesh;
 
 	public function new(stage:Base2dStage, s2d:h2d.Scene, s3d:h3d.scene.Scene)
 	{
@@ -50,14 +57,23 @@ class GameState extends Base2dState
 		world.done();
 
 		characters = [];
-		for (i in 0...1)
+
+		var startPoint:SimplePoint = { x: 10, y: 5 };
+		playerCharacter = new Skeleton();
+		characters.push(playerCharacter);
+		playerCharacter.view.x = startPoint.y * world.blockSize + world.blockSize / 2;
+		playerCharacter.view.y = startPoint.x * world.blockSize + world.blockSize / 2;
+		world.addChild(playerCharacter.view);
+
+		for (i in 0...10)
 		{
-			var startPoint:SimplePoint = { x: 10, y: 5 };
-			var character = new BaseCharacter();
+			var startPoint:SimplePoint = world.getRandomWalkablePoint();
+			var character = new Skeleton();
 			characters.push(character);
-			character.view.x = startPoint.y * world.blockSize + world.blockSize / 2;
-			character.view.y = startPoint.x * world.blockSize + world.blockSize / 2;
+			character.view.x = startPoint.x;
+			character.view.y = startPoint.y;
 			world.addChild(character.view);
+			moveToRandomPoint(character);
 		}
 
 		new DirLight(new h3d.Vector( 0.3, -0.4, -0.9), s3d);
@@ -70,14 +86,10 @@ class GameState extends Base2dState
 		shadow.bias *= 0.1;
 		shadow.color.set(0.7, 0.7, 0.7);
 
-		new CameraController(s3d).loadFromCamera();
-
-
-
-		var c = new Cube(80, 80, 1);
+		var c = new Cube(90, 80, 1);
 		c.addNormals();
 		c.addUVs();
-		var m = new Mesh(c, Material.create(Res.texture.sky.toTexture()), s3d);
+		var m = new Mesh(c, Material.create(Res.texture.Ash.toTexture()), s3d);
 		m.x = -10;
 		m.y = -30;
 		m.z = -10;
@@ -85,15 +97,34 @@ class GameState extends Base2dState
 		m.material.texture.wrap = Wrap.Repeat;
 		m.material.shadows = false;
 
-
-
-		//drawDebugMapBlocks();
-		drawDebugPath();
+		var c = new Cube(1, 1, 1);
+		c.addNormals();
+		c.addUVs();
+		targetMarker = new Mesh(c, null, s3d);
+		targetMarker.z = -0.8;
+		targetMarker.material.color.setColor(0xFFFF00);
+		targetMarker.material.shadows = false;
 
 		world.onWorldClick = function(e:Event)
 		{
-			characters[0].moveTo({ x: Math.floor(e.relY / world.blockSize), y: Math.floor(e.relX / world.blockSize) }).handle(function () { trace("MOVE FINISHED"); });
-			drawDebugPath();
+			lastMovePosition.x = Math.floor(e.relY / world.blockSize);
+			lastMovePosition.y = Math.floor(e.relX / world.blockSize);
+			characters[0].moveTo({ x: lastMovePosition.x, y: lastMovePosition.y }).handle(function () { trace("MOVE FINISHED"); });
+		}
+		world.onWorldMouseDown = function(e:Event) isMoveTriggerOn = true;
+		world.onWorldMouseUp = function(e:Event) isMoveTriggerOn = false;
+	}
+
+	function moveToRandomPoint(c)
+	{
+		var p = world.getRandomWalkablePoint();
+		if (p != null)
+		{
+			c.moveTo({ x: p.y, y: p.x }).handle(function () { moveToRandomPoint(c); });
+		}
+		else
+		{
+			Timer.delay(moveToRandomPoint.bind(c), 1000);
 		}
 	}
 
@@ -154,7 +185,53 @@ class GameState extends Base2dState
 		for (c in characters) c.update(d);
 
 		var charPosition = characters[0].getPosition();
-		s3d.camera.pos.set(charPosition.x - 20, charPosition.y, 20);
-		s3d.camera.target.set(charPosition.x + 2, charPosition.y);
+
+		camPosition.x += (charPosition.x - camPosition.x) / 20 * d * 30;
+		camPosition.y += (charPosition.y - camPosition.y) / 20 * d * 30;
+
+		s3d.camera.pos.set(camPosition.x - 20, camPosition.y, 15);
+		s3d.camera.target.set(camPosition.x + 2, camPosition.y);
+
+		if (isMoveTriggerOn)
+		{
+			// TODO How to handle hm...
+			/*lastMovePosition.x = Math.floor(e.relY / world.blockSize);
+			lastMovePosition.y = Math.floor(e.relX / world.blockSize);
+			characters[0].moveTo({ x: lastMovePosition.x, y: lastMovePosition.y }).handle(function () { trace("MOVE FINISHED"); });*/
+		}
+
+		calculateTargets();
+		if (playerCharacter != null && playerCharacter.target != null)
+		{
+			targetMarker.visible = true;
+			targetMarker.x = playerCharacter.target.getPosition().x;
+			targetMarker.y = playerCharacter.target.getPosition().y;
+		}
+		else
+		{
+			targetMarker.visible = false;
+		}
+	}
+
+	function calculateTargets()
+	{
+		for (cA in characters)
+		{
+			var bestDistance = 999999.;
+			var bestChar = null;
+			for (cB in characters)
+			{
+				if (cA != cB)
+				{
+					var distance = GeomUtil.getDistance(cA.getPosition(), cB.getPosition());
+					if (distance < bestDistance)
+					{
+						bestDistance = distance;
+						bestChar = cB;
+					}
+				}
+			}
+			if (bestChar != null) cA.setTarget(bestChar);
+		}
 	}
 }

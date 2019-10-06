@@ -10,6 +10,7 @@ import haxe.Timer;
 import hpp.util.GeomUtil;
 import hpp.util.GeomUtil.SimplePoint;
 import hxd.Res;
+import hxd.res.Model;
 import motion.Actuate;
 import motion.easing.Linear;
 
@@ -24,8 +25,9 @@ class BaseCharacter
 	public var view:Object;
 	public var speed:Float = 5;
 	public var rotationSpeed:Float = 5;
-	public var speedMultiplier:Float = 3;
+	public var speedMultiplier:Float = 5;
 	public var path(get, never):Array<SimplePoint>;
+	public var target(default, null):BaseCharacter;
 
 	var moveToPath:Array<SimplePoint>;
 	var currentPathIndex:Int;
@@ -37,12 +39,12 @@ class BaseCharacter
 	var moveResult:Result;
 	var moveResultHandler:Void->Void;
 
-	public function new()
+	public function new(config:CharacterConfig)
 	{
 		moveResult = { handle: function(handler:Void->Void) { moveResultHandler = handler; } };
 
-		view = cache.loadModel(Res.model.character.skeleton.skel);
-		view.scale(0.1);
+		view = cache.loadModel(config.model);
+		view.scale(config.modelScale);
 
 		for (m in view.getMaterials())
 		{
@@ -171,6 +173,14 @@ class BaseCharacter
 			view.setRotation(0, 0, viewRotation + Math.PI);
 		}
 	}
+
+	public function setTarget(t:BaseCharacter) target = t;
+}
+
+typedef CharacterConfig =
+{
+	var model:Model;
+	var modelScale:Float;
 }
 
 typedef Result =

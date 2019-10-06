@@ -5,6 +5,7 @@ import h3d.mat.Data.Wrap;
 import h3d.mat.Material;
 import h3d.prim.Cube;
 import h3d.prim.ModelCache;
+import h3d.scene.Interactive;
 import h3d.scene.Mesh;
 import h3d.scene.Object;
 import h3d.scene.World;
@@ -26,6 +27,10 @@ class GameWorld extends World
 	public var size:SimplePoint;
 
 	public var onWorldClick:Event->Void;
+	public var onWorldMouseDown:Event->Void;
+	public var onWorldMouseUp:Event->Void;
+
+	var interact:Interactive;
 
 	public function new(parent, size:SimplePoint, blockSize:Float, chunkSize:Int, worldSize:Int, ?parent, ?autoCollect = true)
 	{
@@ -39,16 +44,19 @@ class GameWorld extends World
 		var c = new Cube(size.y, size.x, 0.5);
 		c.addNormals();
 		c.addUVs();
-		c.uvScale(6, 4);
+		c.uvScale(8, 6);
 
-		var m = new Mesh(c, Material.create(Res.texture.ground.toTexture()), parent);
+		var groundMaterial = Material.create(Res.texture.DirtGround.toTexture());
+		var m = new Mesh(c, groundMaterial, parent);
 		m.x = 0;
 		m.y = 0;
 		m.z = -0.51;
 		m.material.texture.wrap = Wrap.Repeat;
 
-		var interact = new h3d.scene.Interactive(m.getCollider(), parent);
+		interact = new Interactive(m.getCollider(), parent);
 		interact.onClick = function (e) { onWorldClick(e); };
+		interact.onPush = function (e) { onWorldMouseDown(e); };
+		interact.onRelease = function (e) { onWorldMouseUp(e); };
 	}
 
 	public function generateRandomMap():Void
