@@ -10,6 +10,7 @@ soon
 ## Dependencies
 - **Heaps 1.6.1** A mature cross platform graphics engine designed for high performance games. https://heaps.io/
 - **javascript-astar 1.4.1** Pathfinder js lib. http://github.com/bgrins/javascript-astar
+- **HPP Package** Some useful classes for haxe projects https://github.com/NewKrok/HPP-Package
 
 Our webpage:
 http://flashplusplus.net
