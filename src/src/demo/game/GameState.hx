@@ -12,6 +12,7 @@ import h3d.prim.Cylinder;
 import h3d.scene.Graphics;
 import h3d.scene.Mesh;
 import h3d.scene.fwd.DirLight;
+import haxe.Json;
 import haxe.Timer;
 import hpp.heaps.Base2dStage;
 import hpp.heaps.Base2dState;
@@ -52,8 +53,7 @@ class GameState extends Base2dState
 		debugMapBlocks = new Graphics(s3d);
 		g = new Graphics(s3d);
 
-		world = new GameWorld(s3d, {x: 20, y: 40 }, 1, 64, 64, s3d);
-		world.generateRandomMap();
+		world = new GameWorld(s3d, Json.parse(Res.data.level_1.entry.getText()), 1, 64, 64, s3d);
 		world.done();
 
 		characters = [];
@@ -68,7 +68,7 @@ class GameState extends Base2dState
 		for (i in 0...10)
 		{
 			var startPoint:SimplePoint = world.getRandomWalkablePoint();
-			var character = new Skeleton();
+			var character = new demo.game.character.Warrior();
 			characters.push(character);
 			character.view.x = startPoint.x;
 			character.view.y = startPoint.y;

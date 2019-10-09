@@ -32,6 +32,9 @@
     <library name="-lib heaps" />
     <library name="-lib actuate" />
     <library name="-lib hpp" />
+    <library name="-lib tink_state" />
+    <library name="-lib tink_core" />
+    <library name="-lib coconut.data" />
   </haxelib>
   <!-- Class files to compile (other referenced classes will automatically be included) -->
   <compileTargets>

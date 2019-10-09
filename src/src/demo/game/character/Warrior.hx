@@ -6,7 +6,7 @@ import hxd.Res;
  * ...
  * @author Krisztian Somoracz
  */
-class Skeleton extends BaseCharacter
+class Warrior extends BaseCharacter
 {
 	public function new()
 	{
@@ -15,7 +15,7 @@ class Skeleton extends BaseCharacter
 			modelScale: 0.1,
 			moveAnimationName: null,
 			speed: 5,
-			speedMultiplier: 5
+			speedMultiplier: 1
 		});
 	}
 }

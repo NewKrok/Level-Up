@@ -18,14 +18,14 @@ import motion.easing.Linear;
  * ...
  * @author Krisztian Somoracz
  */
-class BaseCharacter
+@:tink class BaseCharacter
 {
 	static inline var baseSpeedBlock:Float = 10;
 
+	var config:CharacterConfig = _;
+
 	public var view:Object;
-	public var speed:Float = 5;
 	public var rotationSpeed:Float = 5;
-	public var speedMultiplier:Float = 5;
 	public var path(get, never):Array<SimplePoint>;
 	public var target(default, null):BaseCharacter;
 
@@ -39,7 +39,7 @@ class BaseCharacter
 	var moveResult:Result;
 	var moveResultHandler:Void->Void;
 
-	public function new(config:CharacterConfig)
+	public function new()
 	{
 		moveResult = { handle: function(handler:Void->Void) { moveResultHandler = handler; } };
 
@@ -79,8 +79,8 @@ class BaseCharacter
 			moveToPath = [];
 			for (entry in path) moveToPath.push({ x: entry.y, y: entry.x });
 
-			view.playAnimation(cache.loadAnimation(Res.model.character.skeleton.skel));
-			view.currentAnimation.speed = speedMultiplier;
+			view.playAnimation(cache.loadAnimation(config.model, config.moveAnimationName));
+			view.currentAnimation.speed = config.speedMultiplier;
 			moveToNextPathPoint();
 		}
 		else Timer.delay(onMoveEnd, 1);
@@ -126,7 +126,7 @@ class BaseCharacter
 
 		// Calculate tween time based on distance and character speed
 		var distance = GeomUtil.getDistance(targetPoint, { x: view.x, y: view.y });
-		var tweenTime = (distance / baseSpeedBlock) * (speed / speedMultiplier);
+		var tweenTime = (distance / baseSpeedBlock) * (config.speed / config.speedMultiplier);
 
 		Actuate.tween(view, tweenTime, { x: targetPoint.x, y: targetPoint.y }).ease(Linear.easeNone).onUpdate(updateHack).onComplete(onComplete);
 	}
@@ -181,6 +181,9 @@ typedef CharacterConfig =
 {
 	var model:Model;
 	var modelScale:Float;
+	var speed:Float;
+	var speedMultiplier:Float;
+	var moveAnimationName:String;
 }
 
 typedef Result =

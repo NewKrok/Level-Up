@@ -24,24 +24,25 @@ class GameWorld extends World
 	public var graph:Graph;
 
 	public var blockSize:Float;
-	public var size:SimplePoint;
 
 	public var onWorldClick:Event->Void;
 	public var onWorldMouseDown:Event->Void;
 	public var onWorldMouseUp:Event->Void;
 
+	var worldConfig:WorldConfig;
 	var interact:Interactive;
 
-	public function new(parent, size:SimplePoint, blockSize:Float, chunkSize:Int, worldSize:Int, ?parent, ?autoCollect = true)
+	public function new(parent, worldConfig:WorldConfig, blockSize:Float, chunkSize:Int, worldSize:Int, ?parent, ?autoCollect = true)
 	{
 		super(chunkSize, worldSize, parent, autoCollect);
-
-		this.size = size;
-		instance = this;
-
+		this.worldConfig = worldConfig;
 		this.blockSize = blockSize;
 
-		var c = new Cube(size.y, size.x, 0.5);
+		instance = this;
+
+		generateMap();
+
+		var c = new Cube(worldConfig.map.length, worldConfig.map[0].length, 1);
 		c.addNormals();
 		c.addUVs();
 		c.uvScale(8, 6);
@@ -50,7 +51,7 @@ class GameWorld extends World
 		var m = new Mesh(c, groundMaterial, parent);
 		m.x = 0;
 		m.y = 0;
-		m.z = -0.51;
+		m.z = -1.01;
 		m.material.texture.wrap = Wrap.Repeat;
 
 		interact = new Interactive(m.getCollider(), parent);
@@ -59,37 +60,61 @@ class GameWorld extends World
 		interact.onRelease = function (e) { onWorldMouseUp(e); };
 	}
 
-	public function generateRandomMap():Void
+	public function generateMap():Void
 	{
 		var graphArray = [];
 
 		var cache:ModelCache = new ModelCache();
 
-		for (i in 0...cast size.y)
+		var indexI = worldConfig.map.length - 1;
+		for (i in 0...worldConfig.map.length)
 		{
+			var indexJ = worldConfig.map[0].length - 1;
 			graphArray.push([]);
-			for (j in 0...cast size.x)
+			for (j in 0...worldConfig.map[0].length)
 			{
-				var isWalkable:Bool = !(i == 0 || j == 0 || i == size.y - 1 || j == size.x - 1);
-				graphArray[i].push(isWalkable ? 1 : 0);
-
-				if (!isWalkable)
+				switch(worldConfig.map[indexI][indexJ])
 				{
-					var tree:Object = cache.loadModel(Res.model.environment.tree.tree);
-					addToWorldPoint(tree, i, j, 0, 0.9 + Math.random() * 0.5, Math.random() * Math.PI * 2);
+					case 2:
+						var tree:Object = cache.loadModel(Res.model.environment.tree.tree);
+						addToWorldPoint(tree, i, indexJ, 0, 0.9 + Math.random() * 0.5, Math.random() * Math.PI * 2);
+
+					case _:
 				}
+
+				graphArray[i].push(worldConfig.map[i][j] == 1 || worldConfig.map[i][j] == 2 ? 0 : 1);
+				indexJ--;
 			}
+			indexI--;
 		}
+
+		for (o in worldConfig.staticObjects)
+		{
+			var instance:Object = cache.loadModel(Asset.getStaticObject(o.name));
+			addToWorldPoint(instance, o.x, o.y, o.z, o.scale, o.rotation);
+		}
+
+		/*for (i in 0...10)
+		{
+			var w:Object = cache.loadModel(Res.model.environment.wall.SM_Wall_Prison_Window);
+			addToWorldPoint(w, i * 5, 0, 0, 0.05, -Math.PI / 2);
+		}*/
 
 		graph = new Graph(graphArray, { diagonal: true });
 	}
 
 	public function addToWorldPoint(model:Object, x:Float, y:Float, z:Float = 1, scale = 1., rotation = 0.):Void
 	{
+		mapEditorStaticObjectHelper(x,y,z,scale,rotation);
 		model.setPosition(x, y, z);
 		model.setScale(scale);
 		model.setRotation(0, 0, rotation);
 		addChild(model);
+	}
+
+	function mapEditorStaticObjectHelper(x:Float, y:Float, z:Float, scale:Float, rotation:Float)
+	{
+		//trace('"x":$x,"y":$y,"z":$z,"scale":$scale,"rotation":$rotation');
 	}
 
 	public function getRandomWalkablePoint():SimplePoint
@@ -104,4 +129,26 @@ class GameWorld extends World
 
 		return cast result;
 	}
+}
+
+typedef WorldConfig =
+{
+	var map:Array<Array<WorldEntity>>;
+	var staticObjects:Array<StaticObjectConfig>;
+}
+
+typedef StaticObjectConfig =
+{
+	var name:String;
+	var x:Float;
+	var y:Float;
+	var z:Float;
+	var scale:Float;
+	var rotation:Float;
+}
+
+@:enum abstract WorldEntity(Int) from Int to Int {
+	var Nothing = 0;
+	var SimpleUnwalkable = 1;
+	var Tree = 2;
 }
