@@ -1,7 +1,10 @@
 package demo.game;
 
+import demo.AsyncUtil.Result;
+import demo.game.GameModel.PlayState;
 import demo.game.character.BaseCharacter;
 import demo.game.character.Skeleton;
+import h2d.Object;
 import h2d.Scene;
 import h3d.Vector;
 import h3d.mat.Data.Wrap;
@@ -20,6 +23,13 @@ import hpp.util.GeomUtil;
 import hpp.util.GeomUtil.SimplePoint;
 import hxd.Event;
 import hxd.Res;
+import motion.Actuate;
+import motion.easing.Elastic;
+import motion.easing.Expo;
+import motion.easing.IEasing;
+import motion.easing.Linear;
+import motion.easing.Quad;
+import motion.easing.Quart;
 
 /**
  * ...
@@ -28,18 +38,30 @@ import hxd.Res;
 class GameState extends Base2dState
 {
 	var world:GameWorld;
+	var mapConfig:WorldConfig;
+	var model:GameModel;
+
 	var s2d:h2d.Scene;
 	var s3d:h3d.scene.Scene;
 
 	var debugMapBlocks:Graphics;
 	var g:Graphics;
-	var camPosition:SimplePoint = { x: 0, y: 0 };
+
+	var camPosition:{ x:Float, y:Float, z:Float } = { x: 0, y: 0, z: 0 };
+	var camAnimationPosition:{ x:Float, y:Float, z:Float } = { x: 0, y: 0, z: 0 };
+	var cameraSpeed:SimplePoint = { x: 10, y: 10 };
+	var hasCameraAnimation:Bool = false;
+	var camAnimationResult:Result;
+	var camAnimationResultHandler:Void->Void;
+	var cameraTarget:BaseCharacter;
+
 	var isMoveTriggerOn:Bool = false;
 	var lastMovePosition:SimplePoint = { x: 0, y: 0 };
 
 	var characters:Array<BaseCharacter>;
 	var playerCharacter:BaseCharacter;
 	var targetMarker:Mesh;
+	var isControlEnabled:Bool = false;
 
 	public function new(stage:Base2dStage, s2d:h2d.Scene, s3d:h3d.scene.Scene)
 	{
@@ -48,18 +70,34 @@ class GameState extends Base2dState
 		this.s3d = s3d;
 		this.s2d = s2d;
 
+		camAnimationResult = { handle: function(handler:Void->Void) { camAnimationResultHandler = handler; } };
+
+		model = new GameModel();
+		model.observables.state.bind(function(v)
+		{
+			switch (v)
+			{
+				case PlayState.GameStarted: isControlEnabled = true;
+				case _: isControlEnabled = false;
+			}
+		});
+
+		mapConfig = Json.parse(Res.data.level_1.entry.getText());
+
 		s2d.visible = false;
 
 		debugMapBlocks = new Graphics(s3d);
 		g = new Graphics(s3d);
 
-		world = new GameWorld(s3d, Json.parse(Res.data.level_1.entry.getText()), 1, 64, 64, s3d);
+		world = new GameWorld(s3d, mapConfig, 1, 64, 64, s3d);
 		world.done();
 
 		characters = [];
 
-		var startPoint:SimplePoint = { x: 10, y: 5 };
+		var startPoint:SimplePoint = { x: 10, y: 2 };
+
 		playerCharacter = new Skeleton();
+		setCameraTarget(playerCharacter);
 		characters.push(playerCharacter);
 		playerCharacter.view.x = startPoint.y * world.blockSize + world.blockSize / 2;
 		playerCharacter.view.y = startPoint.x * world.blockSize + world.blockSize / 2;
@@ -76,25 +114,24 @@ class GameState extends Base2dState
 			moveToRandomPoint(character);
 		}
 
-		new DirLight(new h3d.Vector( 0.3, -0.4, -0.9), s3d);
-		s3d.lightSystem.ambientLight.setColor(0x909090);
+		new DirLight(new h3d.Vector(10, 10, -5), s3d);
+		s3d.lightSystem.ambientLight.setColor(0x666666);
 
 		var shadow:h3d.pass.DefaultShadowMap = s3d.renderer.getPass(h3d.pass.DefaultShadowMap);
 		shadow.size = 2048;
 		shadow.power = 200;
-		shadow.blur.radius= 0;
+		shadow.blur.radius = 0;
 		shadow.bias *= 0.1;
 		shadow.color.set(0.7, 0.7, 0.7);
 
 		var c = new Cube(90, 80, 1);
 		c.addNormals();
 		c.addUVs();
-		var m = new Mesh(c, Material.create(Res.texture.Ash.toTexture()), s3d);
+		var m = new Mesh(c, null, s3d);
 		m.x = -10;
 		m.y = -30;
 		m.z = -10;
-		//m.material.color.setColor(0xFFFF00);
-		m.material.texture.wrap = Wrap.Repeat;
+		m.material.color.setColor(0x000000);
 		m.material.shadows = false;
 
 		var c = new Cube(1, 1, 1);
@@ -107,12 +144,25 @@ class GameState extends Base2dState
 
 		world.onWorldClick = function(e:Event)
 		{
-			lastMovePosition.x = Math.floor(e.relY / world.blockSize);
-			lastMovePosition.y = Math.floor(e.relX / world.blockSize);
-			characters[0].moveTo({ x: lastMovePosition.x, y: lastMovePosition.y }).handle(function () { trace("MOVE FINISHED"); });
+			if (isControlEnabled)
+			{
+				lastMovePosition.x = Math.floor(e.relY / world.blockSize);
+				lastMovePosition.y = Math.floor(e.relX / world.blockSize);
+				characters[0].moveTo({ x: lastMovePosition.x, y: lastMovePosition.y }).handle(function () { trace("MOVE FINISHED"); });
+			}
 		}
 		world.onWorldMouseDown = function(e:Event) isMoveTriggerOn = true;
 		world.onWorldMouseUp = function(e:Event) isMoveTriggerOn = false;
+
+		hasCameraAnimation = true;
+		jumpCamera(40, 10, 20);
+		model.initGame();
+		Timer.delay(function() {
+			moveCamera(10, 10, 15, 4).handle(model.startGame);
+		}, 1000);
+		Timer.delay(function() {
+			playerCharacter.moveTo({ x: 10, y: 10 });
+		}, 3500);
 	}
 
 	function moveToRandomPoint(c)
@@ -184,13 +234,7 @@ class GameState extends Base2dState
 	{
 		for (c in characters) c.update(d);
 
-		var charPosition = characters[0].getPosition();
-
-		camPosition.x += (charPosition.x - camPosition.x) / 20 * d * 30;
-		camPosition.y += (charPosition.y - camPosition.y) / 20 * d * 30;
-
-		s3d.camera.pos.set(camPosition.x - 20, camPosition.y, 15);
-		s3d.camera.target.set(camPosition.x + 2, camPosition.y);
+		updateCamera(d);
 
 		if (isMoveTriggerOn)
 		{
@@ -211,6 +255,74 @@ class GameState extends Base2dState
 		{
 			targetMarker.visible = false;
 		}
+	}
+
+	function updateCamera(d:Float)
+	{
+		if (hasCameraAnimation)
+		{
+			camPosition.x = camAnimationPosition.x;
+			camPosition.y = camAnimationPosition.y;
+			camPosition.z = camAnimationPosition.z;
+		}
+		else
+		{
+			var targetPoint = cameraTarget.getPosition();
+
+			camPosition.x += (targetPoint.x - camPosition.x) / cameraSpeed.x * d * 30;
+			camPosition.y += (targetPoint.y - camPosition.y) / cameraSpeed.y * d * 30;
+		}
+
+		camPosition.x = Math.max(camPosition.x, 9);
+		camPosition.x = Math.min(camPosition.x, 38);
+
+		camPosition.y = Math.max(camPosition.y, 4);
+		camPosition.y = Math.min(camPosition.y, 16);
+
+		s3d.camera.pos.set(camPosition.x - 20, camPosition.y, camPosition.z);
+		s3d.camera.target.set(camPosition.x + 2, camPosition.y);
+	}
+
+	function moveCamera(x:Float, y:Float, z:Float, time:Float, ease:IEasing = null)
+	{
+		camAnimationResultHandler = null;
+		hasCameraAnimation = true;
+		camAnimationPosition.x = camPosition.x;
+		camAnimationPosition.y = camPosition.y;
+		camAnimationPosition.z = camPosition.z;
+
+		Actuate.tween(camAnimationPosition, time, { x: x, y: y, z: z })
+			.ease(ease == null ? Linear.easeNone : ease)
+			.onUpdate(function()
+			{
+				camAnimationPosition.x = camAnimationPosition.x;
+				camAnimationPosition.y = camAnimationPosition.y;
+				camAnimationPosition.z = camAnimationPosition.z;
+			})
+			.onComplete(function()
+			{
+				hasCameraAnimation = false;
+				if (camAnimationResultHandler != null) camAnimationResultHandler();
+			});
+
+		return camAnimationResult;
+	}
+
+	function jumpCamera(x:Float, y:Float, z:Float)
+	{
+		camPosition.x = x;
+		camPosition.y = y;
+		camPosition.z = z;
+		camAnimationPosition.x = camPosition.x;
+		camAnimationPosition.y = camPosition.y;
+		camAnimationPosition.z = camPosition.z;
+
+		updateCamera(0);
+	}
+
+	function setCameraTarget(target)
+	{
+		cameraTarget = target;
 	}
 
 	function calculateTargets()
@@ -234,4 +346,26 @@ class GameState extends Base2dState
 			if (bestChar != null) cA.setTarget(bestChar);
 		}
 	}
+}
+
+typedef WorldConfig =
+{
+	var map(default, never):Array<Array<WorldEntity>>;
+	var staticObjects(default, never):Array<StaticObjectConfig>;
+}
+
+typedef StaticObjectConfig =
+{
+	var name(default, never):String;
+	var x(default, never):Float;
+	var y(default, never):Float;
+	var z(default, never):Float;
+	var scale(default, never):Float;
+	var rotation(default, never):Float;
+}
+
+@:enum abstract WorldEntity(Int) from Int to Int {
+	var Nothing = 0;
+	var SimpleUnwalkable = 1;
+	var Tree = 2;
 }

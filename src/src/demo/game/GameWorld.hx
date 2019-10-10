@@ -1,5 +1,6 @@
 package demo.game;
 
+import demo.game.GameState.WorldConfig;
 import demo.game.js.Graph;
 import h3d.mat.Data.Wrap;
 import h3d.mat.Material;
@@ -43,18 +44,8 @@ class GameWorld extends World
 		generateMap();
 
 		var c = new Cube(worldConfig.map.length, worldConfig.map[0].length, 1);
-		c.addNormals();
-		c.addUVs();
-		c.uvScale(8, 6);
 
-		var groundMaterial = Material.create(Res.texture.DirtGround.toTexture());
-		var m = new Mesh(c, groundMaterial, parent);
-		m.x = 0;
-		m.y = 0;
-		m.z = -1.01;
-		m.material.texture.wrap = Wrap.Repeat;
-
-		interact = new Interactive(m.getCollider(), parent);
+		interact = new Interactive(c.getCollider(), parent);
 		interact.onClick = function (e) { onWorldClick(e); };
 		interact.onPush = function (e) { onWorldMouseDown(e); };
 		interact.onRelease = function (e) { onWorldMouseUp(e); };
@@ -82,7 +73,7 @@ class GameWorld extends World
 					case _:
 				}
 
-				graphArray[i].push(worldConfig.map[i][j] == 1 || worldConfig.map[i][j] == 2 ? 0 : 1);
+				graphArray[i].push(worldConfig.map[indexI][indexJ] == 1 || worldConfig.map[indexI][indexJ] == 2 ? 0 : 1);
 				indexJ--;
 			}
 			indexI--;
@@ -94,27 +85,15 @@ class GameWorld extends World
 			addToWorldPoint(instance, o.x, o.y, o.z, o.scale, o.rotation);
 		}
 
-		/*for (i in 0...10)
-		{
-			var w:Object = cache.loadModel(Res.model.environment.wall.SM_Wall_Prison_Window);
-			addToWorldPoint(w, i * 5, 0, 0, 0.05, -Math.PI / 2);
-		}*/
-
 		graph = new Graph(graphArray, { diagonal: true });
 	}
 
 	public function addToWorldPoint(model:Object, x:Float, y:Float, z:Float = 1, scale = 1., rotation = 0.):Void
 	{
-		mapEditorStaticObjectHelper(x,y,z,scale,rotation);
 		model.setPosition(x, y, z);
 		model.setScale(scale);
 		model.setRotation(0, 0, rotation);
 		addChild(model);
-	}
-
-	function mapEditorStaticObjectHelper(x:Float, y:Float, z:Float, scale:Float, rotation:Float)
-	{
-		//trace('"x":$x,"y":$y,"z":$z,"scale":$scale,"rotation":$rotation');
 	}
 
 	public function getRandomWalkablePoint():SimplePoint
@@ -122,33 +101,11 @@ class GameWorld extends World
 		var getRandomPoint = function () return { x: Math.floor(Math.random() * graph.grid.length), y: Math.floor(Math.random() * graph.grid[0].length) };
 
 		var result = getRandomPoint();
-		while (graph.grid[cast result.x][cast result.y].weight != 0)
+		while (graph.grid[cast result.x][cast result.y].weight != 1)
 		{
 			result = getRandomPoint();
 		}
 
 		return cast result;
 	}
-}
-
-typedef WorldConfig =
-{
-	var map:Array<Array<WorldEntity>>;
-	var staticObjects:Array<StaticObjectConfig>;
-}
-
-typedef StaticObjectConfig =
-{
-	var name:String;
-	var x:Float;
-	var y:Float;
-	var z:Float;
-	var scale:Float;
-	var rotation:Float;
-}
-
-@:enum abstract WorldEntity(Int) from Int to Int {
-	var Nothing = 0;
-	var SimpleUnwalkable = 1;
-	var Tree = 2;
 }

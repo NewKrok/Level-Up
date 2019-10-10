@@ -1,5 +1,6 @@
 package demo.game.character;
 
+import demo.AsyncUtil.Result;
 import demo.game.GameWorld;
 import demo.game.js.AStar;
 import h2d.col.Point;
@@ -184,9 +185,4 @@ typedef CharacterConfig =
 	var speed:Float;
 	var speedMultiplier:Float;
 	var moveAnimationName:String;
-}
-
-typedef Result =
-{
-	var handle:(Void->Void)->Void;
 }

@@ -15,7 +15,7 @@ class Skeleton extends BaseCharacter
 			modelScale: 0.1,
 			moveAnimationName: null,
 			speed: 5,
-			speedMultiplier: 5
+			speedMultiplier: 2
 		});
 	}
 }
