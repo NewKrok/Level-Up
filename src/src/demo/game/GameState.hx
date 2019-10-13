@@ -4,6 +4,8 @@ import demo.AsyncUtil.Result;
 import demo.game.GameModel.PlayState;
 import demo.game.character.BaseCharacter;
 import demo.game.character.Skeleton;
+import demo.game.character.Warrior;
+import demo.game.ui.LifeBar;
 import h2d.Object;
 import h2d.Scene;
 import h3d.Vector;
@@ -15,6 +17,7 @@ import h3d.prim.Cylinder;
 import h3d.scene.Graphics;
 import h3d.scene.Mesh;
 import h3d.scene.fwd.DirLight;
+import h3d.scene.fwd.PointLight;
 import haxe.Json;
 import haxe.Timer;
 import hpp.heaps.Base2dStage;
@@ -84,8 +87,6 @@ class GameState extends Base2dState
 
 		mapConfig = Json.parse(Res.data.level_1.entry.getText());
 
-		s2d.visible = false;
-
 		debugMapBlocks = new Graphics(s3d);
 		g = new Graphics(s3d);
 
@@ -96,9 +97,9 @@ class GameState extends Base2dState
 
 		var startPoint:SimplePoint = { x: 10, y: 2 };
 
-		playerCharacter = new Skeleton();
-		setCameraTarget(playerCharacter);
+		playerCharacter = new Skeleton(Player.User);
 		characters.push(playerCharacter);
+		setCameraTarget(playerCharacter);
 		playerCharacter.view.x = startPoint.y * world.blockSize + world.blockSize / 2;
 		playerCharacter.view.y = startPoint.x * world.blockSize + world.blockSize / 2;
 		world.addChild(playerCharacter.view);
@@ -106,23 +107,30 @@ class GameState extends Base2dState
 		for (i in 0...10)
 		{
 			var startPoint:SimplePoint = world.getRandomWalkablePoint();
-			var character = new demo.game.character.Warrior();
+			var character = new Warrior(Player.Enemy);
 			characters.push(character);
 			character.view.x = startPoint.x;
 			character.view.y = startPoint.y;
 			world.addChild(character.view);
-			moveToRandomPoint(character);
+			//moveToRandomPoint(character);
 		}
 
-		new DirLight(new h3d.Vector(10, 10, -5), s3d);
-		s3d.lightSystem.ambientLight.setColor(0x666666);
+		var dirLight = new DirLight(null, s3d);
+		dirLight.setDirection(new Vector(2, 0, -2));
+		dirLight.color = new Vector(0.9, 0.9, 0.9);
+
+		var pLight = new PointLight(s3d);
+		pLight.setPosition(20, 10, 15);
+		pLight.color = new Vector(200, 200, 200);
+
+		s3d.lightSystem.ambientLight.setColor(0x333333);
 
 		var shadow:h3d.pass.DefaultShadowMap = s3d.renderer.getPass(h3d.pass.DefaultShadowMap);
 		shadow.size = 2048;
-		shadow.power = 200;
-		shadow.blur.radius = 0;
+		shadow.power = 100;
+		shadow.blur.radius = 5;
 		shadow.bias *= 0.1;
-		shadow.color.set(0.7, 0.7, 0.7);
+		shadow.color.set(0.4, 0.4, 0.4);
 
 		var c = new Cube(90, 80, 1);
 		c.addNormals();
@@ -163,9 +171,13 @@ class GameState extends Base2dState
 		Timer.delay(function() {
 			playerCharacter.moveTo({ x: 10, y: 10 });
 		}, 3500);
+
+		var lifeUi = new LifeBar(s2d, playerCharacter.life, playerCharacter.config.maxLife);
+		lifeUi.x = 20;
+		lifeUi.y = 20;
 	}
 
-	function moveToRandomPoint(c)
+	/*function moveToRandomPoint(c)
 	{
 		var p = world.getRandomWalkablePoint();
 		if (p != null)
@@ -176,7 +188,7 @@ class GameState extends Base2dState
 		{
 			Timer.delay(moveToRandomPoint.bind(c), 1000);
 		}
-	}
+	}*/
 
 	function drawDebugMapBlocks():Void
 	{
@@ -333,7 +345,7 @@ class GameState extends Base2dState
 			var bestChar = null;
 			for (cB in characters)
 			{
-				if (cA != cB)
+				if (cA != cB && cA.owner != cB.owner)
 				{
 					var distance = GeomUtil.getDistance(cA.getPosition(), cB.getPosition());
 					if (distance < bestDistance)
@@ -343,7 +355,7 @@ class GameState extends Base2dState
 					}
 				}
 			}
-			if (bestChar != null) cA.setTarget(bestChar);
+			if (bestChar != null) cA.setNearestTarget(bestChar);
 		}
 	}
 }
@@ -368,4 +380,9 @@ typedef StaticObjectConfig =
 	var Nothing = 0;
 	var SimpleUnwalkable = 1;
 	var Tree = 2;
+}
+
+enum Player {
+	User;
+	Enemy;
 }

@@ -1,6 +1,7 @@
 package demo.game.character;
 
 import demo.AsyncUtil.Result;
+import demo.game.GameState.Player;
 import demo.game.GameWorld;
 import demo.game.js.AStar;
 import h2d.col.Point;
@@ -14,6 +15,8 @@ import hxd.Res;
 import hxd.res.Model;
 import motion.Actuate;
 import motion.easing.Linear;
+import tink.state.Observable;
+import tink.state.State;
 
 /**
  * ...
@@ -23,12 +26,17 @@ import motion.easing.Linear;
 {
 	static inline var baseSpeedBlock:Float = 10;
 
-	var config:CharacterConfig = _;
+	public var owner(default, null):Player = _;
+	public var config(default, null):CharacterConfig = _;
 
 	public var view:Object;
 	public var rotationSpeed:Float = 5;
 	public var path(get, never):Array<SimplePoint>;
+	public var currentAnimation:AnimationType = AnimationType.Idle;
+
 	public var target(default, null):BaseCharacter;
+	public var nearestTarget(default, null):BaseCharacter;
+	var lastTargetWorldPosition:SimplePoint = { x: 0, y: 0 };
 
 	var moveToPath:Array<SimplePoint>;
 	var currentPathIndex:Int;
@@ -40,11 +48,18 @@ import motion.easing.Linear;
 	var moveResult:Result;
 	var moveResultHandler:Void->Void;
 
+	var attackResult:Result;
+	var attackResultHandler:Void->Void;
+
+	var state:State<CharacterState> = new State<CharacterState>(Idle);
+	public var life:State<Float> = new State<Float>(0);
+
 	public function new()
 	{
 		moveResult = { handle: function(handler:Void->Void) { moveResultHandler = handler; } };
+		attackResult = { handle: function(handler:Void->Void) { attackResultHandler = handler; } };
 
-		view = cache.loadModel(config.model);
+		view = cache.loadModel(config.idleModel);
 		view.scale(config.modelScale);
 
 		for (m in view.getMaterials())
@@ -54,11 +69,12 @@ import motion.easing.Linear;
 			m.mainPass.culling = None;
 			m.getPass("shadow").culling = None;
 		}
-	}
 
-	public function moveToRandomPoint():Void
-	{
-		move(new Point(Math.random() * GameWorld.instance.worldSize, Math.random() * GameWorld.instance.worldSize), moveToRandomPoint);
+		life.set(config.maxLife);
+		life.observe().bind(function(v)
+		{
+			if (v == 0) state.set(Dead);
+		});
 	}
 
 	public function moveTo(point:SimplePoint):Result
@@ -80,8 +96,12 @@ import motion.easing.Linear;
 			moveToPath = [];
 			for (entry in path) moveToPath.push({ x: entry.y, y: entry.x });
 
-			view.playAnimation(cache.loadAnimation(config.model, config.moveAnimationName));
-			view.currentAnimation.speed = config.speedMultiplier;
+			if (currentAnimation != AnimationType.Move)
+			{
+				view.playAnimation(cache.loadAnimation(config.runModel));
+				currentAnimation = AnimationType.Move;
+			}
+			if (view.currentAnimation != null) view.currentAnimation.speed = config.speedMultiplier;
 			moveToNextPathPoint();
 		}
 		else Timer.delay(onMoveEnd, 1);
@@ -95,14 +115,38 @@ import motion.easing.Linear;
 
 		if (currentPathIndex < moveToPath.length)
 		{
+			if (target != null)
+			{
+				var currentTargetWorldPosition = target.getWorldPoint();
+				if (lastTargetWorldPosition.x == currentTargetWorldPosition.x && lastTargetWorldPosition.y == currentTargetWorldPosition.y)
+				{
+					var couldTriggerAttack = attackRoutine();
+					if (couldTriggerAttack) return;
+				}
+				else
+				{
+
+					attack(target);
+					return;
+				}
+			}
 			move({ x: moveToPath[currentPathIndex].y, y: moveToPath[currentPathIndex].x }, moveToNextPathPoint);
 		}
-		else onMoveEnd();
+		else if (target != null)
+		{
+			attackRoutine();
+		}
+		else
+		{
+			onMoveEnd();
+		}
 	}
 
 	function onMoveEnd()
 	{
 		view.stopAnimation();
+		currentAnimation = AnimationType.Idle;
+
 		if (moveResultHandler != null) moveResultHandler();
 	}
 
@@ -175,14 +219,105 @@ import motion.easing.Linear;
 		}
 	}
 
-	public function setTarget(t:BaseCharacter) target = t;
+	public function setNearestTarget(t:BaseCharacter) nearestTarget = t;
+
+	public function attack(t:BaseCharacter)
+	{
+		attackResultHandler = null;
+		target = t;
+
+		var p = target.getWorldPoint();
+		lastTargetWorldPosition.x = p.x;
+		lastTargetWorldPosition.y = p.y;
+
+		state.set(AttackRequested);
+
+		moveTo(target.getWorldPoint());
+
+		return moveResult;
+	}
+
+	public function damage(v:Float)
+	{
+		life.set(Math.max(life.value - v, 0));
+	}
+
+	public function attackRoutine():Bool
+	{
+		if (canAttackTarget())
+		{
+			state.set(AttackTriggered);
+
+			view.playAnimation(cache.loadAnimation(config.attackModel));
+			currentAnimation = AnimationType.Attack;
+
+			Timer.delay(function()
+			{
+				if (canAttackTarget())
+				{
+					target.damage(calculateDamage());
+					if (target.state == Dead && attackResultHandler != null) attackResultHandler();
+				}
+				else if (target != null) attack(target);
+			}, config.attackDuration);
+
+			Timer.delay(attackRoutine, config.attackSpeed);
+
+			return true;
+		}
+		else if (target != null && target.state != Dead)
+		{
+			if (state == AttackTriggered) attack(target);
+		}
+		else
+		{
+			state.set(Idle);
+		}
+
+		return false;
+	}
+
+	function calculateDamage()
+	{
+		return Math.random() * (config.damageMax - config.damageMin) + config.damageMin;
+	}
+
+	function canAttackTarget()
+	{
+		return
+			target != null
+			&& target.state != Dead
+			&& GeomUtil.getDistance(getWorldPoint(), target.getWorldPoint()) <= config.attackRadius;
+	}
 }
 
 typedef CharacterConfig =
 {
-	var model:Model;
+	var idleModel:Model;
+	var runModel:Model;
+	var attackModel:Model;
 	var modelScale:Float;
 	var speed:Float;
 	var speedMultiplier:Float;
-	var moveAnimationName:String;
+	var attackRadius:Float;
+	var attackSpeed:Int;
+	var attackDuration:Int;
+	var damageMin:Float;
+	var damageMax:Float;
+	var maxLife:Float;
+}
+
+enum CharacterState {
+	Idle;
+	Dead;
+	MoveTo;
+	AttackMoveTo;
+	AttackRequested;
+	AttackTriggered;
+}
+
+enum AnimationType {
+	Idle;
+	Move;
+	Attack;
 }
