@@ -88,6 +88,21 @@ class GameWorld extends World
 		graph = new Graph(graphArray, { diagonal: true });
 	}
 
+	public function resetWorldWeight()
+	{
+		var indexI = worldConfig.map.length - 1;
+		for (i in 0...worldConfig.map.length)
+		{
+			var indexJ = worldConfig.map[0].length - 1;
+			for (j in 0...worldConfig.map[0].length)
+			{
+				graph.grid[i][j].weight = worldConfig.map[indexI][indexJ] == 1 || worldConfig.map[indexI][indexJ] == 2 ? 0 : 1;
+				indexJ--;
+			}
+			indexI--;
+		}
+	}
+
 	public function addToWorldPoint(model:Object, x:Float, y:Float, z:Float = 1, scale = 1., rotation = 0.):Void
 	{
 		model.setPosition(x, y, z);

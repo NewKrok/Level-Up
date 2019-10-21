@@ -32,7 +32,6 @@ import tink.state.State;
 	public var view:Object;
 	public var rotationSpeed:Float = 5;
 	public var path(get, never):Array<SimplePoint>;
-	public var currentAnimation:AnimationType = AnimationType.Idle;
 
 	public var target(default, null):BaseCharacter;
 	public var nearestTarget(default, null):BaseCharacter;
@@ -51,7 +50,7 @@ import tink.state.State;
 	var attackResult:Result;
 	var attackResultHandler:Void->Void;
 
-	var state:State<CharacterState> = new State<CharacterState>(Idle);
+	public var state:State<CharacterState> = new State<CharacterState>(Idle);
 	public var life:State<Float> = new State<Float>(0);
 
 	public function new()
@@ -75,12 +74,34 @@ import tink.state.State;
 		{
 			if (v == 0) state.set(Dead);
 		});
+
+		state.observe().bind(function(v)
+		{
+			switch(v)
+			{
+				case Idle:
+					view.playAnimation(cache.loadAnimation(config.idleModel));
+
+				case MoveTo | AttackMoveTo | AttackRequested:
+					view.playAnimation(cache.loadAnimation(config.runModel));
+					if (view.currentAnimation != null) view.currentAnimation.speed = config.speedMultiplier;
+
+				case AttackTriggered:
+					view.playAnimation(cache.loadAnimation(config.attackModel));
+
+				case Dead:
+					view.playAnimation(cache.loadAnimation(config.deathModel)).loop = false;
+			}
+		});
 	}
 
 	public function moveTo(point:SimplePoint):Result
 	{
+		if (state.value == Dead) return null;
+
 		moveResultHandler = null;
 		currentPathIndex = -1;
+		if (state.value != AttackRequested) state.set(MoveTo);
 
 		var path = AStar.search(
 			GameWorld.instance.graph,
@@ -96,12 +117,6 @@ import tink.state.State;
 			moveToPath = [];
 			for (entry in path) moveToPath.push({ x: entry.y, y: entry.x });
 
-			if (currentAnimation != AnimationType.Move)
-			{
-				view.playAnimation(cache.loadAnimation(config.runModel));
-				currentAnimation = AnimationType.Move;
-			}
-			if (view.currentAnimation != null) view.currentAnimation.speed = config.speedMultiplier;
 			moveToNextPathPoint();
 		}
 		else Timer.delay(onMoveEnd, 1);
@@ -144,9 +159,7 @@ import tink.state.State;
 
 	function onMoveEnd()
 	{
-		view.stopAnimation();
-		currentAnimation = AnimationType.Idle;
-
+		state.set(Idle);
 		if (moveResultHandler != null) moveResultHandler();
 	}
 
@@ -182,6 +195,25 @@ import tink.state.State;
 		view.x = view.x;
 	}
 
+	public function restartMoveRoutine()
+	{
+		if (moveToPath != null && moveToPath.length > 0)
+		{
+			var p = getWorldPoint();
+			var index = Std.int(Math.max(currentPathIndex - 1, 0));
+			if (p.x - moveToPath[index].x > 0.5 || p.y - moveToPath[index].y > 0.5)
+			{
+				Actuate.stop(view, null, false, false);
+				moveTo({ x: moveToPath[moveToPath.length - 1].x, y: moveToPath[moveToPath.length - 1].y });
+			}
+			else
+			{
+				currentPathIndex--;
+				Actuate.stop(view, null, false, true);
+			}
+		}
+	}
+
 	public function get_path():Array<SimplePoint>
 	{
 		return moveToPath;
@@ -190,11 +222,13 @@ import tink.state.State;
 	public function update(d:Float)
 	{
 		setRotation();
+
+		if (state.value == AttackRequested && target != null) checkTargetLife();
 	}
 
 	function setRotation()
 	{
-		if (currentTargetPoint.y != view.y || currentTargetPoint.x != view.x)
+		if (currentTargetPoint.y != view.y || currentTargetPoint.x != view.x || state.value == AttackTriggered)
 		{
 			if (viewRotation < 0) viewRotation += Math.PI * 2;
 			var diff = currentTargetAngle - viewRotation;
@@ -223,6 +257,8 @@ import tink.state.State;
 
 	public function attack(t:BaseCharacter)
 	{
+		if (state.value == Dead) return null;
+
 		attackResultHandler = null;
 		target = t;
 
@@ -247,16 +283,15 @@ import tink.state.State;
 		if (canAttackTarget())
 		{
 			state.set(AttackTriggered);
-
-			view.playAnimation(cache.loadAnimation(config.attackModel));
-			currentAnimation = AnimationType.Attack;
+			currentTargetAngle = GeomUtil.getAngle(target.getPosition(), getPosition()) + Math.PI / 2;
+			if (currentTargetAngle < 0) currentTargetAngle += Math.PI * 2;
 
 			Timer.delay(function()
 			{
 				if (canAttackTarget())
 				{
 					target.damage(calculateDamage());
-					if (target.state == Dead && attackResultHandler != null) attackResultHandler();
+					checkTargetLife();
 				}
 				else if (target != null) attack(target);
 			}, config.attackDuration);
@@ -275,6 +310,15 @@ import tink.state.State;
 		}
 
 		return false;
+	}
+
+	function checkTargetLife()
+	{
+		if (target.state == Dead)
+		{
+			state.set(Idle);
+			if (attackResultHandler != null) attackResultHandler();
+		}
 	}
 
 	function calculateDamage()
@@ -296,6 +340,7 @@ typedef CharacterConfig =
 	var idleModel:Model;
 	var runModel:Model;
 	var attackModel:Model;
+	var deathModel:Model;
 	var modelScale:Float;
 	var speed:Float;
 	var speedMultiplier:Float;
@@ -314,10 +359,4 @@ enum CharacterState {
 	AttackMoveTo;
 	AttackRequested;
 	AttackTriggered;
-}
-
-enum AnimationType {
-	Idle;
-	Move;
-	Attack;
 }

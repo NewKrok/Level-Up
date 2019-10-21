@@ -3,7 +3,7 @@ package demo.game;
 import demo.AsyncUtil.Result;
 import demo.game.GameModel.PlayState;
 import demo.game.character.BaseCharacter;
-import demo.game.character.Skeleton;
+import demo.game.character.Grunt;
 import demo.game.character.Warrior;
 import demo.game.ui.LifeBar;
 import h2d.Object;
@@ -88,6 +88,7 @@ class GameState extends Base2dState
 		mapConfig = Json.parse(Res.data.level_1.entry.getText());
 
 		debugMapBlocks = new Graphics(s3d);
+		debugMapBlocks.z = 0.5;
 		g = new Graphics(s3d);
 
 		world = new GameWorld(s3d, mapConfig, 1, 64, 64, s3d);
@@ -97,7 +98,7 @@ class GameState extends Base2dState
 
 		var startPoint:SimplePoint = { x: 10, y: 2 };
 
-		playerCharacter = new Skeleton(Player.User);
+		playerCharacter = new Grunt(Player.User);
 		characters.push(playerCharacter);
 		setCameraTarget(playerCharacter);
 		playerCharacter.view.x = startPoint.y * world.blockSize + world.blockSize / 2;
@@ -162,15 +163,22 @@ class GameState extends Base2dState
 		world.onWorldMouseDown = function(e:Event) isMoveTriggerOn = true;
 		world.onWorldMouseUp = function(e:Event) isMoveTriggerOn = false;
 
-		hasCameraAnimation = true;
-		jumpCamera(40, 10, 20);
 		model.initGame();
+
+		// With intro
+		/*hasCameraAnimation = true;
+		jumpCamera(40, 10, 20);
 		Timer.delay(function() {
 			moveCamera(10, 10, 15, 4).handle(model.startGame);
 		}, 1000);
 		Timer.delay(function() {
 			playerCharacter.moveTo({ x: 10, y: 10 });
-		}, 3500);
+		}, 3500);*/
+
+		// Without intro
+		jumpCamera(10, 10, 20);
+		model.startGame();
+
 
 		var lifeUi = new LifeBar(s2d, playerCharacter.life, playerCharacter.config.maxLife);
 		lifeUi.x = 20;
@@ -192,6 +200,8 @@ class GameState extends Base2dState
 
 	function drawDebugMapBlocks():Void
 	{
+		debugMapBlocks.clear();
+
 		var i = 0;
 		for (row in world.graph.grid)
 		{
@@ -200,7 +210,7 @@ class GameState extends Base2dState
 			{
 				if (col.weight != 0)
 				{
-					debugMapBlocks.lineStyle(1, 0x000000);
+					debugMapBlocks.lineStyle(1, 0x000000, 0.01);
 
 					debugMapBlocks.moveTo(i * world.blockSize, j * world.blockSize, 0);
 					debugMapBlocks.lineTo(i * world.blockSize + world.blockSize, j * world.blockSize, 0);
@@ -209,7 +219,7 @@ class GameState extends Base2dState
 				}
 				else
 				{
-					debugMapBlocks.lineStyle(1, 0x0000FF);
+					debugMapBlocks.lineStyle(1, 0x0000FF, 0.01);
 
 					debugMapBlocks.moveTo(i * world.blockSize, j * world.blockSize + world.blockSize, 0);
 					debugMapBlocks.lineTo(i * world.blockSize + world.blockSize, j * world.blockSize, 0);
@@ -256,17 +266,17 @@ class GameState extends Base2dState
 			characters[0].moveTo({ x: lastMovePosition.x, y: lastMovePosition.y }).handle(function () { trace("MOVE FINISHED"); });*/
 		}
 
-		calculateTargets();
-		if (playerCharacter != null && playerCharacter.target != null)
+		world.resetWorldWeight();
+		calculateUnitInteractions(d);
+
+		if (playerCharacter != null && playerCharacter.nearestTarget != null)
 		{
 			targetMarker.visible = true;
-			targetMarker.x = playerCharacter.target.getPosition().x;
-			targetMarker.y = playerCharacter.target.getPosition().y;
+			targetMarker.x = playerCharacter.nearestTarget.getPosition().x - 0.5;
+			targetMarker.y = playerCharacter.nearestTarget.getPosition().y - 0.5;
 		}
-		else
-		{
-			targetMarker.visible = false;
-		}
+
+		//drawDebugMapBlocks();
 	}
 
 	function updateCamera(d:Float)
@@ -337,24 +347,56 @@ class GameState extends Base2dState
 		cameraTarget = target;
 	}
 
-	function calculateTargets()
+	function calculateUnitInteractions(d:Float)
 	{
 		for (cA in characters)
 		{
+			var p = cA.getWorldPoint();
+			world.graph.grid[cast p.y][cast p.x].weight = 0;
+
 			var bestDistance = 999999.;
 			var bestChar = null;
 			for (cB in characters)
 			{
-				if (cA != cB && cA.owner != cB.owner)
+				if (cA != cB)
 				{
 					var distance = GeomUtil.getDistance(cA.getPosition(), cB.getPosition());
-					if (distance < bestDistance)
+
+					if (cA.owner != cB.owner && distance < bestDistance)
 					{
 						bestDistance = distance;
 						bestChar = cB;
 					}
+
+					if (distance < 1)
+					{
+						var angle = GeomUtil.getAngle(cA.getPosition(), cB.getPosition());
+						var cosAngle = Math.cos(angle);
+						var sinAngle = Math.sin(angle);
+						var cAPower = 2;
+						var cBPower = 2;
+
+						switch ([cA.state.value, cB.state.value])
+						{
+							case [CharacterState.MoveTo | CharacterState.AttackMoveTo | CharacterState.AttackRequested, CharacterState.Idle]: cAPower = 4; cBPower = -1;
+							case [CharacterState.Idle, CharacterState.MoveTo | CharacterState.AttackMoveTo | CharacterState.AttackRequested]: cAPower = -1; cBPower = 4;
+
+							case [CharacterState.MoveTo | CharacterState.AttackMoveTo | CharacterState.AttackRequested, CharacterState.AttackTriggered]: cAPower = 3; cBPower = -1;
+							case [CharacterState.AttackTriggered, CharacterState.MoveTo | CharacterState.AttackMoveTo | CharacterState.AttackRequested]: cAPower = -1; cBPower = 3;
+
+							case _:
+						}
+
+						cA.view.x -= cBPower * d * cosAngle;
+						cA.view.y -= cBPower * d * sinAngle;
+						cB.view.x += cAPower * d * cosAngle;
+						cB.view.y += cAPower * d * sinAngle;
+						cA.restartMoveRoutine();
+						cB.restartMoveRoutine();
+					}
 				}
 			}
+
 			if (bestChar != null) cA.setNearestTarget(bestChar);
 		}
 	}

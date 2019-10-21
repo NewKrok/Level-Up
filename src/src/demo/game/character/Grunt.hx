@@ -7,15 +7,16 @@ import hxd.Res;
  * ...
  * @author Krisztian Somoracz
  */
-class Skeleton extends BaseCharacter
+class Grunt extends BaseCharacter
 {
 	public function new(owner:Player)
 	{
 		super(owner, {
-			idleModel: Res.model.character.skeleton.skel,
-			runModel: Res.model.character.skeleton.skel,
-			attackModel: Res.model.character.skeleton.skel,
-			modelScale: 0.1,
+			idleModel: Res.model.character.orc.grunt.IdleAnim,
+			runModel: Res.model.character.orc.grunt.WalkAnim,
+			attackModel: Res.model.character.orc.grunt.Attack01Anim,
+			deathModel: Res.model.character.orc.grunt.DeathAnim,
+			modelScale: 0.008,
 			speed: 5,
 			speedMultiplier: 2,
 			attackRadius: 2,
