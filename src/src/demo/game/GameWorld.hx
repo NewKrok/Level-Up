@@ -1,7 +1,9 @@
 package demo.game;
 
 import demo.game.GameState.WorldConfig;
+import demo.game.unit.BaseUnit;
 import demo.game.js.Graph;
+import h2d.Scene;
 import h3d.mat.Data.Wrap;
 import h3d.mat.Material;
 import h3d.prim.Cube;
@@ -10,6 +12,7 @@ import h3d.scene.Interactive;
 import h3d.scene.Mesh;
 import h3d.scene.Object;
 import h3d.scene.World;
+import hpp.util.GeomUtil;
 import hpp.util.GeomUtil.SimplePoint;
 import hxd.Event;
 import hxd.Res;
@@ -30,8 +33,12 @@ class GameWorld extends World
 	public var onWorldMouseDown:Event->Void;
 	public var onWorldMouseUp:Event->Void;
 
+	public var units(default, never):Array<BaseUnit> = [];
+
 	var worldConfig:WorldConfig;
 	var interact:Interactive;
+	var isWorldGraphDirty:Bool = false;
+	var lastRerouteTime:Float = 0;
 
 	public function new(parent, worldConfig:WorldConfig, blockSize:Float, chunkSize:Int, worldSize:Int, ?parent, ?autoCollect = true)
 	{
@@ -113,14 +120,108 @@ class GameWorld extends World
 
 	public function getRandomWalkablePoint():SimplePoint
 	{
-		var getRandomPoint = function () return { x: Math.floor(Math.random() * graph.grid.length), y: Math.floor(Math.random() * graph.grid[0].length) };
+		var getRandomPoint = function () return { x: Math.floor(Math.random() * graph.grid[0].length), y: Math.floor(Math.random() * graph.grid.length) };
 
 		var result = getRandomPoint();
-		while (graph.grid[cast result.x][cast result.y].weight != 1)
-		{
-			result = getRandomPoint();
-		}
+		while (graph.grid[cast result.y][cast result.x].weight != 1) result = getRandomPoint();
 
 		return cast result;
+	}
+
+	public function update(d:Float)
+	{
+		var now = Date.now().getTime();
+
+		var isRerouteNeeded = isWorldGraphDirty && now - lastRerouteTime >= 3000;
+		if (isRerouteNeeded) lastRerouteTime = now;
+
+		for (u in units)
+		{
+			if (isRerouteNeeded) u.reroute();
+			u.update(d);
+		}
+
+		resetWorldWeight();
+		calculateUnitInteractions(d);
+	}
+
+	function calculateUnitInteractions(d:Float)
+	{
+		for (uA in units)
+		{
+			var p = uA.getWorldPoint();
+			if (graph.grid[cast p.y][cast p.x].weight != 0)
+			{
+				var indexesY = [0];
+				var indexesX = [0];
+				for (i in indexesY)
+				{
+					for (j in indexesX)
+					{
+						if (p.x + j > 0 && p.x + j < graph.grid[0].length && p.y + i > 0 && p.y + i < graph.grid.length)
+						{
+							graph.grid[cast p.y + i][cast p.x + j].weight = 0;
+						}
+					}
+				}
+				isWorldGraphDirty = true;
+			}
+
+			var bestDistance = 999999.;
+			var bestUnit = null;
+
+			for (uB in units)
+			{
+				if (uA != uB && uA.state != Dead && uB.state != Dead)
+				{
+					var distance = GeomUtil.getDistance(uA.getPosition(), uB.getPosition());
+
+					if (uA.owner != uB.owner && distance < bestDistance)
+					{
+						bestDistance = distance;
+						bestUnit = uB;
+					}
+
+					if (distance < 1)
+					{
+						var angle = GeomUtil.getAngle(uA.getPosition(), uB.getPosition());
+						var cosAngle = Math.cos(angle);
+						var sinAngle = Math.sin(angle);
+						var uAPower = 2;
+						var uBPower = 2;
+
+						switch ([uA.state.value, uB.state.value])
+						{
+							case [UnitState.MoveTo | UnitState.AttackMoveTo | UnitState.AttackRequested, UnitState.Idle]: uAPower = 4; uBPower = -1;
+							case [UnitState.Idle, UnitState.MoveTo | UnitState.AttackMoveTo | UnitState.AttackRequested]: uAPower = -1; uBPower = 4;
+
+							case [UnitState.MoveTo | UnitState.AttackMoveTo | UnitState.AttackRequested, UnitState.AttackTriggered]: uAPower = 3; uBPower = -1;
+							case [UnitState.AttackTriggered, UnitState.MoveTo | UnitState.AttackMoveTo | UnitState.AttackRequested]: uAPower = -1; uBPower = 3;
+
+							case _:
+						}
+
+						uA.view.x -= uBPower * d * cosAngle;
+						uA.view.y -= uBPower * d * sinAngle;
+						uB.view.x += uAPower * d * cosAngle;
+						uB.view.y += uAPower * d * sinAngle;
+						uA.restartMoveRoutine();
+						uB.restartMoveRoutine();
+					}
+				}
+			}
+
+			if (bestUnit != null) uA.setNearestTarget(bestUnit);
+		}
+	}
+
+	public function addEntity(o:Dynamic)
+	{
+		if (Std.is(o, BaseUnit))
+		{
+			var u:BaseUnit = cast o;
+			units.push(u);
+			addChild(u.view);
+		}
 	}
 }

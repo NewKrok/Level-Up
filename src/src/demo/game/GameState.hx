@@ -2,10 +2,12 @@ package demo.game;
 
 import demo.AsyncUtil.Result;
 import demo.game.GameModel.PlayState;
-import demo.game.character.BaseCharacter;
-import demo.game.character.Grunt;
-import demo.game.character.Warrior;
+import demo.game.unit.BaseUnit;
+import demo.game.unit.orc.Grunt;
+import demo.game.unit.orc.Berserker;
 import demo.game.ui.LifeBar;
+import demo.game.unit.orc.Minion;
+import demo.game.unit.orc.PlayerGrunt;
 import h2d.Object;
 import h2d.Scene;
 import h3d.Vector;
@@ -48,6 +50,7 @@ class GameState extends Base2dState
 	var s3d:h3d.scene.Scene;
 
 	var debugMapBlocks:Graphics;
+	var debugUnitPath:Graphics;
 	var g:Graphics;
 
 	var camPosition:{ x:Float, y:Float, z:Float } = { x: 0, y: 0, z: 0 };
@@ -56,13 +59,12 @@ class GameState extends Base2dState
 	var hasCameraAnimation:Bool = false;
 	var camAnimationResult:Result;
 	var camAnimationResultHandler:Void->Void;
-	var cameraTarget:BaseCharacter;
+	var cameraTarget:BaseUnit;
 
 	var isMoveTriggerOn:Bool = false;
 	var lastMovePosition:SimplePoint = { x: 0, y: 0 };
 
-	var characters:Array<BaseCharacter>;
-	var playerCharacter:BaseCharacter;
+	var playerCharacter:BaseUnit;
 	var targetMarker:Mesh;
 	var isControlEnabled:Bool = false;
 
@@ -89,32 +91,48 @@ class GameState extends Base2dState
 
 		debugMapBlocks = new Graphics(s3d);
 		debugMapBlocks.z = 0.5;
+		debugUnitPath = new Graphics(s3d);
+		debugUnitPath.z = 0.5;
 		g = new Graphics(s3d);
 
 		world = new GameWorld(s3d, mapConfig, 1, 64, 64, s3d);
 		world.done();
 
-		characters = [];
+		var startPoint:SimplePoint = { x: 10, y: 5 };
 
-		var startPoint:SimplePoint = { x: 10, y: 2 };
-
-		playerCharacter = new Grunt(Player.User);
-		characters.push(playerCharacter);
+		playerCharacter = new PlayerGrunt(s2d, Player.User);
 		setCameraTarget(playerCharacter);
 		playerCharacter.view.x = startPoint.y * world.blockSize + world.blockSize / 2;
 		playerCharacter.view.y = startPoint.x * world.blockSize + world.blockSize / 2;
-		world.addChild(playerCharacter.view);
+		world.addEntity(playerCharacter);
 
 		for (i in 0...10)
 		{
 			var startPoint:SimplePoint = world.getRandomWalkablePoint();
-			var character = new Warrior(Player.Enemy);
-			characters.push(character);
-			character.view.x = startPoint.x;
-			character.view.y = startPoint.y;
-			world.addChild(character.view);
-			//moveToRandomPoint(character);
+			var character = switch(Math.floor(Math.random() * 3)) {
+				case 0: new Minion(s2d, Player.Enemy);
+				case 1: new Grunt(s2d, Player.Enemy);
+				case 2: new Berserker(s2d, Player.Enemy);
+				case _: null;
+			}
+			character.view.x = startPoint.y;
+			character.view.y = startPoint.x;
+			world.addEntity(character);
 		}
+
+
+		/*var enemyPoints = [
+			{ x: 5, y: 5 },
+			{ x: 2, y: 5 },
+			{ x: 15, y: 5 },
+		];
+		for (p in enemyPoints)
+		{
+			var character = new Warrior(s2d, Player.Enemy);
+			character.view.x = p.y * world.blockSize + world.blockSize / 2;
+			character.view.y = p.x * world.blockSize + world.blockSize / 2;
+			world.addEntity(character);
+		}*/
 
 		var dirLight = new DirLight(null, s3d);
 		dirLight.setDirection(new Vector(2, 0, -2));
@@ -153,11 +171,11 @@ class GameState extends Base2dState
 
 		world.onWorldClick = function(e:Event)
 		{
-			if (isControlEnabled)
+			if (isControlEnabled && playerCharacter != null && playerCharacter.state != Dead)
 			{
 				lastMovePosition.x = Math.floor(e.relY / world.blockSize);
 				lastMovePosition.y = Math.floor(e.relX / world.blockSize);
-				characters[0].moveTo({ x: lastMovePosition.x, y: lastMovePosition.y }).handle(function () { trace("MOVE FINISHED"); });
+				playerCharacter.moveTo({ x: lastMovePosition.x, y: lastMovePosition.y }).handle(function () { trace("MOVE FINISHED"); });
 			}
 		}
 		world.onWorldMouseDown = function(e:Event) isMoveTriggerOn = true;
@@ -234,19 +252,19 @@ class GameState extends Base2dState
 
 	function drawDebugPath():Void
 	{
-		g.clear();
+		debugUnitPath.clear();
 
-		for (c in characters)
+		for (u in world.units)
 		{
-			g.lineStyle(2, 0xFFFFFF, 1);
-			g.moveTo(c.getPosition().x, c.getPosition().y, 0);
+			debugUnitPath.lineStyle(2, 0xFFFFFF, 2);
+			debugUnitPath.moveTo(u.getPosition().x, u.getPosition().y, 0);
 
-			if (c.path != null)
+			if (u.path != null)
 			{
-				for (i in 0...c.path.length)
+				for (i in 0...u.path.length)
 				{
-					var path = c.path[i];
-					g.lineTo(path.y * world.blockSize + world.blockSize / 2, path.x * world.blockSize + world.blockSize / 2, 0);
+					var path = u.path[i];
+					debugUnitPath.lineTo(path.y * world.blockSize + world.blockSize / 2, path.x * world.blockSize + world.blockSize / 2, 0);
 				}
 			}
 		}
@@ -254,20 +272,8 @@ class GameState extends Base2dState
 
 	override function update(d:Float)
 	{
-		for (c in characters) c.update(d);
-
+		world.update(d);
 		updateCamera(d);
-
-		if (isMoveTriggerOn)
-		{
-			// TODO How to handle hm...
-			/*lastMovePosition.x = Math.floor(e.relY / world.blockSize);
-			lastMovePosition.y = Math.floor(e.relX / world.blockSize);
-			characters[0].moveTo({ x: lastMovePosition.x, y: lastMovePosition.y }).handle(function () { trace("MOVE FINISHED"); });*/
-		}
-
-		world.resetWorldWeight();
-		calculateUnitInteractions(d);
 
 		if (playerCharacter != null && playerCharacter.nearestTarget != null)
 		{
@@ -276,7 +282,8 @@ class GameState extends Base2dState
 			targetMarker.y = playerCharacter.nearestTarget.getPosition().y - 0.5;
 		}
 
-		//drawDebugMapBlocks();
+		drawDebugMapBlocks();
+		drawDebugPath();
 	}
 
 	function updateCamera(d:Float)
@@ -345,60 +352,6 @@ class GameState extends Base2dState
 	function setCameraTarget(target)
 	{
 		cameraTarget = target;
-	}
-
-	function calculateUnitInteractions(d:Float)
-	{
-		for (cA in characters)
-		{
-			var p = cA.getWorldPoint();
-			world.graph.grid[cast p.y][cast p.x].weight = 0;
-
-			var bestDistance = 999999.;
-			var bestChar = null;
-			for (cB in characters)
-			{
-				if (cA != cB)
-				{
-					var distance = GeomUtil.getDistance(cA.getPosition(), cB.getPosition());
-
-					if (cA.owner != cB.owner && distance < bestDistance)
-					{
-						bestDistance = distance;
-						bestChar = cB;
-					}
-
-					if (distance < 1)
-					{
-						var angle = GeomUtil.getAngle(cA.getPosition(), cB.getPosition());
-						var cosAngle = Math.cos(angle);
-						var sinAngle = Math.sin(angle);
-						var cAPower = 2;
-						var cBPower = 2;
-
-						switch ([cA.state.value, cB.state.value])
-						{
-							case [CharacterState.MoveTo | CharacterState.AttackMoveTo | CharacterState.AttackRequested, CharacterState.Idle]: cAPower = 4; cBPower = -1;
-							case [CharacterState.Idle, CharacterState.MoveTo | CharacterState.AttackMoveTo | CharacterState.AttackRequested]: cAPower = -1; cBPower = 4;
-
-							case [CharacterState.MoveTo | CharacterState.AttackMoveTo | CharacterState.AttackRequested, CharacterState.AttackTriggered]: cAPower = 3; cBPower = -1;
-							case [CharacterState.AttackTriggered, CharacterState.MoveTo | CharacterState.AttackMoveTo | CharacterState.AttackRequested]: cAPower = -1; cBPower = 3;
-
-							case _:
-						}
-
-						cA.view.x -= cBPower * d * cosAngle;
-						cA.view.y -= cBPower * d * sinAngle;
-						cB.view.x += cAPower * d * cosAngle;
-						cB.view.y += cAPower * d * sinAngle;
-						cA.restartMoveRoutine();
-						cB.restartMoveRoutine();
-					}
-				}
-			}
-
-			if (bestChar != null) cA.setNearestTarget(bestChar);
-		}
 	}
 }
 
