@@ -24,6 +24,7 @@ import haxe.Json;
 import haxe.Timer;
 import hpp.heaps.Base2dStage;
 import hpp.heaps.Base2dState;
+import hpp.heaps.HppG;
 import hpp.util.GeomUtil;
 import hpp.util.GeomUtil.SimplePoint;
 import hxd.Event;
@@ -51,6 +52,7 @@ class GameState extends Base2dState
 
 	var debugMapBlocks:Graphics;
 	var debugUnitPath:Graphics;
+	var debugDetectionRadius:Graphics;
 	var g:Graphics;
 
 	var camPosition:{ x:Float, y:Float, z:Float } = { x: 0, y: 0, z: 0 };
@@ -90,9 +92,11 @@ class GameState extends Base2dState
 		mapConfig = Json.parse(Res.data.level_1.entry.getText());
 
 		debugMapBlocks = new Graphics(s3d);
-		debugMapBlocks.z = 0.5;
+		debugMapBlocks.z = 0.2;
 		debugUnitPath = new Graphics(s3d);
-		debugUnitPath.z = 0.5;
+		debugUnitPath.z = 0.2;
+		debugDetectionRadius = new Graphics(s3d);
+		debugDetectionRadius.z = 0.2;
 		g = new Graphics(s3d);
 
 		world = new GameWorld(s3d, mapConfig, 1, 64, 64, s3d);
@@ -180,6 +184,15 @@ class GameState extends Base2dState
 		}
 		world.onWorldMouseDown = function(e:Event) isMoveTriggerOn = true;
 		world.onWorldMouseUp = function(e:Event) isMoveTriggerOn = false;
+		world.onWorldMouseMove = function(e:Event)
+		{
+			if (playerCharacter != null && isMoveTriggerOn)
+			{
+				lastMovePosition.x = Math.floor(e.relY / world.blockSize);
+				lastMovePosition.y = Math.floor(e.relX / world.blockSize);
+				playerCharacter.moveTo({ x: lastMovePosition.x, y: lastMovePosition.y }).handle(function () { trace("MOVE FINISHED"); });
+			}
+		}
 
 		model.initGame();
 
@@ -228,16 +241,16 @@ class GameState extends Base2dState
 			{
 				if (col.weight != 0)
 				{
-					debugMapBlocks.lineStyle(1, 0x000000, 0.01);
+					/*debugMapBlocks.lineStyle(2, 0x000000);
 
 					debugMapBlocks.moveTo(i * world.blockSize, j * world.blockSize, 0);
 					debugMapBlocks.lineTo(i * world.blockSize + world.blockSize, j * world.blockSize, 0);
 					debugMapBlocks.lineTo(i * world.blockSize + world.blockSize, j * world.blockSize + world.blockSize, 0);
-					debugMapBlocks.lineTo(i * world.blockSize, j * world.blockSize + world.blockSize, 0);
+					debugMapBlocks.lineTo(i * world.blockSize, j * world.blockSize + world.blockSize, 0);*/
 				}
 				else
 				{
-					debugMapBlocks.lineStyle(1, 0x0000FF, 0.01);
+					debugMapBlocks.lineStyle(2, 0x0000FF);
 
 					debugMapBlocks.moveTo(i * world.blockSize, j * world.blockSize + world.blockSize, 0);
 					debugMapBlocks.lineTo(i * world.blockSize + world.blockSize, j * world.blockSize, 0);
@@ -256,7 +269,7 @@ class GameState extends Base2dState
 
 		for (u in world.units)
 		{
-			debugUnitPath.lineStyle(2, 0xFFFFFF, 2);
+			debugUnitPath.lineStyle(2, 0xFFFFFF);
 			debugUnitPath.moveTo(u.getPosition().x, u.getPosition().y, 0);
 
 			if (u.path != null)
@@ -267,6 +280,38 @@ class GameState extends Base2dState
 					debugUnitPath.lineTo(path.y * world.blockSize + world.blockSize / 2, path.x * world.blockSize + world.blockSize / 2, 0);
 				}
 			}
+		}
+	}
+
+	function drawDebugInteractionRadius():Void
+	{
+		debugDetectionRadius.clear();
+
+		for (u in world.units)
+		{
+			debugDetectionRadius.lineStyle(2, 0xFF0000);
+			debugDetectionRadius.moveTo(u.view.x + u.config.attackRange, u.view.y, 0);
+			for (i in 0...19) debugDetectionRadius.lineTo(
+				u.view.x + u.config.attackRange * Math.cos(i * 20 * (Math.PI / 180)),
+				u.view.y + u.config.attackRange * Math.sin(i * 20 * (Math.PI / 180)),
+				0
+			);
+
+			debugDetectionRadius.lineStyle(2, 0x0000FF);
+			debugDetectionRadius.moveTo(u.view.x + u.config.unitSize, u.view.y, 0);
+			for (i in 0...19) debugDetectionRadius.lineTo(
+				u.view.x + u.config.unitSize * Math.cos(i * 20 * (Math.PI / 180)),
+				u.view.y + u.config.unitSize * Math.sin(i * 20 * (Math.PI / 180)),
+				0
+			);
+
+			debugDetectionRadius.lineStyle(2, 0x00FF00);
+			debugDetectionRadius.moveTo(u.view.x + u.config.detectionRange, u.view.y, 0);
+			for (i in 0...19) debugDetectionRadius.lineTo(
+				u.view.x + u.config.detectionRange * Math.cos(i * 20 * (Math.PI / 180)),
+				u.view.y + u.config.detectionRange * Math.sin(i * 20 * (Math.PI / 180)),
+				0
+			);
 		}
 	}
 
@@ -284,6 +329,7 @@ class GameState extends Base2dState
 
 		drawDebugMapBlocks();
 		drawDebugPath();
+		drawDebugInteractionRadius();
 	}
 
 	function updateCamera(d:Float)

@@ -32,6 +32,7 @@ class GameWorld extends World
 	public var onWorldClick:Event->Void;
 	public var onWorldMouseDown:Event->Void;
 	public var onWorldMouseUp:Event->Void;
+	public var onWorldMouseMove:Event->Void;
 
 	public var units(default, never):Array<BaseUnit> = [];
 
@@ -56,6 +57,7 @@ class GameWorld extends World
 		interact.onClick = function (e) { onWorldClick(e); };
 		interact.onPush = function (e) { onWorldMouseDown(e); };
 		interact.onRelease = function (e) { onWorldMouseUp(e); };
+		interact.onMove = function (e) { onWorldMouseMove(e); };
 	}
 
 	public function generateMap():Void
@@ -176,19 +178,19 @@ class GameWorld extends World
 				{
 					var distance = GeomUtil.getDistance(uA.getPosition(), uB.getPosition());
 
-					if (uA.owner != uB.owner && distance < bestDistance)
+					if (uA.owner != uB.owner && distance < bestDistance && distance <= uA.config.detectionRange)
 					{
 						bestDistance = distance;
 						bestUnit = uB;
 					}
 
-					if (distance < 1)
+					if (distance < uA.config.unitSize + uB.config.unitSize)
 					{
 						var angle = GeomUtil.getAngle(uA.getPosition(), uB.getPosition());
 						var cosAngle = Math.cos(angle);
 						var sinAngle = Math.sin(angle);
-						var uAPower = 2;
-						var uBPower = 2;
+						var uAPower = 2 * (uB.config.unitSize / uA.config.unitSize);
+						var uBPower = 2 * (uB.config.unitSize / uA.config.unitSize);
 
 						switch ([uA.state.value, uB.state.value])
 						{
@@ -213,6 +215,11 @@ class GameWorld extends World
 
 			if (bestUnit != null) uA.setNearestTarget(bestUnit);
 		}
+	}
+
+	public function posToWorldPoint (pos:SimplePoint):SimplePoint
+	{
+		return { x: Math.floor(pos.x / blockSize), y: Math.floor(pos.y / blockSize) };
 	}
 
 	public function addEntity(o:Dynamic)

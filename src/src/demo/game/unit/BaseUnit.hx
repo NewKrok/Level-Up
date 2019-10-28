@@ -90,7 +90,7 @@ import tink.state.State;
 		});
 
 		// temporary
-		t = new Text(FontBuilder.getFont("Arial", 12), s2d);
+		//t = new Text(FontBuilder.getFont("Arial", 12), s2d);
 
 		state.observe().bind(function(v)
 		{
@@ -122,6 +122,7 @@ import tink.state.State;
 		{
 			view.playAnimation(cache.loadAnimation(config.idleModel));
 			view.currentAnimation.speed = 1;
+			checkTargetLife();
 		};
 
 		var animDuration = view.currentAnimation.getDuration() * 1000;
@@ -131,6 +132,11 @@ import tink.state.State;
 	public function moveTo(point:SimplePoint):Result
 	{
 		if (state.value == Dead) return null;
+
+		if (moveToPath != null && moveToPath.length > 0 && point.x == moveToPath[moveToPath.length - 1].x && point.y == moveToPath[moveToPath.length - 1].y)
+		{
+			return moveResult;
+		}
 
 		if (state.value == AttackRequested || state.value == AttackTriggered)
 		{
@@ -293,15 +299,15 @@ import tink.state.State;
 
 	public function update(d:Float)
 	{
-		t.text = "Id: " + id + "\nState: " + Std.string(state.value) + "\nLife: " + Math.floor(life.value) + "\nRotation: " + Math.floor(currentTargetAngle * 100) / 100;
+		/*t.text = "Id: " + id + "\nState: " + Std.string(state.value) + "\nLife: " + Math.floor(life.value) + "\nRotation: " + Math.floor(currentTargetAngle * 100) / 100;
 		var pos = cast(GameWorld.instance.parent, Scene).camera.project(view.x, view.y, view.z, HppG.stage2d.defaultWidth, HppG.stage2d.defaultHeight);
-		t.setPosition(pos.x, pos.y);
+		t.setPosition(pos.x, pos.y);*/
 
 		var now = Date.now();
 
 		setRotation();
 
-		if (state.value == AttackRequested || state.value == AttackTriggered && target != null) checkTargetLife();
+		if (state.value == AttackRequested && target != null) checkTargetLife();
 
 		if (now - lastAttackTime >= config.attackSpeed && state == AttackTriggered)
 		{
@@ -374,6 +380,7 @@ import tink.state.State;
 		if (canAttackTarget())
 		{
 			lastAttackTime = Date.now();
+			Actuate.stop(view, null, false, false);
 			state.set(AttackTriggered);
 			runAttackAnimation();
 			currentTargetAngle = GeomUtil.getAngle(target.getPosition(), getPosition()) + Math.PI / 2;
@@ -384,7 +391,6 @@ import tink.state.State;
 				if (canAttackTarget())
 				{
 					target.damage(calculateDamage());
-					checkTargetLife();
 				}
 				else if (target != null && target.state != Dead) attackRequest();
 			}, Math.floor(config.damagePercentDelay * view.currentAnimation.getDuration()
@@ -407,7 +413,7 @@ import tink.state.State;
 
 	function checkTargetLife()
 	{
-		if (target.state == Dead)
+		if (target != null && target.state == Dead)
 		{
 			if (attackResultHandler != null)
 			{
@@ -431,7 +437,7 @@ import tink.state.State;
 		return
 			target != null
 			&& target.state != Dead
-			&& GeomUtil.getDistance(getWorldPoint(), target.getWorldPoint()) <= config.attackRadius;
+			&& GeomUtil.getDistance(getWorldPoint(), target.getWorldPoint()) <= config.attackRange;
 	}
 }
 
@@ -445,12 +451,14 @@ typedef UnitConfig =
 	var modelScale:Float;
 	var speed:Float;
 	var speedMultiplier:Float;
-	var attackRadius:Float;
+	var attackRange:Float;
 	var attackSpeed:Int;
 	var damagePercentDelay:Float;
 	var damageMin:Float;
 	var damageMax:Float;
 	var maxLife:Float;
+	var detectionRange:Float;
+	var unitSize:Float;
 }
 
 enum UnitState {

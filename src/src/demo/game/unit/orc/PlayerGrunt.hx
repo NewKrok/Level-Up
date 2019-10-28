@@ -21,13 +21,15 @@ class PlayerGrunt extends BaseUnit
 			deathModel: Res.model.character.orc.grunt.DeathAnim,
 			modelScale: 0.008,
 			speed: 5,
-			speedMultiplier: 6,
-			attackRadius: 2,
-			attackSpeed: 700,
+			speedMultiplier: 3,
+			attackRange: 2.1,
+			attackSpeed: 1000,
 			damagePercentDelay: 0.5,
 			damageMin: 3,
 			damageMax: 8,
-			maxLife: 1000
+			maxLife: 500,
+			detectionRange: 3,
+			unitSize: 0.9
 		});
 	}
 

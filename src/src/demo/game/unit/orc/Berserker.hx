@@ -20,13 +20,15 @@ class Berserker extends AICharacter
 			deathModel: Res.model.character.orc.berserker.DeathAnim,
 			modelScale: 0.008,
 			speed: 5,
-			speedMultiplier: 1,
-			attackRadius: 2,
-			attackSpeed: 1000,
+			speedMultiplier: 2,
+			attackRange: 2.1,
+			attackSpeed: 900,
 			damagePercentDelay: 0.5,
 			damageMin: 3,
 			damageMax: 6,
-			maxLife: 15
+			maxLife: 20,
+			detectionRange: 5,
+			unitSize: 0.9
 		});
 	}
 }

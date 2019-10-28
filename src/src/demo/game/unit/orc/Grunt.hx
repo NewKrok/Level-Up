@@ -20,13 +20,15 @@ class Grunt extends AICharacter
 			deathModel: Res.model.character.orc.grunt.DeathAnim,
 			modelScale: 0.008,
 			speed: 5,
-			speedMultiplier: 6,
-			attackRadius: 2,
-			attackSpeed: 1000,
+			speedMultiplier: 1,
+			attackRange: 2.1,
+			attackSpeed: 1500,
 			damagePercentDelay: 0.5,
-			damageMin: 1,
+			damageMin: 2,
 			damageMax: 5,
-			maxLife: 20
+			maxLife: 30,
+			detectionRange: 5,
+			unitSize: 0.9
 		});
 	}
 }

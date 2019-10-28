@@ -21,12 +21,14 @@ class Minion extends AICharacter
 			modelScale: 0.008,
 			speed: 4,
 			speedMultiplier: 1,
-			attackRadius: 2,
-			attackSpeed: 1000,
+			attackRange: 2.1,
+			attackSpeed: 1800,
 			damagePercentDelay: 0.5,
 			damageMin: 1,
 			damageMax: 2,
-			maxLife: 5
+			maxLife: 15,
+			detectionRange: 4,
+			unitSize: 0.9
 		});
 	}
 }
