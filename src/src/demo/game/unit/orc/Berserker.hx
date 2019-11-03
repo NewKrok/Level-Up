@@ -10,9 +10,9 @@ import hxd.Res;
  */
 class Berserker extends AICharacter
 {
-	public function new(s2d:Object, owner:PlayerId)
+	public function new(s2d:Object, parent, owner:PlayerId)
 	{
-		super(s2d, owner, {
+		super(s2d, parent, owner, {
 			idleModel: Res.model.character.orc.berserker.IdleAnim,
 			idleAnimSpeedMultiplier: 1.5,
 			runModel: Res.model.character.orc.berserker.WalkAnim,

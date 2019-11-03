@@ -6,7 +6,11 @@ import demo.game.GameWorld;
 import demo.game.js.AStar;
 import h2d.Font;
 import h2d.Text;
+import h3d.col.Capsule;
+import h3d.col.Point;
+import h3d.mat.BlendMode;
 import h3d.prim.ModelCache;
+import h3d.scene.Interactive;
 import h3d.scene.Object;
 import h3d.scene.Scene;
 import h3d.shader.Texture;
@@ -32,8 +36,11 @@ import tink.state.State;
 	static inline var baseSpeedBlock:Float = 10;
 
 	var s2d:h2d.Object = _;
+	var parent:Object = _;
 	public var owner(default, null):PlayerId = _;
 	public var config(default, null):UnitConfig = _;
+
+	public var onClick:BaseUnit->Void;
 
 	public var view:Object;
 	public var rotationSpeed:Float = 5;
@@ -50,6 +57,9 @@ import tink.state.State;
 	var viewRotation:Float = 0;
 	var cache:ModelCache = new ModelCache();
 
+	var interact:Interactive;
+	var collider:Capsule;
+
 	var moveResult:Result;
 	var moveResultHandler:Void->Void;
 
@@ -60,6 +70,9 @@ import tink.state.State;
 	public var life:State<Float> = new State<Float>(0);
 
 	var lastAttackTime:Float = 0;
+	var attackTimer:Timer;
+	var moveEndDelayTimer:Timer;
+
 	var t:Text;
 
 	public function new()
@@ -68,7 +81,16 @@ import tink.state.State;
 		attackResult = { handle: function(handler:Void->Void) { attackResultHandler = handler; } };
 
 		view = cache.loadModel(config.idleModel);
+		parent.addChild(view);
 		view.scale(config.modelScale);
+
+		// 1.5 is a hacky solution to make easier the unit selection
+		collider = new Capsule(new Point(0, 0, 0), new Point(0, 0, 1.5 * config.unitSize), config.unitSize);
+
+		interact = new Interactive(collider, parent);
+		interact.onClick = _ -> if (onClick != null) onClick(this);
+		interact.onOver = _ -> view.getMaterials()[0].blendMode = BlendMode.Screen;
+		interact.onOut = _ -> view.getMaterials()[0].blendMode = BlendMode.None;
 
 		for (m in view.getMaterials())
 		{
@@ -179,7 +201,7 @@ import tink.state.State;
 		}
 		else
 		{
-			Timer.delay(onMoveEnd, 1);
+			moveEndDelayTimer = Timer.delay(onMoveEnd, 1);
 		}
 	}
 
@@ -305,6 +327,12 @@ import tink.state.State;
 
 		var now = Date.now();
 
+		// 0.8 is a hacky solution to make easier the unit selection
+		collider.a.x = view.x - 0.8;
+		collider.a.y = view.y;
+		collider.b.x = view.x - 0.8;
+		collider.b.y = view.y;
+
 		setRotation();
 
 		if (state.value == AttackRequested && target != null) checkTargetLife();
@@ -386,7 +414,7 @@ import tink.state.State;
 			currentTargetAngle = GeomUtil.getAngle(target.getPosition(), getPosition()) + Math.PI / 2;
 			if (currentTargetAngle < 0) currentTargetAngle += Math.PI * 2;
 
-			Timer.delay(function()
+			attackTimer = Timer.delay(function()
 			{
 				if (canAttackTarget())
 				{
@@ -438,6 +466,27 @@ import tink.state.State;
 			target != null
 			&& target.state != Dead
 			&& GeomUtil.getDistance(getWorldPoint(), target.getWorldPoint()) <= config.attackRange;
+	}
+
+	public function dispose()
+	{
+		Actuate.stop(view, null, false, false);
+
+		if (moveEndDelayTimer != null)
+		{
+			moveEndDelayTimer.stop();
+			moveEndDelayTimer = null;
+		}
+		if (attackTimer != null)
+		{
+			attackTimer.stop();
+			attackTimer = null;
+		}
+
+		view.removeChildren();
+		view.remove();
+
+		cache.dispose();
 	}
 }
 

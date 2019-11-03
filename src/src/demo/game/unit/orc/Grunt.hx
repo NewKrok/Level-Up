@@ -10,9 +10,9 @@ import hxd.Res;
  */
 class Grunt extends AICharacter
 {
-	public function new(s2d:Object, owner:PlayerId)
+	public function new(s2d:Object, parent, owner:PlayerId)
 	{
-		super(s2d, owner, {
+		super(s2d, parent, owner, {
 			idleModel: Res.model.character.orc.grunt.IdleAnim,
 			idleAnimSpeedMultiplier: 0.8,
 			runModel: Res.model.character.orc.grunt.WalkAnim,

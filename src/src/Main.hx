@@ -1,5 +1,6 @@
 package;
 
+import demo.MapData;
 import demo.game.GameState;
 import haxe.Timer;
 import hpp.heaps.Base2dApp;
@@ -18,7 +19,8 @@ class Main extends Base2dApp
 	{
 		super.init();
 		stage.stageScaleMode = StageScaleMode.SHOW_ALL;
-		changeState(GameState, [s2d, s3d]);
+		changeState(GameState, [s2d, s3d, MapData.getRawMap("lobby")]);
+		//changeState(GameState, [s2d, s3d, MapData.getRawMap("hero_survival")]);
 	}
 
 	static function main()

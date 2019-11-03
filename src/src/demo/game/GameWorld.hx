@@ -24,19 +24,23 @@ import hxd.Res;
  */
 class GameWorld extends World
 {
+	public var id(default, never):UInt = Math.floor(Math.random() * 1000);
+
 	public static var instance:GameWorld;
 
 	public var graph:Graph;
 
 	public var blockSize:Float;
 
+	public var onClickOnUnit:BaseUnit->Void;
+
 	public var onWorldClick:Event->Void;
 	public var onWorldMouseDown:Event->Void;
 	public var onWorldMouseUp:Event->Void;
 	public var onWorldMouseMove:Event->Void;
 
-	public var units(default, never):Array<BaseUnit> = [];
-	public var regionDatas(default, never):Array<RegionData> = [];
+	public var units(default, null):Array<BaseUnit> = [];
+	public var regionDatas(default, null):Array<RegionData> = [];
 
 	public var onUnitEntersToRegion:Region->BaseUnit->Void = null;
 	public var onUnitLeavesFromRegion:Region->BaseUnit->Void = null;
@@ -148,7 +152,6 @@ class GameWorld extends World
 	public function update(d:Float)
 	{
 		var now = Date.now().getTime();
-		checkRegionDatas();
 
 		var isRerouteNeeded = isWorldGraphDirty && now - lastRerouteTime >= 3000;
 		if (isRerouteNeeded) lastRerouteTime = now;
@@ -161,6 +164,7 @@ class GameWorld extends World
 
 		resetWorldWeight();
 		calculateUnitInteractions(d);
+		checkRegionDatas();
 	}
 
 	function checkRegionDatas()
@@ -263,14 +267,36 @@ class GameWorld extends World
 		if (Std.is(o, BaseUnit))
 		{
 			var u:BaseUnit = cast o;
+			u.onClick = onClickOnUnit;
 			units.push(u);
-			addChild(u.view);
 		}
 	}
-}
 
-enum TriggerEvent {
-	EnterRegion(region:Region);
+	override public function dispose()
+	{
+		super.dispose();
+
+		for (i in 0...units.length)
+		{
+			units[i].dispose();
+			units[i] = null;
+		}
+		units = null;
+
+		for (i in 0...regionDatas.length)
+		{
+			regionDatas[i] = null;
+		}
+		regionDatas = null;
+
+		interact.removeChildren();
+		interact.onClick = null;
+		interact.onPush = null;
+		interact.onRelease = null;
+		interact.onMove = null;
+		interact.remove();
+		interact = null;
+	}
 }
 
 typedef Region =

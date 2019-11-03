@@ -12,9 +12,9 @@ import hxd.Res;
  */
 class AICharacter extends BaseUnit
 {
-	public function new(s2d:Object, owner:PlayerId, config:UnitConfig)
+	public function new(s2d:Object, parent, owner:PlayerId, config:UnitConfig)
 	{
-		super(s2d, owner, config);
+		super(s2d, parent, owner, config);
 	}
 
 	override public function update(d:Float)

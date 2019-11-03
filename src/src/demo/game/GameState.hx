@@ -3,7 +3,6 @@ package demo.game;
 import demo.AsyncUtil.Result;
 import demo.game.GameModel.PlayState;
 import demo.game.GameState.Trigger;
-import demo.game.GameWorld.TriggerEvent;
 import demo.game.GameWorld.Region;
 import demo.game.unit.BaseUnit;
 import demo.game.unit.orc.Grunt;
@@ -46,6 +45,8 @@ import motion.easing.Quart;
  */
 class GameState extends Base2dState
 {
+	public var id(default, never):UInt = Math.floor(Math.random() * 1000);
+
 	var world:GameWorld;
 	var mapConfig:WorldConfig;
 	var model:GameModel;
@@ -57,7 +58,6 @@ class GameState extends Base2dState
 	var debugRegions:Graphics;
 	var debugUnitPath:Graphics;
 	var debugDetectionRadius:Graphics;
-	var g:Graphics;
 
 	var camPosition:{ x:Float, y:Float, z:Float } = { x: 0, y: 0, z: 0 };
 	var camAnimationPosition:{ x:Float, y:Float, z:Float } = { x: 0, y: 0, z: 0 };
@@ -70,16 +70,18 @@ class GameState extends Base2dState
 	var isMoveTriggerOn:Bool = false;
 	var lastMovePosition:SimplePoint = { x: 0, y: 0 };
 
-	var playerCharacter:BaseUnit;
+	var selectedUnit:BaseUnit;
 	var targetMarker:Mesh;
 	var isControlEnabled:Bool = false;
+	var isDisposed:Bool = false;
 
-	public function new(stage:Base2dStage, s2d:h2d.Scene, s3d:h3d.scene.Scene)
+	public function new(stage:Base2dStage, s2d:h2d.Scene, s3d:h3d.scene.Scene, rawMap:String)
 	{
 		super(stage);
 
 		this.s3d = s3d;
 		this.s2d = s2d;
+		mapConfig = loadLevel(rawMap);
 
 		camAnimationResult = { handle: function(handler:Void->Void) { camAnimationResultHandler = handler; } };
 
@@ -93,8 +95,6 @@ class GameState extends Base2dState
 			}
 		});
 
-		mapConfig = loadLevel(Res.data.level_1.entry.getText());
-
 		debugMapBlocks = new Graphics(s3d);
 		debugMapBlocks.z = 0.2;
 		debugRegions = new Graphics(s3d);
@@ -103,18 +103,9 @@ class GameState extends Base2dState
 		debugUnitPath.z = 0.2;
 		debugDetectionRadius = new Graphics(s3d);
 		debugDetectionRadius.z = 0.2;
-		g = new Graphics(s3d);
 
 		world = new GameWorld(s3d, mapConfig, 1, 64, 64, s3d);
 		world.done();
-
-		var startPoint:SimplePoint = { x: 10, y: 5 };
-
-		playerCharacter = new PlayerGrunt(s2d, PlayerId.Player1);
-		setCameraTarget(playerCharacter);
-		playerCharacter.view.x = startPoint.y * world.blockSize + world.blockSize / 2;
-		playerCharacter.view.y = startPoint.x * world.blockSize + world.blockSize / 2;
-		world.addEntity(playerCharacter);
 
 		/*for (i in 0...10)
 		{
@@ -179,24 +170,24 @@ class GameState extends Base2dState
 		targetMarker.material.color.setColor(0xFFFF00);
 		targetMarker.material.shadows = false;
 
-		world.onWorldClick = function(e:Event)
+		world.onWorldClick = e ->
 		{
-			if (isControlEnabled && playerCharacter != null && playerCharacter.state != Dead)
+			if (isControlEnabled && selectedUnit != null && selectedUnit.state != Dead)
 			{
 				lastMovePosition.x = Math.floor(e.relY / world.blockSize);
 				lastMovePosition.y = Math.floor(e.relX / world.blockSize);
-				playerCharacter.moveTo({ x: lastMovePosition.x, y: lastMovePosition.y }).handle(function () { trace("MOVE FINISHED"); });
+				selectedUnit.moveTo({ x: lastMovePosition.x, y: lastMovePosition.y }).handle(function () { trace("MOVE FINISHED"); });
 			}
 		}
-		world.onWorldMouseDown = function(e:Event) isMoveTriggerOn = true;
-		world.onWorldMouseUp = function(e:Event) isMoveTriggerOn = false;
-		world.onWorldMouseMove = function(e:Event)
+		world.onWorldMouseDown = _ -> isMoveTriggerOn = true;
+		world.onWorldMouseUp = _ -> isMoveTriggerOn = false;
+		world.onWorldMouseMove = e ->
 		{
-			if (playerCharacter != null && isMoveTriggerOn)
+			if (selectedUnit != null && isMoveTriggerOn)
 			{
 				lastMovePosition.x = Math.floor(e.relY / world.blockSize);
 				lastMovePosition.y = Math.floor(e.relX / world.blockSize);
-				playerCharacter.moveTo({ x: lastMovePosition.x, y: lastMovePosition.y }).handle(function () { trace("MOVE FINISHED"); });
+				selectedUnit.moveTo({ x: lastMovePosition.x, y: lastMovePosition.y }).handle(function () { trace("MOVE FINISHED"); });
 			}
 		}
 		world.onUnitEntersToRegion = function(r, u)
@@ -210,8 +201,23 @@ class GameState extends Base2dState
 				}
 			}
 		}
+		world.onClickOnUnit = u -> if (u.owner == PlayerId.Player1) {
+			selectedUnit = u;
+			setCameraTarget(selectedUnit);
+		}
+
+		for (u in mapConfig.units) createUnit(u.id, u.owner, u.x, u.y);
 
 		model.initGame();
+
+		for (t in mapConfig.triggers)
+		{
+			switch(t.event)
+			{
+				case TimeElapsed(time) if (t.isEnabled): Actuate.timer(time).onComplete(runTrigger.bind(t));
+				case _:
+			}
+		}
 
 		// With intro
 		/*hasCameraAnimation = true;
@@ -227,15 +233,14 @@ class GameState extends Base2dState
 		jumpCamera(10, 10, 20);
 		model.startGame();
 
-
-		var lifeUi = new LifeBar(s2d, playerCharacter.life, playerCharacter.config.maxLife);
+		/*var lifeUi = new LifeBar(s2d, selectedCharacter.life, selectedCharacter.config.maxLife);
 		lifeUi.x = 20;
-		lifeUi.y = 20;
+		lifeUi.y = 20;*/
 	}
 
-	function loadLevel(rawData:String)
+	function loadLevel(rawDataStr:String)
 	{
-		var rawData = Json.parse(rawData);
+		var rawData = Json.parse(rawDataStr);
 
 		var map:Array<Array<WorldEntity>> = rawData.map;
 		var staticObjects:Array<StaticObjectConfig> = rawData.staticObjects;
@@ -249,11 +254,15 @@ class GameState extends Base2dState
 		}];
 
 		var triggers:Array<Trigger> = [for (t in cast(rawData.triggers, Array<Dynamic>)) {
+			id: t.id != null ? t.id.toLowerCase() : Std.string(Math.random() * 9999999),
+			isEnabled: t.isEnabled != null ? t.isEnabled : true,
 			event: switch (t.event.toLowerCase().split(" ")) {
 				case [event, regionName] if (event.toLowerCase() == "enterregion"): EnterRegion(getRegion(regions, regionName));
+				case [event, time] if (event.toLowerCase() == "timeelapsed"): TimeElapsed(time);
+				case [event, time] if (event.toLowerCase() == "timeperiodic"): TimePeriodic(time);
 				case _: null;
 			},
-			condition: switch (t.condition.toLowerCase().split(" ")) {
+			condition: t.condition == null ? null : switch (t.condition.toLowerCase().split(" ")) {
 				case [condition, unitDefinition, expectedPlayer] if (condition.toLowerCase() == "ownerof"):
 					OwnerOf(switch(unitDefinition.toLowerCase())
 					{
@@ -265,35 +274,20 @@ class GameState extends Base2dState
 			actions: [for(actionEntry in cast(t.actions, Array<Dynamic>)) switch (actionEntry.toLowerCase().split(" ")) {
 				case [action, message] if (action.toLowerCase() == "log"): Log(message);
 				case [action, levelName] if (action.toLowerCase() == "loadlevel"): LoadLevel(levelName);
+				case [action, triggerId] if (action.toLowerCase() == "enabletrigger"): EnableTrigger(triggerId);
+				case [action, unitId, owner] if (action.toLowerCase() == "createunit"): CreateUnit(unitId, owner);
 				case _: null;
 			}],
 		}];
 
 		return {
+			name: rawData.name,
 			map: map,
-			staticObjects: staticObjects,
 			regions: regions,
-			triggers: triggers
+			triggers: triggers,
+			units: rawData.units,
+			staticObjects: staticObjects
 		};
-
-
-		/*var event:TriggerEvent;
-			var condition:TriggerCondition;
-			var action:TriggerAction;
-		}
-
-		enum TriggerEvent {
-			EnterRegion<Region>;
-		}
-
-		enum TriggerCondition {
-			OwnerOf<UnitDefinition>;
-		}
-
-		enum UnitDefinition {
-			TriggeringUnit;
-		}*/
-
 	}
 
 	function getRegion(regions:Array<Region>, id:String) return regions.filter(function (r) { return r.id == id; })[0];
@@ -310,6 +304,20 @@ class GameState extends Base2dState
 			Timer.delay(moveToRandomPoint.bind(c), 1000);
 		}
 	}*/
+
+	function createUnit(id:String, owner:PlayerId, posX:Int, posY:Int)
+	{
+		var unit = switch (id) {
+			case "playergrunt": new PlayerGrunt(s2d, world, owner);
+			case "minion": new Minion(s2d, world, owner);
+			case "grunt": new Grunt(s2d, world, owner);
+			case "berserker": new Berserker(s2d, world, owner);
+			case _: null;
+		};
+		unit.view.x = posY * world.blockSize + world.blockSize / 2;
+		unit.view.y = posX * world.blockSize + world.blockSize / 2;
+		world.addEntity(unit);
+	}
 
 	function drawDebugMapBlocks():Void
 	{
@@ -415,15 +423,18 @@ class GameState extends Base2dState
 
 	override function update(d:Float)
 	{
-		world.update(d);
-		updateCamera(d);
-		//checkTriggers(d);
+		if (world == null) return;
 
-		if (playerCharacter != null && playerCharacter.nearestTarget != null)
+		world.update(d);
+		if (isDisposed) return;
+
+		updateCamera(d);
+
+		if (selectedUnit != null && selectedUnit.nearestTarget != null)
 		{
 			targetMarker.visible = true;
-			targetMarker.x = playerCharacter.nearestTarget.getPosition().x - 0.5;
-			targetMarker.y = playerCharacter.nearestTarget.getPosition().y - 0.5;
+			targetMarker.x = selectedUnit.nearestTarget.getPosition().x - 0.5;
+			targetMarker.y = selectedUnit.nearestTarget.getPosition().y - 0.5;
 		}
 
 		drawDebugMapBlocks();
@@ -434,7 +445,7 @@ class GameState extends Base2dState
 
 	function updateCamera(d:Float)
 	{
-		if (hasCameraAnimation)
+		if (hasCameraAnimation || cameraTarget == null)
 		{
 			camPosition.x = camAnimationPosition.x;
 			camPosition.y = camAnimationPosition.y;
@@ -500,30 +511,23 @@ class GameState extends Base2dState
 		cameraTarget = target;
 	}
 
-	/*function checkTriggers()
+	function runTrigger(t:Trigger, p:TriggerParams = null)
 	{
-		for (t in mapConfig.triggers)
-		{
-			switch (t.event)
-			{
-				case EnterRegion(r):
-			}
-		}
-	}*/
+		if (!t.isEnabled) return;
 
-	function runTrigger(t:Trigger, p:TriggerParams)
-	{
 		if (t.condition != null)
 		{
 			switch (t.condition)
 			{
-				case OwnerOf(unitDef, expectedPlayer) if (unitDef == TriggeringUnit && p.triggeringUnit.owner == expectedPlayer): runActions(t.actions);
+				case OwnerOf(unitDef, expectedPlayer) if (unitDef == TriggeringUnit && p.triggeringUnit.owner == expectedPlayer): runActions(t.actions, p);
+
 				case _:
 			}
 		}
+		else runActions(t.actions, p);
 	}
 
-	function runActions(actions:Array<TriggerAction>)
+	function runActions(actions:Array<TriggerAction>, p:TriggerParams)
 	{
 		for (a in actions)
 		{
@@ -532,22 +536,57 @@ class GameState extends Base2dState
 				switch(a)
 				{
 					case Log(message): trace(message);
-					case LoadLevel(levelName): trace("implement load level...");
+					case LoadLevel(levelName): HppG.changeState(GameState, [s2d, s3d, MapData.getRawMap(levelName)]);
+					case EnableTrigger(id): for (t in mapConfig.triggers) if (t.id == id) enableTrigger(t);
+					case CreateUnit(unitId, owner): createUnit(unitId, owner, Math.floor(Math.random() * 5 + 5), Math.floor(Math.random() * 10 + 5));
 
-					case _:
+					case _: trace("Unknown action in action list: " + actions);
 				}
 			}
 			else trace("Unknown action in action list: " + actions);
 		}
 	}
+
+	function enableTrigger(t:Trigger)
+	{
+		t.isEnabled = true;
+
+		switch(t.event)
+		{
+			case TimePeriodic(time): Actuate.timer(time).repeat().onRepeat(runTrigger.bind(t));
+			case _:
+		}
+	}
+
+	override public function dispose():Void
+	{
+		super.dispose();
+
+		world.onWorldClick = null;
+		world.onWorldMouseDown = null;
+		world.onWorldMouseUp = null;
+		world.onWorldMouseMove = null;
+		world.onUnitEntersToRegion = null;
+		world.remove();
+		world.dispose();
+		world = null;
+
+		s3d.removeChildren();
+
+		Actuate.reset();
+
+		isDisposed = true;
+	}
 }
 
 typedef WorldConfig =
 {
+	var name(default, never):String;
 	var map(default, never):Array<Array<WorldEntity>>;
-	var regions(default, never):Array<Region>;
-	var triggers(default, never):Array<Trigger>;
-	var staticObjects(default, never):Array<StaticObjectConfig>;
+	@:optional var regions(default, never):Array<Region>;
+	@:optional var triggers(default, never):Array<Trigger>;
+	@:optional var units(default, never):Array<InitialUnitData>;
+	@:optional var staticObjects(default, never):Array<StaticObjectConfig>;
 }
 
 typedef StaticObjectConfig =
@@ -560,11 +599,27 @@ typedef StaticObjectConfig =
 	var rotation(default, never):Float;
 }
 
+typedef InitialUnitData =
+{
+	var id:String;
+	var owner:PlayerId;
+	var x(default, never):Int;
+	var y(default, never):Int;
+}
+
 typedef Trigger =
 {
+	var id:String;
+	var isEnabled:Bool;
 	var event:TriggerEvent;
 	var condition:TriggerCondition;
 	var actions:Array<TriggerAction>;
+}
+
+enum TriggerEvent {
+	EnterRegion(region:Region);
+	TimeElapsed(time:Float);
+	TimePeriodic(time:Float);
 }
 
 typedef TriggerParams =
@@ -592,6 +647,8 @@ enum UnitDefinition {
 enum TriggerAction {
 	Log(message:String);
 	LoadLevel(levelName:String);
+	EnableTrigger(id:String);
+	CreateUnit(unitId:String, owner:PlayerId);
 }
 
 @:enum abstract WorldEntity(Int) from Int to Int {
