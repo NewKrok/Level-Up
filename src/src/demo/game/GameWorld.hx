@@ -4,6 +4,7 @@ import demo.game.GameState.WorldConfig;
 import demo.game.unit.BaseUnit;
 import demo.game.js.Graph;
 import h2d.Scene;
+import h3d.col.Bounds;
 import h3d.mat.Data.Wrap;
 import h3d.mat.Material;
 import h3d.prim.Cube;
@@ -35,6 +36,10 @@ class GameWorld extends World
 	public var onWorldMouseMove:Event->Void;
 
 	public var units(default, never):Array<BaseUnit> = [];
+	public var regionDatas(default, never):Array<RegionData> = [];
+
+	public var onUnitEntersToRegion:Region->BaseUnit->Void = null;
+	public var onUnitLeavesFromRegion:Region->BaseUnit->Void = null;
 
 	var worldConfig:WorldConfig;
 	var interact:Interactive;
@@ -58,6 +63,16 @@ class GameWorld extends World
 		interact.onPush = function (e) { onWorldMouseDown(e); };
 		interact.onRelease = function (e) { onWorldMouseUp(e); };
 		interact.onMove = function (e) { onWorldMouseMove(e); };
+
+		for (r in worldConfig.regions)
+		{
+			var rData = new RegionData(
+				r,
+				u -> if (onUnitEntersToRegion != null) onUnitEntersToRegion(r, u),
+				u -> if (onUnitLeavesFromRegion != null) onUnitLeavesFromRegion(r, u)
+			);
+			regionDatas.push(rData);
+		}
 	}
 
 	public function generateMap():Void
@@ -133,6 +148,7 @@ class GameWorld extends World
 	public function update(d:Float)
 	{
 		var now = Date.now().getTime();
+		checkRegionDatas();
 
 		var isRerouteNeeded = isWorldGraphDirty && now - lastRerouteTime >= 3000;
 		if (isRerouteNeeded) lastRerouteTime = now;
@@ -145,6 +161,26 @@ class GameWorld extends World
 
 		resetWorldWeight();
 		calculateUnitInteractions(d);
+	}
+
+	function checkRegionDatas()
+	{
+		for (r in regionDatas)
+		{
+			var collidedUnits = [];
+			for (u in units)
+			{
+				var p = u.getPosition();
+				if (
+					p.x + u.config.unitSize > r.data.x && p.x - u.config.unitSize < r.data.x + r.data.width
+					&& p.y + u.config.unitSize > r.data.y && p.y - u.config.unitSize < r.data.y + r.data.height
+				){
+					collidedUnits.push(u);
+				}
+			}
+
+			r.updateCollidedUnits(collidedUnits);
+		}
 	}
 
 	function calculateUnitInteractions(d:Float)
@@ -231,4 +267,17 @@ class GameWorld extends World
 			addChild(u.view);
 		}
 	}
+}
+
+enum TriggerEvent {
+	EnterRegion(region:Region);
+}
+
+typedef Region =
+{
+	var id:String;
+	var x:Int;
+	var y:Int;
+	var width:Int;
+	var height:Int;
 }

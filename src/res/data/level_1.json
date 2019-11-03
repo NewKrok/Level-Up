@@ -45,6 +45,21 @@
 		[1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
 		[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]
 	],
+	"regions": [
+		{
+			"id": "enter_next_level",
+			"x":40,"y":9,"width":2,"height":2
+		}
+	],
+	"triggers": [
+		{
+			"event": "enterRegion enter_next_level",
+			"condition": "ownerOf triggeringUnit 0",
+			"actions": [
+				"loadLevel level_2"
+			]
+		}
+	],
 	"staticObjects": [
 		{
 			"name": "SM_Ground_Tiles_Large",

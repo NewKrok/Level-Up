@@ -1,6 +1,6 @@
 package demo.game.unit;
 
-import demo.game.GameState.Player;
+import demo.game.GameState.PlayerId;
 import demo.game.unit.BaseUnit.UnitConfig;
 import demo.game.unit.BaseUnit.UnitState;
 import h2d.Object;
@@ -12,7 +12,7 @@ import hxd.Res;
  */
 class AICharacter extends BaseUnit
 {
-	public function new(s2d:Object, owner:Player, config:UnitConfig)
+	public function new(s2d:Object, owner:PlayerId, config:UnitConfig)
 	{
 		super(s2d, owner, config);
 	}

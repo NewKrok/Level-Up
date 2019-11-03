@@ -1,6 +1,6 @@
 package demo.game.unit.orc;
 
-import demo.game.GameState.Player;
+import demo.game.GameState.PlayerId;
 import h2d.Object;
 import hxd.Res;
 
@@ -10,7 +10,7 @@ import hxd.Res;
  */
 class Berserker extends AICharacter
 {
-	public function new(s2d:Object, owner:Player)
+	public function new(s2d:Object, owner:PlayerId)
 	{
 		super(s2d, owner, {
 			idleModel: Res.model.character.orc.berserker.IdleAnim,

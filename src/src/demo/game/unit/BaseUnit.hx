@@ -1,7 +1,7 @@
 package demo.game.unit;
 
 import demo.AsyncUtil.Result;
-import demo.game.GameState.Player;
+import demo.game.GameState.PlayerId;
 import demo.game.GameWorld;
 import demo.game.js.AStar;
 import h2d.Font;
@@ -32,7 +32,7 @@ import tink.state.State;
 	static inline var baseSpeedBlock:Float = 10;
 
 	var s2d:h2d.Object = _;
-	public var owner(default, null):Player = _;
+	public var owner(default, null):PlayerId = _;
 	public var config(default, null):UnitConfig = _;
 
 	public var view:Object;

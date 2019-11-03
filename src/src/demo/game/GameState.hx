@@ -2,6 +2,9 @@ package demo.game;
 
 import demo.AsyncUtil.Result;
 import demo.game.GameModel.PlayState;
+import demo.game.GameState.Trigger;
+import demo.game.GameWorld.TriggerEvent;
+import demo.game.GameWorld.Region;
 import demo.game.unit.BaseUnit;
 import demo.game.unit.orc.Grunt;
 import demo.game.unit.orc.Berserker;
@@ -51,6 +54,7 @@ class GameState extends Base2dState
 	var s3d:h3d.scene.Scene;
 
 	var debugMapBlocks:Graphics;
+	var debugRegions:Graphics;
 	var debugUnitPath:Graphics;
 	var debugDetectionRadius:Graphics;
 	var g:Graphics;
@@ -89,10 +93,12 @@ class GameState extends Base2dState
 			}
 		});
 
-		mapConfig = Json.parse(Res.data.level_1.entry.getText());
+		mapConfig = loadLevel(Res.data.level_1.entry.getText());
 
 		debugMapBlocks = new Graphics(s3d);
 		debugMapBlocks.z = 0.2;
+		debugRegions = new Graphics(s3d);
+		debugRegions.z = 0.2;
 		debugUnitPath = new Graphics(s3d);
 		debugUnitPath.z = 0.2;
 		debugDetectionRadius = new Graphics(s3d);
@@ -104,25 +110,25 @@ class GameState extends Base2dState
 
 		var startPoint:SimplePoint = { x: 10, y: 5 };
 
-		playerCharacter = new PlayerGrunt(s2d, Player.User);
+		playerCharacter = new PlayerGrunt(s2d, PlayerId.Player1);
 		setCameraTarget(playerCharacter);
 		playerCharacter.view.x = startPoint.y * world.blockSize + world.blockSize / 2;
 		playerCharacter.view.y = startPoint.x * world.blockSize + world.blockSize / 2;
 		world.addEntity(playerCharacter);
 
-		for (i in 0...10)
+		/*for (i in 0...10)
 		{
 			var startPoint:SimplePoint = world.getRandomWalkablePoint();
 			var character = switch(Math.floor(Math.random() * 3)) {
-				case 0: new Minion(s2d, Player.Enemy);
-				case 1: new Grunt(s2d, Player.Enemy);
-				case 2: new Berserker(s2d, Player.Enemy);
+				case 0: new Minion(s2d, PlayerId.Player2);
+				case 1: new Grunt(s2d, PlayerId.Player2);
+				case 2: new Berserker(s2d, PlayerId.Player2);
 				case _: null;
 			}
 			character.view.x = startPoint.y;
 			character.view.y = startPoint.x;
 			world.addEntity(character);
-		}
+		}*/
 
 
 		/*var enemyPoints = [
@@ -132,7 +138,7 @@ class GameState extends Base2dState
 		];
 		for (p in enemyPoints)
 		{
-			var character = new Warrior(s2d, Player.Enemy);
+			var character = new Warrior(s2d, PlayerId.Player2);
 			character.view.x = p.y * world.blockSize + world.blockSize / 2;
 			character.view.y = p.x * world.blockSize + world.blockSize / 2;
 			world.addEntity(character);
@@ -193,6 +199,17 @@ class GameState extends Base2dState
 				playerCharacter.moveTo({ x: lastMovePosition.x, y: lastMovePosition.y }).handle(function () { trace("MOVE FINISHED"); });
 			}
 		}
+		world.onUnitEntersToRegion = function(r, u)
+		{
+			for (t in mapConfig.triggers)
+			{
+				switch(t.event)
+				{
+					case EnterRegion(region) if (r == region): runTrigger(t, { triggeringUnit: u });
+					case _:
+				}
+			}
+		}
 
 		model.initGame();
 
@@ -215,6 +232,71 @@ class GameState extends Base2dState
 		lifeUi.x = 20;
 		lifeUi.y = 20;
 	}
+
+	function loadLevel(rawData:String)
+	{
+		var rawData = Json.parse(rawData);
+
+		var map:Array<Array<WorldEntity>> = rawData.map;
+		var staticObjects:Array<StaticObjectConfig> = rawData.staticObjects;
+
+		var regions:Array<Region> = [for (r in cast(rawData.regions, Array<Dynamic>)) {
+			id: r.id,
+			x: r.x,
+			y: r.y,
+			width: r.width,
+			height: r.height
+		}];
+
+		var triggers:Array<Trigger> = [for (t in cast(rawData.triggers, Array<Dynamic>)) {
+			event: switch (t.event.toLowerCase().split(" ")) {
+				case [event, regionName] if (event.toLowerCase() == "enterregion"): EnterRegion(getRegion(regions, regionName));
+				case _: null;
+			},
+			condition: switch (t.condition.toLowerCase().split(" ")) {
+				case [condition, unitDefinition, expectedPlayer] if (condition.toLowerCase() == "ownerof"):
+					OwnerOf(switch(unitDefinition.toLowerCase())
+					{
+						case "triggeringunit": TriggeringUnit;
+						case _: null;
+					}, expectedPlayer);
+				case _: null;
+			},
+			actions: [for(actionEntry in cast(t.actions, Array<Dynamic>)) switch (actionEntry.toLowerCase().split(" ")) {
+				case [action, message] if (action.toLowerCase() == "log"): Log(message);
+				case [action, levelName] if (action.toLowerCase() == "loadlevel"): LoadLevel(levelName);
+				case _: null;
+			}],
+		}];
+
+		return {
+			map: map,
+			staticObjects: staticObjects,
+			regions: regions,
+			triggers: triggers
+		};
+
+
+		/*var event:TriggerEvent;
+			var condition:TriggerCondition;
+			var action:TriggerAction;
+		}
+
+		enum TriggerEvent {
+			EnterRegion<Region>;
+		}
+
+		enum TriggerCondition {
+			OwnerOf<UnitDefinition>;
+		}
+
+		enum UnitDefinition {
+			TriggeringUnit;
+		}*/
+
+	}
+
+	function getRegion(regions:Array<Region>, id:String) return regions.filter(function (r) { return r.id == id; })[0];
 
 	/*function moveToRandomPoint(c)
 	{
@@ -260,6 +342,22 @@ class GameState extends Base2dState
 				j++;
 			}
 			i++;
+		}
+	}
+
+	function drawDebugRegions():Void
+	{
+		debugRegions.clear();
+
+		for (r in mapConfig.regions)
+		{
+			debugRegions.lineStyle(5, 0x5555AA);
+
+			debugRegions.moveTo(r.x, r.y, 0);
+			debugRegions.lineTo(r.x + r.width, r.y, 0);
+			debugRegions.lineTo(r.x + r.width, r.y + r.height, 0);
+			debugRegions.lineTo(r.x, r.y + r.height, 0);
+			debugRegions.lineTo(r.x, r.y, 0);
 		}
 	}
 
@@ -319,6 +417,7 @@ class GameState extends Base2dState
 	{
 		world.update(d);
 		updateCamera(d);
+		//checkTriggers(d);
 
 		if (playerCharacter != null && playerCharacter.nearestTarget != null)
 		{
@@ -328,6 +427,7 @@ class GameState extends Base2dState
 		}
 
 		drawDebugMapBlocks();
+		drawDebugRegions();
 		drawDebugPath();
 		drawDebugInteractionRadius();
 	}
@@ -399,11 +499,54 @@ class GameState extends Base2dState
 	{
 		cameraTarget = target;
 	}
+
+	/*function checkTriggers()
+	{
+		for (t in mapConfig.triggers)
+		{
+			switch (t.event)
+			{
+				case EnterRegion(r):
+			}
+		}
+	}*/
+
+	function runTrigger(t:Trigger, p:TriggerParams)
+	{
+		if (t.condition != null)
+		{
+			switch (t.condition)
+			{
+				case OwnerOf(unitDef, expectedPlayer) if (unitDef == TriggeringUnit && p.triggeringUnit.owner == expectedPlayer): runActions(t.actions);
+				case _:
+			}
+		}
+	}
+
+	function runActions(actions:Array<TriggerAction>)
+	{
+		for (a in actions)
+		{
+			if (a != null)
+			{
+				switch(a)
+				{
+					case Log(message): trace(message);
+					case LoadLevel(levelName): trace("implement load level...");
+
+					case _:
+				}
+			}
+			else trace("Unknown action in action list: " + actions);
+		}
+	}
 }
 
 typedef WorldConfig =
 {
 	var map(default, never):Array<Array<WorldEntity>>;
+	var regions(default, never):Array<Region>;
+	var triggers(default, never):Array<Trigger>;
 	var staticObjects(default, never):Array<StaticObjectConfig>;
 }
 
@@ -417,13 +560,42 @@ typedef StaticObjectConfig =
 	var rotation(default, never):Float;
 }
 
+typedef Trigger =
+{
+	var event:TriggerEvent;
+	var condition:TriggerCondition;
+	var actions:Array<TriggerAction>;
+}
+
+typedef TriggerParams =
+{
+	var triggeringUnit:BaseUnit;
+}
+
+enum TriggerCondition {
+	OwnerOf(unit:UnitDefinition, player:PlayerId);
+}
+
+enum UnitDefinition {
+	TriggeringUnit;
+}
+
+@:enum abstract PlayerId(Int) from Int to Int {
+	var Player1 = 0;
+	var Player2 = 1;
+	var Player3 = 2;
+	var Player4 = 3;
+	var Player5 = 4;
+	var Player6 = 5;
+}
+
+enum TriggerAction {
+	Log(message:String);
+	LoadLevel(levelName:String);
+}
+
 @:enum abstract WorldEntity(Int) from Int to Int {
 	var Nothing = 0;
 	var SimpleUnwalkable = 1;
 	var Tree = 2;
-}
-
-enum Player {
-	User;
-	Enemy;
 }
