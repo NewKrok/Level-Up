@@ -13,6 +13,7 @@ class Minion extends AICharacter
 	public function new(s2d:Object, parent, owner:PlayerId)
 	{
 		super(s2d, parent, owner, {
+			icon: Res.model.character.orc.minion.icon.toTile(),
 			idleModel: Res.model.character.orc.minion.IdleAnim,
 			idleAnimSpeedMultiplier: 0.8,
 			runModel: Res.model.character.orc.minion.WalkAnim,
@@ -27,6 +28,7 @@ class Minion extends AICharacter
 			damageMin: 1,
 			damageMax: 2,
 			maxLife: 15,
+			maxMana: 1,
 			detectionRange: 4,
 			unitSize: 0.9
 		});

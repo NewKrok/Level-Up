@@ -13,6 +13,7 @@ class Berserker extends AICharacter
 	public function new(s2d:Object, parent, owner:PlayerId)
 	{
 		super(s2d, parent, owner, {
+			icon: Res.model.character.orc.berserker.icon.toTile(),
 			idleModel: Res.model.character.orc.berserker.IdleAnim,
 			idleAnimSpeedMultiplier: 1.5,
 			runModel: Res.model.character.orc.berserker.WalkAnim,
@@ -27,6 +28,7 @@ class Berserker extends AICharacter
 			damageMin: 3,
 			damageMax: 6,
 			maxLife: 20,
+			maxMana: 1,
 			detectionRange: 5,
 			unitSize: 0.9
 		});

@@ -6,6 +6,7 @@ import demo.game.GameWorld;
 import demo.game.js.AStar;
 import h2d.Font;
 import h2d.Text;
+import h2d.Tile;
 import h3d.col.Capsule;
 import h3d.col.Point;
 import h3d.mat.BlendMode;
@@ -68,6 +69,7 @@ import tink.state.State;
 
 	public var state:State<UnitState> = new State<UnitState>(Idle);
 	public var life:State<Float> = new State<Float>(0);
+	public var mana:State<Float> = new State<Float>(0);
 
 	var lastAttackTime:Float = 0;
 	var attackTimer:Timer;
@@ -110,6 +112,8 @@ import tink.state.State;
 				state.set(Dead);
 			}
 		});
+
+		mana.set(config.maxMana);
 
 		// temporary
 		//t = new Text(FontBuilder.getFont("Arial", 12), s2d);
@@ -492,6 +496,7 @@ import tink.state.State;
 
 typedef UnitConfig =
 {
+	var icon:Tile;
 	var idleModel:Model;
 	var idleAnimSpeedMultiplier:Float;
 	var runModel:Model;
@@ -506,6 +511,7 @@ typedef UnitConfig =
 	var damageMin:Float;
 	var damageMax:Float;
 	var maxLife:Float;
+	var maxMana:Float;
 	var detectionRange:Float;
 	var unitSize:Float;
 }

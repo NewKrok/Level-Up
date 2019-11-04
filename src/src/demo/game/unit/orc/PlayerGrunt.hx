@@ -14,6 +14,7 @@ class PlayerGrunt extends BaseUnit
 	public function new(s2d:Object, parent, owner:PlayerId)
 	{
 		super(s2d, parent, owner, {
+			icon: Res.model.character.orc.grunt.icon.toTile(),
 			idleModel: Res.model.character.orc.grunt.IdleAnim,
 			idleAnimSpeedMultiplier: 0.8,
 			runModel: Res.model.character.orc.grunt.WalkAnim,
@@ -28,6 +29,7 @@ class PlayerGrunt extends BaseUnit
 			damageMin: 3,
 			damageMax: 8,
 			maxLife: 500,
+			maxMana: 1,
 			detectionRange: 3,
 			unitSize: 0.9
 		});

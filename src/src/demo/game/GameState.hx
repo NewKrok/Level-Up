@@ -4,12 +4,14 @@ import demo.AsyncUtil.Result;
 import demo.game.GameModel.PlayState;
 import demo.game.GameState.Trigger;
 import demo.game.GameWorld.Region;
+import demo.game.ui.HeroUi;
 import demo.game.unit.BaseUnit;
 import demo.game.unit.orc.Grunt;
 import demo.game.unit.orc.Berserker;
-import demo.game.ui.LifeBar;
+import demo.game.ui.LineBar;
 import demo.game.unit.orc.Minion;
 import demo.game.unit.orc.PlayerGrunt;
+import h2d.Flow;
 import h2d.Object;
 import h2d.Scene;
 import h3d.Vector;
@@ -38,6 +40,8 @@ import motion.easing.IEasing;
 import motion.easing.Linear;
 import motion.easing.Quad;
 import motion.easing.Quart;
+import tink.state.Observable;
+import tink.state.State;
 
 /**
  * ...
@@ -59,6 +63,8 @@ class GameState extends Base2dState
 	var debugUnitPath:Graphics;
 	var debugDetectionRadius:Graphics;
 
+	var heroUiContainer:Flow;
+
 	var camPosition:{ x:Float, y:Float, z:Float } = { x: 0, y: 0, z: 0 };
 	var camAnimationPosition:{ x:Float, y:Float, z:Float } = { x: 0, y: 0, z: 0 };
 	var cameraSpeed:SimplePoint = { x: 10, y: 10 };
@@ -70,7 +76,7 @@ class GameState extends Base2dState
 	var isMoveTriggerOn:Bool = false;
 	var lastMovePosition:SimplePoint = { x: 0, y: 0 };
 
-	var selectedUnit:BaseUnit;
+	var selectedUnit:State<BaseUnit> = new State<BaseUnit>(null);
 	var targetMarker:Mesh;
 	var isControlEnabled:Bool = false;
 	var isDisposed:Bool = false;
@@ -82,6 +88,13 @@ class GameState extends Base2dState
 		this.s3d = s3d;
 		this.s2d = s2d;
 		mapConfig = loadLevel(rawMap);
+
+		heroUiContainer = new Flow(s2d);
+		heroUiContainer.scale(0.5);
+		heroUiContainer.layout = Vertical;
+		heroUiContainer.verticalSpacing = 15;
+		heroUiContainer.x = 10;
+		heroUiContainer.y = 10;
 
 		camAnimationResult = { handle: function(handler:Void->Void) { camAnimationResultHandler = handler; } };
 
@@ -172,22 +185,22 @@ class GameState extends Base2dState
 
 		world.onWorldClick = e ->
 		{
-			if (isControlEnabled && selectedUnit != null && selectedUnit.state != Dead)
+			if (isControlEnabled && selectedUnit.value != null && selectedUnit.value.state != Dead)
 			{
 				lastMovePosition.x = Math.floor(e.relY / world.blockSize);
 				lastMovePosition.y = Math.floor(e.relX / world.blockSize);
-				selectedUnit.moveTo({ x: lastMovePosition.x, y: lastMovePosition.y }).handle(function () { trace("MOVE FINISHED"); });
+				selectedUnit.value.moveTo({ x: lastMovePosition.x, y: lastMovePosition.y }).handle(function () { trace("MOVE FINISHED"); });
 			}
 		}
 		world.onWorldMouseDown = _ -> isMoveTriggerOn = true;
 		world.onWorldMouseUp = _ -> isMoveTriggerOn = false;
 		world.onWorldMouseMove = e ->
 		{
-			if (selectedUnit != null && isMoveTriggerOn)
+			if (selectedUnit.value != null && isMoveTriggerOn)
 			{
 				lastMovePosition.x = Math.floor(e.relY / world.blockSize);
 				lastMovePosition.y = Math.floor(e.relX / world.blockSize);
-				selectedUnit.moveTo({ x: lastMovePosition.x, y: lastMovePosition.y }).handle(function () { trace("MOVE FINISHED"); });
+				selectedUnit.value.moveTo({ x: lastMovePosition.x, y: lastMovePosition.y }).handle(function () { trace("MOVE FINISHED"); });
 			}
 		}
 		world.onUnitEntersToRegion = function(r, u)
@@ -201,10 +214,7 @@ class GameState extends Base2dState
 				}
 			}
 		}
-		world.onClickOnUnit = u -> if (u.owner == PlayerId.Player1) {
-			selectedUnit = u;
-			setCameraTarget(selectedUnit);
-		}
+		world.onClickOnUnit = u -> if (u.owner == PlayerId.Player1) selectUnit(u);
 
 		for (u in mapConfig.units) createUnit(u.id, u.owner, u.x, u.y);
 
@@ -232,10 +242,6 @@ class GameState extends Base2dState
 		// Without intro
 		jumpCamera(10, 10, 20);
 		model.startGame();
-
-		/*var lifeUi = new LifeBar(s2d, selectedCharacter.life, selectedCharacter.config.maxLife);
-		lifeUi.x = 20;
-		lifeUi.y = 20;*/
 	}
 
 	function loadLevel(rawDataStr:String)
@@ -317,6 +323,22 @@ class GameState extends Base2dState
 		unit.view.x = posY * world.blockSize + world.blockSize / 2;
 		unit.view.y = posX * world.blockSize + world.blockSize / 2;
 		world.addEntity(unit);
+
+		if (owner == PlayerId.Player1)
+		{
+			var ui = new HeroUi(
+				heroUiContainer,
+				unit,
+				selectUnit,
+				selectedUnit.observe()
+			);
+		}
+	}
+
+	function selectUnit(u)
+	{
+		selectedUnit.set(u);
+		setCameraTarget(selectedUnit.value);
 	}
 
 	function drawDebugMapBlocks():Void
@@ -430,11 +452,11 @@ class GameState extends Base2dState
 
 		updateCamera(d);
 
-		if (selectedUnit != null && selectedUnit.nearestTarget != null)
+		if (selectedUnit.value != null && selectedUnit.value.nearestTarget != null)
 		{
 			targetMarker.visible = true;
-			targetMarker.x = selectedUnit.nearestTarget.getPosition().x - 0.5;
-			targetMarker.y = selectedUnit.nearestTarget.getPosition().y - 0.5;
+			targetMarker.x = selectedUnit.value.nearestTarget.getPosition().x - 0.5;
+			targetMarker.y = selectedUnit.value.nearestTarget.getPosition().y - 0.5;
 		}
 
 		drawDebugMapBlocks();

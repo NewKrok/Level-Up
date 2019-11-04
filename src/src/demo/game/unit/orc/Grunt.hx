@@ -13,6 +13,7 @@ class Grunt extends AICharacter
 	public function new(s2d:Object, parent, owner:PlayerId)
 	{
 		super(s2d, parent, owner, {
+			icon: Res.model.character.orc.grunt.icon.toTile(),
 			idleModel: Res.model.character.orc.grunt.IdleAnim,
 			idleAnimSpeedMultiplier: 0.8,
 			runModel: Res.model.character.orc.grunt.WalkAnim,
@@ -27,6 +28,7 @@ class Grunt extends AICharacter
 			damageMin: 2,
 			damageMax: 5,
 			maxLife: 30,
+			maxMana: 1,
 			detectionRange: 5,
 			unitSize: 0.9
 		});
