@@ -17,8 +17,9 @@ class Berserker extends AICharacter
 		super(s2d, parent, owner, {
 			icon: Res.model.character.orc.berserker.icon.toTile(),
 			idleModel: Res.model.character.orc.berserker.IdleAnim,
-			idleAnimSpeedMultiplier: 1.5,
+			idleAnimSpeedMultiplier: 0.3,
 			runModel: Res.model.character.orc.berserker.WalkAnim,
+			runAnimSpeedMultiplier: 1,
 			attackModel: Res.model.character.orc.berserker.Attack01Anim,
 			deathModel: Res.model.character.orc.berserker.DeathAnim,
 			modelScale: 0.008,
@@ -32,7 +33,9 @@ class Berserker extends AICharacter
 			maxLife: 20,
 			maxMana: 1,
 			detectionRange: 5,
-			unitSize: 0.9
+			unitSize: 0.9,
+			isFlyingUnit: false,
+			zOffset: 0
 		});
 	}
 }

@@ -1,7 +1,7 @@
 package levelup.game.unit;
+
 import levelup.AsyncUtil;
 import levelup.game.GameState;
-
 import levelup.AsyncUtil.Result;
 import levelup.game.GameState.PlayerId;
 import levelup.game.GameWorld;
@@ -85,11 +85,12 @@ import tink.state.State;
 		attackResult = { handle: function(handler:Void->Void) { attackResultHandler = handler; } };
 
 		view = cache.loadModel(config.idleModel);
+		view.z = config.zOffset;
 		parent.addChild(view);
 		view.scale(config.modelScale);
 
 		// 1.5 is a hacky solution to make easier the unit selection
-		collider = new Capsule(new Point(0, 0, 0), new Point(0, 0, 1.5 * config.unitSize), config.unitSize);
+		collider = new Capsule(new Point(0, 0, 0), new Point(0, 0, 1.8 * config.unitSize), config.unitSize);
 
 		interact = new Interactive(collider, parent);
 		interact.onClick = _ -> if (onClick != null) onClick(this);
@@ -126,11 +127,11 @@ import tink.state.State;
 			{
 				case Idle:
 					view.playAnimation(cache.loadAnimation(config.idleModel));
-					view.currentAnimation.speed = 1;
+					view.currentAnimation.speed = config.idleAnimSpeedMultiplier * config.speedMultiplier;
 
 				case MoveTo | AttackMoveTo | AttackRequested:
 					view.playAnimation(cache.loadAnimation(config.runModel));
-					view.currentAnimation.speed = config.idleAnimSpeedMultiplier * config.speedMultiplier;
+					view.currentAnimation.speed = config.runAnimSpeedMultiplier * config.speedMultiplier;
 
 				case AttackTriggered:
 					// Handled in a different way bewcause it's hybrid between idle and attack
@@ -334,9 +335,9 @@ import tink.state.State;
 		var now = Date.now();
 
 		// 0.8 is a hacky solution to make easier the unit selection
-		collider.a.x = view.x - 0.8;
+		collider.a.x = view.x - 0.8 + config.zOffset * 1.7;
 		collider.a.y = view.y;
-		collider.b.x = view.x - 0.8;
+		collider.b.x = view.x - 0.8 + config.zOffset * 1.7;
 		collider.b.y = view.y;
 
 		setRotation();
@@ -502,6 +503,7 @@ typedef UnitConfig =
 	var idleModel:Model;
 	var idleAnimSpeedMultiplier:Float;
 	var runModel:Model;
+	var runAnimSpeedMultiplier:Float;
 	var attackModel:Model;
 	var deathModel:Model;
 	var modelScale:Float;
@@ -516,6 +518,8 @@ typedef UnitConfig =
 	var maxMana:Float;
 	var detectionRange:Float;
 	var unitSize:Float;
+	var isFlyingUnit:Bool;
+	var zOffset:Float;
 }
 
 enum UnitState {

@@ -48,7 +48,7 @@ import tink.state.Observable;
 
 		selectedUnit.bind(v ->
 		{
-			filter = v == unit ? new Glow(0xFFFF00, 0.8, 15, 2, 1, true) : null;
+			filter = v == unit ? new Glow(0xFFFFFF, 1, 2, 1, 1, false) : null;
 		});
 	}
 }

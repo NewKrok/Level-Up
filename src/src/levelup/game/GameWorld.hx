@@ -101,7 +101,7 @@ class GameWorld extends World
 					case _:
 				}
 
-				graphArray[i].push(worldConfig.map[indexI][indexJ] == 1 || worldConfig.map[indexI][indexJ] == 2 ? 0 : 1);
+				graphArray[i].push(worldConfig.map[indexI][j] == 1 || worldConfig.map[indexI][j] == 2 ? 0 : 1);
 				indexJ--;
 			}
 			indexI--;
@@ -124,7 +124,7 @@ class GameWorld extends World
 			var indexJ = worldConfig.map[0].length - 1;
 			for (j in 0...worldConfig.map[0].length)
 			{
-				graph.grid[i][j].weight = worldConfig.map[indexI][indexJ] == 1 || worldConfig.map[indexI][indexJ] == 2 ? 0 : 1;
+				graph.grid[i][j].weight = worldConfig.map[indexI][j] == 1 || worldConfig.map[indexI][j] == 2 ? 0 : 1;
 				indexJ--;
 			}
 			indexI--;
@@ -224,13 +224,18 @@ class GameWorld extends World
 						bestUnit = uB;
 					}
 
-					if (distance < uA.config.unitSize + uB.config.unitSize)
-					{
+					if (
+						distance < uA.config.unitSize + uB.config.unitSize
+						&& (
+							(!uA.config.isFlyingUnit && !uB.config.isFlyingUnit)
+							|| (uA.config.isFlyingUnit && uB.config.isFlyingUnit)
+						)
+					){
 						var angle = GeomUtil.getAngle(uA.getPosition(), uB.getPosition());
 						var cosAngle = Math.cos(angle);
 						var sinAngle = Math.sin(angle);
-						var uAPower = 2 * (uB.config.unitSize / uA.config.unitSize);
-						var uBPower = 2 * (uB.config.unitSize / uA.config.unitSize);
+						var uAPower = 2 * (uA.config.unitSize / uB.config.unitSize);
+						var uBPower = 2 * (uA.config.unitSize / uB.config.unitSize);
 
 						switch ([uA.state.value, uB.state.value])
 						{

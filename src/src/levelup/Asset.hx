@@ -20,6 +20,8 @@ class Asset
 		case "SM_Ground_Tiles_Large": Res.model.environment.SM_Ground_Tiles_Large;
 
 		case "SM_Swords_And_Shield": Res.model.props.SM_Swords_And_Shield;
+		case "SM_Wooden_Shelf": Res.model.props.SM_Wooden_Shelf;
+		case "SM_Wooden_Table": Res.model.props.SM_Wooden_Table;
 
 		case _: null;
 	}

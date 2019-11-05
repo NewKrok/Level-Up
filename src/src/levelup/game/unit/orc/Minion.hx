@@ -17,8 +17,9 @@ class Minion extends AICharacter
 		super(s2d, parent, owner, {
 			icon: Res.model.character.orc.minion.icon.toTile(),
 			idleModel: Res.model.character.orc.minion.IdleAnim,
-			idleAnimSpeedMultiplier: 0.8,
+			idleAnimSpeedMultiplier: 0.5,
 			runModel: Res.model.character.orc.minion.WalkAnim,
+			runAnimSpeedMultiplier: 1.5,
 			attackModel: Res.model.character.orc.minion.WorkRoutineAnim,
 			deathModel: Res.model.character.orc.minion.DeathAnim,
 			modelScale: 0.008,
@@ -32,7 +33,9 @@ class Minion extends AICharacter
 			maxLife: 15,
 			maxMana: 1,
 			detectionRange: 4,
-			unitSize: 0.9
+			unitSize: 0.7,
+			isFlyingUnit: false,
+			zOffset: 0
 		});
 	}
 }

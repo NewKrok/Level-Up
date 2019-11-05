@@ -6,6 +6,8 @@ import levelup.game.GameState.Trigger;
 import levelup.game.GameWorld.Region;
 import levelup.game.ui.HeroUi;
 import levelup.game.unit.BaseUnit;
+import levelup.game.unit.orc.BandWagon;
+import levelup.game.unit.orc.Drake;
 import levelup.game.unit.orc.Grunt;
 import levelup.game.unit.orc.Berserker;
 import levelup.game.ui.LineBar;
@@ -150,18 +152,18 @@ class GameState extends Base2dState
 		}*/
 
 		var dirLight = new DirLight(null, s3d);
-		dirLight.setDirection(new Vector(2, 0, -2));
+		dirLight.setDirection(new Vector(1, 0, -2));
 		dirLight.color = new Vector(0.9, 0.9, 0.9);
 
 		var pLight = new PointLight(s3d);
 		pLight.setPosition(20, 10, 15);
 		pLight.color = new Vector(200, 200, 200);
 
-		s3d.lightSystem.ambientLight.setColor(0x333333);
+		s3d.lightSystem.ambientLight.setColor(0x000000);
 
 		var shadow:h3d.pass.DefaultShadowMap = s3d.renderer.getPass(h3d.pass.DefaultShadowMap);
 		shadow.size = 2048;
-		shadow.power = 100;
+		shadow.power = 20;
 		shadow.blur.radius = 5;
 		shadow.bias *= 0.1;
 		shadow.color.set(0.4, 0.4, 0.4);
@@ -241,7 +243,7 @@ class GameState extends Base2dState
 		}, 3500);*/
 
 		// Without intro
-		jumpCamera(10, 10, 20);
+		jumpCamera(10, 10, 23);
 		model.startGame();
 	}
 
@@ -316,9 +318,11 @@ class GameState extends Base2dState
 	{
 		var unit = switch (id) {
 			case "playergrunt": new PlayerGrunt(s2d, world, owner);
+			case "bandwagon": new BandWagon(s2d, world, owner);
+			case "berserker": new Berserker(s2d, world, owner);
+			case "drake": new Drake(s2d, world, owner);
 			case "minion": new Minion(s2d, world, owner);
 			case "grunt": new Grunt(s2d, world, owner);
-			case "berserker": new Berserker(s2d, world, owner);
 			case _: null;
 		};
 		unit.view.x = posY * world.blockSize + world.blockSize / 2;
@@ -460,10 +464,10 @@ class GameState extends Base2dState
 			targetMarker.y = selectedUnit.value.nearestTarget.getPosition().y - 0.5;
 		}
 
-		drawDebugMapBlocks();
+		/*drawDebugMapBlocks();
 		drawDebugRegions();
 		drawDebugPath();
-		drawDebugInteractionRadius();
+		drawDebugInteractionRadius();*/
 	}
 
 	function updateCamera(d:Float)
@@ -482,13 +486,13 @@ class GameState extends Base2dState
 			camPosition.y += (targetPoint.y - camPosition.y) / cameraSpeed.y * d * 30;
 		}
 
-		camPosition.x = Math.max(camPosition.x, 9);
+		camPosition.x = Math.max(camPosition.x, 13);
 		camPosition.x = Math.min(camPosition.x, 38);
 
 		camPosition.y = Math.max(camPosition.y, 4);
 		camPosition.y = Math.min(camPosition.y, 16);
 
-		s3d.camera.pos.set(camPosition.x - 20, camPosition.y, camPosition.z);
+		s3d.camera.pos.set(camPosition.x - 30, camPosition.y, camPosition.z);
 		s3d.camera.target.set(camPosition.x + 2, camPosition.y);
 	}
 
@@ -594,6 +598,7 @@ class GameState extends Base2dState
 		world.dispose();
 		world = null;
 
+		s2d.removeChildren();
 		s3d.removeChildren();
 
 		Actuate.reset();

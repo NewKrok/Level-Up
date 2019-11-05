@@ -8,7 +8,7 @@
 
 	<script>
 		// yeah I know...
-		var totalSize = 8361283;
+		var totalSize = 10000000;
 		var preloader;
 		var preloaderLine;
 
@@ -21,8 +21,8 @@
 
 			req.addEventListener("progress", function(event)
 			{
-				var percentComplete = Math.floor(event.loaded / totalSize * 100);
-				<!--console.log(event.loaded);-->
+				var percentComplete = Math.min(Math.floor(event.loaded / totalSize * 100), 100);
+				console.log(event.loaded);
 				preloaderLine.setAttribute("style","width:" + percentComplete + "%");
 			}, false);
 

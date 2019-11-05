@@ -17,8 +17,9 @@ class PlayerGrunt extends BaseUnit
 		super(s2d, parent, owner, {
 			icon: Res.model.character.orc.grunt.icon.toTile(),
 			idleModel: Res.model.character.orc.grunt.IdleAnim,
-			idleAnimSpeedMultiplier: 0.8,
+			idleAnimSpeedMultiplier: 0.2,
 			runModel: Res.model.character.orc.grunt.WalkAnim,
+			runAnimSpeedMultiplier: 0.8,
 			attackModel: Res.model.character.orc.grunt.Attack01Anim,
 			deathModel: Res.model.character.orc.grunt.DeathAnim,
 			modelScale: 0.008,
@@ -32,7 +33,9 @@ class PlayerGrunt extends BaseUnit
 			maxLife: 500,
 			maxMana: 1,
 			detectionRange: 3,
-			unitSize: 0.9
+			unitSize: 0.8,
+			isFlyingUnit: false,
+			zOffset: 0
 		});
 	}
 
