@@ -2,3 +2,4 @@ src/res/.tmp/
 src/res/model/
 src/res/ui/
 graphic/
+src/bin/level-up.js
