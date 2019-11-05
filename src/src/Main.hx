@@ -1,7 +1,7 @@
 package;
 
-import demo.MapData;
-import demo.game.GameState;
+import levelup.MapData;
+import levelup.game.GameState;
 import haxe.Timer;
 import hpp.heaps.Base2dApp;
 import hpp.heaps.Base2dStage.StageScaleMode;
