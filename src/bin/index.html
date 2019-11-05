@@ -5,9 +5,99 @@
 	<title>Level Up</title>
 	<meta name="description" content="" />
 	<script type='text/javascript' src='astar.js'></script>
+
+	<script>
+		// yeah I know...
+		var totalSize = 8361283;
+		var preloader;
+		var preloaderLine;
+
+		function preload(scriptUrl)
+		{
+			preloader = document.getElementById("lu_preloader");
+			preloaderLine = document.getElementById("lu_preloader_line");
+
+			var req = new XMLHttpRequest();
+
+			req.addEventListener("progress", function(event)
+			{
+				var percentComplete = Math.floor(event.loaded / totalSize * 100);
+				<!--console.log(event.loaded);-->
+				preloaderLine.setAttribute("style","width:" + percentComplete + "%");
+			}, false);
+
+			req.addEventListener("load", function(event)
+			{
+				var e = event.target;
+				var s = document.createElement("script");
+				s.innerHTML = e.responseText;
+				document.documentElement.appendChild(s);
+
+				setTimeout(function(){ preloader.parentNode.removeChild(preloader); }, 500);
+			}, false);
+
+			req.open("GET", scriptUrl);
+			req.send();
+		}
+
+		window.onload = function() { preload("level-up.js"); };
+	</script>
+
+	<style type="text/css">
+		html, body {
+			margin: 0;
+			padding: 0;
+			background-color: #111111;
+			width: 100%;
+			height: 100%;
+		}
+
+		#lu_preloader {
+			width: 100%;
+			height: 100%;
+			position: absolute;
+			top: 0;
+		}
+
+		.lu_preloader_block {
+			position: absolute;
+			top: 30%;
+			left: 50%;
+			transform: translate(-50%, -50%);
+			display: flex;
+			flex-direction: column;
+			filter: drop-shadow(2px 4px 6px black);
+		}
+
+		.lu_preloader_back {
+			position: relative;
+			width: 260px;
+			height: 20px;
+			background-color: #2E221B;
+			border: solid 1px #555555;
+			margin-top: 10px;
+			padding: 1px;
+			box-sizing: border-box;
+		}
+
+		#lu_preloader_line {
+			min-width: 10px;
+			height: 100%;
+			transition: width 0.3s;
+			background-image: url(preloader_line.png);
+			background-repeat: repeat-x;
+		}
+	</style>
 </head>
 <body style="margin:0;padding:0">
 	<canvas id="webgl" style="width:100%;height:100%"></canvas>
-	<script src="level-up.js"></script>
+	<div id="lu_preloader">
+		<div class="lu_preloader_block">
+			<img src="logo.png" />
+			<div class="lu_preloader_back">
+				<div id="lu_preloader_line"></div>
+			</div>
+		</div>
+	</div>
 </body>
 </html>
