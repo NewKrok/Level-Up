@@ -74,9 +74,12 @@ class GameState extends Base2dState
 
 	var heroUiContainer:Flow;
 
-	var camPosition:{ x:Float, y:Float, z:Float } = { x: 0, y: 0, z: 0 };
+	var currentCameraPoint:{ x:Float, y:Float, z:Float } = { x: 0, y: 0, z: 0 };
 	var camAnimationPosition:{ x:Float, y:Float, z:Float } = { x: 0, y: 0, z: 0 };
-	var cameraSpeed:SimplePoint = { x: 10, y: 10 };
+	var currentCamDistance:Float = 0;
+	var cameraSpeed:Vector = new Vector(10, 10, 5);
+	var camAngle:Float = Math.PI - Math.PI / 4;
+	var camDistance:Float = 30;
 	var hasCameraAnimation:Bool = false;
 	var camAnimationResult:Result;
 	var camAnimationResultHandler:Void->Void;
@@ -223,6 +226,7 @@ class GameState extends Base2dState
 				}
 			}
 		}
+		world.onWorldWheel = e -> camDistance += e.wheelDelta * 8;
 		world.onClickOnUnit = u -> if (u.owner == PlayerId.Player1) selectUnit(u);
 
 		for (u in mapConfig.units) createUnit(u.id, u.owner, u.x, u.y);
@@ -488,35 +492,46 @@ class GameState extends Base2dState
 	{
 		if (hasCameraAnimation || cameraTarget == null)
 		{
-			camPosition.x = camAnimationPosition.x;
-			camPosition.y = camAnimationPosition.y;
-			camPosition.z = camAnimationPosition.z;
+			currentCameraPoint.x = camAnimationPosition.x;
+			currentCameraPoint.y = camAnimationPosition.y;
+			currentCameraPoint.z = camAnimationPosition.z;
 		}
 		else
 		{
 			var targetPoint = cameraTarget.getPosition();
 
-			camPosition.x += (targetPoint.x - camPosition.x) / cameraSpeed.x * d * 30;
-			camPosition.y += (targetPoint.y - camPosition.y) / cameraSpeed.y * d * 30;
+			currentCameraPoint.x += (targetPoint.x - currentCameraPoint.x) / cameraSpeed.x * d * 30;
+			currentCameraPoint.y += (targetPoint.y - currentCameraPoint.y) / cameraSpeed.y * d * 30;
+			camDistance += (camDistance - currentCamDistance) / cameraSpeed.z * d * 30;
+
+			camDistance = Math.max(10, camDistance);
+			camDistance = Math.min(100, camDistance);
+
+			currentCameraPoint.z = camDistance;
 		}
 
-		camPosition.x = Math.max(camPosition.x, 13);
-		camPosition.x = Math.min(camPosition.x, 38);
+		currentCameraPoint.x = Math.max(currentCameraPoint.x, 13);
+		currentCameraPoint.x = Math.min(currentCameraPoint.x, 38);
 
-		camPosition.y = Math.max(camPosition.y, 4);
-		camPosition.y = Math.min(camPosition.y, 16);
+		currentCameraPoint.y = Math.max(currentCameraPoint.y, 4);
+		currentCameraPoint.y = Math.min(currentCameraPoint.y, 16);
 
-		s3d.camera.pos.set(camPosition.x - 30, camPosition.y, camPosition.z);
-		s3d.camera.target.set(camPosition.x + 2, camPosition.y);
+		s3d.camera.target.set(currentCameraPoint.x, currentCameraPoint.y);
+
+		s3d.camera.pos.set(
+			currentCameraPoint.x - currentCamDistance * Math.cos(camAngle),
+			currentCameraPoint.y,
+			currentCameraPoint.z + currentCamDistance * Math.sin(camAngle)
+		);
 	}
 
 	function moveCamera(x:Float, y:Float, z:Float, time:Float, ease:IEasing = null)
 	{
 		camAnimationResultHandler = null;
 		hasCameraAnimation = true;
-		camAnimationPosition.x = camPosition.x;
-		camAnimationPosition.y = camPosition.y;
-		camAnimationPosition.z = camPosition.z;
+		camAnimationPosition.x = currentCameraPoint.x;
+		camAnimationPosition.y = currentCameraPoint.y;
+		camAnimationPosition.z = currentCameraPoint.z;
 
 		Actuate.tween(camAnimationPosition, time, { x: x, y: y, z: z })
 			.ease(ease == null ? Linear.easeNone : ease)
@@ -537,12 +552,14 @@ class GameState extends Base2dState
 
 	function jumpCamera(x:Float, y:Float, z:Float)
 	{
-		camPosition.x = x;
-		camPosition.y = y;
-		camPosition.z = z;
-		camAnimationPosition.x = camPosition.x;
-		camAnimationPosition.y = camPosition.y;
-		camAnimationPosition.z = camPosition.z;
+		currentCameraPoint.x = x;
+		currentCameraPoint.y = y;
+		currentCameraPoint.z = z;
+		camAnimationPosition.x = currentCameraPoint.x;
+		camAnimationPosition.y = currentCameraPoint.y;
+		camAnimationPosition.z = currentCameraPoint.z;
+
+		currentCamDistance = camDistance;
 
 		updateCamera(0);
 	}

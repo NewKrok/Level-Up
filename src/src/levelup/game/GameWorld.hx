@@ -38,6 +38,7 @@ class GameWorld extends World
 	public var onWorldMouseDown:Event->Void;
 	public var onWorldMouseUp:Event->Void;
 	public var onWorldMouseMove:Event->Void;
+	public var onWorldWheel:Event->Void;
 
 	public var units(default, null):Array<BaseUnit> = [];
 	public var regionDatas(default, null):Array<RegionData> = [];
@@ -67,6 +68,7 @@ class GameWorld extends World
 		interact.onPush = function (e) { onWorldMouseDown(e); };
 		interact.onRelease = function (e) { onWorldMouseUp(e); };
 		interact.onMove = function (e) { onWorldMouseMove(e); };
+		interact.onWheel = function (e) { onWorldWheel(e); };
 
 		for (r in worldConfig.regions)
 		{
@@ -78,8 +80,6 @@ class GameWorld extends World
 			regionDatas.push(rData);
 		}
 	}
-
-	public function disableInteraction() interact.remove();
 
 	public function generateMap():Void
 	{

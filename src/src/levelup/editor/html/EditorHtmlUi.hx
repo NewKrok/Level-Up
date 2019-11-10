@@ -14,6 +14,7 @@ using StringTools;
 class EditorHtmlUi extends View
 {
 	@:attribute var backToLobby:Void->Void;
+	@:attribute var previewRequest:AssetItem->Void;
 
 	@:skipCheck @:attribute var environmentsList:List<AssetItem>;
 	@:skipCheck @:attribute var propsList:List<AssetItem>;
@@ -27,6 +28,7 @@ class EditorHtmlUi extends View
 	};
 
 	@:state var selectedListIndex:Int = 0;
+	@:skipCheck @:state var selectedAsset:AssetItem = null;
 
 	function render() '
 		<div class="lu_editor">
@@ -50,7 +52,9 @@ class EditorHtmlUi extends View
 				<div class="lu_list_container">
 					<ul>
 						<for {e in list}>
-							<li class="lu_list_element">{e.name.replace("SM_", "").replace("_", " ")}</li>
+							<li class={"lu_list_element" + (e == selectedAsset ? " lu_list_element--selected" : "")} onclick={() -> {previewRequest(e); selectedAsset = e;}}>
+								{e.name.replace("SM_", "").replace("_", " ")}
+							</li>
 						</for>
 					</ul>
 				</div>

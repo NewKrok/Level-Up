@@ -3,10 +3,12 @@ package levelup.editor;
 import coconut.ui.RenderResult;
 import h2d.Flow;
 import h2d.Scene;
+import h3d.Camera;
 import h3d.Vector;
+import h3d.mat.BlendMode;
 import h3d.pass.DefaultShadowMap;
 import h3d.prim.Cube;
-import h3d.scene.CameraController;
+import h3d.prim.ModelCache;
 import h3d.scene.Graphics;
 import h3d.scene.Mesh;
 import h3d.scene.Object;
@@ -18,6 +20,7 @@ import hpp.heaps.Base2dState;
 import hpp.heaps.HppG;
 import hpp.util.GeomUtil.SimplePoint;
 import js.Browser;
+import levelup.Asset;
 import levelup.editor.EditorUi;
 import levelup.editor.html.EditorHtmlUi;
 import levelup.game.GameState;
@@ -59,11 +62,22 @@ class EditorState extends Base2dState
 	var debugUnitPath:Graphics;
 	var debugDetectionRadius:Graphics;
 
-	var isMoveTriggerOn:Bool = false;
-	var lastMovePosition:SimplePoint = { x: 0, y: 0 };
-
 	var selectedUnit:State<BaseUnit> = new State<BaseUnit>(null);
 	var isDisposed:Bool = false;
+
+	var isMapDragActive:Bool = false;
+	var dragStartPoint:SimplePoint = { x: 0, y: 0 };
+	var dragStartObjectPoint:SimplePoint = { x: 0, y: 0 };
+
+	var cameraObject:Object = new Object();
+	var currentCameraPoint:{ x:Float, y:Float, z:Float } = { x: 0, y: 0, z: 0 };
+	var currentCamDistance:Float = 0;
+	var cameraSpeed:Vector = new Vector(10, 10, 5);
+	var camAngle:Float = Math.PI - Math.PI / 4;
+	var camDistance:Float = 30;
+
+	var cache:ModelCache = new ModelCache();
+	var previewInstance:Object;
 
 	public function new(stage:Base2dStage, s2d:h2d.Scene, s3d:h3d.scene.Scene, rawMap:String)
 	{
@@ -120,30 +134,82 @@ class EditorState extends Base2dState
 		{
 
 		}
-		world.onWorldMouseDown = _ -> isMoveTriggerOn = true;
-		world.onWorldMouseUp = _ -> isMoveTriggerOn = false;
+		world.onWorldMouseDown = e ->
+		{
+			isMapDragActive = true;
+			dragStartPoint.x = e.relX;
+			dragStartPoint.y = e.relY;
+			dragStartObjectPoint.x = cameraObject.x;
+			dragStartObjectPoint.y = cameraObject.y;
+		}
+		world.onWorldMouseUp = e ->
+		{
+			isMapDragActive = false;
+		}
 		world.onWorldMouseMove = e ->
 		{
+			if (previewInstance != null)
+			{
+				previewInstance.x = e.relX;
+				previewInstance.y = e.relY;
+			}
 
+			if (isMapDragActive)
+			{
+				cameraObject.x = dragStartObjectPoint.x + (dragStartPoint.x - e.relX) * 2;
+				cameraObject.y = dragStartObjectPoint.y + (dragStartPoint.y - e.relY) * 2;
+			}
 		}
+		world.onWorldWheel = e -> camDistance += e.wheelDelta * 8;
 		world.onClickOnUnit = u -> if (u.owner == PlayerId.Player1) selectUnit(u);
 
 		for (u in mapConfig.units) createUnit(u.id, u.owner, u.x, u.y);
 
+		s3d.addChild(cameraObject);
 		s3d.camera.pos.set(10 - 30, 10, 30);
-		s3d.camera.target.set(10 + 2, 10);
-		new CameraController(s3d).loadFromCamera();
+		s3d.camera.target.x = s3d.camera.pos.x + 30;
+		s3d.camera.target.y = s3d.camera.pos.y;
+		jumpCamera(10, 10, 23);
 
 		new EditorUi(s2d, s3d, world);
-		world.disableInteraction();
 
 		var ui:RenderResult = EditorHtmlUi.fromHxx({
 			backToLobby: () -> HppG.changeState(GameState, [stage, s3d, MapData.getRawMap("lobby")]),
+			previewRequest: createPreview,
 			environmentsList: List.fromArray(Asset.environment),
 			propsList: List.fromArray(Asset.props),
 			unitsList: List.fromArray([])
 		});
 		ReactDOM.render(ui, Browser.document.getElementById("native-ui"));
+	}
+
+	function jumpCamera(x:Float, y:Float, z:Float)
+	{
+		cameraObject.x = x;
+		cameraObject.y = y;
+
+		currentCameraPoint.x = x;
+		currentCameraPoint.y = y;
+		currentCameraPoint.z = z;
+
+		currentCamDistance = camDistance;
+
+		updateCamera(0);
+	}
+
+	function createPreview(asset:AssetItem)
+	{
+		if (previewInstance != null)
+		{
+			previewInstance.remove();
+			previewInstance = null;
+		}
+
+		previewInstance = cache.loadModel(asset.model);
+		previewInstance.scale(0.05);
+		previewInstance.getMaterials()[0].blendMode = BlendMode.Screen;
+
+		s3d.addChild(previewInstance);
 	}
 
 	function loadLevel(rawDataStr:String)
@@ -307,6 +373,26 @@ class EditorState extends Base2dState
 		drawDebugRegions();
 		drawDebugPath();
 		drawDebugInteractionRadius();*/
+
+		updateCamera(d);
+	}
+
+	function updateCamera(d:Float)
+	{
+		camDistance = Math.max(10, camDistance);
+		camDistance = Math.min(100, camDistance);
+
+		currentCameraPoint.x += (cameraObject.x - currentCameraPoint.x) / cameraSpeed.x * d * 30;
+		currentCameraPoint.y += (cameraObject.y - currentCameraPoint.y) / cameraSpeed.y * d * 30;
+		currentCamDistance += (camDistance - currentCamDistance) / cameraSpeed.z * d * 30;
+
+		s3d.camera.target.set(currentCameraPoint.x, currentCameraPoint.y);
+
+		s3d.camera.pos.set(
+			currentCameraPoint.x + currentCamDistance * Math.cos(camAngle),
+			currentCameraPoint.y,
+			cameraObject.z + currentCamDistance * Math.sin(camAngle)
+		);
 	}
 
 	override public function dispose():Void

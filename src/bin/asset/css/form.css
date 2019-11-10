@@ -34,6 +34,11 @@ ul {
 	border-top: 1px solid #777;
 }
 
+.lu_list_element--selected {
+	background-color: #00000055;
+	font-weight: bold;
+}
+
 .lu_list_element:hover {
 	background-color: #00000055;
 }
