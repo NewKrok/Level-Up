@@ -146,20 +146,6 @@ class GameState extends Base2dState
 			world.addEntity(character);
 		}*/
 
-
-		/*var enemyPoints = [
-			{ x: 5, y: 5 },
-			{ x: 2, y: 5 },
-			{ x: 15, y: 5 },
-		];
-		for (p in enemyPoints)
-		{
-			var character = new Warrior(s2d, PlayerId.Player2);
-			character.view.x = p.y * world.blockSize + world.blockSize / 2;
-			character.view.y = p.x * world.blockSize + world.blockSize / 2;
-			world.addEntity(character);
-		}*/
-
 		var dirLight = new DirLight(null, s3d);
 		dirLight.setDirection(new Vector(1, 0, -2));
 		dirLight.color = new Vector(0.9, 0.9, 0.9);
@@ -494,20 +480,18 @@ class GameState extends Base2dState
 		{
 			currentCameraPoint.x = camAnimationPosition.x;
 			currentCameraPoint.y = camAnimationPosition.y;
-			currentCameraPoint.z = camAnimationPosition.z;
+			currentCameraPoint.z = camDistance = camAnimationPosition.z;
 		}
 		else
 		{
 			var targetPoint = cameraTarget.getPosition();
 
-			currentCameraPoint.x += (targetPoint.x - currentCameraPoint.x) / cameraSpeed.x * d * 30;
-			currentCameraPoint.y += (targetPoint.y - currentCameraPoint.y) / cameraSpeed.y * d * 30;
-			camDistance += (camDistance - currentCamDistance) / cameraSpeed.z * d * 30;
-
 			camDistance = Math.max(10, camDistance);
 			camDistance = Math.min(100, camDistance);
 
-			currentCameraPoint.z = camDistance;
+			currentCameraPoint.x += (targetPoint.x - currentCameraPoint.x) / cameraSpeed.x * d * 30;
+			currentCameraPoint.y += (targetPoint.y - currentCameraPoint.y) / cameraSpeed.y * d * 30;
+			currentCamDistance += (camDistance - currentCamDistance) / cameraSpeed.z * d * 30;
 		}
 
 		currentCameraPoint.x = Math.max(currentCameraPoint.x, 13);
@@ -519,9 +503,11 @@ class GameState extends Base2dState
 		s3d.camera.target.set(currentCameraPoint.x, currentCameraPoint.y);
 
 		s3d.camera.pos.set(
-			currentCameraPoint.x - currentCamDistance * Math.cos(camAngle),
+			currentCameraPoint.x + currentCamDistance * Math.cos(camAngle),
 			currentCameraPoint.y,
-			currentCameraPoint.z + currentCamDistance * Math.sin(camAngle)
+			(hasCameraAnimation || cameraTarget == null)
+				? currentCameraPoint.z + currentCamDistance * Math.sin(camAngle)
+				: cameraTarget.view.z + currentCamDistance * Math.sin(camAngle)
 		);
 	}
 
