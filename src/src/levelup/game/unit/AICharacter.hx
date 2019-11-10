@@ -1,7 +1,6 @@
 package levelup.game.unit;
-import levelup.game.GameState;
-import levelup.game.GameWorld;
 
+import levelup.game.GameWorld;
 import levelup.game.GameState.PlayerId;
 import levelup.game.unit.BaseUnit.UnitConfig;
 import levelup.game.unit.BaseUnit.UnitState;

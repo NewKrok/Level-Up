@@ -1,7 +1,6 @@
 package levelup.game.unit;
 
 import levelup.AsyncUtil;
-import levelup.game.GameState;
 import levelup.AsyncUtil.Result;
 import levelup.game.GameState.PlayerId;
 import levelup.game.GameWorld;

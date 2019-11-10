@@ -8,10 +8,10 @@ import coconut.data.Model;
  */
 class GameModel implements Model
 {
-	@:observable var state:PlayState = Loading;
+	@:observable var gameState:PlayState = Loading;
 
-	@:transition function initGame() return { state: InitVideoInProgress };
-	@:transition function startGame() return { state: GameStarted };
+	@:transition function initGame() return { gameState: InitVideoInProgress };
+	@:transition function startGame() return { gameState: GameStarted };
 }
 
 enum PlayState {

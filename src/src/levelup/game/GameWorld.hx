@@ -79,6 +79,8 @@ class GameWorld extends World
 		}
 	}
 
+	public function disableInteraction() interact.remove();
+
 	public function generateMap():Void
 	{
 		var graphArray = [];
@@ -92,15 +94,6 @@ class GameWorld extends World
 			graphArray.push([]);
 			for (j in 0...worldConfig.map[0].length)
 			{
-				switch(worldConfig.map[indexI][indexJ])
-				{
-					case 2:
-						var tree:Object = cache.loadModel(Res.model.environment.tree.tree);
-						addToWorldPoint(tree, i, indexJ, 0, 0.9 + Math.random() * 0.5, Math.random() * Math.PI * 2);
-
-					case _:
-				}
-
 				graphArray[i].push(worldConfig.map[indexI][j] == 1 || worldConfig.map[indexI][j] == 2 ? 0 : 1);
 				indexJ--;
 			}
@@ -109,7 +102,7 @@ class GameWorld extends World
 
 		for (o in worldConfig.staticObjects)
 		{
-			var instance:Object = cache.loadModel(Asset.getStaticObject(o.name));
+			var instance:Object = cache.loadModel(Asset.getStaticObject(o.name).model);
 			addToWorldPoint(instance, o.x, o.y, o.z, o.scale, o.rotation);
 		}
 
@@ -234,16 +227,16 @@ class GameWorld extends World
 						var angle = GeomUtil.getAngle(uA.getPosition(), uB.getPosition());
 						var cosAngle = Math.cos(angle);
 						var sinAngle = Math.sin(angle);
-						var uAPower = 2 * (uA.config.unitSize / uB.config.unitSize);
-						var uBPower = 2 * (uA.config.unitSize / uB.config.unitSize);
+						var uAPower = 1 * (uA.config.unitSize / uB.config.unitSize);
+						var uBPower = 1 * (uA.config.unitSize / uB.config.unitSize);
 
 						switch ([uA.state.value, uB.state.value])
 						{
-							case [UnitState.MoveTo | UnitState.AttackMoveTo | UnitState.AttackRequested, UnitState.Idle]: uAPower = 4; uBPower = -1;
-							case [UnitState.Idle, UnitState.MoveTo | UnitState.AttackMoveTo | UnitState.AttackRequested]: uAPower = -1; uBPower = 4;
+							case [UnitState.MoveTo | UnitState.AttackMoveTo | UnitState.AttackRequested, UnitState.Idle]: uAPower = 2; uBPower = 0;
+							case [UnitState.Idle, UnitState.MoveTo | UnitState.AttackMoveTo | UnitState.AttackRequested]: uAPower = 0; uBPower = 2;
 
-							case [UnitState.MoveTo | UnitState.AttackMoveTo | UnitState.AttackRequested, UnitState.AttackTriggered]: uAPower = 3; uBPower = -1;
-							case [UnitState.AttackTriggered, UnitState.MoveTo | UnitState.AttackMoveTo | UnitState.AttackRequested]: uAPower = -1; uBPower = 3;
+							case [UnitState.MoveTo | UnitState.AttackMoveTo | UnitState.AttackRequested, UnitState.AttackTriggered]: uAPower = 1; uBPower = 0;
+							case [UnitState.AttackTriggered, UnitState.MoveTo | UnitState.AttackMoveTo | UnitState.AttackRequested]: uAPower = 0; uBPower = 1;
 
 							case _:
 						}

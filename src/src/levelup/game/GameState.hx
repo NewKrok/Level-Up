@@ -1,9 +1,14 @@
 package levelup.game;
 
+import coconut.ui.RenderResult;
+import h3d.scene.CameraController;
+import js.Browser;
 import levelup.AsyncUtil.Result;
+import levelup.editor.EditorState;
 import levelup.game.GameModel.PlayState;
 import levelup.game.GameState.Trigger;
 import levelup.game.GameWorld.Region;
+import levelup.game.html.LobbyUi;
 import levelup.game.ui.HeroUi;
 import levelup.game.unit.BaseUnit;
 import levelup.game.unit.orc.BandWagon;
@@ -43,6 +48,7 @@ import motion.easing.IEasing;
 import motion.easing.Linear;
 import motion.easing.Quad;
 import motion.easing.Quart;
+import react.ReactDOM;
 import tink.state.Observable;
 import tink.state.State;
 
@@ -102,7 +108,7 @@ class GameState extends Base2dState
 		camAnimationResult = { handle: function(handler:Void->Void) { camAnimationResultHandler = handler; } };
 
 		model = new GameModel();
-		model.observables.state.bind(function(v)
+		model.observables.gameState.bind(function(v)
 		{
 			switch (v)
 			{
@@ -245,6 +251,14 @@ class GameState extends Base2dState
 		// Without intro
 		jumpCamera(10, 10, 23);
 		model.startGame();
+
+		if (mapConfig.name == "Lobby")
+		{
+			var ui:RenderResult = LobbyUi.fromHxx({
+				openEditor: () -> HppG.changeState(EditorState, [stage, s3d, MapData.getRawMap("lobby")])
+			});
+			ReactDOM.render(ui, Browser.document.getElementById("native-ui"));
+		}
 	}
 
 	function loadLevel(rawDataStr:String)

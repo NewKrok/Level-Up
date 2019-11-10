@@ -1,7 +1,6 @@
 package levelup.game.unit.orc;
-import levelup.game.GameState;
-import levelup.game.unit.AICharacter;
 
+import levelup.game.unit.AICharacter;
 import levelup.game.GameState.PlayerId;
 import h2d.Object;
 import hxd.Res;

@@ -1,7 +1,9 @@
 package;
 
 import h3d.Engine;
+import levelup.Asset;
 import levelup.MapData;
+import levelup.editor.EditorState;
 import levelup.game.GameState;
 import haxe.Timer;
 import hpp.heaps.Base2dApp;
@@ -14,13 +16,15 @@ import hxd.Res;
  */
 class Main extends Base2dApp
 {
-	var gameState:GameState;
+	var gameState:EditorState;
 
 	override function init()
 	{
 		super.init();
 		stage.stageScaleMode = StageScaleMode.SHOW_ALL;
+		Asset.init();
 
+		//changeState(EditorState, [stage, s3d, MapData.getRawMap("lobby")]);
 		changeState(GameState, [stage, s3d, MapData.getRawMap("lobby")]);
 		//changeState(GameState, [s2d, s3d, MapData.getRawMap("hero_survival")]);
 	}

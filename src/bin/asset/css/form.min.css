@@ -1,0 +1,8 @@
+.lu_selector{width:calc(100% - 20px);margin:10px;padding:5px;font-weight:bold;background-color:#00000055;color:#FFF;border-radius:5px;outline:none;}
+.lu_selector option{background-color:#00000055;border-top:1px solid #000000;padding:5px;}
+ul{list-style:none;padding:0;margin:0;}
+.lu_list_container{overflow-y:scroll;height:calc(100% - 5.8em);}
+.lu_list_element{text-overflow:ellipsis;overflow:hidden;padding:5px;cursor:pointer;border-top:1px solid #777;}
+.lu_list_element:hover{background-color:#00000055;}
+.lu_button{pointer-events:visible;cursor:pointer;background-color:#5E6161DD;color:#FFF;padding:10px 20px;border-radius:10px;width:fit-content;}
+.lu_button:hover{background-color:#5E6161FF;}

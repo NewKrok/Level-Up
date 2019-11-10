@@ -1,5 +1,4 @@
 package levelup.game.unit.orc;
-import levelup.game.GameState;
 
 import levelup.game.GameState.PlayerId;
 import levelup.game.unit.BaseUnit;

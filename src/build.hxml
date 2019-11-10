@@ -1,0 +1,25 @@
+--connect 6000
+
+-lib tink_html
+-lib tink_json
+-lib tink_geom2
+-lib tink_state
+-lib coconut.react-dom
+-lib heaps
+-lib actuate
+-lib hpp
+-lib embed-js
+
+-cp src
+
+-D react_global
+-D react_devtools
+-D resourcePath="res"
+
+--macro embed.Js.from('http://cdnjs.cloudflare.com/ajax/libs/es6-shim/0.35.4/es6-shim.min.js')
+--macro embed.Js.from('http://cdnjs.cloudflare.com/ajax/libs/react/16.10.2/umd/react.production.min.js')
+--macro embed.Js.from('http://cdnjs.cloudflare.com/ajax/libs/react-dom/16.7.0/umd/react-dom.production.min.js')
+
+-js bin/level-up.js
+
+-main Main

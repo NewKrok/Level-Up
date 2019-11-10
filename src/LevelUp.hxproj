@@ -2,15 +2,15 @@
 <project version="2">
   <!-- Output SWF options -->
   <output>
-    <movie outputType="Application" />
+    <movie outputType="CustomBuild" />
     <movie input="" />
-    <movie path="bin\level-up.js" />
+    <movie path="build.hxml" />
     <movie fps="0" />
     <movie width="0" />
     <movie height="0" />
     <movie version="0" />
     <movie minorVersion="0" />
-    <movie platform="JavaScript" />
+    <movie platform="hxml" />
     <movie background="#FFFFFF" />
     <movie preferredSDK="Haxe 4.0.0;4.0.0;" />
   </output>
@@ -20,21 +20,24 @@
   </classpaths>
   <!-- Build options -->
   <build>
-    <option directives="" />
+    <option directives="react_global&#xA;react_devtools&#xA;resourcePath=&quot;res&quot;" />
     <option flashStrict="False" />
     <option noInlineOnDebug="False" />
     <option mainClass="Main" />
     <option enabledebug="False" />
-    <option additional="-D resourcePath=&quot;res&quot;" />
+    <option additional="--macro embed.Js.from('http://cdnjs.cloudflare.com/ajax/libs/es6-shim/0.35.4/es6-shim.min.js')&#xA;--macro embed.Js.from('http://cdnjs.cloudflare.com/ajax/libs/react/16.10.2/umd/react.production.min.js')&#xA;--macro embed.Js.from('http://cdnjs.cloudflare.com/ajax/libs/react-dom/16.7.0/umd/react-dom.production.min.js')" />
   </build>
   <!-- haxelib libraries -->
   <haxelib>
-    <library name="-lib heaps" />
-    <library name="-lib actuate" />
-    <library name="-lib hpp" />
-    <library name="-lib tink_state" />
-    <library name="-lib tink_core" />
-    <library name="-lib coconut.data" />
+    <library name="tink_html" />
+    <library name="tink_json" />
+    <library name="tink_geom2" />
+    <library name="tink_state" />
+    <library name="coconut.react-dom" />
+    <library name="heaps" />
+    <library name="actuate" />
+    <library name="hpp" />
+    <library name="embed-js" />
   </haxelib>
   <!-- Class files to compile (other referenced classes will automatically be included) -->
   <compileTargets>
@@ -45,7 +48,7 @@
     <hidden path="obj" />
   </hiddenPaths>
   <!-- Executed before build -->
-  <preBuildCommand />
+  <preBuildCommand>cmd /c haxe $(OutputFile)</preBuildCommand>
   <!-- Executed after build -->
   <postBuildCommand alwaysRun="False" />
   <!-- Other project options -->
