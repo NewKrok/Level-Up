@@ -10,6 +10,7 @@ import h3d.pass.DefaultShadowMap;
 import h3d.prim.Cube;
 import h3d.prim.ModelCache;
 import h3d.scene.Graphics;
+import h3d.scene.Interactive;
 import h3d.scene.Mesh;
 import h3d.scene.Object;
 import h3d.scene.fwd.DirLight;
@@ -18,11 +19,14 @@ import haxe.Json;
 import hpp.heaps.Base2dStage;
 import hpp.heaps.Base2dState;
 import hpp.heaps.HppG;
+import hpp.util.GeomUtil;
 import hpp.util.GeomUtil.SimplePoint;
+import hxd.Event;
+import hxd.Key;
+import hxd.Window;
 import js.Browser;
 import levelup.Asset;
-import levelup.editor.EditorUi;
-import levelup.editor.html.EditorHtmlUi;
+import levelup.editor.html.EditorUi;
 import levelup.game.GameState;
 import levelup.game.GameState.PlayerId;
 import levelup.game.GameState.StaticObjectConfig;
@@ -57,6 +61,8 @@ class EditorState extends Base2dState
 	var s2d:h2d.Scene;
 	var s3d:h3d.scene.Scene;
 
+	var editorUi:EditorUi;
+
 	var debugMapBlocks:Graphics;
 	var debugRegions:Graphics;
 	var debugUnitPath:Graphics;
@@ -66,6 +72,8 @@ class EditorState extends Base2dState
 	var isDisposed:Bool = false;
 
 	var isMapDragActive:Bool = false;
+	var onlyX:Bool = false;
+	var onlyY:Bool = false;
 	var dragStartPoint:SimplePoint = { x: 0, y: 0 };
 	var dragStartObjectPoint:SimplePoint = { x: 0, y: 0 };
 
@@ -77,7 +85,12 @@ class EditorState extends Base2dState
 	var camDistance:Float = 30;
 
 	var cache:ModelCache = new ModelCache();
+	var selectedAssetItem:AssetItem;
 	var previewInstance:Object;
+	var previewInstanceRotation:Float = 0;
+	var previewInstanceScale:Float = 0.05;
+
+	var lastEscPressTime:Float = 0;
 
 	public function new(stage:Base2dStage, s2d:h2d.Scene, s3d:h3d.scene.Scene, rawMap:String)
 	{
@@ -145,13 +158,35 @@ class EditorState extends Base2dState
 		world.onWorldMouseUp = e ->
 		{
 			isMapDragActive = false;
+
+			if (dragStartObjectPoint != null && previewInstance != null && GeomUtil.getDistance(cast dragStartObjectPoint, cast cameraObject) < 0.2)
+			{
+				var instance:h3d.scene.Object = cache.loadModel(selectedAssetItem.model);
+				instance.setScale(previewInstanceScale);
+				if (selectedAssetItem.hasAnimation != null && selectedAssetItem.hasAnimation)
+				{
+					instance.playAnimation(cache.loadAnimation(selectedAssetItem.model));
+				}
+
+				if (selectedAssetItem.zOffset != null) instance.z = selectedAssetItem.zOffset;
+
+				var isDragged = false;
+				var dragPoint:Vector;
+
+				var interactive = new Interactive(instance.getBounds(), world);
+				interactive.onMove = e -> if (isDragged) instance.setPosition(e.relX, e.relY, instance.z);
+				interactive.onRelease = e -> isDragged = false;
+				interactive.onPush = e -> isDragged = true;
+
+				world.addToWorldPoint(instance, previewInstance.x, previewInstance.y, previewInstance.z, previewInstanceScale, previewInstanceRotation);
+			}
 		}
 		world.onWorldMouseMove = e ->
 		{
 			if (previewInstance != null)
 			{
-				previewInstance.x = e.relX;
-				previewInstance.y = e.relY;
+				if (!onlyY) previewInstance.x = e.relX;
+				if (!onlyX) previewInstance.y = e.relY;
 			}
 
 			if (isMapDragActive)
@@ -171,16 +206,59 @@ class EditorState extends Base2dState
 		s3d.camera.target.y = s3d.camera.pos.y;
 		jumpCamera(10, 10, 23);
 
-		new EditorUi(s2d, s3d, world);
-
-		var ui:RenderResult = EditorHtmlUi.fromHxx({
+		editorUi = new EditorUi({
 			backToLobby: () -> HppG.changeState(GameState, [stage, s3d, MapData.getRawMap("lobby")]),
 			previewRequest: createPreview,
 			environmentsList: List.fromArray(Asset.environment),
 			propsList: List.fromArray(Asset.props),
-			unitsList: List.fromArray([])
+			unitsList: List.fromArray(Asset.units)
 		});
-		ReactDOM.render(ui, Browser.document.getElementById("native-ui"));
+		ReactDOM.render(editorUi.reactify(), Browser.document.getElementById("native-ui"));
+
+		Window.getInstance().addEventTarget(onKeyEvent);
+	}
+
+	function onKeyEvent(e:Event)
+	{
+		if (e.kind == EKeyDown)
+			switch (e.keyCode)
+			{
+				case Key.CTRL: onlyX = true;
+				case Key.SHIFT: onlyY = true;
+			}
+
+		if (e.kind == EKeyUp)
+			switch (e.keyCode)
+			{
+				case Key.CTRL: onlyX = false;
+				case Key.SHIFT: onlyY = false;
+				case Key.UP if (previewInstance != null):
+					previewInstanceScale += selectedAssetItem.scale * 0.1;
+					previewInstance.setScale(previewInstanceScale);
+				case Key.DOWN if (previewInstance != null):
+					previewInstanceScale -= selectedAssetItem.scale * 0.1;
+					previewInstance.setScale(previewInstanceScale);
+				case Key.LEFT if (previewInstance != null):
+					previewInstanceRotation += Math.PI / 8;
+					previewInstance.setRotation(0, 0, previewInstanceRotation);
+				case Key.RIGHT if (previewInstance != null):
+					previewInstanceRotation -= Math.PI / 8;
+					previewInstance.setRotation(0, 0, previewInstanceRotation);
+				case Key.SPACE if (previewInstance != null): editorUi.removeSelection();
+				case Key.ESCAPE if (previewInstance != null):
+					var now = Date.now().getTime();
+					if (now - lastEscPressTime < 500)
+					{
+						editorUi.removeSelection();
+						return;
+					}
+					lastEscPressTime = now;
+
+					previewInstanceRotation = -Math.PI / 2;
+					previewInstanceScale = selectedAssetItem.scale;
+					previewInstance.setScale(previewInstanceScale);
+					previewInstance.setRotation(0, 0, previewInstanceRotation);
+			}
 	}
 
 	function jumpCamera(x:Float, y:Float, z:Float)
@@ -199,17 +277,33 @@ class EditorState extends Base2dState
 
 	function createPreview(asset:AssetItem)
 	{
+		selectedAssetItem = asset;
+
 		if (previewInstance != null)
 		{
 			previewInstance.remove();
 			previewInstance = null;
 		}
 
-		previewInstance = cache.loadModel(asset.model);
-		previewInstance.scale(0.05);
-		previewInstance.getMaterials()[0].blendMode = BlendMode.Screen;
+		if (selectedAssetItem != null)
+		{
+			previewInstanceScale = asset.scale;
+			previewInstanceRotation = -Math.PI / 2;
+			previewInstance = cache.loadModel(selectedAssetItem.model);
 
-		s3d.addChild(previewInstance);
+			if (selectedAssetItem.hasAnimation != null && selectedAssetItem.hasAnimation)
+			{
+				previewInstance.playAnimation(cache.loadAnimation(selectedAssetItem.model));
+			}
+			previewInstance.setScale(previewInstanceScale);
+			previewInstance.setRotation(0, 0, previewInstanceRotation);
+			if (selectedAssetItem.zOffset != null) previewInstance.z = selectedAssetItem.zOffset;
+			previewInstance.getMaterials()[0].blendMode = BlendMode.Screen;
+
+			s3d.addChild(previewInstance);
+		}
+
+		Browser.document.getElementById("webgl").focus();
 	}
 
 	function loadLevel(rawDataStr:String)

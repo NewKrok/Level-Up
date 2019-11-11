@@ -7,7 +7,6 @@
 	width: 100%;
 	height: 100%;
 	position: absolute;
-	pointer-events: visible;
 	display: flex;
 	flex-direction: column;
 	width: 15em;
@@ -19,20 +18,41 @@
 	margin: 10px;
 }
 
-.lu_editor__preview {
-	width: 15em;
-	background-color: #5E6161DD;
-	color: #FFF;
+.lu_editor_right {
+	width: 100%;
 	height: 100%;
+	position: absolute;
 	pointer-events: visible;
+	display: flex;
+	flex-direction: column;
+	width: 15em;
+	right: 0;
+	align-items: center;
 }
 
 .lu_editor__library {
 	width: 15em;
-	right: 0;
-	position: absolute;
 	background-color: #5E6161DD;
 	color: #FFF;
 	height: 100%;
-	pointer-events: visible;
+}
+
+.lu_editor__preview {
+	width: 15em;
+	background-color: #5E6161DD;
+	color: #FFF;
+}
+
+.lu_editor__preview_image {
+	display: block;
+	height: 240px;
+}
+
+.lu_editor__empty_preview {
+	width: 240px;
+	height: 240px;
+	background-color: #222222;
+	line-height: 240px;
+	text-align: center;
+	font-size: 4em;
 }
