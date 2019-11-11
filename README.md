@@ -1,5 +1,5 @@
 # Level Up!
-3D browser game with level editor for "Top Down Games", written in Haxe.
+3D "Top Down" browser game with level editor, written in Haxe.
 
 ## Try it now - in progress, don't expect too much :)
 http://flashplusplus.net/haxe/levelup/index.html
