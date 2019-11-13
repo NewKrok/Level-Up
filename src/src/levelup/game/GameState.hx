@@ -318,7 +318,7 @@ class GameState extends Base2dState
 		}
 	}*/
 
-	function createUnit(id:String, owner:PlayerId, posX:Int, posY:Int)
+	function createUnit(id:String, owner:PlayerId, posX:Float, posY:Float)
 	{
 		var unit = switch (id) {
 			case "playergrunt": new PlayerGrunt(s2d, world, owner);
@@ -636,6 +636,7 @@ typedef WorldConfig =
 
 typedef StaticObjectConfig =
 {
+	var id(default, never):String;
 	var name(default, never):String;
 	var x(default, never):Float;
 	var y(default, never):Float;
@@ -646,10 +647,8 @@ typedef StaticObjectConfig =
 
 typedef InitialUnitData =
 {
-	var id:String;
+	> StaticObjectConfig,
 	var owner:PlayerId;
-	var x(default, never):Int;
-	var y(default, never):Int;
 }
 
 typedef Trigger =

@@ -88,7 +88,7 @@ import tink.state.State;
 		parent.addChild(view);
 		view.scale(config.modelScale);
 
-		// 1.5 is a hacky solution to make easier the unit selection
+		// 1.8 is a hacky solution to make easier the unit selection
 		collider = new Capsule(new Point(0, 0, 0), new Point(0, 0, 1.8 * config.unitSize), config.unitSize);
 
 		interact = new Interactive(collider, parent);

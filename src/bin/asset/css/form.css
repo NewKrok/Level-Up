@@ -39,7 +39,7 @@ ul {
 	font-weight: bold;
 }
 
-.lu_list_element:hover {
+.lu_list_element--interactive:hover {
 	background-color: #00000055;
 }
 
@@ -51,6 +51,7 @@ ul {
 	padding: 10px 20px;
 	border-radius: 10px;
 	width: fit-content;
+	line-height: 20px;
 }
 
 .lu_button:hover {

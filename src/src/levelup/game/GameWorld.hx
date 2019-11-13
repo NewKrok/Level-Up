@@ -61,7 +61,7 @@ class GameWorld extends World
 
 		generateMap();
 
-		var c = new Cube(worldConfig.map.length, worldConfig.map[0].length, 1);
+		var c = new Cube(worldConfig.map.length, worldConfig.map[0].length);
 
 		interact = new Interactive(c.getCollider(), parent);
 		interact.onClick = function (e) { onWorldClick(e); };
@@ -102,7 +102,7 @@ class GameWorld extends World
 
 		for (o in worldConfig.staticObjects)
 		{
-			var instance:Object = cache.loadModel(Asset.getStaticObject(o.name).model);
+			var instance:Object = cache.loadModel(Asset.getAsset(o.name).model);
 			addToWorldPoint(instance, o.x, o.y, o.z, o.scale, o.rotation);
 		}
 

@@ -1,5 +1,5 @@
 {
-	"name": "Lobby",
+	"id":"Lobby",
 	"map": [
 		[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
 		[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
@@ -90,251 +90,251 @@
 	],
 	"staticObjects": [
 		{
-			"name": "SM_Wooden_Table",
+			"id":"SM_Wooden_Table",
 			"x":35,"y":3,"z":0,"scale":0.05,"rotation":0
 		},
 		{
-			"name": "SM_Ground_Tiles_Large",
+			"id":"SM_Ground_Tiles_Large",
 			"x":5,"y":5,"z":0,"scale":0.05,"rotation":0
 		},
 		{
-			"name": "SM_Ground_Tiles_Large",
+			"id":"SM_Ground_Tiles_Large",
 			"x":15,"y":5,"z":0,"scale":0.05,"rotation":0
 		},
 		{
-			"name": "SM_Ground_Tiles_Large",
+			"id":"SM_Ground_Tiles_Large",
 			"x":25,"y":5,"z":0,"scale":0.05,"rotation":0
 		},
 		{
-			"name": "SM_Ground_Tiles_Large",
+			"id":"SM_Ground_Tiles_Large",
 			"x":35,"y":5,"z":0,"scale":0.05,"rotation":0
 		},
 		{
-			"name": "SM_Ground_Tiles_Large",
+			"id":"SM_Ground_Tiles_Large",
 			"x":5,"y":15,"z":0,"scale":0.05,"rotation":0
 		},
 		{
-			"name": "SM_Ground_Tiles_Large",
+			"id":"SM_Ground_Tiles_Large",
 			"x":15,"y":15,"z":0,"scale":0.05,"rotation":0
 		},
 		{
-			"name": "SM_Ground_Tiles_Large",
+			"id":"SM_Ground_Tiles_Large",
 			"x":25,"y":15,"z":0,"scale":0.05,"rotation":0
 		},
 		{
-			"name": "SM_Ground_Tiles_Large",
+			"id":"SM_Ground_Tiles_Large",
 			"x":35,"y":15,"z":0,"scale":0.05,"rotation":0
 		},
 		{
-			"name": "SM_Pillar_Center",
+			"id":"SM_Pillar_Center",
 			"x":0,"y":0,"z":0,"scale":0.05,"rotation":-1.5707963267948966
 		},
 		{
-			"name": "SM_Wall",
+			"id":"SM_Wall",
 			"x":2,"y":-0.2,"z":0,"scale":0.05,"rotation":-1.5707963267948966
 		},
 		{
-			"name": "SM_Pillar_Center",
+			"id":"SM_Pillar_Center",
 			"x":5,"y":0,"z":0,"scale":0.05,"rotation":-1.5707963267948966
 		},
 		{
-			"name": "SM_Wall_Prison_Window",
+			"id":"SM_Wall_Prison_Window",
 			"x":7,"y":-0.2,"z":0,"scale":0.05,"rotation":-1.5707963267948966
 		},
 		{
-			"name": "SM_Pillar_Center",
+			"id":"SM_Pillar_Center",
 			"x":10,"y":0,"z":0,"scale":0.05,"rotation":-1.5707963267948966
 		},
 		{
-			"name": "SM_Wall_Prison_Window",
+			"id":"SM_Wall_Prison_Window",
 			"x":12,"y":-0.2,"z":0,"scale":0.05,"rotation":-1.5707963267948966
 		},
 		{
-			"name": "SM_Pillar_Center",
+			"id":"SM_Pillar_Center",
 			"x":15,"y":0,"z":0,"scale":0.05,"rotation":-1.5707963267948966
 		},
 		{
-			"name": "SM_Wall",
+			"id":"SM_Wall",
 			"x":17,"y":-0.2,"z":0,"scale":0.05,"rotation":-1.5707963267948966
 		},
 		{
-			"name": "SM_Pillar_Center",
+			"id":"SM_Pillar_Center",
 			"x":20,"y":0,"z":0,"scale":0.05,"rotation":-1.5707963267948966
 		},
 		{
-			"name": "SM_Wall_Prison_Window",
+			"id":"SM_Wall_Prison_Window",
 			"x":22,"y":-0.2,"z":0,"scale":0.05,"rotation":-1.5707963267948966
 		},
 		{
-			"name": "SM_Pillar_Center",
+			"id":"SM_Pillar_Center",
 			"x":25,"y":0,"z":0,"scale":0.05,"rotation":-1.5707963267948966
 		},
 		{
-			"name": "SM_Wall",
+			"id":"SM_Wall",
 			"x":27,"y":-0.2,"z":0,"scale":0.05,"rotation":-1.5707963267948966
 		},
 		{
-			"name": "SM_Pillar_Center",
+			"id":"SM_Pillar_Center",
 			"x":30,"y":0,"z":0,"scale":0.05,"rotation":-1.5707963267948966
 		},
 		{
-			"name": "SM_Wall",
+			"id":"SM_Wall",
 			"x":32,"y":-0.2,"z":0,"scale":0.05,"rotation":-1.5707963267948966
 		},
 		{
-			"name": "SM_Pillar_Center",
+			"id":"SM_Pillar_Center",
 			"x":35,"y":0,"z":0,"scale":0.05,"rotation":-1.5707963267948966
 		},
 		{
-			"name": "SM_Wall",
+			"id":"SM_Wall",
 			"x":37,"y":-0.2,"z":0,"scale":0.05,"rotation":-1.5707963267948966
 		},
 		{
-			"name": "SM_Pillar_Center",
+			"id":"SM_Pillar_Center",
 			"x":40,"y":0,"z":0,"scale":0.05,"rotation":-1.5707963267948966
 		},
 		{
-			"name": "SM_Pillar_Center",
+			"id":"SM_Pillar_Center",
 			"x":0,"y":20,"z":0,"scale":0.05,"rotation":-1.5707963267948966
 		},
 		{
-			"name": "SM_Wall",
+			"id":"SM_Wall",
 			"x":2,"y":20.2,"z":0,"scale":0.05,"rotation":1.5707963267948966
 		},
 		{
-			"name": "SM_Pillar_Center",
+			"id":"SM_Pillar_Center",
 			"x":5,"y":20,"z":0,"scale":0.05,"rotation":-1.5707963267948966
 		},
 		{
-			"name": "SM_Wall_Prison_Window",
+			"id":"SM_Wall_Prison_Window",
 			"x":7,"y":20.2,"z":0,"scale":0.05,"rotation":1.5707963267948966
 		},
 		{
-			"name": "SM_Pillar_Center",
+			"id":"SM_Pillar_Center",
 			"x":10,"y":20,"z":0,"scale":0.05,"rotation":-1.5707963267948966
 		},
 		{
-			"name": "SM_Wall_Prison_Window",
+			"id":"SM_Wall_Prison_Window",
 			"x":12,"y":20.2,"z":0,"scale":0.05,"rotation":1.5707963267948966
 		},
 		{
-			"name": "SM_Pillar_Center",
+			"id":"SM_Pillar_Center",
 			"x":15,"y":20,"z":0,"scale":0.05,"rotation":-1.5707963267948966
 		},
 		{
-			"name": "SM_Wall",
+			"id":"SM_Wall",
 			"x":17,"y":20.2,"z":0,"scale":0.05,"rotation":1.5707963267948966
 		},
 		{
-			"name": "SM_Pillar_Center",
+			"id":"SM_Pillar_Center",
 			"x":20,"y":20,"z":0,"scale":0.05,"rotation":-1.5707963267948966
 		},
 		{
-			"name": "SM_Wall_Prison_Window",
+			"id":"SM_Wall_Prison_Window",
 			"x":22,"y":20.2,"z":0,"scale":0.05,"rotation":1.5707963267948966
 		},
 		{
-			"name": "SM_Pillar_Center",
+			"id":"SM_Pillar_Center",
 			"x":25,"y":20,"z":0,"scale":0.05,"rotation":-1.5707963267948966
 		},
 		{
-			"name": "SM_Wall",
+			"id":"SM_Wall",
 			"x":27,"y":20.2,"z":0,"scale":0.05,"rotation":1.5707963267948966
 		},
 		{
-			"name": "SM_Pillar_Center",
+			"id":"SM_Pillar_Center",
 			"x":30,"y":20,"z":0,"scale":0.05,"rotation":-1.5707963267948966
 		},
 		{
-			"name": "SM_Wall",
+			"id":"SM_Wall",
 			"x":32,"y":20.2,"z":0,"scale":0.05,"rotation":1.5707963267948966
 		},
 		{
-			"name": "SM_Pillar_Center",
+			"id":"SM_Pillar_Center",
 			"x":35,"y":20,"z":0,"scale":0.05,"rotation":-1.5707963267948966
 		},
 		{
-			"name": "SM_Wall",
+			"id":"SM_Wall",
 			"x":37,"y":20.2,"z":0,"scale":0.05,"rotation":1.5707963267948966
 		},
 		{
-			"name": "SM_Pillar_Center",
+			"id":"SM_Pillar_Center",
 			"x":40,"y":20,"z":0,"scale":0.05,"rotation":-1.5707963267948966
 		},
 		{
-			"name": "SM_Wall",
+			"id":"SM_Wall",
 			"x":40.2,"y":2,"z":0,"scale":0.05,"rotation":0
 		},
 		{
-			"name": "SM_Wall",
+			"id":"SM_Wall",
 			"x":40.2,"y":18,"z":0,"scale":0.05,"rotation":0
 		},
 		{
-			"name": "SM_Wall_Door",
+			"id":"SM_Wall_Door",
 			"x":40.2,"y":10,"z":0,"scale":0.08,"rotation":0
 		},
 		{
-			"name": "SM_Pillar_Center",
+			"id":"SM_Pillar_Center",
 			"x":40,"y":6,"z":0,"scale":0.06,"rotation":-1.5707963267948966
 		},
 		{
-			"name": "SM_Pillar_Center",
+			"id":"SM_Pillar_Center",
 			"x":40,"y":14,"z":0,"scale":0.06,"rotation":-1.5707963267948966
 		},
 		{
-			"name": "SM_Pillar_Center",
+			"id":"SM_Pillar_Center",
 			"x":40,"y":5,"z":0,"scale":0.05,"rotation":-1.5707963267948966
 		},
 		{
-			"name": "SM_Pillar_Center",
+			"id":"SM_Pillar_Center",
 			"x":40,"y":15,"z":0,"scale":0.05,"rotation":-1.5707963267948966
 		},
 		{
-			"name": "SM_Swords_And_Shield",
+			"id":"SM_Swords_And_Shield",
 			"x":40.2,"y":2.5,"z":2,"scale":0.08,"rotation":0
 		},
 		{
-			"name": "SM_Swords_And_Shield",
+			"id":"SM_Swords_And_Shield",
 			"x":40.2,"y":17.5,"z":2,"scale":0.08,"rotation":0
 		},
 		{
-			"name": "SM_Banner_Large",
+			"id":"SM_Banner_Large",
 			"x":39.9,"y":6,"z":3.6,"scale":0.04,"rotation":0
 		},
 		{
-			"name": "SM_Banner_Large",
+			"id":"SM_Banner_Large",
 			"x":39.9,"y":14,"z":3.6,"scale":0.04,"rotation":0
 		},
 		{
-			"name": "SM_Stone_Statue",
+			"id":"SM_Stone_Statue",
 			"x":17,"y":0.2,"z":0,"scale":0.05,"rotation":-1.5707963267948966
 		},
 		{
-			"name": "SM_Stone_Statue",
+			"id":"SM_Stone_Statue",
 			"x":17,"y":19.8,"z":0,"scale":0.05,"rotation":1.5707963267948966
 		},
 		{
-			"name": "SM_Rug_1_Way",
+			"id":"SM_Rug_1_Way",
 			"x":4,"y":10,"z":0,"scale":0.07,"rotation":1.5707963267948966
 		},
 		{
-			"name": "SM_Rug_1_Way",
+			"id":"SM_Rug_1_Way",
 			"x":11,"y":10,"z":0,"scale":0.07,"rotation":1.5707963267948966
 		},
 		{
-			"name": "SM_Rug_1_Way",
+			"id":"SM_Rug_1_Way",
 			"x":18,"y":10,"z":0,"scale":0.07,"rotation":1.5707963267948966
 		},
 		{
-			"name": "SM_Rug_1_Way",
+			"id":"SM_Rug_1_Way",
 			"x":25,"y":10,"z":0,"scale":0.07,"rotation":1.5707963267948966
 		},
 		{
-			"name": "SM_Rug_1_Way",
+			"id":"SM_Rug_1_Way",
 			"x":32,"y":10,"z":0,"scale":0.07,"rotation":1.5707963267948966
 		},
 		{
-			"name": "SM_Rug_1_Way",
+			"id":"SM_Rug_1_Way",
 			"x":39,"y":10,"z":0,"scale":0.07,"rotation":1.5707963267948966
 		}
 	]
