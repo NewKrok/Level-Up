@@ -186,13 +186,15 @@ import tink.state.State;
 	{
 		if (state.value == Dead) return;
 
+		var convertedTargetPoint = toWorldPoint(point);
+
 		currentPathIndex = -1;
 		if (state.value != AttackRequested) state.set(MoveTo);
 
 		var path = AStar.search(
 			GameWorld.instance.graph,
 			GameWorld.instance.graph.grid[cast getWorldPoint().y][cast getWorldPoint().x],
-			GameWorld.instance.graph.grid[cast point.y][cast point.x],
+			GameWorld.instance.graph.grid[cast convertedTargetPoint.x][cast convertedTargetPoint.y],
 			{
 				heuristic: untyped __js__("astar.heuristics.diagonal"),
 				closest: true
@@ -200,8 +202,10 @@ import tink.state.State;
 		);
 		if (path != null)
 		{
+			path.pop();
 			moveToPath = [];
 			for (entry in path) moveToPath.push({ x: entry.y, y: entry.x });
+			moveToPath.push({ x: point.x, y: point.y });
 
 			moveToNextPathPoint();
 		}
@@ -270,13 +274,14 @@ import tink.state.State;
 		return { x: Math.floor(view.y / GameWorld.instance.blockSize), y: Math.floor(view.x / GameWorld.instance.blockSize) };
 	}
 
+	public function toWorldPoint(p:SimplePoint):SimplePoint
+	{
+		return { x: Math.floor(p.y / GameWorld.instance.blockSize), y: Math.floor(p.x / GameWorld.instance.blockSize) };
+	}
+
 	function move(targetPoint:SimplePoint, onComplete:Void->Void):Void
 	{
-		// Change target point to world point (Yeah maybe it's not the best place for this calculation)
-		currentTargetPoint.x = targetPoint.x = targetPoint.x * GameWorld.instance.blockSize + GameWorld.instance.blockSize / 2;
-		currentTargetPoint.y = targetPoint.y = targetPoint.y * GameWorld.instance.blockSize + GameWorld.instance.blockSize / 2;
-
-		currentTargetAngle = Math.atan2(view.y - currentTargetPoint.y, view.x - currentTargetPoint.x) + Math.PI / 2;
+		currentTargetAngle = Math.atan2(view.y - targetPoint.y, view.x - targetPoint.x) + Math.PI / 2;
 		if (currentTargetAngle < 0) currentTargetAngle += Math.PI * 2;
 		if (currentTargetAngle > Math.PI * 4) currentTargetAngle -= Math.PI * 4;
 

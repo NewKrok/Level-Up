@@ -14,15 +14,15 @@ class Archer extends AICharacter
 	public function new(s2d:Object, parent, owner:PlayerId)
 	{
 		super(s2d, parent, owner, {
-			icon: Res.model.character.human.archer.icon.toTile(),
+			icon: Res.model.character.orc.minion.icon.toTile(),
 			idleModel: Res.model.character.human.archer.IdleAnim,
-			idleAnimSpeedMultiplier: 0.2,
+			idleAnimSpeedMultiplier: 1,
 			runModel: Res.model.character.human.archer.WalkAnim,
-			runAnimSpeedMultiplier: 0.8,
+			runAnimSpeedMultiplier: 1.8,
 			attackModel: Res.model.character.human.archer.Attack01Anim,
 			deathModel: Res.model.character.human.archer.DeathAnim,
 			modelScale: 0.008,
-			speed: 5,
+			speed: 6,
 			speedMultiplier: 1,
 			attackRange: 2.1,
 			attackSpeed: 1500,

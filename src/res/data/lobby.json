@@ -63,7 +63,7 @@
 	],
 	"units": [
 		{
-			"id": "playergrunt",
+			"id": "archer",
 			"owner": 0,
 			"x": 10,"y":"10"
 		},

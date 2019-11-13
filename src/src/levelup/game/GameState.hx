@@ -11,6 +11,7 @@ import levelup.game.GameWorld.Region;
 import levelup.game.html.LobbyUi;
 import levelup.game.ui.HeroUi;
 import levelup.game.unit.BaseUnit;
+import levelup.game.unit.human.Archer;
 import levelup.game.unit.orc.BandWagon;
 import levelup.game.unit.orc.Drake;
 import levelup.game.unit.orc.Grunt;
@@ -185,8 +186,8 @@ class GameState extends Base2dState
 		{
 			if (isControlEnabled && selectedUnit.value != null && selectedUnit.value.state != Dead)
 			{
-				lastMovePosition.x = Math.floor(e.relY / world.blockSize);
-				lastMovePosition.y = Math.floor(e.relX / world.blockSize);
+				lastMovePosition.x = e.relY / world.blockSize;
+				lastMovePosition.y = e.relX / world.blockSize;
 				selectedUnit.value.moveTo({ x: lastMovePosition.x, y: lastMovePosition.y }).handle(function () { trace("MOVE FINISHED"); });
 			}
 		}
@@ -196,8 +197,8 @@ class GameState extends Base2dState
 		{
 			if (selectedUnit.value != null && isMoveTriggerOn)
 			{
-				lastMovePosition.x = Math.floor(e.relY / world.blockSize);
-				lastMovePosition.y = Math.floor(e.relX / world.blockSize);
+				lastMovePosition.x = e.relY / world.blockSize;
+				lastMovePosition.y = e.relX / world.blockSize;
 				selectedUnit.value.moveTo({ x: lastMovePosition.x, y: lastMovePosition.y }).handle(function () { trace("MOVE FINISHED"); });
 			}
 		}
@@ -327,6 +328,7 @@ class GameState extends Base2dState
 			case "drake": new Drake(s2d, world, owner);
 			case "minion": new Minion(s2d, world, owner);
 			case "grunt": new Grunt(s2d, world, owner);
+			case "archer": new Archer(s2d, world, owner);
 			case _: null;
 		};
 		unit.view.x = posY * world.blockSize + world.blockSize / 2;
