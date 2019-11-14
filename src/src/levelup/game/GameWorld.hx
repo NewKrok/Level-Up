@@ -64,6 +64,7 @@ class GameWorld extends World
 		var c = new Cube(worldConfig.map.length, worldConfig.map[0].length);
 
 		interact = new Interactive(c.getCollider(), parent);
+		interact.enableRightButton = true;
 		interact.onClick = function (e) { onWorldClick(e); };
 		interact.onPush = function (e) { onWorldMouseDown(e); };
 		interact.onRelease = function (e) { onWorldMouseUp(e); };

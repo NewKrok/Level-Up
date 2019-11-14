@@ -688,6 +688,16 @@ enum UnitDefinition {
 	var Player4 = 3;
 	var Player5 = 4;
 	var Player6 = 5;
+	var Player7 = 6;
+	var Player8 = 7;
+	var Player9 = 8;
+}
+
+@:enum abstract RaceId(Int) from Int to Int {
+	var Human = 0;
+	var Orc = 1;
+	var Elf = 2;
+	var Undead = 3;
 }
 
 enum TriggerAction {

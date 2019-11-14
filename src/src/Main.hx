@@ -24,8 +24,8 @@ class Main extends Base2dApp
 		stage.stageScaleMode = StageScaleMode.SHOW_ALL;
 		Asset.init();
 
-		//changeState(EditorState, [stage, s3d, MapData.getRawMap("lobby")]);
-		changeState(GameState, [stage, s3d, MapData.getRawMap("lobby")]);
+		changeState(EditorState, [stage, s3d, MapData.getRawMap("lobby")]);
+		//changeState(GameState, [stage, s3d, MapData.getRawMap("lobby")]);
 		//changeState(GameState, [s2d, s3d, MapData.getRawMap("hero_survival")]);
 	}
 

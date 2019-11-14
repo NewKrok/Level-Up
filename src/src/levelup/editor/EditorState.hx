@@ -165,35 +165,47 @@ class EditorState extends Base2dState
 		}
 		world.onWorldMouseDown = e ->
 		{
-			isMapDragActive = true;
-			cameraDragStartPoint.x = e.relX;
-			cameraDragStartPoint.y = e.relY;
-			dragStartObjectPoint.x = cameraObject.x;
-			dragStartObjectPoint.y = cameraObject.y;
+			if (e.button == 0)
+			{
+
+			}
+			else if (e.button == 1)
+			{
+				isMapDragActive = true;
+				cameraDragStartPoint.x = e.relX;
+				cameraDragStartPoint.y = e.relY;
+				dragStartObjectPoint.x = cameraObject.x;
+				dragStartObjectPoint.y = cameraObject.y;
+			}
 		}
 		world.onWorldMouseUp = e ->
 		{
-			isMapDragActive = false;
+			if (e.button == 0)
+			{
+				if (dragStartObjectPoint != null && previewInstance != null && GeomUtil.getDistance(cast dragStartObjectPoint, cast cameraObject) < 0.2)
+				{
+					createAsset(selectedAssetConfig, previewInstance.x, previewInstance.y, previewInstance.z, previewInstanceScale, previewInstanceRotation);
+				}
+				else if (draggedInstance != null && GeomUtil.getDistance(cast draggedInstance, dragInstanceStartPoint) < 0.2)
+				{
+					selectedWorldAsset.set({ instance: draggedInstance, config: worldItems.get(draggedInstance) });
+				}
+				else if (GeomUtil.getDistance({ x: e.relX, y: e.relY }, cameraDragStartPoint) < 0.2)
+				{
+					selectedWorldAsset.set(null);
+				}
 
-			if (dragStartObjectPoint != null && previewInstance != null && GeomUtil.getDistance(cast dragStartObjectPoint, cast cameraObject) < 0.2)
-			{
-				createAsset(selectedAssetConfig, previewInstance.x, previewInstance.y, previewInstance.z, previewInstanceScale, previewInstanceRotation);
+				if (draggedInstance != null)
+				{
+					draggedInstance = null;
+					dragInstanceWorldStartPoint = null;
+					draggedInteractive.visible = true;
+				};
 			}
-			else if (draggedInstance != null && GeomUtil.getDistance(cast draggedInstance, dragInstanceStartPoint) < 0.2)
+			else if (e.button == 1)
 			{
-				selectedWorldAsset.set({ instance: draggedInstance, config: worldItems.get(draggedInstance) });
+				isMapDragActive = false;
 			}
-			else if (GeomUtil.getDistance({ x: e.relX, y: e.relY }, cameraDragStartPoint) < 0.2)
-			{
-				selectedWorldAsset.set(null);
-			}
-
-			if (draggedInstance != null)
-			{
-				draggedInstance = null;
-				dragInstanceWorldStartPoint = null;
-				draggedInteractive.visible = true;
-			};
 		}
 		world.onWorldMouseMove = e ->
 		{

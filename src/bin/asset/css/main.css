@@ -10,6 +10,23 @@ html, body {
 
 .lu_row {
 	display: flex;
+	align-items: center;
+}
+
+.lu_offset {
+	margin: 10px;
+}
+
+.lu_vertical_offset {
+	margin: 10px 0;
+}
+
+.lu_horizontal_offset {
+	margin: 0 10px;
+}
+
+.lu_left_offset {
+	margin-left: 10px;
 }
 
 #lu_preloader {
@@ -67,4 +84,10 @@ html, body {
 
 .lu_right_margin {
 	margin-right: 10px;
+}
+
+.lu_player_color_box {
+	width: 1em;
+	height: 1em;
+	border: 1px solid #FFF;
 }

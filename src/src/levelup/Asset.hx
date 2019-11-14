@@ -2,6 +2,7 @@ package levelup;
 
 import hxd.Res;
 import hxd.res.Model;
+import levelup.game.GameState.RaceId;
 
 class Asset
 {
@@ -123,7 +124,7 @@ class Asset
 
 		units = [
 			{
-				race: "orc",
+				race: RaceId.Orc,
 				id: "bandwagon",
 				name: "Bandwagon",
 				scale: 0.007,
@@ -132,7 +133,7 @@ class Asset
 				previewUrl: "./asset/img/preview/unit/orc/bandwagon.jpg"
 			},
 			{
-				race: "orc",
+				race: RaceId.Orc,
 				id: "berserker",
 				name: "Berserker",
 				scale: 0.008,
@@ -141,7 +142,7 @@ class Asset
 				previewUrl: "./asset/img/preview/unit/orc/berserker.jpg"
 			},
 			{
-				race: "orc",
+				race: RaceId.Orc,
 				id: "drake",
 				name: "Drake",
 				scale: 0.0037,
@@ -151,7 +152,7 @@ class Asset
 				previewUrl: "./asset/img/preview/unit/orc/drake.jpg"
 			},
 			{
-				race: "orc",
+				race: RaceId.Orc,
 				id: "grunt",
 				name: "Grunt",
 				scale: 0.008,
@@ -160,7 +161,7 @@ class Asset
 				previewUrl: "./asset/img/preview/unit/orc/grunt.jpg"
 			},
 			{
-				race: "orc",
+				race: RaceId.Orc,
 				id: "minion",
 				name: "Minion",
 				scale: 0.008,
@@ -169,7 +170,7 @@ class Asset
 				previewUrl: "./asset/img/preview/unit/orc/minion.jpg"
 			},
 			{
-				race: "human",
+				race: RaceId.Human,
 				id: "archer",
 				name: "Archer",
 				scale: 0.008,
@@ -186,7 +187,7 @@ typedef AssetConfig = {
 	var name(default, never):String;
 	var model(default, never):Model;
 	var scale(default, never):Float;
-	@:optional var race(default, never):String;
+	@:optional var race(default, never):RaceId;
 	@:optional var zOffset(default, never):Float;
 	@:optional var hasAnimation(default, never):Bool;
 	@:optional var previewUrl(default, never):String;
