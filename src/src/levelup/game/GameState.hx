@@ -12,6 +12,7 @@ import levelup.game.html.LobbyUi;
 import levelup.game.ui.HeroUi;
 import levelup.game.unit.BaseUnit;
 import levelup.game.unit.human.Archer;
+import levelup.game.unit.human.Footman;
 import levelup.game.unit.orc.BandWagon;
 import levelup.game.unit.orc.Drake;
 import levelup.game.unit.orc.Grunt;
@@ -133,27 +134,9 @@ class GameState extends Base2dState
 		world = new GameWorld(s3d, mapConfig, 1, 64, 64, s3d);
 		world.done();
 
-		/*for (i in 0...10)
-		{
-			var startPoint:SimplePoint = world.getRandomWalkablePoint();
-			var character = switch(Math.floor(Math.random() * 3)) {
-				case 0: new Minion(s2d, PlayerId.Player2);
-				case 1: new Grunt(s2d, PlayerId.Player2);
-				case 2: new Berserker(s2d, PlayerId.Player2);
-				case _: null;
-			}
-			character.view.x = startPoint.y;
-			character.view.y = startPoint.x;
-			world.addEntity(character);
-		}*/
-
 		var dirLight = new DirLight(null, s3d);
 		dirLight.setDirection(new Vector(1, 0, -2));
 		dirLight.color = new Vector(0.9, 0.9, 0.9);
-
-		var pLight = new PointLight(s3d);
-		pLight.setPosition(20, 10, 15);
-		pLight.color = new Vector(200, 200, 200);
 
 		s3d.lightSystem.ambientLight.setColor(0x000000);
 
@@ -163,16 +146,6 @@ class GameState extends Base2dState
 		shadow.blur.radius = 5;
 		shadow.bias *= 0.1;
 		shadow.color.set(0.4, 0.4, 0.4);
-
-		var c = new Cube(90, 80, 1);
-		c.addNormals();
-		c.addUVs();
-		var m = new Mesh(c, null, s3d);
-		m.x = -10;
-		m.y = -30;
-		m.z = -10;
-		m.material.color.setColor(0x000000);
-		m.material.shadows = false;
 
 		var c = new Cube(1, 1, 1);
 		c.addNormals();
@@ -296,6 +269,8 @@ class GameState extends Base2dState
 
 		return {
 			name: rawData.name,
+			size: rawData.size,
+			defaultTerrainId: rawData.defaultTerrainId,
 			map: map,
 			regions: regions,
 			triggers: triggers,
@@ -329,6 +304,7 @@ class GameState extends Base2dState
 			case "minion": new Minion(s2d, world, owner);
 			case "grunt": new Grunt(s2d, world, owner);
 			case "archer": new Archer(s2d, world, owner);
+			case "footman": new Footman(s2d, world, owner);
 			case _: null;
 		};
 		unit.view.x = posY * world.blockSize + world.blockSize / 2;
@@ -496,12 +472,6 @@ class GameState extends Base2dState
 			currentCamDistance += (camDistance - currentCamDistance) / cameraSpeed.z * d * 30;
 		}
 
-		currentCameraPoint.x = Math.max(currentCameraPoint.x, 13);
-		currentCameraPoint.x = Math.min(currentCameraPoint.x, 38);
-
-		currentCameraPoint.y = Math.max(currentCameraPoint.y, 4);
-		currentCameraPoint.y = Math.min(currentCameraPoint.y, 16);
-
 		s3d.camera.target.set(currentCameraPoint.x, currentCameraPoint.y);
 
 		s3d.camera.pos.set(
@@ -629,6 +599,8 @@ class GameState extends Base2dState
 typedef WorldConfig =
 {
 	var name(default, never):String;
+	var size(default, never):SimplePoint;
+	var defaultTerrainId(default, never):String;
 	var map(default, never):Array<Array<WorldEntity>>;
 	@:optional var regions(default, never):Array<Region>;
 	@:optional var triggers(default, never):Array<Trigger>;

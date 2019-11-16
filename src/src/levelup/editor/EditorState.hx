@@ -6,7 +6,9 @@ import h2d.Scene;
 import h3d.Camera;
 import h3d.Vector;
 import h3d.mat.BlendMode;
+import h3d.mat.Material;
 import h3d.pass.DefaultShadowMap;
+import h3d.pass.Outline;
 import h3d.prim.Cube;
 import h3d.prim.ModelCache;
 import h3d.scene.Graphics;
@@ -24,6 +26,7 @@ import hpp.util.GeomUtil;
 import hpp.util.GeomUtil.SimplePoint;
 import hxd.Event;
 import hxd.Key;
+import hxd.Res;
 import hxd.Window;
 import js.Browser;
 import levelup.Asset;
@@ -120,6 +123,8 @@ class EditorState extends Base2dState
 
 		world = new GameWorld(s3d, {
 			name: mapConfig.name,
+			size: mapConfig.size,
+			defaultTerrainId: mapConfig.defaultTerrainId,
 			map: mapConfig.map,
 			regions: [],
 			triggers: [],
@@ -132,10 +137,6 @@ class EditorState extends Base2dState
 		dirLight.setDirection(new Vector(1, 0, -2));
 		dirLight.color = new Vector(0.9, 0.9, 0.9);
 
-		var pLight = new PointLight(s3d);
-		pLight.setPosition(20, 10, 15);
-		pLight.color = new Vector(200, 200, 200);
-
 		s3d.lightSystem.ambientLight.setColor(0x000000);
 
 		var shadow:h3d.pass.DefaultShadowMap = s3d.renderer.getPass(h3d.pass.DefaultShadowMap);
@@ -145,20 +146,6 @@ class EditorState extends Base2dState
 		shadow.bias *= 0.1;
 		shadow.color.set(0.4, 0.4, 0.4);
 
-		var c = new Cube(90, 80, 1);
-		c.addNormals();
-		c.addUVs();
-		var m = new Mesh(c, null, s3d);
-		m.x = -10;
-		m.y = -30;
-		m.z = -10;
-		m.material.color.setColor(0x000000);
-		m.material.shadows = false;
-
-		var c = new Cube(1, 1, 1);
-		c.addNormals();
-		c.addUVs();
-
 		world.onWorldClick = e ->
 		{
 
@@ -167,7 +154,8 @@ class EditorState extends Base2dState
 		{
 			if (e.button == 0)
 			{
-
+				dragStartObjectPoint.x = cameraObject.x;
+				dragStartObjectPoint.y = cameraObject.y;
 			}
 			else if (e.button == 1)
 			{
@@ -258,7 +246,9 @@ class EditorState extends Base2dState
 			environmentsList: List.fromArray(Asset.environment),
 			propsList: List.fromArray(Asset.props),
 			unitsList: List.fromArray(Asset.units),
-			selectedWorldAsset: selectedWorldAsset
+			selectedWorldAsset: selectedWorldAsset,
+			terrainsList: List.fromArray(Terrain.terrains),
+			changeDefaultTerrainRequest: t -> world.changeDefaultTerrain(t.id)
 		});
 		ReactDOM.render(editorUi.reactify(), Browser.document.getElementById("native-ui"));
 
@@ -273,6 +263,10 @@ class EditorState extends Base2dState
 		if (assetData.hasAnimation != null && assetData.hasAnimation)
 		{
 			instance.playAnimation(cache.loadAnimation(assetData.model));
+			//instance.getMaterials()[0].addPass(new Outline(40).pass);
+			//instance.getMeshes()[0].getMaterials()[0].color = new Vector(Math.random(), Math.random(), Math.random(), 1);
+			//instance.getMeshes()[0].getMaterials()[0].blendMode = BlendMode.Screen;
+			//trace(">>>>>",instance.getMeshes()[0].getMaterials()[0].textureShader.killAlpha());
 		}
 
 		if (assetData.zOffset != null) instance.z = assetData.zOffset;
@@ -281,10 +275,10 @@ class EditorState extends Base2dState
 		var interactive = new Interactive(instance.getCollider(), world);
 		interactive.onPush = e ->
 		{
-				draggedInstance = instance;
-				dragInstanceStartPoint = { x: draggedInstance.x, y: draggedInstance.y };
-				draggedInteractive = interactive;
-				interactive.visible = false;
+			draggedInstance = instance;
+			dragInstanceStartPoint = { x: draggedInstance.x, y: draggedInstance.y };
+			draggedInteractive = interactive;
+			interactive.visible = false;
 		};
 
 		world.addToWorldPoint(instance, x, y, z, scale, rotation);
@@ -418,6 +412,8 @@ class EditorState extends Base2dState
 
 		return {
 			name: rawData.name,
+			size: rawData.size,
+			defaultTerrainId: rawData.defaultTerrainId,
 			map: map,
 			regions: regions,
 			triggers: [],
@@ -569,7 +565,7 @@ class EditorState extends Base2dState
 	function updateCamera(d:Float)
 	{
 		camDistance = Math.max(10, camDistance);
-		camDistance = Math.min(100, camDistance);
+		camDistance = Math.min(300, camDistance);
 
 		currentCameraPoint.x += (cameraObject.x - currentCameraPoint.x) / cameraSpeed.x * d * 30;
 		currentCameraPoint.y += (cameraObject.y - currentCameraPoint.y) / cameraSpeed.y * d * 30;

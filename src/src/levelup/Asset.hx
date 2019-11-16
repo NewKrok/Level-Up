@@ -4,6 +4,10 @@ import hxd.Res;
 import hxd.res.Model;
 import levelup.game.GameState.RaceId;
 
+/**
+ * ...
+ * @author Krisztian Somoracz
+ */
 class Asset
 {
 	static public function getAsset(id)
@@ -177,6 +181,16 @@ class Asset
 				model: Res.model.character.human.archer.IdleAnim,
 				hasAnimation: true,
 				previewUrl: "./asset/img/preview/unit/human/archer.jpg"
+			}
+			,
+			{
+				race: RaceId.Human,
+				id: "footman",
+				name: "Footman",
+				scale: 0.008,
+				model: Res.model.character.human.footman.IdleAnim,
+				hasAnimation: true,
+				previewUrl: "./asset/img/preview/unit/human/footman.jpg"
 			}
 		];
 	}

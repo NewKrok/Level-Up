@@ -3,6 +3,7 @@ package;
 import h3d.Engine;
 import levelup.Asset;
 import levelup.MapData;
+import levelup.Terrain;
 import levelup.editor.EditorState;
 import levelup.game.GameState;
 import haxe.Timer;
@@ -23,6 +24,7 @@ class Main extends Base2dApp
 		super.init();
 		stage.stageScaleMode = StageScaleMode.SHOW_ALL;
 		Asset.init();
+		Terrain.init();
 
 		changeState(EditorState, [stage, s3d, MapData.getRawMap("lobby")]);
 		//changeState(GameState, [stage, s3d, MapData.getRawMap("lobby")]);

@@ -9,20 +9,20 @@ import hxd.Res;
  * ...
  * @author Krisztian Somoracz
  */
-class Archer extends AICharacter
+class Footman extends AICharacter
 {
 	public function new(s2d:Object, parent, owner:PlayerId)
 	{
 		super(s2d, parent, owner, {
 			icon: Res.model.character.orc.minion.icon.toTile(),
-			idleModel: Res.model.character.human.archer.IdleAnim,
+			idleModel: Res.model.character.human.footman.IdleAnim,
 			idleAnimSpeedMultiplier: 1,
-			runModel: Res.model.character.human.archer.WalkAnim,
+			runModel: Res.model.character.human.footman.WalkAnim,
 			runAnimSpeedMultiplier: 1.8,
-			attackModel: Res.model.character.human.archer.Attack01Anim,
-			deathModel: Res.model.character.human.archer.DeathAnim,
+			attackModel: Res.model.character.human.footman.Attack01Anim,
+			deathModel: Res.model.character.human.footman.DeathAnim,
 			modelScale: 0.008,
-			speed: 8,
+			speed: 6,
 			speedMultiplier: 1,
 			attackRange: 2.1,
 			attackSpeed: 1500,

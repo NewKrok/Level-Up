@@ -1,5 +1,6 @@
 package levelup.game;
 
+import levelup.Terrain.TerrainConfig;
 import levelup.game.GameState.WorldConfig;
 import levelup.game.unit.BaseUnit;
 import levelup.game.js.Graph;
@@ -48,6 +49,7 @@ class GameWorld extends World
 
 	var worldConfig:WorldConfig;
 	var interact:Interactive;
+	var baseGround:Mesh;
 	var isWorldGraphDirty:Bool = false;
 	var lastRerouteTime:Float = 0;
 
@@ -59,9 +61,16 @@ class GameWorld extends World
 
 		instance = this;
 
-		generateMap();
+		var terrainConfig = Terrain.getTerrain(worldConfig.defaultTerrainId);
+		var c = new Cube(worldConfig.size.y, worldConfig.size.x, 0.5);
+		c.addNormals();
+		c.addUVs();
+		c.uvScale(terrainConfig.uvScale, terrainConfig.uvScale);
+		baseGround = new Mesh(c, Material.create(terrainConfig.texture), parent);
+		baseGround.material.texture.wrap = Wrap.Repeat;
+		baseGround.z = -0.5;
 
-		var c = new Cube(worldConfig.map.length, worldConfig.map[0].length);
+		generateMap();
 
 		interact = new Interactive(c.getCollider(), parent);
 		interact.enableRightButton = true;
@@ -82,23 +91,33 @@ class GameWorld extends World
 		}
 	}
 
+	public function changeDefaultTerrain(terrainId:String)
+	{
+		var terrainConfig = Terrain.getTerrain(terrainId);
+
+		var c = new Cube(worldConfig.size.y, worldConfig.size.x, 0.5);
+		c.addNormals();
+		c.addUVs();
+		c.uvScale(terrainConfig.uvScale, terrainConfig.uvScale);
+
+		baseGround.getMaterials()[0].texture = terrainConfig.texture;
+		baseGround.primitive = c;
+		baseGround.material.texture.wrap = Wrap.Repeat;
+	}
+
 	public function generateMap():Void
 	{
 		var graphArray = [];
 
 		var cache:ModelCache = new ModelCache();
 
-		var indexI = worldConfig.map.length - 1;
-		for (i in 0...worldConfig.map.length)
+		for (i in 0...cast worldConfig.size.y)
 		{
-			var indexJ = worldConfig.map[0].length - 1;
 			graphArray.push([]);
-			for (j in 0...worldConfig.map[0].length)
+			for (j in 0...cast worldConfig.size.x)
 			{
-				graphArray[i].push(worldConfig.map[indexI][j] == 1 || worldConfig.map[indexI][j] == 2 ? 0 : 1);
-				indexJ--;
+				graphArray[i].push(worldConfig.map[i][j] == 1 || worldConfig.map[i][j] == 2 ? 0 : 1);
 			}
-			indexI--;
 		}
 
 		for (o in worldConfig.staticObjects)

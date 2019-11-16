@@ -22,7 +22,7 @@ ul {
 
 .lu_list_container {
 	overflow-y: scroll;
-	height: calc(100% - 5.8em);
+	height: 100%;
 }
 
 .lu_list_element {
@@ -53,6 +53,21 @@ ul {
 	line-height: 20px;
 }
 
+.lu_button--selected {
+	color: #6afd75;
+	pointer-events: none;
+}
+
 .lu_button:hover {
 	background-color: #5E6161FF;
+}
+
+.lu_button--secondary {
+	border-radius: 0;
+	background-color: #00000077;
+}
+
+.lu_button--secondary:hover {
+	border-radius: 0;
+	background-color: #00000055;
 }

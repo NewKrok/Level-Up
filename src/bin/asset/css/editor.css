@@ -62,3 +62,13 @@
 	color: #FFF;
 	pointer-events: visible;
 }
+
+.lu_tab_menu {
+	color: #FFF;
+	width: 100%;
+	background-color: #5E6161;
+}
+
+.lu_library_list_container {
+	height: calc(100% - 49px);
+}

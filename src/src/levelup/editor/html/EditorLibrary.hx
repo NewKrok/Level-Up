@@ -37,7 +37,6 @@ class EditorLibrary extends View
 
 	function render() '
 		<div class="lu_editor__library">
-			<div class="lu_title"><i class="fas fa-folder-open lu_right_margin"></i>Library</div>
 			<select class="lu_selector lu_offset" onchange={e -> { removeSelection(); selectedListIndex = cast(e.currentTarget, SelectElement).selectedIndex; }}>
 				<option>({environmentsList.length}) Environments</option>
 				<option>({propsList.length}) Props</option>
@@ -63,7 +62,7 @@ class EditorLibrary extends View
 					</select>
 				</div>
 			</if>
-			<div class="lu_list_container">
+			<div class="lu_list_container lu_library_list_container">
 				<ul>
 					<for {e in list}>
 						<li

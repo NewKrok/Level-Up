@@ -1,10 +1,11 @@
 package levelup.editor.html;
 
 import coconut.ui.View;
-import js.html.SelectElement;
 import levelup.Asset.AssetConfig;
+import levelup.Terrain.TerrainConfig;
 import levelup.editor.EditorState.AssetItem;
 import levelup.editor.html.EditorLibrary;
+import levelup.editor.html.TerrainEditor;
 import tink.pure.List;
 
 /**
@@ -15,13 +16,17 @@ class EditorUi extends View
 {
 	@:attr var backToLobby:Void->Void;
 	@:attr var previewRequest:AssetConfig->Void;
+	@:attr var changeDefaultTerrainRequest:TerrainConfig->Void;
 
 	@:skipCheck @:attr var environmentsList:List<AssetConfig>;
 	@:skipCheck @:attr var propsList:List<AssetConfig>;
 	@:skipCheck @:attr var unitsList:List<AssetConfig>;
 	@:skipCheck @:attr var selectedWorldAsset:AssetItem;
+	@:skipCheck @:attr var terrainsList:List<TerrainConfig>;
 
 	@:skipCheck @:state var hoveredAsset:AssetConfig = null;
+
+	@:state var selectedRightMenu:Int = 0;
 
 	@:ref var editorLibrary:EditorLibrary;
 	@:ref var selectedAsset:AssetProperties;
@@ -45,17 +50,33 @@ class EditorUi extends View
 				</if>
 			</div>
 			<div class="lu_editor_right">
-				<EditorLibrary
-					ref={editorLibrary}
-					environmentsList={environmentsList}
-					propsList={propsList}
-					unitsList={unitsList}
-					previewRequest={previewRequest}
-					onAssetMouseOver={asset -> hoveredAsset = asset}
-				/>
-				<EditorPreview
-					assetConfig=$hoveredAsset
-				/>
+				<div class="lu_row lu_tab_menu">
+					<div class={"lu_title lu_button lu_button--secondary" + (selectedRightMenu == 0 ? " lu_button--selected" : "")} onclick={e -> selectedRightMenu = 0}>
+						<i class="fas fa-folder-open"></i>
+					</div>
+					<div class={"lu_title lu_button lu_button--secondary" + (selectedRightMenu == 1 ? " lu_button--selected" : "")} onclick={e -> selectedRightMenu = 1}>
+						<i class="fas fa-map"></i>
+					</div>
+				</div>
+				<switch {selectedRightMenu}>
+					<case {0}>
+						<EditorLibrary
+							ref={editorLibrary}
+							environmentsList={environmentsList}
+							propsList={propsList}
+							unitsList={unitsList}
+							previewRequest={previewRequest}
+							onAssetMouseOver={asset -> hoveredAsset = asset}
+						/>
+						<EditorPreview
+							assetConfig=$hoveredAsset
+						/>
+					<case {1}>
+						<TerrainEditor
+							terrainList={terrainsList}
+							changeDefaultTerrainRequest={changeDefaultTerrainRequest}
+						/>
+				</switch>
 			</div>
 		</div>
 	';
