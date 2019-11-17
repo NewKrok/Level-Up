@@ -1,15 +1,46 @@
 # Level Up!
 3D "Top Down" browser game with level editor, written in Haxe.
 
-## Try it now - in progress, don't expect too much :)
+## Try it now - in progress...
 http://flashplusplus.net/haxe/levelup/index.html
+
+## TODO - general
+- Fix for some render issues like some unit has a black "shadow"
+- Add missing Human and Orc characters
+- etc...
+
+## TODO - Game
+- Ranged attack with follower and normal projectile
+- Area damage
+- Html based hero ui
+- Life and mana bar into the game
+- Refact BaseUnit / Ai unit / Player unit
+- Add team system
+- Implement a Moba custom game
+- etc...
+
+## TODO - Adventure editor
+- Add missing preview images
+- Terrain editor
+- Region editor
+- Trigger editor
+- Possibility to start the game
+- Save/Load system
+- Pathfinding editor
+- Improved outline effect
+- Define map sizes
+- Team editor
+- etc...
 
 ## Screenshot(s)
 Lobby
 ![image](https://user-images.githubusercontent.com/13141660/68549518-17d81a80-03f9-11ea-831a-d97de774f63c.png)
 
 Editor
-![image](https://user-images.githubusercontent.com/13141660/68549537-39d19d00-03f9-11ea-8850-e3ed5ad3ade2.png)
+![image](https://user-images.githubusercontent.com/13141660/69002269-3902a480-08ec-11ea-826a-e8aeacb79999.png)
+![image](https://user-images.githubusercontent.com/13141660/69002283-90a11000-08ec-11ea-8334-5e5f7049ceb1.png)
+![image](https://user-images.githubusercontent.com/13141660/69002302-ce059d80-08ec-11ea-9563-adf8fe5ecca8.png)
+
 
 ## Dependencies
 - **Haxe 4.0.0** Haxe is an open source toolkit based on a modern high level strictly typed programming language https://haxe.org/
