@@ -18,6 +18,8 @@ class EditorLibrary extends View
 {
 	@:attr var previewRequest:AssetConfig->Void;
 	@:attr var onAssetMouseOver:AssetConfig->Void;
+	@:attr var onPlayerSelect:PlayerId->Void;
+	@:attr var selectedPlayer:PlayerId;
 
 	@:skipCheck @:attr var environmentsList:List<AssetConfig>;
 	@:skipCheck @:attr var propsList:List<AssetConfig>;
@@ -31,7 +33,6 @@ class EditorLibrary extends View
 	};
 
 	@:state var selectedListIndex:Int = 0;
-	@:state var selectedPlayer:PlayerId = PlayerId.Player1;
 	@:state var selectedRace:RaceId = RaceId.Human;
 	@:skipCheck @:state var selectedAsset:AssetConfig = null;
 
@@ -45,7 +46,7 @@ class EditorLibrary extends View
 			<if {selectedListIndex == 2}>
 				<div class="lu_row">
 					<div class="lu_player_color_box lu_left_offset" style={"background-color: #" + PlayerColor.colors[selectedPlayer]} ></div>
-					<select class="lu_selector lu_horizontal_offset" onchange={e -> selectedPlayer = cast(e.currentTarget, SelectElement).selectedIndex}>
+					<select class="lu_selector lu_horizontal_offset" onchange={e -> onPlayerSelect(cast(e.currentTarget, SelectElement).selectedIndex)}>
 						<for {i in 0...10}>
 							<option selected={i == selectedPlayer} style={"color: #" + PlayerColor.colors[i]}>
 								Player {i + 1}

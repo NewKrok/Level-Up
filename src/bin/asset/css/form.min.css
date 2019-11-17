@@ -5,7 +5,7 @@ ul{list-style:none;padding:0;margin:0;}
 .lu_list_element{text-overflow:ellipsis;overflow:hidden;padding:5px;cursor:pointer;border-top:1px solid #777;}
 .lu_list_element--selected{background-color:#00000055;font-weight:bold;}
 .lu_list_element--interactive:hover{background-color:#00000055;}
-.lu_button{pointer-events:visible;cursor:pointer;background-color:#5E6161DD;color:#FFF;padding:10px 20px;border-radius:10px;width:fit-content;min-width:25px;min-height:20px;line-height:20px;}
+.lu_button{pointer-events:visible;cursor:pointer;color:#FFF;padding:10px;width:fit-content;min-width:25px;min-height:20px;line-height:20px;font-size:0.9em;}
 .lu_button--selected{color:#6afd75;pointer-events:none;}
 .lu_button:hover{background-color:#5E6161FF;}
 .lu_button--secondary{border-radius:0;background-color:#00000077;}

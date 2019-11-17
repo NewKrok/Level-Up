@@ -8,13 +8,21 @@ import coconut.ui.View;
  */
 class LobbyUi extends View
 {
+	@:attribute var isTestRun:Bool;
 	@:attribute var openEditor:Void->Void;
+	@:attribute var closeTestRun:Void->Void;
 
 	function render() '
 		<div class="lu_lobby">
-			<div class="lu_button" onclick=$openEditor>
-				<i class="fas fa-drafting-compass lu_right_margin"></i>Open Adventure Editor
-			</div>
+			<if {isTestRun}>
+				<div class="lu_button" onclick=$closeTestRun>
+					<i class="fas fa-drafting-compass lu_right_offset"></i>Close Test Run
+				</div>
+			<else>
+				<div class="lu_button" onclick=$openEditor>
+					<i class="fas fa-drafting-compass lu_right_offset"></i>Open Adventure Editor
+				</div>
+			</if>
 		</div>
 	';
 }

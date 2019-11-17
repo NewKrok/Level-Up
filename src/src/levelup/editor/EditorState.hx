@@ -1,27 +1,16 @@
 package levelup.editor;
 
-import coconut.ui.RenderResult;
-import h2d.Flow;
 import h2d.Scene;
-import h3d.Camera;
 import h3d.Quat;
 import h3d.Vector;
 import h3d.mat.BlendMode;
-import h3d.mat.Material;
-import h3d.pass.Blur;
 import h3d.pass.DefaultShadowMap;
-import h3d.prim.Cube;
 import h3d.prim.ModelCache;
 import h3d.scene.Graphics;
 import h3d.scene.Interactive;
-import h3d.scene.Mesh;
 import h3d.scene.Object;
 import h3d.scene.fwd.DirLight;
-import h3d.scene.fwd.PointLight;
-import h3d.shader.Outline;
-import h3d.shader.SignedDistanceField;
 import haxe.Json;
-import haxe.ds.Map;
 import hpp.heaps.Base2dStage;
 import hpp.heaps.Base2dState;
 import hpp.heaps.HppG;
@@ -29,27 +18,18 @@ import hpp.util.GeomUtil;
 import hpp.util.GeomUtil.SimplePoint;
 import hxd.Event;
 import hxd.Key;
-import hxd.Res;
 import hxd.Window;
-import hxsl.Shader;
 import js.Browser;
 import levelup.Asset;
 import levelup.editor.html.EditorUi;
 import levelup.game.GameState;
-import levelup.game.GameState.PlayerId;
 import levelup.game.GameState.StaticObjectConfig;
 import levelup.game.GameState.WorldConfig;
 import levelup.game.GameState.WorldEntity;
 import levelup.game.GameWorld;
 import levelup.game.GameWorld.Region;
-import levelup.game.ui.HeroUi;
 import levelup.game.unit.BaseUnit;
-import levelup.game.unit.orc.BandWagon;
-import levelup.game.unit.orc.Berserker;
-import levelup.game.unit.orc.Drake;
-import levelup.game.unit.orc.Grunt;
-import levelup.game.unit.orc.Minion;
-import levelup.game.unit.orc.PlayerGrunt;
+import levelup.util.SaveUtil;
 import motion.Actuate;
 import react.ReactDOM;
 import tink.pure.List;
@@ -122,8 +102,17 @@ class EditorState extends Base2dState
 		this.s2d = s2d;
 		mapConfig = loadLevel(rawMap);
 
-		model = new EditorModel();
-		model.baseTerrainId = mapConfig.baseTerrainId;
+		model = new EditorModel(
+		{
+			name: mapConfig.name,
+			size: mapConfig.size,
+			baseTerrainId: mapConfig.baseTerrainId,
+			pathFindingMap: mapConfig.pathFindingMap,
+			regions: mapConfig.regions,
+			triggers: mapConfig.triggers,
+			units: [],
+			staticObjects: [],
+		});
 
 		model.observables.baseTerrainId.bind(id -> world.changeBaseTerrain(id));
 
@@ -140,7 +129,7 @@ class EditorState extends Base2dState
 			name: mapConfig.name,
 			size: mapConfig.size,
 			baseTerrainId: mapConfig.baseTerrainId,
-			map: mapConfig.map,
+			pathFindingMap: mapConfig.pathFindingMap,
 			regions: [],
 			triggers: [],
 			units: [],
@@ -190,7 +179,15 @@ class EditorState extends Base2dState
 			{
 				if (dragStartObjectPoint != null && previewInstance != null && GeomUtil.getDistance(cast dragStartObjectPoint, cast cameraObject) < 0.2)
 				{
-					createAsset(selectedAssetConfig, previewInstance.x, previewInstance.y, previewInstance.z, previewInstanceScale, previewInstanceRotation);
+					createAsset(
+						selectedAssetConfig,
+						previewInstance.x,
+						previewInstance.y,
+						previewInstance.z,
+						previewInstanceScale,
+						previewInstanceRotation,
+						model.selectedPlayer
+					);
 				}
 				else if (draggedInstance != null && GeomUtil.getDistance(cast draggedInstance, dragInstanceStartPoint) < 0.2)
 				{
@@ -249,14 +246,19 @@ class EditorState extends Base2dState
 		}
 		world.onWorldWheel = e -> camDistance += e.wheelDelta * 8;
 
-		var createAssetByObject = o ->
+		for (o in mapConfig.staticObjects.concat([]))
 		{
 			var config = Asset.getAsset(o.id);
 			if (config != null) createAsset(Asset.getAsset(o.id), o.x, o.y, o.z, o.scale == null ? config.scale : o.scale, o.rotation);
 			else trace("Couldn't create asset with id: " + o.id);
 		}
-		for (o in mapConfig.staticObjects) createAssetByObject(o);
-		for (o in mapConfig.units) createAssetByObject(o);
+
+		for (o in mapConfig.units.concat([]))
+		{
+			var config = Asset.getAsset(o.id);
+			if (config != null) createUnit(Asset.getAsset(o.id), o.x, o.y, o.z, o.scale == null ? config.scale : o.scale, o.rotation, o.owner);
+			else trace("Couldn't create unit with id: " + o.id);
+		}
 
 		s3d.addChild(cameraObject);
 		s3d.camera.target.x = s3d.camera.pos.x;
@@ -265,6 +267,8 @@ class EditorState extends Base2dState
 
 		editorUi = new EditorUi({
 			backToLobby: () -> HppG.changeState(GameState, [stage, s3d, MapData.getRawMap("lobby")]),
+			save: () -> save(),
+			testRun: () -> HppG.changeState(GameState, [stage, s3d, save(), { isTestRun: true }]),
 			previewRequest: createPreview,
 			environmentsList: List.fromArray(Asset.environment),
 			propsList: List.fromArray(Asset.props),
@@ -288,10 +292,36 @@ class EditorState extends Base2dState
 		isLevelLoaded = true;
 	}
 
-	function createAsset(config, x, y, z, scale, rotation)
+	function createAsset(config:AssetConfig, x, y, z, scale, rotation, owner = null)
 	{
 		var instance:Object = cache.loadModel(config.model);
 		var interactive = new Interactive(instance.getCollider(), world);
+
+		if (config.race == null)
+		{
+			model.staticObjects.push({
+				id: config.id,
+				name: config.name,
+				x: x,
+				y: y,
+				z: z,
+				scale: scale,
+				rotation: rotation
+			});
+		}
+		else
+		{
+			model.units.push({
+				id: config.id,
+				name: config.name,
+				x: x,
+				y: y,
+				z: z,
+				scale: scale,
+				rotation: rotation,
+				owner: owner
+			});
+		}
 
 		worldInstances.push({
 			instance: instance,
@@ -325,17 +355,19 @@ class EditorState extends Base2dState
 
 		interactive.onRelease = e -> releaseAssetInteractives();
 
-		var outlineShader = new Outline();
-		outlineShader.size = 0;
-		outlineShader.distance = 1;
-		outlineShader.color = new Vector(1, 1, 0);
-
-		interactive.onOver = e -> instance.getMaterials()[0].mainPass.addShader(outlineShader);
-		interactive.onOut = e -> instance.getMaterials()[0].mainPass.removeShader(outlineShader);
+		var colorShader = new h3d.shader.ColorMult();
+		colorShader.color = new Vector(1, 1, 0, 0.5);
+		interactive.onOver = e -> instance.getMaterials()[0].mainPass.addShader(colorShader);
+		interactive.onOut = e -> instance.getMaterials()[0].mainPass.removeShader(colorShader);
 
 		world.addToWorldPoint(instance, x, y, z, scale, rotation);
 
 		if (isLevelLoaded) logAction({ actionType: EditorActionType.Create, target: instance });
+	}
+
+	function createUnit(config:AssetConfig, x, y, z, scale, rotation, owner)
+	{
+		createAsset(config, x, y, z, scale, rotation, owner);
 	}
 
 	function onKeyEvent(e:Event)
@@ -495,7 +527,7 @@ class EditorState extends Base2dState
 	{
 		var rawData = Json.parse(rawDataStr);
 
-		var map:Array<Array<WorldEntity>> = rawData.map;
+		var pathFindingMap:Array<Array<WorldEntity>> = rawData.pathFindingMap;
 		var staticObjects:Array<StaticObjectConfig> = rawData.staticObjects;
 
 		var regions:Array<Region> = [for (r in cast(rawData.regions, Array<Dynamic>)) {
@@ -510,7 +542,7 @@ class EditorState extends Base2dState
 			name: rawData.name,
 			size: rawData.size,
 			baseTerrainId: rawData.baseTerrainId,
-			map: map,
+			pathFindingMap: pathFindingMap,
 			regions: regions,
 			triggers: [],
 			units: rawData.units,
@@ -722,6 +754,37 @@ class EditorState extends Base2dState
 	}
 
 	function snapPosition(p:Float) return model.currentSnap == 0 ? p : Math.round(p / model.currentSnap) * model.currentSnap;
+
+	public function save()
+	{
+		var worldConfig:WorldConfig = {
+			name: model.name,
+			size: model.size,
+			baseTerrainId: model.baseTerrainId,
+			pathFindingMap: model.pathFindingMap,
+			regions: model.regions,
+			triggers: model.triggers,
+			units: model.units,
+			staticObjects: model.staticObjects
+		};
+		var result = Json.stringify(worldConfig);
+
+		var savedMaps = SaveUtil.editorData.customMaps;
+		var isNewMap:Bool = true;
+		for (i in 0...savedMaps.length)
+		{
+			if (savedMaps[i].indexOf('"name":"' + worldConfig.name + '"') != -1)
+			{
+				SaveUtil.editorData.customMaps[i] = result;
+				isNewMap = false;
+				break;
+			}
+		}
+		if (isNewMap) SaveUtil.editorData.customMaps.push(result);
+
+		SaveUtil.save();
+		return result;
+	}
 
 	override public function dispose():Void
 	{

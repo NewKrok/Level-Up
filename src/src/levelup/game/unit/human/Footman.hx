@@ -1,15 +1,15 @@
 package levelup.game.unit.human;
 
-import levelup.game.unit.AICharacter;
 import levelup.game.GameState.PlayerId;
 import h2d.Object;
 import hxd.Res;
+import levelup.game.unit.BaseUnit;
 
 /**
  * ...
  * @author Krisztian Somoracz
  */
-class Footman extends AICharacter
+class Footman extends BaseUnit
 {
 	public function new(s2d:Object, parent, owner:PlayerId)
 	{

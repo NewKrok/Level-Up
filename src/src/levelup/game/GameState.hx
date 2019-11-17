@@ -8,6 +8,7 @@ import levelup.editor.EditorState;
 import levelup.game.GameModel.PlayState;
 import levelup.game.GameState.Trigger;
 import levelup.game.GameWorld.Region;
+import levelup.game.html.GameUi;
 import levelup.game.html.LobbyUi;
 import levelup.game.ui.HeroUi;
 import levelup.game.unit.BaseUnit;
@@ -19,7 +20,6 @@ import levelup.game.unit.orc.Grunt;
 import levelup.game.unit.orc.Berserker;
 import levelup.game.ui.LineBar;
 import levelup.game.unit.orc.Minion;
-import levelup.game.unit.orc.PlayerGrunt;
 import h2d.Flow;
 import h2d.Object;
 import h2d.Scene;
@@ -43,6 +43,7 @@ import hpp.util.GeomUtil.SimplePoint;
 import hxd.Event;
 import hxd.Res;
 import levelup.MapData;
+import levelup.util.SaveUtil;
 import motion.Actuate;
 import motion.easing.Elastic;
 import motion.easing.Expo;
@@ -62,6 +63,7 @@ class GameState extends Base2dState
 {
 	public var id(default, never):UInt = Math.floor(Math.random() * 1000);
 
+	var stateConfig:GameStateConfig;
 	var world:GameWorld;
 	var mapConfig:WorldConfig;
 	var model:GameModel;
@@ -81,7 +83,7 @@ class GameState extends Base2dState
 	var currentCamDistance:Float = 0;
 	var cameraSpeed:Vector = new Vector(10, 10, 5);
 	var camAngle:Float = Math.PI - Math.PI / 4;
-	var camDistance:Float = 30;
+	var camDistance:Float = 40;
 	var hasCameraAnimation:Bool = false;
 	var camAnimationResult:Result;
 	var camAnimationResultHandler:Void->Void;
@@ -95,12 +97,13 @@ class GameState extends Base2dState
 	var isControlEnabled:Bool = false;
 	var isDisposed:Bool = false;
 
-	public function new(stage:Base2dStage, s2d:h2d.Scene, s3d:h3d.scene.Scene, rawMap:String)
+	public function new(stage:Base2dStage, s2d:h2d.Scene, s3d:h3d.scene.Scene, rawMap:String, stateConfigParam:GameStateConfig = null)
 	{
 		super(stage);
 
 		this.s3d = s3d;
 		this.s2d = s2d;
+		this.stateConfig = stateConfigParam == null ? { isTestRun: false } : stateConfigParam;
 		mapConfig = loadLevel(rawMap);
 
 		heroUiContainer = new Flow(s2d);
@@ -213,13 +216,27 @@ class GameState extends Base2dState
 		}, 3500);*/
 
 		// Without intro
-		jumpCamera(10, 10, 23);
+		jumpCamera(10, 10, camDistance);
 		model.startGame();
 
-		if (mapConfig.name == "Lobby")
+		if (mapConfig.name == "Lobby" && !stateConfig.isTestRun)
 		{
 			var ui:RenderResult = LobbyUi.fromHxx({
-				openEditor: () -> HppG.changeState(EditorState, [stage, s3d, MapData.getRawMap("lobby")])
+				isTestRun: stateConfig.isTestRun,
+				openEditor: () -> HppG.changeState(
+					EditorState,
+					[stage, s3d, SaveUtil.editorData.customMaps.length == 0 ? MapData.getRawMap("lobby") : SaveUtil.editorData.customMaps[0]]
+				),
+				closeTestRun: () -> HppG.changeState(EditorState, [stage, s3d, rawMap])
+			});
+			ReactDOM.render(ui, Browser.document.getElementById("native-ui"));
+		}
+		else
+		{
+			var ui:RenderResult = GameUi.fromHxx({
+				isTestRun: stateConfig.isTestRun,
+				openLobby: () -> HppG.changeState(GameState, [stage, s3d, MapData.getRawMap("lobby")]),
+				closeTestRun: () -> HppG.changeState(EditorState, [stage, s3d, rawMap])
 			});
 			ReactDOM.render(ui, Browser.document.getElementById("native-ui"));
 		}
@@ -229,7 +246,7 @@ class GameState extends Base2dState
 	{
 		var rawData = Json.parse(rawDataStr);
 
-		var map:Array<Array<WorldEntity>> = rawData.map;
+		var pathFindingMap:Array<Array<WorldEntity>> = rawData.pathFindingMap;
 		var staticObjects:Array<StaticObjectConfig> = rawData.staticObjects;
 
 		var regions:Array<Region> = [for (r in cast(rawData.regions, Array<Dynamic>)) {
@@ -271,7 +288,7 @@ class GameState extends Base2dState
 			name: rawData.name,
 			size: rawData.size,
 			baseTerrainId: rawData.baseTerrainId,
-			map: map,
+			pathFindingMap: pathFindingMap,
 			regions: regions,
 			triggers: triggers,
 			units: rawData.units,
@@ -297,7 +314,6 @@ class GameState extends Base2dState
 	function createUnit(id:String, owner:PlayerId, posX:Float, posY:Float)
 	{
 		var unit = switch (id) {
-			case "playergrunt": new PlayerGrunt(s2d, world, owner);
 			case "bandwagon": new BandWagon(s2d, world, owner);
 			case "berserker": new Berserker(s2d, world, owner);
 			case "drake": new Drake(s2d, world, owner);
@@ -307,8 +323,8 @@ class GameState extends Base2dState
 			case "footman": new Footman(s2d, world, owner);
 			case _: null;
 		};
-		unit.view.x = posY * world.blockSize + world.blockSize / 2;
-		unit.view.y = posX * world.blockSize + world.blockSize / 2;
+		unit.view.x = posX * world.blockSize + world.blockSize / 2;
+		unit.view.y = posY * world.blockSize + world.blockSize / 2;
 		world.addEntity(unit);
 
 		if (owner == PlayerId.Player1)
@@ -464,8 +480,8 @@ class GameState extends Base2dState
 		{
 			var targetPoint = cameraTarget.getPosition();
 
-			camDistance = Math.max(10, camDistance);
-			camDistance = Math.min(100, camDistance);
+			camDistance = Math.max(20, camDistance);
+			camDistance = Math.min(60, camDistance);
 
 			currentCameraPoint.x += (targetPoint.x - currentCameraPoint.x) / cameraSpeed.x * d * 30;
 			currentCameraPoint.y += (targetPoint.y - currentCameraPoint.y) / cameraSpeed.y * d * 30;
@@ -473,13 +489,12 @@ class GameState extends Base2dState
 		}
 
 		s3d.camera.target.set(currentCameraPoint.x, currentCameraPoint.y);
-
 		s3d.camera.pos.set(
 			currentCameraPoint.x + currentCamDistance * Math.cos(camAngle),
 			currentCameraPoint.y,
 			(hasCameraAnimation || cameraTarget == null)
-				? currentCameraPoint.z + currentCamDistance * Math.sin(camAngle)
-				: cameraTarget.view.z + currentCamDistance * Math.sin(camAngle)
+				? currentCamDistance * Math.sin(camAngle)
+				: currentCamDistance * Math.sin(camAngle)
 		);
 	}
 
@@ -508,14 +523,14 @@ class GameState extends Base2dState
 		return camAnimationResult;
 	}
 
-	function jumpCamera(x:Float, y:Float, z:Float)
+	function jumpCamera(x:Float, y:Float, z:Float = null)
 	{
 		currentCameraPoint.x = x;
 		currentCameraPoint.y = y;
-		currentCameraPoint.z = z;
+		if (z != null) currentCameraPoint.z = z;
 		camAnimationPosition.x = currentCameraPoint.x;
 		camAnimationPosition.y = currentCameraPoint.y;
-		camAnimationPosition.z = currentCameraPoint.z;
+		if (z != null) camAnimationPosition.z = currentCameraPoint.z;
 
 		currentCamDistance = camDistance;
 
@@ -596,12 +611,17 @@ class GameState extends Base2dState
 	}
 }
 
+typedef GameStateConfig =
+{
+	var isTestRun:Bool;
+}
+
 typedef WorldConfig =
 {
 	var name(default, never):String;
 	var size(default, never):SimplePoint;
 	var baseTerrainId(default, never):String;
-	var map(default, never):Array<Array<WorldEntity>>;
+	var pathFindingMap(default, never):Array<Array<WorldEntity>>;
 	@:optional var regions(default, never):Array<Region>;
 	@:optional var triggers(default, never):Array<Trigger>;
 	@:optional var units(default, never):Array<InitialUnitData>;
@@ -663,6 +683,7 @@ enum UnitDefinition {
 	var Player7 = 6;
 	var Player8 = 7;
 	var Player9 = 8;
+	var Player10 = 9;
 }
 
 @:enum abstract RaceId(Int) from Int to Int {

@@ -1,6 +1,6 @@
 package levelup.game.unit.orc;
 
-import levelup.game.unit.AICharacter;
+import levelup.game.unit.BaseUnit;
 import levelup.game.GameState.PlayerId;
 import h2d.Object;
 import hxd.Res;
@@ -9,7 +9,7 @@ import hxd.Res;
  * ...
  * @author Krisztian Somoracz
  */
-class BandWagon extends AICharacter
+class BandWagon extends BaseUnit
 {
 	public function new(s2d:Object, parent, owner:PlayerId)
 	{

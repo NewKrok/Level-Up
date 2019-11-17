@@ -1,15 +1,15 @@
 package levelup.game.unit.orc;
 
-import levelup.game.unit.AICharacter;
 import levelup.game.GameState.PlayerId;
 import h2d.Object;
 import hxd.Res;
+import levelup.game.unit.BaseUnit;
 
 /**
  * ...
  * @author Krisztian Somoracz
  */
-class Drake extends AICharacter
+class Drake extends BaseUnit
 {
 	public function new(s2d:Object, parent, owner:PlayerId)
 	{

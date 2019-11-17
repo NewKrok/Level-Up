@@ -116,7 +116,7 @@ class GameWorld extends World
 			graphArray.push([]);
 			for (j in 0...cast worldConfig.size.x)
 			{
-				graphArray[i].push(worldConfig.map[i][j] == 1 || worldConfig.map[i][j] == 2 ? 0 : 1);
+				graphArray[i].push(worldConfig.pathFindingMap[i][j] == 1 || worldConfig.pathFindingMap[i][j] == 2 ? 0 : 1);
 			}
 		}
 
@@ -131,13 +131,13 @@ class GameWorld extends World
 
 	public function resetWorldWeight()
 	{
-		var indexI = worldConfig.map.length - 1;
-		for (i in 0...worldConfig.map.length)
+		var indexI = worldConfig.pathFindingMap.length - 1;
+		for (i in 0...worldConfig.pathFindingMap.length)
 		{
-			var indexJ = worldConfig.map[0].length - 1;
-			for (j in 0...worldConfig.map[0].length)
+			var indexJ = worldConfig.pathFindingMap[0].length - 1;
+			for (j in 0...worldConfig.pathFindingMap[0].length)
 			{
-				graph.grid[i][j].weight = worldConfig.map[indexI][j] == 1 || worldConfig.map[indexI][j] == 2 ? 0 : 1;
+				graph.grid[i][j].weight = worldConfig.pathFindingMap[indexI][j] == 1 || worldConfig.pathFindingMap[indexI][j] == 2 ? 0 : 1;
 				indexJ--;
 			}
 			indexI--;

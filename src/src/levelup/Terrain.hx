@@ -94,7 +94,7 @@ class Terrain
 				texture: Res.texture.terrain.ice.toTexture()
 			},
 			{
-				id: "LavaGround",
+				id: "lavaground",
 				name: "Lava Ground",
 				uvScale: 30,
 				texture: Res.texture.terrain.LavaGround.toTexture()

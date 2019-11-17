@@ -332,6 +332,11 @@ import tink.state.State;
 
 	public function update(d:Float)
 	{
+		if (target == null && nearestTarget != null && state.value != UnitState.AttackTriggered && state != MoveTo)
+		{
+			attack(nearestTarget);
+		}
+
 		/*t.text = "Id: " + id + "\nState: " + Std.string(state.value) + "\nLife: " + Math.floor(life.value) + "\nRotation: " + Math.floor(currentTargetAngle * 100) / 100;
 		var pos = cast(GameWorld.instance.parent, Scene).camera.project(view.x, view.y, view.z, HppG.stage2d.defaultWidth, HppG.stage2d.defaultHeight);
 		t.setPosition(pos.x, pos.y);*/

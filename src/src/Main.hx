@@ -10,6 +10,7 @@ import haxe.Timer;
 import hpp.heaps.Base2dApp;
 import hpp.heaps.Base2dStage.StageScaleMode;
 import hxd.Res;
+import levelup.util.SaveUtil;
 
 /**
  * ...
@@ -25,9 +26,10 @@ class Main extends Base2dApp
 		stage.stageScaleMode = StageScaleMode.SHOW_ALL;
 		Asset.init();
 		Terrain.init();
+		SaveUtil.load();
 
-		changeState(EditorState, [stage, s3d, MapData.getRawMap("lobby")]);
-		//changeState(GameState, [stage, s3d, MapData.getRawMap("lobby")]);
+		//changeState(EditorState, [stage, s3d, MapData.getRawMap("lobby")]);
+		changeState(GameState, [stage, s3d, MapData.getRawMap("lobby")]);
 		//changeState(GameState, [s2d, s3d, MapData.getRawMap("hero_survival")]);
 	}
 

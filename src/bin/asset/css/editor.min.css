@@ -1,7 +1,7 @@
-.lu_editor{width:100%;height:100%;display:flex;}
+.lu_editor{width:100%;height:100%;display:flex;flex-direction:column;}
 .lu_editor_left{height:100%;display:flex;flex-direction:column;width:15em;align-items:center;}
-.lu_editor_menu{margin:10px;}
-.lu_editor_right{width:100%;height:100%;position:absolute;pointer-events:visible;display:flex;flex-direction:column;width:15em;right:0;align-items:center;}
+.lu_editor_header{width:100%;display:flex;background-color:#31302e;border-bottom:1px solid #4a4947;z-index:1;}
+.lu_editor_right{width:100%;height:calc(100% - 40px);position:absolute;pointer-events:visible;display:flex;flex-direction:column;width:15em;right:0;top:40px;align-items:center;}
 .lu_editor__base_panel{width:15em;background-color:#5E6161DD;color:#FFF;height:100%;}
 .lu_editor__preview{width:15em;background-color:#5E6161DD;color:#FFF;}
 .lu_editor__preview_image{display:block;height:240px;}
