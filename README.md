@@ -7,6 +7,7 @@ http://flashplusplus.net/haxe/levelup/index.html
 ## TODO - general
 - Fix for some render issues like some unit has a black "shadow"
 - Add missing Human and Orc characters
+- Team based colorization
 - etc...
 
 ## TODO - Game
