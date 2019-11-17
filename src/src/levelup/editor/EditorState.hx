@@ -4,11 +4,12 @@ import coconut.ui.RenderResult;
 import h2d.Flow;
 import h2d.Scene;
 import h3d.Camera;
+import h3d.Quat;
 import h3d.Vector;
 import h3d.mat.BlendMode;
 import h3d.mat.Material;
+import h3d.pass.Blur;
 import h3d.pass.DefaultShadowMap;
-import h3d.pass.Outline;
 import h3d.prim.Cube;
 import h3d.prim.ModelCache;
 import h3d.scene.Graphics;
@@ -17,6 +18,8 @@ import h3d.scene.Mesh;
 import h3d.scene.Object;
 import h3d.scene.fwd.DirLight;
 import h3d.scene.fwd.PointLight;
+import h3d.shader.Outline;
+import h3d.shader.SignedDistanceField;
 import haxe.Json;
 import haxe.ds.Map;
 import hpp.heaps.Base2dStage;
@@ -28,6 +31,7 @@ import hxd.Event;
 import hxd.Key;
 import hxd.Res;
 import hxd.Window;
+import hxsl.Shader;
 import js.Browser;
 import levelup.Asset;
 import levelup.editor.html.EditorUi;
@@ -61,6 +65,7 @@ class EditorState extends Base2dState
 
 	var world:GameWorld;
 	var mapConfig:WorldConfig;
+	var model:EditorModel;
 
 	var s2d:h2d.Scene;
 	var s3d:h3d.scene.Scene;
@@ -76,8 +81,6 @@ class EditorState extends Base2dState
 	var isDisposed:Bool = false;
 
 	var isMapDragActive:Bool = false;
-	var onlyX:Bool = false;
-	var onlyY:Bool = false;
 	var cameraDragStartPoint:SimplePoint = { x: 0, y: 0 };
 	var dragStartObjectPoint:SimplePoint = { x: 0, y: 0 };
 
@@ -98,11 +101,18 @@ class EditorState extends Base2dState
 	var lastEscPressTime:Float = 0;
 
 	var draggedInstance:Object;
+	var dragInstanceAbsStartPoint:SimplePoint;
 	var dragInstanceWorldStartPoint:SimplePoint;
 	var dragInstanceStartPoint:SimplePoint;
 	var draggedInteractive:Interactive;
 
-	var worldItems:Map<Object, AssetConfig> = [];
+	var worldInstances:Array<AssetWorldInstance> = [];
+	var activeWorldInstance:AssetWorldInstance = null;
+
+	var actionHistory:Array<EditorAction> = [];
+	var actionIndex:Int = 0;
+	var isLevelLoaded:Bool = false;
+	var hadActiveCommandWithCtrl:Bool = false;
 
 	public function new(stage:Base2dStage, s2d:h2d.Scene, s3d:h3d.scene.Scene, rawMap:String)
 	{
@@ -111,6 +121,11 @@ class EditorState extends Base2dState
 		this.s3d = s3d;
 		this.s2d = s2d;
 		mapConfig = loadLevel(rawMap);
+
+		model = new EditorModel();
+		model.baseTerrainId = mapConfig.baseTerrainId;
+
+		model.observables.baseTerrainId.bind(id -> world.changeBaseTerrain(id));
 
 		debugMapBlocks = new Graphics(s3d);
 		debugMapBlocks.z = 0.2;
@@ -124,7 +139,7 @@ class EditorState extends Base2dState
 		world = new GameWorld(s3d, {
 			name: mapConfig.name,
 			size: mapConfig.size,
-			defaultTerrainId: mapConfig.defaultTerrainId,
+			baseTerrainId: mapConfig.baseTerrainId,
 			map: mapConfig.map,
 			regions: [],
 			triggers: [],
@@ -136,6 +151,7 @@ class EditorState extends Base2dState
 		var dirLight = new DirLight(null, s3d);
 		dirLight.setDirection(new Vector(1, 0, -2));
 		dirLight.color = new Vector(0.9, 0.9, 0.9);
+		dirLight.enableSpecular = true;
 
 		s3d.lightSystem.ambientLight.setColor(0x000000);
 
@@ -168,6 +184,8 @@ class EditorState extends Base2dState
 		}
 		world.onWorldMouseUp = e ->
 		{
+			releaseAssetInteractives();
+
 			if (e.button == 0)
 			{
 				if (dragStartObjectPoint != null && previewInstance != null && GeomUtil.getDistance(cast dragStartObjectPoint, cast cameraObject) < 0.2)
@@ -176,7 +194,7 @@ class EditorState extends Base2dState
 				}
 				else if (draggedInstance != null && GeomUtil.getDistance(cast draggedInstance, dragInstanceStartPoint) < 0.2)
 				{
-					selectedWorldAsset.set({ instance: draggedInstance, config: worldItems.get(draggedInstance) });
+					selectedWorldAsset.set({ instance: draggedInstance, config: activeWorldInstance.config });
 				}
 				else if (GeomUtil.getDistance({ x: e.relX, y: e.relY }, cameraDragStartPoint) < 0.2)
 				{
@@ -185,6 +203,12 @@ class EditorState extends Base2dState
 
 				if (draggedInstance != null)
 				{
+					logAction({
+						actionType: EditorActionType.Move,
+						target: draggedInstance,
+						oldValueSimplePoint: dragInstanceAbsStartPoint,
+						newValueSimplePoint: { x: draggedInstance.x, y: draggedInstance.y }
+					});
 					draggedInstance = null;
 					dragInstanceWorldStartPoint = null;
 					draggedInteractive.visible = true;
@@ -199,8 +223,8 @@ class EditorState extends Base2dState
 		{
 			if (previewInstance != null)
 			{
-				if (!onlyY) previewInstance.x = e.relX;
-				if (!onlyX) previewInstance.y = e.relY;
+				if (!model.isYDragLocked) previewInstance.x = snapPosition(e.relX);
+				if (!model.isXDragLocked) previewInstance.y = snapPosition(e.relY);
 			}
 
 			if (draggedInstance != null)
@@ -209,11 +233,11 @@ class EditorState extends Base2dState
 				{
 					dragInstanceStartPoint = { x: draggedInstance.x, y: draggedInstance.y };
 					dragInstanceWorldStartPoint = { x: e.relX, y: e.relY };
-					selectedWorldAsset.set({ instance: draggedInstance, config: worldItems.get(draggedInstance) });
+					selectedWorldAsset.set({ instance: draggedInstance, config: activeWorldInstance.config });
 				}
 				draggedInstance.setPosition(
-					dragInstanceStartPoint.x + (e.relX - dragInstanceWorldStartPoint.x),
-					dragInstanceStartPoint.y + (e.relY - dragInstanceWorldStartPoint.y),
+					snapPosition(model.isYDragLocked ? dragInstanceStartPoint.x : dragInstanceStartPoint.x + (e.relX - dragInstanceWorldStartPoint.x)),
+					snapPosition(model.isXDragLocked ? dragInstanceStartPoint.y : dragInstanceStartPoint.y + (e.relY - dragInstanceWorldStartPoint.y)),
 					draggedInstance.z
 				);
 			}
@@ -235,8 +259,7 @@ class EditorState extends Base2dState
 		for (o in mapConfig.units) createAssetByObject(o);
 
 		s3d.addChild(cameraObject);
-		s3d.camera.pos.set(10 - 30, 10, 30);
-		s3d.camera.target.x = s3d.camera.pos.x + 30;
+		s3d.camera.target.x = s3d.camera.pos.x;
 		s3d.camera.target.y = s3d.camera.pos.y;
 		jumpCamera(10, 10, 23);
 
@@ -248,40 +271,71 @@ class EditorState extends Base2dState
 			unitsList: List.fromArray(Asset.units),
 			selectedWorldAsset: selectedWorldAsset,
 			terrainsList: List.fromArray(Terrain.terrains),
-			changeDefaultTerrainRequest: t -> world.changeDefaultTerrain(t.id)
+			changeBaseTerrainIdRequest: t ->
+			{
+				logAction({
+					actionType: EditorActionType.ChangeBaseTerrain,
+					oldValueString: model.baseTerrainId,
+					newValueString: t.id
+				});
+				model.baseTerrainId = t.id;
+			},
+			model: model
 		});
 		ReactDOM.render(editorUi.reactify(), Browser.document.getElementById("native-ui"));
 
 		Window.getInstance().addEventTarget(onKeyEvent);
+		isLevelLoaded = true;
 	}
 
-	function createAsset(assetData, x, y, z, scale, rotation)
+	function createAsset(config, x, y, z, scale, rotation)
 	{
-		var instance:Object = cache.loadModel(assetData.model);
-		worldItems.set(instance, assetData);
+		var instance:Object = cache.loadModel(config.model);
+		var interactive = new Interactive(instance.getCollider(), world);
+
+		worldInstances.push({
+			instance: instance,
+			config: config,
+			interactive: interactive
+		});
+
 		instance.setScale(previewInstanceScale);
-		if (assetData.hasAnimation != null && assetData.hasAnimation)
+		instance.z = config.zOffset == null ? 0 : config.zOffset;
+
+		if (config.hasAnimation != null && config.hasAnimation)
 		{
-			instance.playAnimation(cache.loadAnimation(assetData.model));
-			//instance.getMaterials()[0].addPass(new Outline(40).pass);
-			//instance.getMeshes()[0].getMaterials()[0].color = new Vector(Math.random(), Math.random(), Math.random(), 1);
-			//instance.getMeshes()[0].getMaterials()[0].blendMode = BlendMode.Screen;
-			//trace(">>>>>",instance.getMeshes()[0].getMaterials()[0].textureShader.killAlpha());
+			instance.playAnimation(cache.loadAnimation(config.model));
 		}
 
-		if (assetData.zOffset != null) instance.z = assetData.zOffset;
-
 		var dragPoint:Vector;
-		var interactive = new Interactive(instance.getCollider(), world);
 		interactive.onPush = e ->
 		{
+			activeWorldInstance = worldInstances.filter(i -> return i.instance == instance)[0];
 			draggedInstance = instance;
+			dragInstanceAbsStartPoint = { x: draggedInstance.x, y: draggedInstance.y };
 			dragInstanceStartPoint = { x: draggedInstance.x, y: draggedInstance.y };
 			draggedInteractive = interactive;
 			interactive.visible = false;
+
+			for (i in worldInstances)
+			{
+				if (i.interactive != interactive) i.interactive.cancelEvents = true;
+			}
 		};
 
+		interactive.onRelease = e -> releaseAssetInteractives();
+
+		var outlineShader = new Outline();
+		outlineShader.size = 0;
+		outlineShader.distance = 1;
+		outlineShader.color = new Vector(1, 1, 0);
+
+		interactive.onOver = e -> instance.getMaterials()[0].mainPass.addShader(outlineShader);
+		interactive.onOut = e -> instance.getMaterials()[0].mainPass.removeShader(outlineShader);
+
 		world.addToWorldPoint(instance, x, y, z, scale, rotation);
+
+		if (isLevelLoaded) logAction({ actionType: EditorActionType.Create, target: instance });
 	}
 
 	function onKeyEvent(e:Event)
@@ -292,15 +346,33 @@ class EditorState extends Base2dState
 		if (e.kind == EKeyDown)
 			switch (e.keyCode)
 			{
-				case Key.CTRL: onlyX = true;
-				case Key.SHIFT: onlyY = true;
+				case Key.Z if (Key.isDown(Key.CTRL)):
+					hadActiveCommandWithCtrl = true;
+					undo();
+
+				case Key.Y if (Key.isDown(Key.CTRL)):
+					hadActiveCommandWithCtrl = true;
+					redo();
+
+				case _  if (Key.isDown(Key.CTRL)): hadActiveCommandWithCtrl = true;
+				case _:
 			}
 
 		if (e.kind == EKeyUp)
 			switch (e.keyCode)
 			{
-				case Key.CTRL: onlyX = false;
-				case Key.SHIFT: onlyY = false;
+				case Key.CTRL:
+					if (hadActiveCommandWithCtrl)
+					{
+						hadActiveCommandWithCtrl = false;
+						return;
+					}
+					model.isXDragLocked = !model.isXDragLocked;
+					if (draggedInstance != null) dragInstanceWorldStartPoint = null;
+
+				case Key.SHIFT:
+					model.isYDragLocked = !model.isYDragLocked;
+					if (draggedInstance != null) dragInstanceWorldStartPoint = null;
 
 				case Key.UP if (previewInstance != null):
 					previewInstanceScale += selectedAssetConfig.scale * 0.1;
@@ -310,9 +382,21 @@ class EditorState extends Base2dState
 					previewInstance.setScale(previewInstanceScale);
 
 				case Key.UP if (selectedInstance != null):
+					logAction({
+						actionType: EditorActionType.Scale,
+						target: selectedInstance,
+						oldValueFloat: selectedInstance.scaleX,
+						newValueFloat: selectedInstance.scaleX + selectedConfig.scale * 0.1
+					});
 					selectedInstance.setScale(selectedInstance.scaleX + selectedConfig.scale * 0.1);
 					editorUi.forceUpdateSelectedUser();
 				case Key.DOWN if (selectedInstance != null):
+					logAction({
+						actionType: EditorActionType.Scale,
+						target: selectedInstance,
+						oldValueFloat: selectedInstance.scaleX,
+						newValueFloat: selectedInstance.scaleX - selectedConfig.scale * 0.1
+					});
 					selectedInstance.setScale(selectedInstance.scaleX - selectedConfig.scale * 0.1);
 					editorUi.forceUpdateSelectedUser();
 
@@ -324,11 +408,25 @@ class EditorState extends Base2dState
 					previewInstance.setRotation(0, 0, previewInstanceRotation);
 
 				case Key.LEFT if (selectedInstance != null):
+					var prevQ = selectedInstance.getRotationQuat().clone();
 					selectedInstance.rotate(0, 0, Math.PI / 8);
+					logAction({
+						actionType: EditorActionType.Rotate,
+						target: selectedInstance,
+						oldValueQuat: prevQ,
+						newValueQuat: selectedInstance.getRotationQuat().clone()
+					});
 					editorUi.forceUpdateSelectedUser();
 
 				case Key.RIGHT if (selectedInstance != null):
+					var prevQ = selectedInstance.getRotationQuat().clone();
 					selectedInstance.rotate(0, 0, -Math.PI / 8);
+					logAction({
+						actionType: EditorActionType.Rotate,
+						target: selectedInstance,
+						oldValueQuat: prevQ,
+						newValueQuat: selectedInstance.getRotationQuat().clone()
+					});
 					editorUi.forceUpdateSelectedUser();
 
 				case Key.SPACE if (previewInstance != null): editorUi.removeSelection();
@@ -347,21 +445,19 @@ class EditorState extends Base2dState
 					previewInstance.setRotation(0, 0, previewInstanceRotation);
 
 				case Key.ESCAPE if (selectedWorldAsset.value != null): selectedWorldAsset.set(null);
+
+				case Key.D if (selectedWorldAsset.value != null): createPreview(selectedWorldAsset.value.config);
+				case Key.S if (!Key.isDown(Key.CTRL)): editorUi.increaseSnap();
 			}
 	}
 
-	function jumpCamera(x:Float, y:Float, z:Float)
+	function releaseAssetInteractives()
 	{
-		cameraObject.x = x;
-		cameraObject.y = y;
-
-		currentCameraPoint.x = x;
-		currentCameraPoint.y = y;
-		currentCameraPoint.z = z;
-
-		currentCamDistance = camDistance;
-
-		updateCamera(0);
+		for (i in worldInstances)
+		{
+			i.interactive.visible = true;
+			i.interactive.cancelEvents = false;
+		}
 	}
 
 	function createPreview(asset:AssetConfig)
@@ -413,7 +509,7 @@ class EditorState extends Base2dState
 		return {
 			name: rawData.name,
 			size: rawData.size,
-			defaultTerrainId: rawData.defaultTerrainId,
+			baseTerrainId: rawData.baseTerrainId,
 			map: map,
 			regions: regions,
 			triggers: [],
@@ -422,27 +518,58 @@ class EditorState extends Base2dState
 		};
 	}
 
-	function getRegion(regions:Array<Region>, id:String) return regions.filter(function (r) { return r.id == id; })[0];
-
-	function createUnit(id:String, owner:PlayerId, posX:Int, posY:Int)
-	{
-		var unit = switch (id) {
-			case "playergrunt": new PlayerGrunt(s2d, world, owner);
-			case "bandwagon": new BandWagon(s2d, world, owner);
-			case "berserker": new Berserker(s2d, world, owner);
-			case "drake": new Drake(s2d, world, owner);
-			case "minion": new Minion(s2d, world, owner);
-			case "grunt": new Grunt(s2d, world, owner);
-			case _: null;
-		};
-		unit.view.x = posY * world.blockSize + world.blockSize / 2;
-		unit.view.y = posX * world.blockSize + world.blockSize / 2;
-		world.addEntity(unit);
-	}
-
 	function selectUnit(u)
 	{
 		selectedUnit.set(u);
+	}
+
+	function logAction(a:EditorAction)
+	{
+		if (actionIndex < actionHistory.length - 1)
+		{
+			actionHistory = actionHistory.slice(0, actionIndex);
+		}
+
+		actionHistory.push(a);
+		actionIndex = actionHistory.length;
+	}
+
+	function undo()
+	{
+		if (actionIndex == 0 || draggedInstance != null) return;
+		actionIndex--;
+		reprocessAction(actionHistory[actionIndex], false);
+	}
+
+	function redo()
+	{
+		if (actionIndex == actionHistory.length || draggedInstance != null) return;
+		reprocessAction(actionHistory[actionIndex], true);
+		actionIndex++;
+	}
+
+	function reprocessAction(a, useNewValue)
+	{
+		switch(a.actionType)
+		{
+			case EditorActionType.Scale:
+				a.target.setScale(useNewValue ? a.newValueFloat : a.oldValueFloat);
+
+			case EditorActionType.Rotate:
+				a.target.setRotationQuat(useNewValue ? a.newValueQuat : a.oldValueQuat);
+
+			case EditorActionType.Move:
+				a.target.setPosition(
+					useNewValue ? a.newValueSimplePoint.x : a.oldValueSimplePoint.x,
+					useNewValue ? a.newValueSimplePoint.y : a.oldValueSimplePoint.y,
+					a.target.z
+				);
+
+			case EditorActionType.ChangeBaseTerrain:
+				model.baseTerrainId = useNewValue ? a.newValueString : a.oldValueString;
+
+			case _:
+		}
 	}
 
 	function drawDebugMapBlocks():Void
@@ -580,6 +707,22 @@ class EditorState extends Base2dState
 		);
 	}
 
+	function jumpCamera(x:Float, y:Float, z:Float)
+	{
+		cameraObject.x = x;
+		cameraObject.y = y;
+
+		currentCameraPoint.x = x;
+		currentCameraPoint.y = y;
+		currentCameraPoint.z = z;
+
+		currentCamDistance = camDistance;
+
+		updateCamera(0);
+	}
+
+	function snapPosition(p:Float) return model.currentSnap == 0 ? p : Math.round(p / model.currentSnap) * model.currentSnap;
+
 	override public function dispose():Void
 	{
 		super.dispose();
@@ -606,4 +749,34 @@ typedef AssetItem =
 {
 	var instance:Object;
 	var config:AssetConfig;
+}
+
+typedef AssetWorldInstance =
+{
+	var instance(default, never):Object;
+	var config:AssetConfig;
+	var interactive(default, never):Interactive;
+}
+
+typedef EditorAction =
+{
+	var actionType:EditorActionType;
+	@:optional var target:Dynamic;
+	@:optional var oldValueFloat:Float;
+	@:optional var oldValueQuat:Quat;
+	@:optional var oldValueSimplePoint:SimplePoint;
+	@:optional var newValueFloat:Float;
+	@:optional var newValueQuat:Quat;
+	@:optional var newValueSimplePoint:SimplePoint;
+	@:optional var oldValueString:String;
+	@:optional var newValueString:String;
+}
+
+enum EditorActionType {
+	Create;
+	Delete;
+	Move;
+	Rotate;
+	Scale;
+	ChangeBaseTerrain;
 }

@@ -36,7 +36,7 @@ class EditorLibrary extends View
 	@:skipCheck @:state var selectedAsset:AssetConfig = null;
 
 	function render() '
-		<div class="lu_editor__library">
+		<div class="lu_editor__base_panel">
 			<select class="lu_selector lu_offset" onchange={e -> { removeSelection(); selectedListIndex = cast(e.currentTarget, SelectElement).selectedIndex; }}>
 				<option>({environmentsList.length}) Environments</option>
 				<option>({propsList.length}) Props</option>

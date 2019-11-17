@@ -270,7 +270,7 @@ class GameState extends Base2dState
 		return {
 			name: rawData.name,
 			size: rawData.size,
-			defaultTerrainId: rawData.defaultTerrainId,
+			baseTerrainId: rawData.baseTerrainId,
 			map: map,
 			regions: regions,
 			triggers: triggers,
@@ -600,7 +600,7 @@ typedef WorldConfig =
 {
 	var name(default, never):String;
 	var size(default, never):SimplePoint;
-	var defaultTerrainId(default, never):String;
+	var baseTerrainId(default, never):String;
 	var map(default, never):Array<Array<WorldEntity>>;
 	@:optional var regions(default, never):Array<Region>;
 	@:optional var triggers(default, never):Array<Trigger>;

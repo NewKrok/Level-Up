@@ -17,27 +17,25 @@ using StringTools;
  */
 class TerrainEditor extends View
 {
-	@:attr var changeDefaultTerrainRequest:TerrainConfig->Void;
+	@:attr var baseTerrainId:String;
+	@:attr var changeBaseTerrainIdRequest:TerrainConfig->Void;
 
 	@:skipCheck @:attr var terrainList:List<TerrainConfig>;
 
-	@:skipCheck @:state var selectedTerrain:TerrainConfig = null;
-
 	function render() '
-		<div class="lu_editor__library">
-			<div class="lu_list_container">
-				<ul>
+		<div class="lu_editor__base_panel">
+			<div>
+				<div class="lu_title"><i class="fas fa-map lu_right_offset"></i>Base Terrain</div>
+				<div class="lu_terrain_list">
 					<for {e in terrainList}>
-						<li
-							class={"lu_list_element lu_list_element--interactive" + (e == selectedTerrain ? " lu_list_element--selected" : "")}
-							onclick={() -> {if (selectedTerrain == e) {selectedTerrain = null;} else {changeDefaultTerrainRequest(e); selectedTerrain = e;}}}>
-							{e.name}
-						</li>
+						<div
+							class={"lu_terrain_preview " + (e.id == baseTerrainId ? " lu_terrain_preview--selected" : "")}
+							style={"background-image: url(asset/img/preview/terrain/" + e.id + ".jpg)"}
+							onclick={() -> changeBaseTerrainIdRequest(e)}>
+						</div>
 					</for>
-				</ul>
+				</div>
 			</div>
 		</div>
 	';
-
-	public function removeSelection() { selectedTerrain = null; }
 }

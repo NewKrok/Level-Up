@@ -50,6 +50,8 @@ ul {
 	padding: 10px 20px;
 	border-radius: 10px;
 	width: fit-content;
+	min-width: 25px;
+	min-height: 20px;
 	line-height: 20px;
 }
 

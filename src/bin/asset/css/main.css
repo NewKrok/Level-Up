@@ -29,6 +29,26 @@ html, body {
 	margin-left: 10px;
 }
 
+.lu_right_offset {
+	margin-right: 10px;
+}
+
+.lu_info {
+	color: #999;
+}
+
+.lu_highlight {
+	color: #6afd75 !important;
+}
+
+.lu_warning {
+	color: #f93535 !important;
+}
+
+.lu_text--l {
+	font-size: 1.2em;
+}
+
 #lu_preloader {
 	width: 100%;
 	height: 100%;
@@ -80,10 +100,6 @@ html, body {
 	padding: 10px;
 	background: #00000077;
 	user-select: none;
-}
-
-.lu_right_margin {
-	margin-right: 10px;
 }
 
 .lu_player_color_box {

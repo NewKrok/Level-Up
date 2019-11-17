@@ -28,7 +28,7 @@
 	align-items: center;
 }
 
-.lu_editor__library {
+.lu_editor__base_panel {
 	width: 15em;
 	background-color: #5E6161DD;
 	color: #FFF;
@@ -67,8 +67,117 @@
 	color: #FFF;
 	width: 100%;
 	background-color: #5E6161;
+	height: 41px;
 }
 
 .lu_library_list_container {
 	height: calc(100% - 49px);
+}
+
+.lu_terrain_list {
+	display: flex;
+	flex-wrap: wrap;
+	padding: 2px;
+}
+
+.lu_terrain_preview {
+	width: calc(20% - 8px);
+	border: 2px solid #FFFFFF00;
+	margin: 2px;
+	height: 40px;
+	background-size: 250%;
+	cursor: pointer;
+}
+
+.lu_terrain_preview:hover {
+	border: 2px solid #FFFFFF;
+}
+
+.lu_terrain_preview--selected {
+	border: 2px solid #69fd75;
+	filter: drop-shadow(0px 0px 2px black);
+}
+
+.lu_editor_footer {
+	pointer-events: visible;
+	position: absolute;
+	right: 15em;
+	bottom: 0;
+	padding: 5px;
+	display: flex;
+	width: calc(100% - 15em);
+	flex-direction: row-reverse;
+}
+
+.lu_editor_footer__block {
+	margin: 5px;
+	background-color: #000000BB;
+	padding: 5px 10px;
+	border-radius: 10px;
+	position: relative;
+	align-items: center;
+}
+
+.lu_editor_footer__block--button {
+	cursor: pointer;
+	user-select: none;
+}
+
+.lu_editor_footer__block--button:hover {
+	background-color: #00000055;
+}
+
+.lu_lock_info_panel {
+	color: #FFF;
+	text-align: center;
+	position: relative;
+	display: flex;
+}
+
+.lu_lock_info_panel__lock {
+	position: absolute;
+	right: -5px;
+	bottom: -5px;
+	color: #FFF;
+}
+
+.lu_lock_info {
+	font-size: 0.8em;
+	width: 160px;
+}
+
+.lu_snap_info_panel {
+	color: #FFF;
+	text-align: center;
+	position: relative;
+	display: flex;
+}
+
+.lu_snap__button {
+	cursor: pointer;
+	background-color: #5c5a57;
+	padding: 5px;
+	width: 30px;
+	font-size: 0.9em;
+	margin: 0 1px;
+	border-radius: 5px;
+}
+
+.lu_snap__button:first-of-type {
+	margin-left: 0;
+}
+
+.lu_snap__button:last-of-type {
+	margin-right: 0;
+}
+
+.lu_snap__button--selected {
+	cursor: initial;
+	pointer-events: none;
+	background-color: #252524;
+	font-weight: bold;
+}
+
+.lu_snap__button:hover {
+	background-color: #252524;
 }

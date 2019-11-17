@@ -15,7 +15,7 @@ class AssetProperties extends View
 
 	function render() '
 		<div class="lu_selected_item">
-			<div class="lu_title"><i class="fas fa-clipboard-check lu_right_margin"></i>Selected Item</div>
+			<div class="lu_title"><i class="fas fa-clipboard-check lu_right_offset"></i>Selected Item</div>
 			<ul>
 				<li class="lu_list_element">
 					<div>Name</div>
@@ -23,7 +23,7 @@ class AssetProperties extends View
 				</li>
 				<li class="lu_list_element">
 					<div>Position</div>
-					<div>x: {round(asset.instance.x)} y: {round(asset.instance.y)} z: {round(asset.instance.z)}</div>
+					<div>x: {round(asset.instance.y)} y: {round(asset.instance.x)} z: {round(asset.instance.z)}</div>
 				</li>
 				<li class="lu_list_element">
 					<div>Rotation</div>

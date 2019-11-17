@@ -13,7 +13,7 @@ class EditorPreview extends View
 
 	function render() '
 		<div class="lu_editor__preview">
-			<div class="lu_title"><i class="fas fa-eye lu_right_margin"></i>Preview</div>
+			<div class="lu_title"><i class="fas fa-eye lu_right_offset"></i>Preview</div>
 			<if {assetConfig != null && assetConfig.previewUrl != null}>
 				<img class="lu_editor__preview_image" src={assetConfig.previewUrl}/>
 			<else>

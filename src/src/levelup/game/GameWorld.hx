@@ -61,7 +61,7 @@ class GameWorld extends World
 
 		instance = this;
 
-		var terrainConfig = Terrain.getTerrain(worldConfig.defaultTerrainId);
+		var terrainConfig = Terrain.getTerrain(worldConfig.baseTerrainId);
 		var c = new Cube(worldConfig.size.y, worldConfig.size.x, 0.5);
 		c.addNormals();
 		c.addUVs();
@@ -91,7 +91,7 @@ class GameWorld extends World
 		}
 	}
 
-	public function changeDefaultTerrain(terrainId:String)
+	public function changeBaseTerrain(terrainId:String)
 	{
 		var terrainConfig = Terrain.getTerrain(terrainId);
 
