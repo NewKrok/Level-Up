@@ -25,10 +25,7 @@ http://flashplusplus.net/haxe/levelup/index.html
 - Terrain editor
 - Region editor
 - Trigger editor
-- Possibility to start the game
-- Save/Load system
 - Pathfinding editor
-- Improved outline effect
 - Define map sizes
 - Team editor
 - etc...
@@ -38,9 +35,9 @@ Lobby
 ![image](https://user-images.githubusercontent.com/13141660/68549518-17d81a80-03f9-11ea-831a-d97de774f63c.png)
 
 Editor
+![image](https://user-images.githubusercontent.com/13141660/69503789-c57d1a80-0f1d-11ea-8d7f-698ed12e7ee1.png)
 ![image](https://user-images.githubusercontent.com/13141660/69002269-3902a480-08ec-11ea-826a-e8aeacb79999.png)
 ![image](https://user-images.githubusercontent.com/13141660/69002283-90a11000-08ec-11ea-8334-5e5f7049ceb1.png)
-![image](https://user-images.githubusercontent.com/13141660/69002302-ce059d80-08ec-11ea-9563-adf8fe5ecca8.png)
 
 
 ## Dependencies
