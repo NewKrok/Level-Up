@@ -1,10 +1,12 @@
 package levelup.editor.html;
 
+import coconut.ui.RenderResult;
 import coconut.ui.View;
 import levelup.Asset.AssetConfig;
 import levelup.Terrain.TerrainConfig;
 import levelup.editor.EditorModel;
 import levelup.editor.EditorState.AssetItem;
+import levelup.editor.EditorState.ModuleId;
 import levelup.editor.html.EditorLibrary;
 import tink.pure.List;
 
@@ -18,14 +20,13 @@ class EditorUi extends View
 	@:attr var save:Void->Void;
 	@:attr var testRun:Void->Void;
 	@:attr var previewRequest:AssetConfig->Void;
-	@:attr var changeBaseTerrainIdRequest:TerrainConfig->Void;
 	@:attr var model:EditorModel;
+	@:attr var getModuleView:ModuleId->RenderResult;
 
 	@:skipCheck @:attr var environmentsList:List<AssetConfig>;
 	@:skipCheck @:attr var propsList:List<AssetConfig>;
 	@:skipCheck @:attr var unitsList:List<AssetConfig>;
 	@:skipCheck @:attr var selectedWorldAsset:AssetItem;
-	@:skipCheck @:attr var terrainsList:List<TerrainConfig>;
 
 	@:skipCheck @:state var hoveredAsset:AssetConfig = null;
 
@@ -56,15 +57,21 @@ class EditorUi extends View
 				</div>
 				<div class="lu_editor_right">
 					<div class="lu_row lu_tab_menu">
-						<div class={"lu_title lu_button lu_button--secondary" + (selectedRightMenu == 0 ? " lu_button--selected" : "")} onclick={e -> selectedRightMenu = 0}>
+						<div
+							class={"lu_title lu_button lu_button--secondary" + (model.toolState == ToolState.Library ? " lu_button--selected" : "")}
+							onclick={e -> model.toolState = ToolState.Library}
+						>
 							<i class="fas fa-folder-open"></i>
 						</div>
-						<div class={"lu_title lu_button lu_button--secondary" + (selectedRightMenu == 1 ? " lu_button--selected" : "")} onclick={e -> selectedRightMenu = 1}>
+						<div
+							class={"lu_title lu_button lu_button--secondary" + (model.toolState == ToolState.TerrainEditor ? " lu_button--selected" : "")}
+							onclick = {e -> model.toolState = ToolState.TerrainEditor}
+						>
 							<i class="fas fa-paint-brush"></i>
 						</div>
 					</div>
-					<switch {selectedRightMenu}>
-						<case {0}>
+					<switch {model.toolState}>
+						<case {ToolState.Library}>
 							<EditorLibrary
 								ref={editorLibrary}
 								environmentsList={environmentsList}
@@ -78,12 +85,8 @@ class EditorUi extends View
 							<EditorPreview
 								assetConfig=$hoveredAsset
 							/>
-						<case {1}>
-							<TerrainEditor
-								terrainList={terrainsList}
-								baseTerrainId={model.observables.baseTerrainId}
-								changeBaseTerrainIdRequest={changeBaseTerrainIdRequest}
-							/>
+						<case {ToolState.TerrainEditor}>
+							{getModuleView(ModuleId.MTerrainEditor)}
 					</switch>
 				</div>
 				<div class="lu_editor_footer">
@@ -95,6 +98,8 @@ class EditorUi extends View
 					/>
 					<SnapGridInfo
 						ref={snapGridInfo}
+						showGrid={model.observables.showGrid}
+						toggleShowGrid={() -> model.showGrid = !model.showGrid}
 						currentSnap={model.observables.currentSnap}
 						changeSnap = {snap -> model.currentSnap = snap}
 					/>

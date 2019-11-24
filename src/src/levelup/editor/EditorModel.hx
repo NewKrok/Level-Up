@@ -1,8 +1,10 @@
 package levelup.editor;
 
 import coconut.data.Model;
+import format.agal.Tools;
 import hpp.util.GeomUtil.SimplePoint;
 import levelup.Terrain.TerrainConfig;
+import levelup.editor.TerrainBrush;
 import levelup.game.GameState.InitialUnitData;
 import levelup.game.GameState.PlayerId;
 import levelup.game.GameState.StaticObjectConfig;
@@ -29,8 +31,17 @@ class EditorModel implements Model
 	@:editable var isXDragLocked:Bool = false;
 	@:editable var isYDragLocked:Bool = false;
 	@:editable var currentSnap:Float = 0.5;
+	@:editable var showGrid:Bool = true;
 	@:editable var selectedPlayer:PlayerId = PlayerId.Player1;
+	@:editable var selectedBrushId:Int = 5;
+	@:editable var toolState:ToolState = Library;
 
 	@:transition function toggleXDragLock() return { isXDragLocked: !isXDragLocked };
 	@:transition function toggleYDragLock() return { isYDragLocked: !isYDragLocked };
+}
+
+enum ToolState
+{
+	Library;
+	TerrainEditor;
 }

@@ -5,6 +5,7 @@ import levelup.Asset;
 import levelup.MapData;
 import levelup.Terrain;
 import levelup.editor.EditorState;
+import levelup.editor.TerrainBrush;
 import levelup.game.GameState;
 import haxe.Timer;
 import hpp.heaps.Base2dApp;
@@ -26,10 +27,12 @@ class Main extends Base2dApp
 		stage.stageScaleMode = StageScaleMode.SHOW_ALL;
 		Asset.init();
 		Terrain.init();
+		TerrainBrush.init();
 		SaveUtil.load();
 
+		changeState(EditorState, [stage, s3d, SaveUtil.editorData.customMaps[0]]);
 		//changeState(EditorState, [stage, s3d, MapData.getRawMap("lobby")]);
-		changeState(GameState, [stage, s3d, MapData.getRawMap("lobby")]);
+		//changeState(GameState, [stage, s3d, MapData.getRawMap("lobby")]);
 		//changeState(GameState, [s2d, s3d, MapData.getRawMap("hero_survival")]);
 	}
 

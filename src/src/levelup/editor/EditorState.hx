@@ -1,15 +1,19 @@
 package levelup.editor;
 
+import coconut.ui.RenderResult;
 import h2d.Scene;
 import h3d.Quat;
 import h3d.Vector;
 import h3d.mat.BlendMode;
+import h3d.mat.Pass;
 import h3d.pass.DefaultShadowMap;
 import h3d.prim.ModelCache;
 import h3d.scene.Graphics;
 import h3d.scene.Interactive;
 import h3d.scene.Object;
 import h3d.scene.fwd.DirLight;
+import h3d.shader.Base2d;
+import h3d.shader.ColorMult;
 import haxe.Json;
 import hpp.heaps.Base2dStage;
 import hpp.heaps.Base2dState;
@@ -19,9 +23,11 @@ import hpp.util.GeomUtil.SimplePoint;
 import hxd.Event;
 import hxd.Key;
 import hxd.Window;
+import hxsl.ShaderList;
 import js.Browser;
 import levelup.Asset;
 import levelup.editor.html.EditorUi;
+import levelup.editor.module.terrain.TerrainModule;
 import levelup.game.GameState;
 import levelup.game.GameState.StaticObjectConfig;
 import levelup.game.GameState.WorldConfig;
@@ -51,8 +57,11 @@ class EditorState extends Base2dState
 	var s3d:h3d.scene.Scene;
 
 	var editorUi:EditorUi;
+	var modules:Array<EditorModule> = [];
 
-	var debugMapBlocks:Graphics;
+	var grid:Graphics;
+	var pathFindingLayer:Graphics;
+
 	var debugRegions:Graphics;
 	var debugUnitPath:Graphics;
 	var debugDetectionRadius:Graphics;
@@ -61,6 +70,7 @@ class EditorState extends Base2dState
 	var isDisposed:Bool = false;
 
 	var isMapDragActive:Bool = false;
+	var isMouseDrawActive:Bool = false;
 	var cameraDragStartPoint:SimplePoint = { x: 0, y: 0 };
 	var dragStartObjectPoint:SimplePoint = { x: 0, y: 0 };
 
@@ -115,9 +125,15 @@ class EditorState extends Base2dState
 		});
 
 		model.observables.baseTerrainId.bind(id -> world.changeBaseTerrain(id));
+		model.observables.showGrid.bind(v -> v ? showGrid() : hideGrid());
 
-		debugMapBlocks = new Graphics(s3d);
-		debugMapBlocks.z = 0.2;
+		modules.push(cast new TerrainModule(cast this));
+
+		grid = new Graphics(s3d);
+		grid.z = 0.1;
+		pathFindingLayer = new Graphics(s3d);
+		pathFindingLayer.z = 0.11;
+
 		debugRegions = new Graphics(s3d);
 		debugRegions.z = 0.2;
 		debugUnitPath = new Graphics(s3d);
@@ -153,14 +169,17 @@ class EditorState extends Base2dState
 
 		world.onWorldClick = e ->
 		{
-
+			for (m in modules) m.onWorldClick(e);
 		}
 		world.onWorldMouseDown = e ->
 		{
+			for (m in modules) m.onWorldMouseDown(e);
+
 			if (e.button == 0)
 			{
 				dragStartObjectPoint.x = cameraObject.x;
 				dragStartObjectPoint.y = cameraObject.y;
+				isMouseDrawActive = true;
 			}
 			else if (e.button == 1)
 			{
@@ -173,10 +192,17 @@ class EditorState extends Base2dState
 		}
 		world.onWorldMouseUp = e ->
 		{
+			for (m in modules) m.onWorldMouseUp(e);
+
 			releaseAssetInteractives();
 
 			if (e.button == 0)
 			{
+				if (draggedInstance == null)
+				{
+					isMouseDrawActive = false;
+				}
+
 				if (dragStartObjectPoint != null && previewInstance != null && GeomUtil.getDistance(cast dragStartObjectPoint, cast cameraObject) < 0.2)
 				{
 					createAsset(
@@ -218,6 +244,8 @@ class EditorState extends Base2dState
 		}
 		world.onWorldMouseMove = e ->
 		{
+			for (m in modules) m.onWorldMouseMove(e);
+
 			if (previewInstance != null)
 			{
 				if (!model.isYDragLocked) previewInstance.x = snapPosition(e.relX);
@@ -243,8 +271,19 @@ class EditorState extends Base2dState
 				cameraObject.x = dragStartObjectPoint.x + (cameraDragStartPoint.x - e.relX) * 2;
 				cameraObject.y = dragStartObjectPoint.y + (cameraDragStartPoint.y - e.relY) * 2;
 			}
+			else if (isMouseDrawActive)
+			{
+
+			}
+
+			if (previewInstance != null || draggedInstance != null) drawPathFindingLayer();
 		}
-		world.onWorldWheel = e -> camDistance += e.wheelDelta * 8;
+		world.onWorldWheel = e ->
+		{
+			for (m in modules) m.onWorldWheel(e);
+
+			camDistance += e.wheelDelta * 8;
+		}
 
 		for (o in mapConfig.staticObjects.concat([]))
 		{
@@ -274,22 +313,18 @@ class EditorState extends Base2dState
 			propsList: List.fromArray(Asset.props),
 			unitsList: List.fromArray(Asset.units),
 			selectedWorldAsset: selectedWorldAsset,
-			terrainsList: List.fromArray(Terrain.terrains),
-			changeBaseTerrainIdRequest: t ->
-			{
-				logAction({
-					actionType: EditorActionType.ChangeBaseTerrain,
-					oldValueString: model.baseTerrainId,
-					newValueString: t.id
-				});
-				model.baseTerrainId = t.id;
-			},
-			model: model
+			model: model,
+			getModuleView: getModuleView
 		});
 		ReactDOM.render(editorUi.reactify(), Browser.document.getElementById("native-ui"));
 
 		Window.getInstance().addEventTarget(onKeyEvent);
 		isLevelLoaded = true;
+	}
+
+	function getModuleView(id:ModuleId)
+	{
+		return modules.filter(m -> m.id == id)[0].view;
 	}
 
 	function createAsset(config:AssetConfig, x, y, z, scale, rotation, owner = null)
@@ -308,6 +343,9 @@ class EditorState extends Base2dState
 				scale: scale,
 				rotation: rotation
 			});
+
+			world.graph.grid[Math.floor(x)][Math.floor(y)].weight = 0;
+			drawPathFindingLayer();
 		}
 		else
 		{
@@ -355,8 +393,9 @@ class EditorState extends Base2dState
 
 		interactive.onRelease = e -> releaseAssetInteractives();
 
-		var colorShader = new h3d.shader.ColorMult();
-		colorShader.color = new Vector(1, 1, 0, 0.5);
+		var colorShader = new ColorMult();
+		colorShader.color = new Vector(1, 1, 0, 0.2);
+
 		interactive.onOver = e -> instance.getMaterials()[0].mainPass.addShader(colorShader);
 		interactive.onOut = e -> instance.getMaterials()[0].mainPass.removeShader(colorShader);
 
@@ -480,6 +519,7 @@ class EditorState extends Base2dState
 
 				case Key.D if (selectedWorldAsset.value != null): createPreview(selectedWorldAsset.value.config);
 				case Key.S if (!Key.isDown(Key.CTRL)): editorUi.increaseSnap();
+				case Key.G if (!Key.isDown(Key.CTRL)): model.showGrid = !model.showGrid;
 			}
 	}
 
@@ -604,37 +644,44 @@ class EditorState extends Base2dState
 		}
 	}
 
-	function drawDebugMapBlocks():Void
+	function showGrid()
 	{
-		debugMapBlocks.clear();
+		grid.clear();
+		grid.lineStyle(1, 0xFFFFFF, 1);
 
-		var i = 0;
-		for (row in world.graph.grid)
+		for (i in 0...cast mapConfig.size.x)
 		{
-			var j = 0;
-			for (col in row)
+			grid.moveTo(i, 0, 0);
+			grid.lineTo(i, mapConfig.size.y, 0);
+		}
+
+		for (i in 0...cast mapConfig.size.y)
+		{
+			grid.moveTo(0, i, 0);
+			grid.lineTo(mapConfig.size.x, i, 0);
+		}
+	}
+
+	function hideGrid() grid.clear();
+
+	function drawPathFindingLayer():Void
+	{
+		pathFindingLayer.clear();
+		pathFindingLayer.lineStyle(4, 0x000000, 0.1);
+
+		for (i in 0...world.graph.grid.length)
+		{
+			for (j in 0...world.graph.grid[i].length)
 			{
-				if (col.weight != 0)
+				if (world.graph.grid[i][j].weight == 0)
 				{
-					/*debugMapBlocks.lineStyle(2, 0x000000);
-
-					debugMapBlocks.moveTo(i * world.blockSize, j * world.blockSize, 0);
-					debugMapBlocks.lineTo(i * world.blockSize + world.blockSize, j * world.blockSize, 0);
-					debugMapBlocks.lineTo(i * world.blockSize + world.blockSize, j * world.blockSize + world.blockSize, 0);
-					debugMapBlocks.lineTo(i * world.blockSize, j * world.blockSize + world.blockSize, 0);*/
+					pathFindingLayer.moveTo(i, j, 0);
+					pathFindingLayer.lineTo(i + 1, j, 0);
+					pathFindingLayer.lineTo(i + 1, j + 1, 0);
+					pathFindingLayer.lineTo(i, j + 1, 0);
+					pathFindingLayer.lineTo(i, j, 0);
 				}
-				else
-				{
-					debugMapBlocks.lineStyle(2, 0x0000FF);
-
-					debugMapBlocks.moveTo(i * world.blockSize, j * world.blockSize + world.blockSize, 0);
-					debugMapBlocks.lineTo(i * world.blockSize + world.blockSize, j * world.blockSize, 0);
-					debugMapBlocks.moveTo(i * world.blockSize, j * world.blockSize, 0);
-					debugMapBlocks.lineTo(i * world.blockSize + world.blockSize, j * world.blockSize + world.blockSize, 0);
-				}
-				j++;
 			}
-			i++;
 		}
 	}
 
@@ -651,26 +698,6 @@ class EditorState extends Base2dState
 			debugRegions.lineTo(r.x + r.width, r.y + r.height, 0);
 			debugRegions.lineTo(r.x, r.y + r.height, 0);
 			debugRegions.lineTo(r.x, r.y, 0);
-		}
-	}
-
-	function drawDebugPath():Void
-	{
-		debugUnitPath.clear();
-
-		for (u in world.units)
-		{
-			debugUnitPath.lineStyle(2, 0xFFFFFF);
-			debugUnitPath.moveTo(u.getPosition().x, u.getPosition().y, 0);
-
-			if (u.path != null)
-			{
-				for (i in 0...u.path.length)
-				{
-					var path = u.path[i];
-					debugUnitPath.lineTo(path.y * world.blockSize + world.blockSize / 2, path.x * world.blockSize + world.blockSize / 2, 0);
-				}
-			}
 		}
 	}
 
@@ -713,9 +740,8 @@ class EditorState extends Base2dState
 		world.update(d);
 		if (isDisposed) return;
 
-		/*drawDebugMapBlocks();
+		/*
 		drawDebugRegions();
-		drawDebugPath();
 		drawDebugInteractionRadius();*/
 
 		updateCamera(d);
@@ -753,7 +779,11 @@ class EditorState extends Base2dState
 		updateCamera(0);
 	}
 
-	function snapPosition(p:Float) return model.currentSnap == 0 ? p : Math.round(p / model.currentSnap) * model.currentSnap;
+	function snapPosition(p:Float)
+	{
+		var pos = model.currentSnap == 0 ? p : Math.round(p / model.currentSnap) * model.currentSnap;
+		return Math.max(1, pos);
+	}
 
 	public function save()
 	{
@@ -794,7 +824,7 @@ class EditorState extends Base2dState
 		world.onWorldMouseDown = null;
 		world.onWorldMouseUp = null;
 		world.onWorldMouseMove = null;
-		world.onUnitEntersToRegion = null;
+		world.onWorldWheel = null;
 		world.remove();
 		world.dispose();
 		world = null;
@@ -806,6 +836,17 @@ class EditorState extends Base2dState
 
 		isDisposed = true;
 	}
+}
+
+typedef EditorModule =
+{
+	var id(default, null):ModuleId;
+	var onWorldClick:Event->Void;
+	var onWorldMouseDown:Event->Void;
+	var onWorldMouseUp:Event->Void;
+	var onWorldMouseMove:Event->Void;
+	var onWorldWheel:Event->Void;
+	var view:RenderResult;
 }
 
 typedef AssetItem =
@@ -842,4 +883,18 @@ enum EditorActionType {
 	Rotate;
 	Scale;
 	ChangeBaseTerrain;
+}
+
+enum ModuleId {
+	MTerrainEditor;
+}
+
+typedef EditorCore =
+{
+	public var snapPosition:Float->Float;
+	public var model:EditorModel;
+	public var s2d:h2d.Scene;
+	public var s3d:h3d.scene.Scene;
+	public var world:GameWorld;
+	public var logAction:EditorAction->Void;
 }

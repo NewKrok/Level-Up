@@ -8,14 +8,16 @@ import coconut.ui.View;
  */
 class SnapGridInfo extends View
 {
+	@:attr var showGrid:Bool;
+	@:attr var toggleShowGrid:Void->Void;
 	@:attr var currentSnap:Float;
 	@:attr var changeSnap:Float->Void;
 
-	var snapOptions:Array<Float> = [0, 0.25, 0.5, 1, 2.5];
+	var snapOptions:Array<Float> = [0, 0.25, 0.5, 1, 2];
 
 	function render() '
 		<div class="lu_snap_info_panel lu_editor_footer__block">
-			<i class="fas fa-th-large lu_right_offset lu_text--l"></i>
+			<i class={"fas fa-th-large lu_right_offset lu_text--l lu_snap_info__grid_icon" + (showGrid ? " lu_snap_info__grid_icon--active": "")} onclick=$toggleShowGrid></i>
 			<for {o in snapOptions}>
 				<div
 					class={"lu_snap__button" + (currentSnap == o ? " lu_snap__button--selected" : "")}

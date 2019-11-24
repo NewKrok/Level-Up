@@ -1,5 +1,13 @@
 package levelup.game;
 
+import h3d.Vector;
+import h3d.col.Point;
+import h3d.mat.BlendMode;
+import h3d.prim.Polygon;
+import h3d.prim.UV;
+import h3d.shader.Displacement;
+import h3d.shader.NormalMap;
+import hxd.fmt.fbx.Geometry;
 import levelup.Terrain.TerrainConfig;
 import levelup.game.GameState.WorldConfig;
 import levelup.game.unit.BaseUnit;
@@ -18,6 +26,7 @@ import hpp.util.GeomUtil;
 import hpp.util.GeomUtil.SimplePoint;
 import hxd.Event;
 import hxd.Res;
+import levelup.shader.AlphaMask;
 
 /**
  * ...
@@ -30,6 +39,8 @@ class GameWorld extends World
 	public static var instance:GameWorld;
 
 	public var graph:Graph;
+	public var terrainCanvas:Cube;
+	public var terrainLayers:Array<Mesh> = [];
 
 	public var blockSize:Float;
 
@@ -47,7 +58,8 @@ class GameWorld extends World
 	public var onUnitEntersToRegion:Region->BaseUnit->Void = null;
 	public var onUnitLeavesFromRegion:Region->BaseUnit->Void = null;
 
-	var worldConfig:WorldConfig;
+	public var worldConfig(default, null):WorldConfig;
+
 	var interact:Interactive;
 	var baseGround:Mesh;
 	var isWorldGraphDirty:Bool = false;
@@ -62,17 +74,37 @@ class GameWorld extends World
 		instance = this;
 
 		var terrainConfig = Terrain.getTerrain(worldConfig.baseTerrainId);
-		var c = new Cube(worldConfig.size.y, worldConfig.size.x, 0.5);
-		c.addNormals();
-		c.addUVs();
-		c.uvScale(terrainConfig.uvScale, terrainConfig.uvScale);
-		baseGround = new Mesh(c, Material.create(terrainConfig.texture), parent);
-		baseGround.material.texture.wrap = Wrap.Repeat;
+
+		terrainCanvas = new Cube(worldConfig.size.y, worldConfig.size.x, 0.5);
+		terrainCanvas.addNormals();
+		terrainCanvas.addUVs();
+		terrainCanvas.uvScale(terrainConfig.uvScale, terrainConfig.uvScale);
+		var m = new Mesh(terrainCanvas, Material.create(Terrain.getTerrain("lavaground").texture), parent);
+		m.material.texture.wrap = Wrap.Repeat;
+		m.material.blendMode = BlendMode.Alpha;
+		var ams = new AlphaMask(Res.texture.test_alpha.toTexture());
+		ams.uvScale.set(0.03333, 0.03333);
+		m.material.mainPass.addShader(ams);
+		m.z = -0.4;
+		terrainLayers.push(m);
+
+		var worldShape = new Polygon([
+			new Point(0, 0),
+			new Point(1, 0),
+			new Point(1, 1),
+			new Point(1, 1),
+			new Point(0, 1),
+			new Point(0, 0)
+		]);
+		worldShape.addNormals();
+		worldShape.addUVs();
+		baseGround = new Mesh(worldShape, Material.create(terrainConfig.texture), parent);
+		baseGround.z = 0;
 		baseGround.z = -0.5;
 
 		generateMap();
 
-		interact = new Interactive(c.getCollider(), parent);
+		interact = new Interactive(new Cube(worldConfig.size.y, worldConfig.size.x, 0.5).getCollider(), parent);
 		interact.enableRightButton = true;
 		interact.onClick = function (e) { onWorldClick(e); };
 		interact.onPush = function (e) { onWorldMouseDown(e); };
@@ -175,7 +207,7 @@ class GameWorld extends World
 			u.update(d);
 		}
 
-		resetWorldWeight();
+		//resetWorldWeight();
 		calculateUnitInteractions(d);
 		checkRegionDatas();
 	}
