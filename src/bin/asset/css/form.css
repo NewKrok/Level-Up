@@ -52,6 +52,12 @@ ul {
 	min-height: 20px;
 	line-height: 20px;
 	font-size: 0.9em;
+	user-select: none;
+	text-align: center;
+}
+
+.lu_button--full {
+	width: calc(100% - 20px);
 }
 
 .lu_button--selected {
@@ -71,4 +77,31 @@ ul {
 .lu_button--secondary:hover {
 	border-radius: 0;
 	background-color: #00000055;
+}
+
+.lu_slider {
+	background-color: #00000055;
+	position: relative;
+	height: 20px;
+	cursor: pointer;
+}
+
+.lu_native_slider {
+	padding: 0;
+	margin: 0;
+}
+
+.lu_slider__thumb_container {
+	width: calc(100% - 20px);
+	position: absolute;
+	pointer-events: none;
+	top: 0;
+}
+
+.lu_slider__thumb {
+	width: 20px;
+	height: 20px;
+	background-color: #69fd75;
+	position: relative;
+	transition: left 0.3s;
 }

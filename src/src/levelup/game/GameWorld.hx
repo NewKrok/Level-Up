@@ -3,12 +3,14 @@ package levelup.game;
 import h3d.Vector;
 import h3d.col.Point;
 import h3d.mat.BlendMode;
+import h3d.mat.Texture;
 import h3d.prim.Polygon;
 import h3d.prim.UV;
 import h3d.shader.Displacement;
 import h3d.shader.NormalMap;
+import hxd.BitmapData;
 import hxd.fmt.fbx.Geometry;
-import levelup.Terrain.TerrainConfig;
+import levelup.TerrainAssets.TerrainConfig;
 import levelup.game.GameState.WorldConfig;
 import levelup.game.unit.BaseUnit;
 import levelup.game.js.Graph;
@@ -39,7 +41,6 @@ class GameWorld extends World
 	public static var instance:GameWorld;
 
 	public var graph:Graph;
-	public var terrainCanvas:Cube;
 	public var terrainLayers:Array<Mesh> = [];
 
 	public var blockSize:Float;
@@ -73,21 +74,7 @@ class GameWorld extends World
 
 		instance = this;
 
-		var terrainConfig = Terrain.getTerrain(worldConfig.baseTerrainId);
-
-		terrainCanvas = new Cube(worldConfig.size.y, worldConfig.size.x, 0.5);
-		terrainCanvas.addNormals();
-		terrainCanvas.addUVs();
-		terrainCanvas.uvScale(terrainConfig.uvScale, terrainConfig.uvScale);
-		var m = new Mesh(terrainCanvas, Material.create(Terrain.getTerrain("lavaground").texture), parent);
-		m.material.texture.wrap = Wrap.Repeat;
-		m.material.blendMode = BlendMode.Alpha;
-		var ams = new AlphaMask(Res.texture.test_alpha.toTexture());
-		ams.uvScale.set(0.03333, 0.03333);
-		m.material.mainPass.addShader(ams);
-		m.z = -0.4;
-		terrainLayers.push(m);
-
+		var terrainConfig = TerrainAssets.getTerrain(worldConfig.baseTerrainId);
 		var worldShape = new Polygon([
 			new Point(0, 0),
 			new Point(1, 0),
@@ -123,9 +110,27 @@ class GameWorld extends World
 		}
 	}
 
+	public function addTerrainLayer(terrainConfig:TerrainConfig)
+	{
+		var terrainCanvas = new Cube(worldConfig.size.y, worldConfig.size.x, 0.5);
+		terrainCanvas.addNormals();
+		terrainCanvas.addUVs();
+		terrainCanvas.uvScale(30, 30);
+		var m = new Mesh(terrainCanvas, Material.create(terrainConfig.texture), parent);
+		m.material.texture.wrap = Wrap.Repeat;
+		m.material.blendMode = BlendMode.Alpha;
+		var bmp = new BitmapData(cast worldConfig.size.y * 2, cast worldConfig.size.x * 2);
+		bmp.fill(0, 0, bmp.width, bmp.height, 0x00000000);
+		var ams = new AlphaMask(Texture.fromBitmap(bmp));
+		ams.uvScale.set(0.03333, 0.03333);
+		m.material.mainPass.addShader(ams);
+		m.z = -0.5 + (terrainLayers.length + 1) * 0.1;
+		terrainLayers.push(m);
+	}
+
 	public function changeBaseTerrain(terrainId:String)
 	{
-		var terrainConfig = Terrain.getTerrain(terrainId);
+		var terrainConfig = TerrainAssets.getTerrain(terrainId);
 
 		var c = new Cube(worldConfig.size.y, worldConfig.size.x, 0.5);
 		c.addNormals();

@@ -9,7 +9,7 @@ import levelup.game.GameState.RaceId;
  * ...
  * @author Krisztian Somoracz
  */
-class Terrain
+class TerrainAssets
 {
 	static public function getTerrain(id)
 	{

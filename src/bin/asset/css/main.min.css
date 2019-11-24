@@ -1,5 +1,9 @@
 html,body{margin:0;padding:0;background-color:#111111;width:100%;height:100%;font-family:arial;font-size:1em;}
+.lu_hidden{display:none;}
+.lu_non_visible{opacity:0;}
+.lu_relative{position:relative;}
 .lu_row{display:flex;align-items:center;}
+.lu_fill{width:100%;height:100%;}
 .lu_offset{margin:10px;}
 .lu_vertical_offset{margin:10px 0;}
 .lu_horizontal_offset{margin:0 10px;}

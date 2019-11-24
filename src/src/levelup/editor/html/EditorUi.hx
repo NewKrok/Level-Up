@@ -3,10 +3,10 @@ package levelup.editor.html;
 import coconut.ui.RenderResult;
 import coconut.ui.View;
 import levelup.Asset.AssetConfig;
-import levelup.Terrain.TerrainConfig;
+import levelup.TerrainAssets.TerrainConfig;
 import levelup.editor.EditorModel;
 import levelup.editor.EditorState.AssetItem;
-import levelup.editor.EditorState.ModuleId;
+import levelup.editor.EditorState.EditorViewId;
 import levelup.editor.html.EditorLibrary;
 import tink.pure.List;
 
@@ -21,7 +21,7 @@ class EditorUi extends View
 	@:attr var testRun:Void->Void;
 	@:attr var previewRequest:AssetConfig->Void;
 	@:attr var model:EditorModel;
-	@:attr var getModuleView:ModuleId->RenderResult;
+	@:attr var getModuleView:EditorViewId->RenderResult;
 
 	@:skipCheck @:attr var environmentsList:List<AssetConfig>;
 	@:skipCheck @:attr var propsList:List<AssetConfig>;
@@ -38,6 +38,7 @@ class EditorUi extends View
 
 	function render() '
 		<div class="lu_editor">
+			{getModuleView(EditorViewId.VDialogManager)}
 			<EditorHeader
 				backToLobby=$backToLobby
 				save=$save
@@ -86,7 +87,7 @@ class EditorUi extends View
 								assetConfig=$hoveredAsset
 							/>
 						<case {ToolState.TerrainEditor}>
-							{getModuleView(ModuleId.MTerrainEditor)}
+							{getModuleView(EditorViewId.VTerrainEditor)}
 					</switch>
 				</div>
 				<div class="lu_editor_footer">

@@ -26,8 +26,9 @@ import hxd.Window;
 import hxsl.ShaderList;
 import js.Browser;
 import levelup.Asset;
+import levelup.editor.dialog.EditorDialogManager;
 import levelup.editor.html.EditorUi;
-import levelup.editor.module.terrain.TerrainModule;
+import levelup.editor.module.terrain.Terrain;
 import levelup.game.GameState;
 import levelup.game.GameState.StaticObjectConfig;
 import levelup.game.GameState.WorldConfig;
@@ -57,6 +58,8 @@ class EditorState extends Base2dState
 	var s3d:h3d.scene.Scene;
 
 	var editorUi:EditorUi;
+	var dialogManager:EditorDialogManager;
+	var views:Map<EditorViewId, RenderResult> = [];
 	var modules:Array<EditorModule> = [];
 
 	var grid:Graphics;
@@ -127,7 +130,8 @@ class EditorState extends Base2dState
 		model.observables.baseTerrainId.bind(id -> world.changeBaseTerrain(id));
 		model.observables.showGrid.bind(v -> v ? showGrid() : hideGrid());
 
-		modules.push(cast new TerrainModule(cast this));
+		dialogManager = new EditorDialogManager(cast this);
+		modules.push(cast new Terrain(cast this));
 
 		grid = new Graphics(s3d);
 		grid.z = 0.1;
@@ -322,9 +326,14 @@ class EditorState extends Base2dState
 		isLevelLoaded = true;
 	}
 
-	function getModuleView(id:ModuleId)
+	public function registerView(id:EditorViewId, view:RenderResult)
 	{
-		return modules.filter(m -> m.id == id)[0].view;
+		views.set(id, view);
+	}
+
+	function getModuleView(id:EditorViewId)
+	{
+		return views.get(id);
 	}
 
 	function createAsset(config:AssetConfig, x, y, z, scale, rotation, owner = null)
@@ -647,7 +656,7 @@ class EditorState extends Base2dState
 	function showGrid()
 	{
 		grid.clear();
-		grid.lineStyle(1, 0xFFFFFF, 1);
+		grid.lineStyle(1, 0x999900, 1);
 
 		for (i in 0...cast mapConfig.size.x)
 		{
@@ -745,6 +754,8 @@ class EditorState extends Base2dState
 		drawDebugInteractionRadius();*/
 
 		updateCamera(d);
+
+		grid.visible = camDistance < 90;
 	}
 
 	function updateCamera(d:Float)
@@ -840,13 +851,11 @@ class EditorState extends Base2dState
 
 typedef EditorModule =
 {
-	var id(default, null):ModuleId;
 	var onWorldClick:Event->Void;
 	var onWorldMouseDown:Event->Void;
 	var onWorldMouseUp:Event->Void;
 	var onWorldMouseMove:Event->Void;
 	var onWorldWheel:Event->Void;
-	var view:RenderResult;
 }
 
 typedef AssetItem =
@@ -885,8 +894,9 @@ enum EditorActionType {
 	ChangeBaseTerrain;
 }
 
-enum ModuleId {
-	MTerrainEditor;
+enum EditorViewId {
+	VDialogManager;
+	VTerrainEditor;
 }
 
 typedef EditorCore =
@@ -897,4 +907,6 @@ typedef EditorCore =
 	public var s3d:h3d.scene.Scene;
 	public var world:GameWorld;
 	public var logAction:EditorAction->Void;
+	public var registerView:EditorViewId->RenderResult->Void;
+	public var dialogManager:EditorDialogManager;
 }

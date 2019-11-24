@@ -3,7 +3,7 @@ package;
 import h3d.Engine;
 import levelup.Asset;
 import levelup.MapData;
-import levelup.Terrain;
+import levelup.TerrainAssets;
 import levelup.editor.EditorState;
 import levelup.editor.TerrainBrush;
 import levelup.game.GameState;
@@ -26,7 +26,7 @@ class Main extends Base2dApp
 		super.init();
 		stage.stageScaleMode = StageScaleMode.SHOW_ALL;
 		Asset.init();
-		Terrain.init();
+		TerrainAssets.init();
 		TerrainBrush.init();
 		SaveUtil.load();
 

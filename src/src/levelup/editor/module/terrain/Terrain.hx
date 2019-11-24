@@ -5,6 +5,7 @@ import h2d.Graphics;
 import h3d.col.Point;
 import h3d.mat.BlendMode;
 import h3d.mat.Data.Face;
+import h3d.mat.Data.Wrap;
 import h3d.mat.Material;
 import h3d.mat.Texture;
 import h3d.prim.Cube;
@@ -15,26 +16,26 @@ import h3d.scene.Scene;
 import hpp.util.GeomUtil.SimplePoint;
 import hxd.BitmapData;
 import hxd.Event;
+import hxd.Res;
 import levelup.editor.EditorModel;
 import levelup.editor.EditorState.EditorActionType;
 import levelup.editor.EditorState.EditorCore;
-import levelup.editor.EditorState.ModuleId;
-import levelup.editor.module.terrain.TerrainModuleView;
+import levelup.editor.EditorState.EditorViewId;
+import levelup.editor.module.terrain.TerrainEditorView;
 import levelup.shader.AlphaMask;
 import levelup.shader.Opacity;
 import tink.pure.List;
+import tink.state.Observable;
 
 /**
  * ...
  * @author Krisztian Somoracz
  */
-@:tink class TerrainModule
+@:tink class Terrain
 {
 	var core:EditorCore = _;
 
 	public var model:TerrainModel;
-	public var id:ModuleId = ModuleId.MTerrainEditor;
-	public var view:RenderResult;
 
 	var preview:Mesh;
 	var isDrawActive:Bool;
@@ -47,8 +48,22 @@ import tink.pure.List;
 	{
 		model = new TerrainModel();
 
-		view = TerrainModuleView.fromHxx({
-			terrainList: List.fromArray(Terrain.terrains),
+		var terrainChooser = new TerrainChooser({
+			terrainList: List.fromArray(TerrainAssets.terrains),
+			selectTerrain: id -> {
+				core.dialogManager.closeCurrentDialog();
+				model.selectedLayer.terrainId.set(id);
+
+				var newTerrain = TerrainAssets.getTerrain(model.selectedLayer.terrainId);
+				var activeMesh = core.world.terrainLayers[model.selectedLayerIndex];
+				activeMesh.material.texture = newTerrain.texture;
+				activeMesh.material.texture.wrap = Wrap.Repeat;
+			},
+			close: core.dialogManager.closeCurrentDialog
+		});
+		var terrainChooserView = terrainChooser.reactify();
+
+		core.registerView(EditorViewId.VTerrainEditor, TerrainEditorView.fromHxx({
 			baseTerrainId: core.model.observables.baseTerrainId,
 			changeBaseTerrainIdRequest: t ->
 			{
@@ -59,11 +74,29 @@ import tink.pure.List;
 				});
 				core.model.baseTerrainId = t.id;
 			},
-			selectedBrushId: core.model.observables.selectedBrushId,
-			changeSelectedBrushRequest: id -> core.model.selectedBrushId = id
-		});
+			selectedBrushId: model.observables.selectedBrushId,
+			changeSelectedBrushRequest: id -> model.selectedBrushId = id,
+			layers: model.observables.layers,
+			selectedLayer: model.observables.selectedLayer,
+			selectLayer: e ->
+			{
+				if (model.selectedLayer == e)
+				{
+					terrainChooser.setSelectedTerrainId(e.terrainId);
+					core.dialogManager.openDialog({ view: terrainChooserView });
+				}
+				else model.selectLayer(e);
+			},
+			addLayer: () ->
+			{
+				model.addLayer();
+				core.world.addTerrainLayer(TerrainAssets.getTerrain(model.layers.toArray()[model.layers.length - 1].terrainId));
+			},
+			changeBrushSize: e -> model.brushSize = e,
+			changeBrushOpacity: e -> model.brushOpacity = e
+		}));
 
-		var previewShape = new Cylinder(20, 0.5, 0.01, true);
+		var previewShape = new Cylinder(20, 0.5, 0.02, true);
 		previewShape.addNormals();
 		previewShape.addUVs();
 		preview = new Mesh(previewShape, Material.create(Texture.fromColor(0xFFFF00)), core.s3d);
@@ -74,12 +107,12 @@ import tink.pure.List;
 		preview.z = 0.1;
 		preview.setRotation(0, 0, Math.PI / 2);
 
-		core.model.observables.toolState.bind(s -> {
-			preview.visible = s == ToolState.TerrainEditor;
-			if (!preview.visible) isDrawActive = false;
+		Observable.auto(() -> core.model.observables.toolState.value == ToolState.TerrainEditor && model.observables.layers.value.length > 0).bind(isActive -> {
+			preview.visible = isActive;
+			if (!isActive) isDrawActive = false;
 		});
 
-		core.model.observables.selectedBrushId.bind(id -> {
+		model.observables.selectedBrushId.bind(id -> {
 			alphaMap.clear();
 			alphaMap.drawRect(0, 0, core.world.worldConfig.size.y * 2, core.world.worldConfig.size.x * 2);
 		});
@@ -131,9 +164,9 @@ import tink.pure.List;
 			lastDrawedPoint.x = preview.x;
 			lastDrawedPoint.y = preview.y;
 
-			var tex = core.world.terrainLayers[0].material.mainPass.getShader(AlphaMask).texture;
+			var tex = core.world.terrainLayers[model.selectedLayerIndex].material.mainPass.getShader(AlphaMask).texture;
 			tex.flags.set(Target);
-			alphaMap.beginFill(0xFFFFFF, 1);
+			alphaMap.beginFill(0xFFFFFF, model.brushOpacity);
 			alphaMap.drawCircle(
 				cast core.world.worldConfig.size.x * 2 - ((core.model.isYDragLocked ? dragStartPoint.x : preview.x) * 2),
 				cast core.world.worldConfig.size.y * 2 - ((core.model.isXDragLocked ? dragStartPoint.y : preview.y) * 2),

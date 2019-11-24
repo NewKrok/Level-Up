@@ -105,18 +105,46 @@
 	filter: drop-shadow(0px 0px 2px black);
 }
 
+.lu_terrain_layer {
+	cursor: pointer;
+	width: calc(100% - 4px);
+	height: 40px;
+	border: 2px solid #FFFFFF00;
+	margin: 2px 0;
+	background-size: 100%;
+	position: relative;
+}
+
+.lu_terrain_layer:hover {
+	border: 2px solid #FFFFFF;
+}
+
+.lu_terrain_layer--selected {
+	border: 2px solid #69fd75;
+}
+
+.lu_terrain_layer__selected_icon {
+	position: absolute;
+	left: 10px;
+	top: 50%;
+	pointer-events: none;
+	transform: translateY(-50%);
+	filter: drop-shadow(0px 0px 2px black);
+}
+
 .lu_terrain_list {
 	display: flex;
 	flex-wrap: wrap;
 	padding: 2px;
+	width: 100%;
 }
 
 .lu_terrain_preview {
-	width: calc(20% - 8px);
+	width: calc(20% - 9px);
 	border: 2px solid #FFFFFF00;
 	margin: 2px;
 	height: 40px;
-	background-size: 250%;
+	background-size: 100%;
 	cursor: pointer;
 }
 
