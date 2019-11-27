@@ -10,7 +10,7 @@ class Opacity extends hxsl.Shader
 
 		function fragment()
 		{
-			pixelColor.a *= opacity;
+			pixelColor.a = opacity;
 		}
 	}
 

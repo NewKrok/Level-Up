@@ -11,7 +11,7 @@ ul{list-style:none;padding:0;margin:0;}
 .lu_button:hover{background-color:#5E6161FF;}
 .lu_button--secondary{border-radius:0;background-color:#00000077;}
 .lu_button--secondary:hover{border-radius:0;background-color:#00000055;}
-.lu_slider{background-color:#00000055;position:relative;height:20px;cursor:pointer;}
-.lu_native_slider{padding:0;margin:0;}
-.lu_slider__thumb_container{width:calc(100% - 20px);position:absolute;pointer-events:none;top:0;}
-.lu_slider__thumb{width:20px;height:20px;background-color:#69fd75;position:relative;transition:left 0.3s;}
+.lu_slider{background-color:#000000CC;position:relative;height:15px;cursor:pointer;}
+.lu_native_slider{padding:0;margin:0;cursor:pointer;}
+.lu_slider__thumb_container{width:calc(100% - 15px);position:absolute;pointer-events:none;top:0;}
+.lu_slider__thumb{width:15px;height:15px;background-color:#69fd75;position:relative;transition:left 0.3s;}

@@ -83,25 +83,27 @@
 	display: flex;
 	flex-wrap: wrap;
 	padding: 2px;
-	justify-content: space-between;
+	justify-content: space-evenly;
 }
 
 .lu_terrain_brush_preview {
-	width: 50px;
-	height: 50px;
+	width: 40px;
+	height: 40px;
 	cursor: pointer;
-	border: 2px solid #FFFFFF00;
-	background-size: 75%;
-	background-repeat: no-repeat;
-	background-position: center;
+	background-color: #FFF;
+	margin: 5px;
+}
+
+.lu_terrain_brush_preview--circle {
+	border-radius: 25px;
 }
 
 .lu_terrain_brush_preview:hover {
-	border: 2px solid #FFFFFF;
+	background-color: 2px solid #CCC;
 }
 
 .lu_terrain_brush_preview--selected {
-	border: 2px solid #69fd75;
+	background-color: #69fd75;
 	filter: drop-shadow(0px 0px 2px black);
 }
 

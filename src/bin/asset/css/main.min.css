@@ -6,6 +6,7 @@ html,body{margin:0;padding:0;background-color:#111111;width:100%;height:100%;fon
 .lu_fill{width:100%;height:100%;}
 .lu_offset{margin:10px;}
 .lu_vertical_offset{margin:10px 0;}
+.lu_vertical_offset--s{margin:5px 0;}
 .lu_horizontal_offset{margin:0 10px;}
 .lu_left_offset{margin-left:10px;}
 .lu_right_offset{margin-right:10px;}

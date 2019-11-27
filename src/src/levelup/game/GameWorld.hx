@@ -4,6 +4,8 @@ import h3d.Vector;
 import h3d.col.Point;
 import h3d.mat.BlendMode;
 import h3d.mat.Texture;
+import h3d.prim.Grid;
+import h3d.prim.Plane2D;
 import h3d.prim.Polygon;
 import h3d.prim.UV;
 import h3d.shader.Displacement;
@@ -62,7 +64,6 @@ class GameWorld extends World
 	public var worldConfig(default, null):WorldConfig;
 
 	var interact:Interactive;
-	var baseGround:Mesh;
 	var isWorldGraphDirty:Bool = false;
 	var lastRerouteTime:Float = 0;
 
@@ -75,19 +76,7 @@ class GameWorld extends World
 		instance = this;
 
 		var terrainConfig = TerrainAssets.getTerrain(worldConfig.baseTerrainId);
-		var worldShape = new Polygon([
-			new Point(0, 0),
-			new Point(1, 0),
-			new Point(1, 1),
-			new Point(1, 1),
-			new Point(0, 1),
-			new Point(0, 0)
-		]);
-		worldShape.addNormals();
-		worldShape.addUVs();
-		baseGround = new Mesh(worldShape, Material.create(terrainConfig.texture), parent);
-		baseGround.z = 0;
-		baseGround.z = -0.5;
+		addStaticTerrainLayer(terrainConfig);
 
 		generateMap();
 
@@ -110,36 +99,50 @@ class GameWorld extends World
 		}
 	}
 
+	private function addStaticTerrainLayer(terrainConfig:TerrainConfig)
+	{
+		var layer = new Grid(cast worldConfig.size.y, cast worldConfig.size.x);
+		layer.addNormals();
+		layer.addUVs();
+		layer.uvScale(30, 30);
+		var mesh = new Mesh(layer, Material.create(terrainConfig.texture), parent);
+		mesh.material.texture.wrap = Wrap.Repeat;
+		mesh.material.castShadows = false;
+
+		terrainLayers.push(mesh);
+	}
+
 	public function addTerrainLayer(terrainConfig:TerrainConfig)
 	{
-		var terrainCanvas = new Cube(worldConfig.size.y, worldConfig.size.x, 0.5);
-		terrainCanvas.addNormals();
-		terrainCanvas.addUVs();
-		terrainCanvas.uvScale(30, 30);
-		var m = new Mesh(terrainCanvas, Material.create(terrainConfig.texture), parent);
-		m.material.texture.wrap = Wrap.Repeat;
-		m.material.blendMode = BlendMode.Alpha;
+		var layer = new Grid(cast worldConfig.size.y, cast worldConfig.size.x);
+		layer.addNormals();
+		layer.addUVs();
+		layer.uvScale(30, 30);
+
+		for (n in layer.points) n.z = Math.random();
+
 		var bmp = new BitmapData(cast worldConfig.size.y * 2, cast worldConfig.size.x * 2);
 		bmp.fill(0, 0, bmp.width, bmp.height, 0x00000000);
-		var ams = new AlphaMask(Texture.fromBitmap(bmp));
-		ams.uvScale.set(0.03333, 0.03333);
-		m.material.mainPass.addShader(ams);
-		m.z = -0.5 + (terrainLayers.length + 1) * 0.1;
-		terrainLayers.push(m);
+		var alphaMask = new AlphaMask(Texture.fromBitmap(bmp));
+		alphaMask.uvScale.set(0.03333, 0.03333);
+
+		var mesh = new Mesh(layer, Material.create(terrainConfig.texture), parent);
+		mesh.material.mainPass.addShader(alphaMask);
+		mesh.material.texture.wrap = Wrap.Repeat;
+		mesh.material.blendMode = BlendMode.Alpha;
+		mesh.material.castShadows = false;
+		mesh.z = 0.05 * terrainLayers.length;
+
+		terrainLayers.push(mesh);
 	}
 
 	public function changeBaseTerrain(terrainId:String)
 	{
 		var terrainConfig = TerrainAssets.getTerrain(terrainId);
 
-		var c = new Cube(worldConfig.size.y, worldConfig.size.x, 0.5);
-		c.addNormals();
-		c.addUVs();
-		c.uvScale(terrainConfig.uvScale, terrainConfig.uvScale);
-
-		baseGround.getMaterials()[0].texture = terrainConfig.texture;
-		baseGround.primitive = c;
-		baseGround.material.texture.wrap = Wrap.Repeat;
+		var baseLayer = terrainLayers[0];
+		baseLayer.material.texture = terrainConfig.texture;
+		baseLayer.material.texture.wrap = Wrap.Repeat;
 	}
 
 	public function generateMap():Void

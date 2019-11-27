@@ -38,6 +38,10 @@ html, body {
 	margin: 10px 0;
 }
 
+.lu_vertical_offset--s {
+	margin: 5px 0;
+}
+
 .lu_horizontal_offset {
 	margin: 0 10px;
 }

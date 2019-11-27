@@ -80,27 +80,28 @@ ul {
 }
 
 .lu_slider {
-	background-color: #00000055;
+	background-color: #000000CC;
 	position: relative;
-	height: 20px;
+	height: 15px;
 	cursor: pointer;
 }
 
 .lu_native_slider {
 	padding: 0;
 	margin: 0;
+	cursor: pointer;
 }
 
 .lu_slider__thumb_container {
-	width: calc(100% - 20px);
+	width: calc(100% - 15px);
 	position: absolute;
 	pointer-events: none;
 	top: 0;
 }
 
 .lu_slider__thumb {
-	width: 20px;
-	height: 20px;
+	width: 15px;
+	height: 15px;
 	background-color: #69fd75;
 	position: relative;
 	transition: left 0.3s;

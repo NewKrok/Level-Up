@@ -37,7 +37,7 @@ import tink.state.Observable;
 
 	public var model:TerrainModel;
 
-	var preview:Mesh;
+	var preview:h3d.scene.Graphics;
 	var isDrawActive:Bool;
 	var lastDrawedPoint:SimplePoint = { x: 0, y: 0 };
 	var dragStartPoint:SimplePoint = null;
@@ -47,6 +47,7 @@ import tink.state.Observable;
 	public function new()
 	{
 		model = new TerrainModel();
+		model.addLayer(core.model.observables.baseTerrainId.value);
 
 		var terrainChooser = new TerrainChooser({
 			terrainList: List.fromArray(TerrainAssets.terrains),
@@ -93,28 +94,47 @@ import tink.state.Observable;
 				core.world.addTerrainLayer(TerrainAssets.getTerrain(model.layers.toArray()[model.layers.length - 1].terrainId));
 			},
 			changeBrushSize: e -> model.brushSize = e,
-			changeBrushOpacity: e -> model.brushOpacity = e
+			changeBrushOpacity: e -> model.brushOpacity = e,
+			changeBrushGradient: e -> model.brushGradient = e,
+			changeBrushNoise: e -> model.brushNoise = e
 		}));
 
-		var previewShape = new Cylinder(20, 0.5, 0.02, true);
-		previewShape.addNormals();
-		previewShape.addUVs();
-		preview = new Mesh(previewShape, Material.create(Texture.fromColor(0xFFFF00)), core.s3d);
-		preview.material.mainPass.culling = Face.None;
-		preview.material.receiveShadows = false;
-		preview.material.castShadows = false;
+		preview = new h3d.scene.Graphics(core.s3d);
 		preview.visible = false;
 		preview.z = 0.1;
-		preview.setRotation(0, 0, Math.PI / 2);
 
-		Observable.auto(() -> core.model.observables.toolState.value == ToolState.TerrainEditor && model.observables.layers.value.length > 0).bind(isActive -> {
+		Observable.auto(() ->
+			core.model.observables.toolState.value == ToolState.TerrainEditor
+			&& model.observables.layers.value.length > 0
+			&& model.observables.selectedLayerIndex.value > 0
+		).bind(isActive -> {
 			preview.visible = isActive;
 			if (!isActive) isDrawActive = false;
 		});
 
-		model.observables.selectedBrushId.bind(id -> {
-			alphaMap.clear();
-			alphaMap.drawRect(0, 0, core.world.worldConfig.size.y * 2, core.world.worldConfig.size.x * 2);
+		model.observables.selectedBrushId.bind(id ->
+		{
+			preview.clear();
+			preview.lineStyle(4, 0xFFFF00, 0.2);
+
+			if (id == 0)
+			{
+				var angle = 0.0;
+				for (i in 0...13)
+				{
+					angle += Math.PI * 2 / 12;
+					if (i == 0) preview.moveTo(Math.cos(angle) * .5, Math.sin(angle) * .5, 0);
+					else preview.lineTo(Math.cos(angle) * .5, Math.sin(angle) * .5, 0);
+				}
+			}
+			else
+			{
+				preview.moveTo(-0.5, -0.5, 0);
+				preview.lineTo(0.5, -0.5, 0);
+				preview.lineTo(0.5, 0.5, 0);
+				preview.lineTo(-0.5, 0.5, 0);
+				preview.lineTo(-0.5, -0.5, 0);
+			}
 		});
 
 		model.observables.brushSize.bind(preview.setScale);
@@ -124,6 +144,8 @@ import tink.state.Observable;
 	{
 		if (preview.visible && e.button == 0)
 		{
+			lastDrawedPoint.x = -1;
+			lastDrawedPoint.y = -1;
 			draw(e);
 			dragStartPoint = null;
 		}
@@ -167,12 +189,82 @@ import tink.state.Observable;
 			var tex = core.world.terrainLayers[model.selectedLayerIndex].material.mainPass.getShader(AlphaMask).texture;
 			tex.flags.set(Target);
 			alphaMap.beginFill(0xFFFFFF, model.brushOpacity);
-			alphaMap.drawCircle(
-				cast core.world.worldConfig.size.x * 2 - ((core.model.isYDragLocked ? dragStartPoint.x : preview.x) * 2),
-				cast core.world.worldConfig.size.y * 2 - ((core.model.isXDragLocked ? dragStartPoint.y : preview.y) * 2),
-				model.brushSize,
-				10
-			);
+
+			if (model.selectedBrushId == 0)
+			{
+				if (model.brushNoise == 0 && model.brushGradient == 0)
+				{
+					alphaMap.drawCircle(
+						(core.model.isYDragLocked ? dragStartPoint.x : preview.x) * 2,
+						(core.model.isXDragLocked ? dragStartPoint.y : preview.y) * 2,
+						model.brushSize,
+						12
+					);
+				}
+				else
+				{
+					var angle = 0.0;
+					for (j in 0...cast model.brushSize * 2)
+					{
+						var count = Math.round(12 * (j * 0.5));
+						for (i in 0...count)
+						{
+							angle += Math.PI / count;
+
+							var alphaByGradient = model.brushGradient == 0 ? 1 : (1 - j / (model.brushSize * 2)) * (1 - model.brushGradient);
+							var alphaByNoise = model.brushNoise == 0 ? 1 : Math.random();
+
+							if (model.brushNoise == 0 || Math.random() > model.brushNoise)
+							{
+								alphaMap.beginFill(0xFFFFFF, model.brushOpacity * alphaByGradient * alphaByNoise);
+								alphaMap.drawRect(
+									(core.model.isYDragLocked ? dragStartPoint.x : preview.x) * 2 + j / 2 * Math.cos(angle),
+									(core.model.isXDragLocked ? dragStartPoint.y : preview.y) * 2 + j / 2 * Math.sin(angle) - 1,
+									1,
+									1
+								);
+							}
+						}
+					}
+				}
+			}
+			else
+			{
+				if (model.brushNoise == 0 && model.brushGradient == 0)
+				{
+					alphaMap.drawRect(
+						(core.model.isYDragLocked ? dragStartPoint.x : preview.x) * 2 - model.brushSize,
+						(core.model.isXDragLocked ? dragStartPoint.y : preview.y) * 2 - model.brushSize,
+						model.brushSize * 2,
+						model.brushSize * 2
+					);
+				}
+				else
+				{
+					for (i in 0...cast model.brushSize * 2)
+					{
+						for (j in 0...cast model.brushSize * 2)
+						{
+							var absI = Math.abs(i - model.brushSize);
+							var absJ = Math.abs(j - model.brushSize);
+
+							var alphaByGradient = model.brushGradient == 0 ? 1 : (1 - ((absI < absJ ? absJ : absI) / model.brushSize)) * 2 * (1 - model.brushGradient);
+							var alphaByNoise = model.brushNoise == 0 ? 1 : Math.random();
+
+							if (model.brushNoise == 0 || Math.random() > model.brushNoise)
+							{
+								alphaMap.beginFill(0xFFFFFF, model.brushOpacity * alphaByGradient * alphaByNoise);
+								alphaMap.drawRect(
+									(core.model.isYDragLocked ? dragStartPoint.x : preview.x) * 2 - model.brushSize + i,
+									(core.model.isXDragLocked ? dragStartPoint.y : preview.y) * 2 - model.brushSize + j,
+									1,
+									1
+								);
+							}
+						}
+					}
+				}
+			}
 			alphaMap.drawTo(tex);
 			alphaMap.endFill();
 		}

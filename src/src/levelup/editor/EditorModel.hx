@@ -4,7 +4,6 @@ import coconut.data.Model;
 import format.agal.Tools;
 import hpp.util.GeomUtil.SimplePoint;
 import levelup.TerrainAssets.TerrainConfig;
-import levelup.editor.TerrainBrush;
 import levelup.game.GameState.InitialUnitData;
 import levelup.game.GameState.PlayerId;
 import levelup.game.GameState.StaticObjectConfig;

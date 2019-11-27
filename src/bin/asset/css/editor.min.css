@@ -9,10 +9,11 @@
 .lu_selected_item{width:100%;max-height:calc(100% - 60px);background-color:#5E6161DD;color:#FFF;pointer-events:visible;}
 .lu_tab_menu{color:#FFF;width:100%;background-color:#5E6161;}
 .lu_library_list_container{height:calc(100% - 49px);}
-.lu_terrain_brush_selector{display:flex;flex-wrap:wrap;padding:2px;justify-content:space-between;}
-.lu_terrain_brush_preview{width:50px;height:50px;cursor:pointer;border:2px solid #FFFFFF00;background-size:75%;background-repeat:no-repeat;background-position:center;}
-.lu_terrain_brush_preview:hover{border:2px solid #FFFFFF;}
-.lu_terrain_brush_preview--selected{border:2px solid #69fd75;filter:drop-shadow(0px 0px 2px black);}
+.lu_terrain_brush_selector{display:flex;flex-wrap:wrap;padding:2px;justify-content:space-evenly;}
+.lu_terrain_brush_preview{width:40px;height:40px;cursor:pointer;background-color:#FFF;margin:5px;}
+.lu_terrain_brush_preview--circle{border-radius:25px;}
+.lu_terrain_brush_preview:hover{background-color:2px solid #CCC;}
+.lu_terrain_brush_preview--selected{background-color:#69fd75;filter:drop-shadow(0px 0px 2px black);}
 .lu_terrain_layer{cursor:pointer;width:calc(100% - 4px);height:40px;border:2px solid #FFFFFF00;margin:2px 0;background-size:100%;position:relative;}
 .lu_terrain_layer:hover{border:2px solid #FFFFFF;}
 .lu_terrain_layer--selected{border:2px solid #69fd75;}
