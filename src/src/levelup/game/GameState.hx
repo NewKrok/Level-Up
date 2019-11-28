@@ -138,10 +138,10 @@ class GameState extends Base2dState
 		world.done();
 
 		var dirLight = new DirLight(null, s3d);
-		dirLight.setDirection(new Vector(1, 0, -2));
+		dirLight.setDirection(new Vector(3, 1, -2));
 		dirLight.color = new Vector(0.9, 0.9, 0.9);
 
-		s3d.lightSystem.ambientLight.setColor(0x000000);
+		s3d.lightSystem.ambientLight.setColor(0x444444);
 
 		var shadow:h3d.pass.DefaultShadowMap = s3d.renderer.getPass(h3d.pass.DefaultShadowMap);
 		shadow.size = 2048;

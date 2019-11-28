@@ -31,6 +31,7 @@ import hpp.util.GeomUtil.SimplePoint;
 import hxd.Event;
 import hxd.Res;
 import levelup.shader.AlphaMask;
+import levelup.util.GeomUtil3D;
 
 /**
  * ...
@@ -43,6 +44,8 @@ class GameWorld extends World
 	public static var instance:GameWorld;
 
 	public var graph:Graph;
+	public var heightMap:BitmapData;
+	public var heightGrid:Array<Point>;
 	public var terrainLayers:Array<Mesh> = [];
 
 	public var blockSize:Float;
@@ -66,6 +69,8 @@ class GameWorld extends World
 	var interact:Interactive;
 	var isWorldGraphDirty:Bool = false;
 	var lastRerouteTime:Float = 0;
+	var lastUpdateTime:Float = 0;
+	var heightPositionFrequency = 20;
 
 	public function new(parent, worldConfig:WorldConfig, blockSize:Float, chunkSize:Int, worldSize:Int, ?parent, ?autoCollect = true)
 	{
@@ -75,12 +80,19 @@ class GameWorld extends World
 
 		instance = this;
 
+		/*heightMap = new BitmapData(cast worldConfig.size.y * 2, cast worldConfig.size.x * 2);
+		heightMap.fill(0, 0, bmp.width, bmp.height, 0x00000000);*/
+		heightMap = Res.texture.hm.toBitmap();
+		heightMap.lock();
+
 		var terrainConfig = TerrainAssets.getTerrain(worldConfig.baseTerrainId);
 		addStaticTerrainLayer(terrainConfig);
 
+		//updateTerrainByHeightMap();
+
 		generateMap();
 
-		interact = new Interactive(new Cube(worldConfig.size.y, worldConfig.size.x, 0.5).getCollider(), parent);
+		interact = new Interactive(terrainLayers[0].getCollider(), parent);
 		interact.enableRightButton = true;
 		interact.onClick = function (e) { onWorldClick(e); };
 		interact.onPush = function (e) { onWorldMouseDown(e); };
@@ -105,9 +117,13 @@ class GameWorld extends World
 		layer.addNormals();
 		layer.addUVs();
 		layer.uvScale(30, 30);
+
+		heightGrid = layer.points;
+		setGridByHeightMap(layer);
+
 		var mesh = new Mesh(layer, Material.create(terrainConfig.texture), parent);
 		mesh.material.texture.wrap = Wrap.Repeat;
-		mesh.material.castShadows = false;
+		//mesh.material.castShadows = false;
 
 		terrainLayers.push(mesh);
 	}
@@ -119,7 +135,7 @@ class GameWorld extends World
 		layer.addUVs();
 		layer.uvScale(30, 30);
 
-		for (n in layer.points) n.z = Math.random();
+		setGridByHeightMap(layer);
 
 		var bmp = new BitmapData(cast worldConfig.size.y * 2, cast worldConfig.size.x * 2);
 		bmp.fill(0, 0, bmp.width, bmp.height, 0x00000000);
@@ -130,10 +146,19 @@ class GameWorld extends World
 		mesh.material.mainPass.addShader(alphaMask);
 		mesh.material.texture.wrap = Wrap.Repeat;
 		mesh.material.blendMode = BlendMode.Alpha;
-		mesh.material.castShadows = false;
+		//mesh.material.castShadows = false;
 		mesh.z = 0.05 * terrainLayers.length;
 
 		terrainLayers.push(mesh);
+	}
+
+	function setGridByHeightMap(g:Grid)
+	{
+		for (n in g.points)
+		{
+			var pixelIntensity = (heightMap.getPixel(cast n.x, cast n.y) >> 16) & 0xFF;
+			n.z = pixelIntensity / 255 * 5;
+		}
 	}
 
 	public function changeBaseTerrain(terrainId:String)
@@ -215,9 +240,86 @@ class GameWorld extends World
 			u.update(d);
 		}
 
+		if (now - lastUpdateTime >= heightPositionFrequency)
+		{
+			lastUpdateTime = now;
+			for (c in children) c.z = getHeightByPosition(c.x, c.y);
+		}
+
 		//resetWorldWeight();
 		calculateUnitInteractions(d);
 		checkRegionDatas();
+	}
+
+	function getHeightByPosition(posX, posY)
+	{
+		var worldPosX = Math.floor(posX);
+		var worldPosY = Math.floor(posY);
+		var pos = { x: posX, y: posY };
+
+		var searchForPoint = function (posX, posY)
+		{
+			for (p in heightGrid)
+				if (p.x == posX && p.y == posY) return p;
+			return null;
+		}
+
+		var pLT = searchForPoint(worldPosX, worldPosY);
+		var pRT = searchForPoint(worldPosX + 1, worldPosY);
+		var pLB = searchForPoint(worldPosX, worldPosY + 1);
+		var pRB = searchForPoint(worldPosX + 1, worldPosY + 1);
+
+		var triangleCheckA = GeomUtil3D.isPointInATriangle(pos, pLT, pRT, pLB);
+		var triangleCheckB = GeomUtil3D.isPointInATriangle(pos, pLT, pRT, pRB);
+		var triangleCheckC = GeomUtil3D.isPointInATriangle(pos, pRT, pRB, pLB);
+		var triangleCheckD = GeomUtil3D.isPointInATriangle(pos, pLT, pRB, pLB);
+
+		if (triangleCheckA && triangleCheckB)
+		{
+			if (pLT.z < pRB.z)
+			{
+				return GeomUtil3D.zFromTriangle(pos, pLT, pRT, pLB);
+			}
+			else
+			{
+				return GeomUtil3D.zFromTriangle(pos, pLT, pRT, pRB);
+			}
+		}
+		else if (triangleCheckB && triangleCheckC)
+		{
+			if (pRT.z < pRB.z)
+			{
+				return GeomUtil3D.zFromTriangle(pos, pLT, pRT, pLB);
+			}
+			else
+			{
+				return GeomUtil3D.zFromTriangle(pos, pRT, pRB, pLB);
+			}
+		}
+		else if (triangleCheckC && triangleCheckD)
+		{
+			if (pRB.z < pLB.z)
+			{
+				return GeomUtil3D.zFromTriangle(pos, pRT, pRB, pLB);
+			}
+			else
+			{
+				return GeomUtil3D.zFromTriangle(pos, pLT, pRB, pLB);
+			}
+		}
+		else if (triangleCheckD && triangleCheckA)
+		{
+			if (pLB.z < pLT.z)
+			{
+				return GeomUtil3D.zFromTriangle(pos, pLT, pRT, pLB);
+			}
+			else
+			{
+				return GeomUtil3D.zFromTriangle(pos, pLT, pRB, pLB);
+			}
+		}
+
+		return 0;
 	}
 
 	function checkRegionDatas()

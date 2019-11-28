@@ -20,9 +20,9 @@
 	],
 	"units": [
 		{
-			"id": "archer",
+			"id": "minion",
 			"owner": 0,
-			"x": 10,"y":"10","z":0,"rotation":-1.5707963267948966
+			"x": 10,"y":10
 		}
 	],
 	"staticObjects": [

@@ -7,6 +7,7 @@ import h3d.Vector;
 import h3d.mat.BlendMode;
 import h3d.mat.Pass;
 import h3d.pass.DefaultShadowMap;
+import h3d.prim.Grid;
 import h3d.prim.ModelCache;
 import h3d.scene.Graphics;
 import h3d.scene.Interactive;
@@ -158,11 +159,10 @@ class EditorState extends Base2dState
 		world.done();
 
 		var dirLight = new DirLight(null, s3d);
-		dirLight.setDirection(new Vector(1, 0, -2));
+		dirLight.setDirection(new Vector(3, 1, -2));
 		dirLight.color = new Vector(0.9, 0.9, 0.9);
-		dirLight.enableSpecular = true;
 
-		s3d.lightSystem.ambientLight.setColor(0x000000);
+		s3d.lightSystem.ambientLight.setColor(0x444444);
 
 		var shadow:h3d.pass.DefaultShadowMap = s3d.renderer.getPass(h3d.pass.DefaultShadowMap);
 		shadow.size = 2048;
@@ -657,17 +657,25 @@ class EditorState extends Base2dState
 	{
 		grid.clear();
 		grid.lineStyle(1, 0x999900, 1);
+		var targetGrid:Grid = cast world.terrainLayers[0].primitive;
+
+		var getZFromPoint = (targetX, targetY) ->
+		{
+			for (p in targetGrid.points) if (targetX == p.x && targetY == p.y) return p.z;
+
+			return 0;
+		}
 
 		for (i in 0...cast mapConfig.size.x)
 		{
-			grid.moveTo(i, 0, 0);
-			grid.lineTo(i, mapConfig.size.y, 0);
-		}
+			for (j in 0...cast mapConfig.size.y)
+			{
+				grid.moveTo(i, j, getZFromPoint(i, j));
+				grid.lineTo(i, j + 1, getZFromPoint(i, j + 1));
 
-		for (i in 0...cast mapConfig.size.y)
-		{
-			grid.moveTo(0, i, 0);
-			grid.lineTo(mapConfig.size.x, i, 0);
+				grid.moveTo(i, j, getZFromPoint(i, j));
+				grid.lineTo(i + 1, j, getZFromPoint(i + 1, j));
+			}
 		}
 	}
 
