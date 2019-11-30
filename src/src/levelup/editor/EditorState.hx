@@ -16,17 +16,20 @@ import h3d.scene.fwd.DirLight;
 import h3d.shader.Base2d;
 import h3d.shader.ColorMult;
 import haxe.Json;
+import haxe.crypto.Base64;
 import hpp.heaps.Base2dStage;
 import hpp.heaps.Base2dState;
 import hpp.heaps.HppG;
 import hpp.util.GeomUtil;
 import hpp.util.GeomUtil.SimplePoint;
+import hxd.BitmapData;
 import hxd.Event;
 import hxd.Key;
 import hxd.Window;
 import hxsl.ShaderList;
 import js.Browser;
 import levelup.Asset;
+import levelup.editor.EditorModel.ToolState;
 import levelup.editor.dialog.EditorDialogManager;
 import levelup.editor.html.EditorUi;
 import levelup.editor.module.terrain.Terrain;
@@ -37,6 +40,7 @@ import levelup.game.GameState.WorldEntity;
 import levelup.game.GameWorld;
 import levelup.game.GameWorld.Region;
 import levelup.game.unit.BaseUnit;
+import levelup.shader.AlphaMask;
 import levelup.util.GeomUtil3D;
 import levelup.util.SaveUtil;
 import motion.Actuate;
@@ -131,6 +135,7 @@ class EditorState extends Base2dState
 
 		model.observables.baseTerrainId.bind(id -> world.changeBaseTerrain(id));
 		model.observables.showGrid.bind(v -> v ? showGrid() : hideGrid());
+		model.observables.toolState.bind(v -> v == ToolState.Library ? enableAssetInteractives() : blockAssetInteractives());
 
 		dialogManager = new EditorDialogManager(cast this);
 
@@ -146,16 +151,7 @@ class EditorState extends Base2dState
 		debugDetectionRadius = new Graphics(s3d);
 		debugDetectionRadius.z = 0.2;
 
-		world = new GameWorld(s3d, {
-			name: mapConfig.name,
-			size: mapConfig.size,
-			baseTerrainId: mapConfig.baseTerrainId,
-			pathFindingMap: mapConfig.pathFindingMap,
-			regions: [],
-			triggers: [],
-			units: [],
-			staticObjects: []
-		}, 1, 64, 64, s3d);
+		world = new GameWorld(s3d, mapConfig, 1, 64, 64, s3d);
 		world.done();
 
 		var dirLight = new DirLight(null, s3d);
@@ -198,7 +194,7 @@ class EditorState extends Base2dState
 		{
 			for (m in modules) m.onWorldMouseUp(e);
 
-			releaseAssetInteractives();
+			if (model.toolState == ToolState.Library) enableAssetInteractives();
 
 			if (e.button == 0)
 			{
@@ -329,6 +325,8 @@ class EditorState extends Base2dState
 		isLevelLoaded = true;
 	}
 
+	function getModule(c) return modules.filter(m ->Std.is(m, c))[0];
+
 	public function registerView(id:EditorViewId, view:RenderResult)
 	{
 		views.set(id, view);
@@ -397,13 +395,10 @@ class EditorState extends Base2dState
 			draggedInteractive = interactive;
 			interactive.visible = false;
 
-			for (i in worldInstances)
-			{
-				if (i.interactive != interactive) i.interactive.cancelEvents = true;
-			}
+			blockAssetInteractives(interactive);
 		};
 
-		interactive.onRelease = e -> releaseAssetInteractives();
+		interactive.onRelease = e -> enableAssetInteractives();
 
 		var colorShader = new ColorMult();
 		colorShader.color = new Vector(1, 1, 0, 0.2);
@@ -535,7 +530,19 @@ class EditorState extends Base2dState
 			}
 	}
 
-	function releaseAssetInteractives()
+	function blockAssetInteractives(except = null)
+	{
+		for (i in worldInstances)
+		{
+			if (i.interactive != except)
+			{
+				i.interactive.visible = false;
+				i.interactive.cancelEvents = true;
+			}
+		}
+	}
+
+	function enableAssetInteractives()
 	{
 		for (i in worldInstances)
 		{
@@ -598,7 +605,8 @@ class EditorState extends Base2dState
 			regions: regions,
 			triggers: [],
 			units: rawData.units,
-			staticObjects: staticObjects
+			staticObjects: staticObjects,
+			terrainLayers: rawData.terrainLayers
 		};
 	}
 
@@ -809,6 +817,19 @@ class EditorState extends Base2dState
 
 	public function save()
 	{
+		var terrainLayers = [];
+		var terrainModule = cast(getModule(Terrain), Terrain);
+		for (i in 1...world.terrainLayers.length)
+		{
+			var l = world.terrainLayers[i];
+			var shader = l.material.mainPass.getShader(AlphaMask);
+
+			if (shader != null) terrainLayers.push({
+				textureId: terrainModule.model.layers.toArray()[i].terrainId.value,
+				texture: Base64.encode(shader.texture.capturePixels().bytes)
+			});
+		}
+
 		var worldConfig:WorldConfig = {
 			name: model.name,
 			size: model.size,
@@ -817,7 +838,8 @@ class EditorState extends Base2dState
 			regions: model.regions,
 			triggers: model.triggers,
 			units: model.units,
-			staticObjects: model.staticObjects
+			staticObjects: model.staticObjects,
+			terrainLayers: terrainLayers
 		};
 		var result = Json.stringify(worldConfig);
 

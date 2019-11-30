@@ -1,9 +1,22 @@
 package levelup.game;
 
 import coconut.ui.RenderResult;
-import h3d.scene.CameraController;
+import h2d.Flow;
+import h2d.Scene;
+import h3d.Vector;
+import h3d.pass.DefaultShadowMap;
+import h3d.prim.Cube;
+import h3d.scene.Graphics;
+import h3d.scene.Mesh;
+import h3d.scene.fwd.DirLight;
+import haxe.Json;
+import hpp.heaps.Base2dStage;
+import hpp.heaps.Base2dState;
+import hpp.heaps.HppG;
+import hpp.util.GeomUtil.SimplePoint;
 import js.Browser;
 import levelup.AsyncUtil.Result;
+import levelup.MapData;
 import levelup.editor.EditorState;
 import levelup.game.GameModel.PlayState;
 import levelup.game.GameState.Trigger;
@@ -15,44 +28,15 @@ import levelup.game.unit.BaseUnit;
 import levelup.game.unit.human.Archer;
 import levelup.game.unit.human.Footman;
 import levelup.game.unit.orc.BandWagon;
+import levelup.game.unit.orc.Berserker;
 import levelup.game.unit.orc.Drake;
 import levelup.game.unit.orc.Grunt;
-import levelup.game.unit.orc.Berserker;
-import levelup.game.ui.LineBar;
 import levelup.game.unit.orc.Minion;
-import h2d.Flow;
-import h2d.Object;
-import h2d.Scene;
-import h3d.Vector;
-import h3d.mat.Data.Wrap;
-import h3d.mat.Material;
-import h3d.pass.DefaultShadowMap;
-import h3d.prim.Cube;
-import h3d.prim.Cylinder;
-import h3d.scene.Graphics;
-import h3d.scene.Mesh;
-import h3d.scene.fwd.DirLight;
-import h3d.scene.fwd.PointLight;
-import haxe.Json;
-import haxe.Timer;
-import hpp.heaps.Base2dStage;
-import hpp.heaps.Base2dState;
-import hpp.heaps.HppG;
-import hpp.util.GeomUtil;
-import hpp.util.GeomUtil.SimplePoint;
-import hxd.Event;
-import hxd.Res;
-import levelup.MapData;
 import levelup.util.SaveUtil;
 import motion.Actuate;
-import motion.easing.Elastic;
-import motion.easing.Expo;
 import motion.easing.IEasing;
 import motion.easing.Linear;
-import motion.easing.Quad;
-import motion.easing.Quart;
 import react.ReactDOM;
-import tink.state.Observable;
 import tink.state.State;
 
 /**
@@ -292,7 +276,8 @@ class GameState extends Base2dState
 			regions: regions,
 			triggers: triggers,
 			units: rawData.units,
-			staticObjects: staticObjects
+			staticObjects: staticObjects,
+			terrainLayers: rawData.terrainLayers
 		};
 	}
 
@@ -626,6 +611,7 @@ typedef WorldConfig =
 	@:optional var triggers(default, never):Array<Trigger>;
 	@:optional var units(default, never):Array<InitialUnitData>;
 	@:optional var staticObjects(default, never):Array<StaticObjectConfig>;
+	@:optional var terrainLayers(default, never):Array<TextureInfo>;
 }
 
 typedef StaticObjectConfig =
@@ -671,6 +657,12 @@ enum TriggerCondition {
 
 enum UnitDefinition {
 	TriggeringUnit;
+}
+
+typedef TextureInfo =
+{
+	var textureId:String;
+	var texture:String;
 }
 
 @:enum abstract PlayerId(Int) from Int to Int {

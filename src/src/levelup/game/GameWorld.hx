@@ -10,7 +10,10 @@ import h3d.prim.Polygon;
 import h3d.prim.UV;
 import h3d.shader.Displacement;
 import h3d.shader.NormalMap;
+import haxe.crypto.Base64;
 import hxd.BitmapData;
+import hxd.PixelFormat;
+import hxd.Pixels;
 import hxd.fmt.fbx.Geometry;
 import levelup.TerrainAssets.TerrainConfig;
 import levelup.game.GameState.WorldConfig;
@@ -85,8 +88,15 @@ class GameWorld extends World
 		heightMap = Res.texture.hm.toBitmap();
 		heightMap.lock();
 
-		var terrainConfig = TerrainAssets.getTerrain(worldConfig.baseTerrainId);
-		addStaticTerrainLayer(terrainConfig);
+		addStaticTerrainLayer(TerrainAssets.getTerrain(worldConfig.baseTerrainId));
+
+		if (worldConfig.terrainLayers != null)
+		{
+			for (l in worldConfig.terrainLayers)
+			{
+				addTerrainLayer(TerrainAssets.getTerrain(l.textureId), l.texture);
+			}
+		}
 
 		//updateTerrainByHeightMap();
 
@@ -127,7 +137,7 @@ class GameWorld extends World
 		terrainLayers.push(mesh);
 	}
 
-	public function addTerrainLayer(terrainConfig:TerrainConfig)
+	public function addTerrainLayer(terrainConfig:TerrainConfig, alphaMap:String = null)
 	{
 		var layer = new Grid(cast worldConfig.size.y, cast worldConfig.size.x);
 		layer.addNormals();
@@ -138,6 +148,10 @@ class GameWorld extends World
 
 		var bmp = new BitmapData(cast worldConfig.size.y * 2, cast worldConfig.size.x * 2);
 		bmp.fill(0, 0, bmp.width, bmp.height, 0x00000000);
+
+		if (alphaMap != null)
+			bmp.setPixels(new Pixels(bmp.width, bmp.height, Base64.decode(alphaMap), PixelFormat.RGBA));
+
 		var alphaMask = new AlphaMask(Texture.fromBitmap(bmp));
 		alphaMask.uvScale.set(0.03333, 0.03333);
 

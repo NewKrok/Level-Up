@@ -51,6 +51,11 @@ import tink.state.Observable;
 		model = new TerrainModel();
 		model.addLayer(core.model.observables.baseTerrainId.value);
 
+		if (core.world.worldConfig.terrainLayers != null)
+		{
+			for (l in core.world.worldConfig.terrainLayers) model.addLayer(l.textureId);
+		}
+
 		var terrainChooser = new TerrainChooser({
 			terrainList: List.fromArray(TerrainAssets.terrains),
 			selectTerrain: id -> {
