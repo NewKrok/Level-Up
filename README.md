@@ -6,29 +6,42 @@ http://flashplusplus.net/haxe/levelup/index.html
 
 ## TODO - general
 - Fix for some render issues like some unit has a black "shadow"
-- Add missing Human and Orc characters
+- Add missing Human, Orc, Elf, Undead characters
 - Team based colorization
+- Fix z-index render problem when the camera distance is to big
 - etc...
 
 ## TODO - Game
+- Unit should counter attack when it was attacked from outside it's detection range
+- Units should realize when nearby allies were attacked
+- Implement Fog of war
 - Ranged attack with follower and normal projectile
 - Area damage
 - Html based hero ui
 - Life and mana bar into the game
-- Refact BaseUnit / Ai unit / Player unit
 - Add team system
 - Implement a Moba custom game
 - etc...
 
 ## TODO - Adventure editor
 - Add missing preview images
-- Terrain editor
+- HeightMap editor
 - Region editor
 - Trigger editor
 - Pathfinding editor
 - Define map sizes
 - Team editor
+- Possibility to change the cam view angle
+- Fix asset selection - there is a problem with colliders
+- Change grid density based on the camera distance
 - etc...
+
+## TODO - Terrain editor
+- Mark locked base terrain with an icon
+- Possibility to change the layer order
+- Undo / Redo functionality
+- Fix paint bug when the position is locked - after mouse up
+- Add eraser brush
 
 ## Screenshot(s)
 Lobby
