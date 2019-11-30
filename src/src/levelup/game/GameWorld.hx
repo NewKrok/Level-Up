@@ -123,7 +123,6 @@ class GameWorld extends World
 
 		var mesh = new Mesh(layer, Material.create(terrainConfig.texture), parent);
 		mesh.material.texture.wrap = Wrap.Repeat;
-		//mesh.material.castShadows = false;
 
 		terrainLayers.push(mesh);
 	}
@@ -146,7 +145,6 @@ class GameWorld extends World
 		mesh.material.mainPass.addShader(alphaMask);
 		mesh.material.texture.wrap = Wrap.Repeat;
 		mesh.material.blendMode = BlendMode.Alpha;
-		//mesh.material.castShadows = false;
 		mesh.z = 0.05 * terrainLayers.length;
 
 		terrainLayers.push(mesh);
@@ -243,83 +241,12 @@ class GameWorld extends World
 		if (now - lastUpdateTime >= heightPositionFrequency)
 		{
 			lastUpdateTime = now;
-			for (c in children) c.z = getHeightByPosition(c.x, c.y);
+			for (c in children) c.z = GeomUtil3D.getHeightByPosition(heightGrid, c.x, c.y);
 		}
 
 		//resetWorldWeight();
 		calculateUnitInteractions(d);
 		checkRegionDatas();
-	}
-
-	function getHeightByPosition(posX, posY)
-	{
-		var worldPosX = Math.floor(posX);
-		var worldPosY = Math.floor(posY);
-		var pos = { x: posX, y: posY };
-
-		var searchForPoint = function (posX, posY)
-		{
-			for (p in heightGrid)
-				if (p.x == posX && p.y == posY) return p;
-			return null;
-		}
-
-		var pLT = searchForPoint(worldPosX, worldPosY);
-		var pRT = searchForPoint(worldPosX + 1, worldPosY);
-		var pLB = searchForPoint(worldPosX, worldPosY + 1);
-		var pRB = searchForPoint(worldPosX + 1, worldPosY + 1);
-
-		var triangleCheckA = GeomUtil3D.isPointInATriangle(pos, pLT, pRT, pLB);
-		var triangleCheckB = GeomUtil3D.isPointInATriangle(pos, pLT, pRT, pRB);
-		var triangleCheckC = GeomUtil3D.isPointInATriangle(pos, pRT, pRB, pLB);
-		var triangleCheckD = GeomUtil3D.isPointInATriangle(pos, pLT, pRB, pLB);
-
-		if (triangleCheckA && triangleCheckB)
-		{
-			if (pLT.z < pRB.z)
-			{
-				return GeomUtil3D.zFromTriangle(pos, pLT, pRT, pLB);
-			}
-			else
-			{
-				return GeomUtil3D.zFromTriangle(pos, pLT, pRT, pRB);
-			}
-		}
-		else if (triangleCheckB && triangleCheckC)
-		{
-			if (pRT.z < pRB.z)
-			{
-				return GeomUtil3D.zFromTriangle(pos, pLT, pRT, pLB);
-			}
-			else
-			{
-				return GeomUtil3D.zFromTriangle(pos, pRT, pRB, pLB);
-			}
-		}
-		else if (triangleCheckC && triangleCheckD)
-		{
-			if (pRB.z < pLB.z)
-			{
-				return GeomUtil3D.zFromTriangle(pos, pRT, pRB, pLB);
-			}
-			else
-			{
-				return GeomUtil3D.zFromTriangle(pos, pLT, pRB, pLB);
-			}
-		}
-		else if (triangleCheckD && triangleCheckA)
-		{
-			if (pLB.z < pLT.z)
-			{
-				return GeomUtil3D.zFromTriangle(pos, pLT, pRT, pLB);
-			}
-			else
-			{
-				return GeomUtil3D.zFromTriangle(pos, pLT, pRB, pLB);
-			}
-		}
-
-		return 0;
 	}
 
 	function checkRegionDatas()

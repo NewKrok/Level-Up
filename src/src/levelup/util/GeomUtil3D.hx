@@ -32,4 +32,74 @@ class GeomUtil3D
 
 		return p1.z + (calc1 / calc2) * (pos.y - p1.y) - (calc3 / calc4) * (pos.x - p1.x);
 	}
+
+	public static function getHeightByPosition(heightGrid:Array<Point>, posX:Float, posY:Float)
+	{
+		var worldPosX = Math.floor(posX);
+		var worldPosY = Math.floor(posY);
+		var pos = { x: posX, y: posY };
+
+		var pLT = searchForPoint(heightGrid, worldPosX, worldPosY);
+		var pRT = searchForPoint(heightGrid, worldPosX + 1, worldPosY);
+		var pLB = searchForPoint(heightGrid, worldPosX, worldPosY + 1);
+		var pRB = searchForPoint(heightGrid, worldPosX + 1, worldPosY + 1);
+
+		var triangleCheckA = GeomUtil3D.isPointInATriangle(pos, pLT, pRT, pLB);
+		var triangleCheckB = GeomUtil3D.isPointInATriangle(pos, pLT, pRT, pRB);
+		var triangleCheckC = GeomUtil3D.isPointInATriangle(pos, pRT, pRB, pLB);
+		var triangleCheckD = GeomUtil3D.isPointInATriangle(pos, pLT, pRB, pLB);
+
+		if (triangleCheckA && triangleCheckB)
+		{
+			if (pLT.z < pRB.z)
+			{
+				return GeomUtil3D.zFromTriangle(pos, pLT, pRT, pLB);
+			}
+			else
+			{
+				return GeomUtil3D.zFromTriangle(pos, pLT, pRT, pRB);
+			}
+		}
+		else if (triangleCheckB && triangleCheckC)
+		{
+			if (pRT.z < pRB.z)
+			{
+				return GeomUtil3D.zFromTriangle(pos, pLT, pRT, pLB);
+			}
+			else
+			{
+				return GeomUtil3D.zFromTriangle(pos, pRT, pRB, pLB);
+			}
+		}
+		else if (triangleCheckC && triangleCheckD)
+		{
+			if (pRB.z < pLB.z)
+			{
+				return GeomUtil3D.zFromTriangle(pos, pRT, pRB, pLB);
+			}
+			else
+			{
+				return GeomUtil3D.zFromTriangle(pos, pLT, pRB, pLB);
+			}
+		}
+		else if (triangleCheckD && triangleCheckA)
+		{
+			if (pLB.z < pLT.z)
+			{
+				return GeomUtil3D.zFromTriangle(pos, pLT, pRT, pLB);
+			}
+			else
+			{
+				return GeomUtil3D.zFromTriangle(pos, pLT, pRB, pLB);
+			}
+		}
+
+		return 0;
+	}
+
+	public static function searchForPoint(heightGrid:Array<Point>, posX:Float, posY:Float)
+	{
+		for (p in heightGrid) if (p.x == posX && p.y == posY) return p;
+		return new Point(posX, posY, 0);
+	}
 }

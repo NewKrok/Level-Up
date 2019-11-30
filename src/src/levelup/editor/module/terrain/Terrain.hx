@@ -24,6 +24,7 @@ import levelup.editor.EditorState.EditorViewId;
 import levelup.editor.module.terrain.TerrainEditorView;
 import levelup.shader.AlphaMask;
 import levelup.shader.Opacity;
+import levelup.util.GeomUtil3D;
 import tink.pure.List;
 import tink.state.Observable;
 
@@ -38,6 +39,7 @@ import tink.state.Observable;
 	public var model:TerrainModel;
 
 	var preview:h3d.scene.Graphics;
+	var previewPos:SimplePoint = { x: 0, y: 0 };
 	var isDrawActive:Bool;
 	var lastDrawedPoint:SimplePoint = { x: 0, y: 0 };
 	var dragStartPoint:SimplePoint = null;
@@ -111,33 +113,6 @@ import tink.state.Observable;
 			preview.visible = isActive;
 			if (!isActive) isDrawActive = false;
 		});
-
-		model.observables.selectedBrushId.bind(id ->
-		{
-			preview.clear();
-			preview.lineStyle(4, 0xFFFF00, 0.2);
-
-			if (id == 0)
-			{
-				var angle = 0.0;
-				for (i in 0...13)
-				{
-					angle += Math.PI * 2 / 12;
-					if (i == 0) preview.moveTo(Math.cos(angle) * .5, Math.sin(angle) * .5, 0);
-					else preview.lineTo(Math.cos(angle) * .5, Math.sin(angle) * .5, 0);
-				}
-			}
-			else
-			{
-				preview.moveTo(-0.5, -0.5, 0);
-				preview.lineTo(0.5, -0.5, 0);
-				preview.lineTo(0.5, 0.5, 0);
-				preview.lineTo(-0.5, 0.5, 0);
-				preview.lineTo(-0.5, -0.5, 0);
-			}
-		});
-
-		model.observables.brushSize.bind(preview.setScale);
 	}
 
 	public function onWorldClick(e:Event):Void
@@ -169,22 +144,89 @@ import tink.state.Observable;
 	{
 		if (preview.visible)
 		{
-			var previewSize = preview.primitive.getBounds().getSize();
-			preview.x = core.snapPosition(e.relX);
-			preview.y = core.snapPosition(e.relY);
+			drawPreview(core.snapPosition(e.relX), core.snapPosition(e.relY));
 
 			if (isDrawActive) draw(e);
 		}
 	}
 
+	function drawPreview(x, y)
+	{
+		previewPos.x = x;
+		previewPos.y = y;
+
+		preview.clear();
+		preview.lineStyle(4, 0xFFFF00, 0.2);
+
+		if (model.selectedBrushId == 0)
+		{
+			var angle = 0.0;
+			var piece = Std.int(5 + model.brushSize / 10 * 20);
+
+			for (i in 0...piece)
+			{
+				angle += Math.PI * 2 / (piece - 1);
+				var xPos = x + Math.cos(angle) * model.brushSize / 2;
+				var yPos = y + Math.sin(angle) * model.brushSize / 2;
+				var zPos = GeomUtil3D.getHeightByPosition(core.world.heightGrid, xPos, yPos);
+
+				if (i == 0) preview.moveTo(xPos, yPos, zPos);
+				else preview.lineTo(xPos, yPos, zPos);
+			}
+		}
+		else
+		{
+			var piece = Std.int(model.brushSize);
+			var pieceSize = model.brushSize / piece;
+
+			var xPos = x + -pieceSize * piece / 2;
+			var yPos = y + -pieceSize * piece / 2;
+			var zPos = GeomUtil3D.getHeightByPosition(core.world.heightGrid, xPos, yPos);
+			preview.moveTo(xPos, yPos, zPos);
+
+			var lastX = xPos;
+			var lastY = yPos;
+
+			var draw = function(dX, dY)
+			{
+				var zPos = GeomUtil3D.getHeightByPosition(core.world.heightGrid, dX, dY);
+				preview.lineTo(dX, dY, zPos);
+				lastX = dX;
+				lastY = dY;
+			}
+
+			for (i in 0...piece)
+			{
+				var xPos = lastX + pieceSize;
+				draw(xPos, lastY);
+
+			}
+			for (i in 0...piece)
+			{
+				var yPos = lastY + pieceSize;
+				draw(lastX, yPos);
+			}
+			for (i in 0...piece)
+			{
+				var xPos = lastX - pieceSize;
+				draw(xPos, lastY);
+			}
+			for (i in 0...piece)
+			{
+				var yPos = lastY - pieceSize;
+				draw(lastX, yPos);
+			}
+		}
+	}
+
 	function draw(e)
 	{
-		if (lastDrawedPoint.x != preview.x || lastDrawedPoint.y != preview.y)
+		if (lastDrawedPoint.x != previewPos.x || lastDrawedPoint.y != previewPos.y)
 		{
 			if (dragStartPoint == null) dragStartPoint = { x: e.relX, y: e.relY };
 
-			lastDrawedPoint.x = preview.x;
-			lastDrawedPoint.y = preview.y;
+			lastDrawedPoint.x = previewPos.x;
+			lastDrawedPoint.y = previewPos.y;
 
 			var tex = core.world.terrainLayers[model.selectedLayerIndex].material.mainPass.getShader(AlphaMask).texture;
 			tex.flags.set(Target);
@@ -195,8 +237,8 @@ import tink.state.Observable;
 				if (model.brushNoise == 0 && model.brushGradient == 0)
 				{
 					alphaMap.drawCircle(
-						(core.model.isYDragLocked ? dragStartPoint.x : preview.x) * 2,
-						(core.model.isXDragLocked ? dragStartPoint.y : preview.y) * 2,
+						(core.model.isYDragLocked ? dragStartPoint.x : previewPos.x) * 2,
+						(core.model.isXDragLocked ? dragStartPoint.y : previewPos.y) * 2,
 						model.brushSize,
 						12
 					);
@@ -218,8 +260,8 @@ import tink.state.Observable;
 							{
 								alphaMap.beginFill(0xFFFFFF, model.brushOpacity * alphaByGradient * alphaByNoise);
 								alphaMap.drawRect(
-									(core.model.isYDragLocked ? dragStartPoint.x : preview.x) * 2 + j / 2 * Math.cos(angle),
-									(core.model.isXDragLocked ? dragStartPoint.y : preview.y) * 2 + j / 2 * Math.sin(angle) - 1,
+									(core.model.isYDragLocked ? dragStartPoint.x : previewPos.x) * 2 + j / 2 * Math.cos(angle),
+									(core.model.isXDragLocked ? dragStartPoint.y : previewPos.y) * 2 + j / 2 * Math.sin(angle) - 1,
 									1,
 									1
 								);
@@ -233,8 +275,8 @@ import tink.state.Observable;
 				if (model.brushNoise == 0 && model.brushGradient == 0)
 				{
 					alphaMap.drawRect(
-						(core.model.isYDragLocked ? dragStartPoint.x : preview.x) * 2 - model.brushSize,
-						(core.model.isXDragLocked ? dragStartPoint.y : preview.y) * 2 - model.brushSize,
+						(core.model.isYDragLocked ? dragStartPoint.x : previewPos.x) * 2 - model.brushSize,
+						(core.model.isXDragLocked ? dragStartPoint.y : previewPos.y) * 2 - model.brushSize,
 						model.brushSize * 2,
 						model.brushSize * 2
 					);
@@ -255,8 +297,8 @@ import tink.state.Observable;
 							{
 								alphaMap.beginFill(0xFFFFFF, model.brushOpacity * alphaByGradient * alphaByNoise);
 								alphaMap.drawRect(
-									(core.model.isYDragLocked ? dragStartPoint.x : preview.x) * 2 - model.brushSize + i,
-									(core.model.isXDragLocked ? dragStartPoint.y : preview.y) * 2 - model.brushSize + j,
+									(core.model.isYDragLocked ? dragStartPoint.x : previewPos.x) * 2 - model.brushSize + i,
+									(core.model.isXDragLocked ? dragStartPoint.y : previewPos.y) * 2 - model.brushSize + j,
 									1,
 									1
 								);

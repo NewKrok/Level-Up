@@ -37,6 +37,7 @@ import levelup.game.GameState.WorldEntity;
 import levelup.game.GameWorld;
 import levelup.game.GameWorld.Region;
 import levelup.game.unit.BaseUnit;
+import levelup.util.GeomUtil3D;
 import levelup.util.SaveUtil;
 import motion.Actuate;
 import react.ReactDOM;
@@ -132,7 +133,6 @@ class EditorState extends Base2dState
 		model.observables.showGrid.bind(v -> v ? showGrid() : hideGrid());
 
 		dialogManager = new EditorDialogManager(cast this);
-		modules.push(cast new Terrain(cast this));
 
 		grid = new Graphics(s3d);
 		grid.z = 0.1;
@@ -254,6 +254,7 @@ class EditorState extends Base2dState
 			{
 				if (!model.isYDragLocked) previewInstance.x = snapPosition(e.relX);
 				if (!model.isXDragLocked) previewInstance.y = snapPosition(e.relY);
+				previewInstance.z = GeomUtil3D.getHeightByPosition(world.heightGrid, previewInstance.x, previewInstance.y);
 			}
 
 			if (draggedInstance != null)
@@ -321,6 +322,8 @@ class EditorState extends Base2dState
 			getModuleView: getModuleView
 		});
 		ReactDOM.render(editorUi.reactify(), Browser.document.getElementById("native-ui"));
+
+		modules.push(cast new Terrain(cast this));
 
 		Window.getInstance().addEventTarget(onKeyEvent);
 		isLevelLoaded = true;
