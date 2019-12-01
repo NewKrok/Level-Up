@@ -12,6 +12,7 @@ http://flashplusplus.net/haxe/levelup/index.html
 - etc...
 
 ## TODO - Game
+- Height map based pathfinding
 - Unit should counter attack when it was attacked from outside it's detection range
 - Units should realize when nearby allies were attacked
 - Implement Fog of war
@@ -25,7 +26,6 @@ http://flashplusplus.net/haxe/levelup/index.html
 
 ## TODO - Adventure editor
 - Add missing preview images
-- HeightMap editor
 - Region editor
 - Trigger editor
 - Pathfinding editor
@@ -43,11 +43,17 @@ http://flashplusplus.net/haxe/levelup/index.html
 - Fix paint bug when the position is locked - after mouse up
 - Add eraser brush
 
+## TODO - HeightMap editor
+- Add eraser brush
+- Add flat brush
+- Undo / Redo functionality
+
 ## Screenshot(s)
 Lobby
 ![image](https://user-images.githubusercontent.com/13141660/68549518-17d81a80-03f9-11ea-831a-d97de774f63c.png)
 
 Editor
+![image](https://user-images.githubusercontent.com/13141660/69908217-51db8180-13e5-11ea-9b25-79ab2f7b83c9.png)
 ![image](https://user-images.githubusercontent.com/13141660/69503789-c57d1a80-0f1d-11ea-8d7f-698ed12e7ee1.png)
 ![image](https://user-images.githubusercontent.com/13141660/69002269-3902a480-08ec-11ea-826a-e8aeacb79999.png)
 ![image](https://user-images.githubusercontent.com/13141660/69002283-90a11000-08ec-11ea-8334-5e5f7049ceb1.png)
