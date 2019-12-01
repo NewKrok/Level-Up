@@ -53,7 +53,7 @@ Lobby
 ![image](https://user-images.githubusercontent.com/13141660/68549518-17d81a80-03f9-11ea-831a-d97de774f63c.png)
 
 Editor
-![image](https://user-images.githubusercontent.com/13141660/69908217-51db8180-13e5-11ea-9b25-79ab2f7b83c9.png)
+![image](https://user-images.githubusercontent.com/13141660/69908241-d62e0480-13e5-11ea-9805-864f7e3db6f6.png)
 ![image](https://user-images.githubusercontent.com/13141660/69503789-c57d1a80-0f1d-11ea-8d7f-698ed12e7ee1.png)
 ![image](https://user-images.githubusercontent.com/13141660/69002269-3902a480-08ec-11ea-826a-e8aeacb79999.png)
 ![image](https://user-images.githubusercontent.com/13141660/69002283-90a11000-08ec-11ea-8334-5e5f7049ceb1.png)
