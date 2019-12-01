@@ -1,12 +1,12 @@
 package;
 
 import h3d.Engine;
+import haxe.Timer;
 import levelup.Asset;
 import levelup.MapData;
 import levelup.TerrainAssets;
 import levelup.editor.EditorState;
 import levelup.game.GameState;
-import haxe.Timer;
 import hpp.heaps.Base2dApp;
 import hpp.heaps.Base2dStage.StageScaleMode;
 import hxd.Res;

@@ -42,4 +42,5 @@ enum ToolState
 {
 	Library;
 	TerrainEditor;
+	HeightMapEditor;
 }

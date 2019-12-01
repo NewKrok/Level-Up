@@ -277,7 +277,8 @@ class GameState extends Base2dState
 			triggers: triggers,
 			units: rawData.units,
 			staticObjects: staticObjects,
-			terrainLayers: rawData.terrainLayers
+			terrainLayers: rawData.terrainLayers,
+			heightMap: rawData.heightMap
 		};
 	}
 
@@ -470,7 +471,10 @@ class GameState extends Base2dState
 
 			currentCameraPoint.x += (targetPoint.x - currentCameraPoint.x) / cameraSpeed.x * d * 30;
 			currentCameraPoint.y += (targetPoint.y - currentCameraPoint.y) / cameraSpeed.y * d * 30;
-			currentCamDistance += (camDistance - currentCamDistance) / cameraSpeed.z * d * 30;
+
+			var distanceOffset = (camDistance - currentCamDistance) / cameraSpeed.z * d * 30;
+			if (Math.abs(distanceOffset) < 0.001) currentCamDistance = camDistance;
+			else currentCamDistance += distanceOffset;
 		}
 
 		s3d.camera.target.set(currentCameraPoint.x, currentCameraPoint.y);
@@ -611,7 +615,8 @@ typedef WorldConfig =
 	@:optional var triggers(default, never):Array<Trigger>;
 	@:optional var units(default, never):Array<InitialUnitData>;
 	@:optional var staticObjects(default, never):Array<StaticObjectConfig>;
-	@:optional var terrainLayers(default, never):Array<TextureInfo>;
+	@:optional var terrainLayers(default, never):Array<TerrainLayerInfo>;
+	@:optional var heightMap(default, never):String;
 }
 
 typedef StaticObjectConfig =
@@ -659,7 +664,7 @@ enum UnitDefinition {
 	TriggeringUnit;
 }
 
-typedef TextureInfo =
+typedef TerrainLayerInfo =
 {
 	var textureId:String;
 	var texture:String;

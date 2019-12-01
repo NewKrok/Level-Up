@@ -49,6 +49,7 @@ class GameWorld extends World
 	public var graph:Graph;
 	public var heightMap:BitmapData;
 	public var heightGrid:Array<Point>;
+	public var heightGridCache:Array<Float> = null;
 	public var terrainLayers:Array<Mesh> = [];
 
 	public var blockSize:Float;
@@ -83,10 +84,13 @@ class GameWorld extends World
 
 		instance = this;
 
-		/*heightMap = new BitmapData(cast worldConfig.size.y * 2, cast worldConfig.size.x * 2);
-		heightMap.fill(0, 0, bmp.width, bmp.height, 0x00000000);*/
-		heightMap = Res.texture.hm.toBitmap();
-		heightMap.lock();
+		heightMap = new BitmapData(cast worldConfig.size.y * 2, cast worldConfig.size.x * 2);
+		heightMap.fill(0, 0, heightMap.width, heightMap.height, 0x000000);
+
+		if (worldConfig.heightMap != null)
+		{
+			heightMap.setPixels(new Pixels(heightMap.width, heightMap.height, Base64.decode(worldConfig.heightMap), PixelFormat.RGBA));
+		}
 
 		addStaticTerrainLayer(TerrainAssets.getTerrain(worldConfig.baseTerrainId));
 
@@ -97,8 +101,6 @@ class GameWorld extends World
 				addTerrainLayer(TerrainAssets.getTerrain(l.textureId), l.texture);
 			}
 		}
-
-		//updateTerrainByHeightMap();
 
 		generateMap();
 
@@ -166,11 +168,40 @@ class GameWorld extends World
 
 	function setGridByHeightMap(g:Grid)
 	{
-		for (n in g.points)
+		var hasCache = heightGridCache != null;
+		if (!hasCache)
 		{
-			var pixelIntensity = (heightMap.getPixel(cast n.x, cast n.y) >> 16) & 0xFF;
-			n.z = pixelIntensity / 255 * 5;
+			heightGridCache = [];
+			heightMap.lock();
 		}
+
+		for (i in 0...g.points.length)
+		{
+			var point = g.points[i];
+			if (hasCache) point.z = heightGridCache[i];
+			else
+			{
+				var pixelIntensity = (heightMap.getPixel(cast point.x, cast point.y) >> 16) & 0xFF;
+				var calculatedZ = pixelIntensity / 255 * 10;
+				heightGridCache.push(calculatedZ);
+				point.z = calculatedZ;
+			}
+		}
+
+		if (!hasCache) heightMap.unlock();
+	}
+
+	public function updateHeightMap()
+	{
+		heightGridCache = null;
+
+		for (l in terrainLayers)
+		{
+			var g:Grid = cast l.primitive;
+			g.buffer = null;
+			setGridByHeightMap(g);
+		}
+		heightGrid = cast(terrainLayers[0].primitive, Grid).points;
 	}
 
 	public function changeBaseTerrain(terrainId:String)

@@ -5,7 +5,6 @@ import h2d.Scene;
 import h3d.Quat;
 import h3d.Vector;
 import h3d.mat.BlendMode;
-import h3d.mat.Pass;
 import h3d.pass.DefaultShadowMap;
 import h3d.prim.Grid;
 import h3d.prim.ModelCache;
@@ -13,7 +12,6 @@ import h3d.scene.Graphics;
 import h3d.scene.Interactive;
 import h3d.scene.Object;
 import h3d.scene.fwd.DirLight;
-import h3d.shader.Base2d;
 import h3d.shader.ColorMult;
 import haxe.Json;
 import haxe.crypto.Base64;
@@ -22,17 +20,17 @@ import hpp.heaps.Base2dState;
 import hpp.heaps.HppG;
 import hpp.util.GeomUtil;
 import hpp.util.GeomUtil.SimplePoint;
-import hxd.BitmapData;
 import hxd.Event;
 import hxd.Key;
 import hxd.Window;
-import hxsl.ShaderList;
+import hxd.clipper.Rect;
 import js.Browser;
 import levelup.Asset;
 import levelup.editor.EditorModel.ToolState;
 import levelup.editor.dialog.EditorDialogManager;
 import levelup.editor.html.EditorUi;
-import levelup.editor.module.terrain.Terrain;
+import levelup.editor.module.heightmap.HeightMapModule;
+import levelup.editor.module.terrain.TerrainModule;
 import levelup.game.GameState;
 import levelup.game.GameState.StaticObjectConfig;
 import levelup.game.GameState.WorldConfig;
@@ -41,6 +39,7 @@ import levelup.game.GameWorld;
 import levelup.game.GameWorld.Region;
 import levelup.game.unit.BaseUnit;
 import levelup.shader.AlphaMask;
+import levelup.shader.TopLayer;
 import levelup.util.GeomUtil3D;
 import levelup.util.SaveUtil;
 import motion.Actuate;
@@ -68,7 +67,9 @@ class EditorState extends Base2dState
 	var views:Map<EditorViewId, RenderResult> = [];
 	var modules:Array<EditorModule> = [];
 
-	var grid:Graphics;
+	var gridParts:Array<Graphics> = [];
+	var gridBlockCount = 5;
+
 	var pathFindingLayer:Graphics;
 
 	var debugRegions:Graphics;
@@ -139,8 +140,6 @@ class EditorState extends Base2dState
 
 		dialogManager = new EditorDialogManager(cast this);
 
-		grid = new Graphics(s3d);
-		grid.z = 0.1;
 		pathFindingLayer = new Graphics(s3d);
 		pathFindingLayer.z = 0.11;
 
@@ -319,7 +318,10 @@ class EditorState extends Base2dState
 		});
 		ReactDOM.render(editorUi.reactify(), Browser.document.getElementById("native-ui"));
 
-		modules.push(cast new Terrain(cast this));
+		modules.push(cast new TerrainModule(cast this));
+		modules.push(cast new HeightMapModule(cast this));
+
+		createGrid();
 
 		Window.getInstance().addEventTarget(onKeyEvent);
 		isLevelLoaded = true;
@@ -606,7 +608,8 @@ class EditorState extends Base2dState
 			triggers: [],
 			units: rawData.units,
 			staticObjects: staticObjects,
-			terrainLayers: rawData.terrainLayers
+			terrainLayers: rawData.terrainLayers,
+			heightMap: rawData.heightMap
 		};
 	}
 
@@ -664,33 +667,101 @@ class EditorState extends Base2dState
 		}
 	}
 
-	function showGrid()
+	function updateGrid(r:Rect)
 	{
-		grid.clear();
-		grid.lineStyle(1, 0x999900, 1);
-		var targetGrid:Grid = cast world.terrainLayers[0].primitive;
+		var w = Math.floor(mapConfig.size.y / gridBlockCount);
+		var h = Math.floor(mapConfig.size.x / gridBlockCount);
+		var x = Math.floor(r.left / h);
+		var y = Math.floor(r.bottom / w);
 
-		var getZFromPoint = (targetX, targetY) ->
+		if (Math.floor(y * gridBlockCount + x) >= gridParts.length) x--;
+
+		var indexes = [];
+
+		var indexLT = Math.floor(y * gridBlockCount + x);
+		if (indexLT > -1 && indexLT < gridParts.length) indexes.push(indexLT);
+
+		var indexRT = Math.floor(y * gridBlockCount + x + 1);
+		if (indexRT > -1 && indexRT < gridParts.length && indexRT != indexLT) indexes.push(indexRT);
+
+		var indexLB = Math.floor((y - 1) * gridBlockCount + x);
+		if (indexLB > -1 && indexLB != indexLT) indexes.push(indexLB);
+
+		var indexRB = Math.floor((y - 1) * gridBlockCount + x + 1);
+		if (indexRB > -1 && indexRB < gridParts.length && indexRB != indexLB && indexRB != indexLT) indexes.push(indexRB);
+
+		for (index in indexes)
 		{
-			for (p in targetGrid.points) if (targetX == p.x && targetY == p.y) return p.z;
+			var g = gridParts[index];
+			g.clear();
+			g.lineStyle(2, 0x999900, 1);
 
-			return 0;
-		}
-
-		for (i in 0...cast mapConfig.size.x)
-		{
-			for (j in 0...cast mapConfig.size.y)
+			for (i in 0...w)
 			{
-				grid.moveTo(i, j, getZFromPoint(i, j));
-				grid.lineTo(i, j + 1, getZFromPoint(i, j + 1));
+				for (j in 0...h)
+				{
+					g.moveTo(i, j, getZFromPoint(g.x + i, g.y + j));
+					g.lineTo(i, j + 1, getZFromPoint(g.x + i, g.y + j + 1));
 
-				grid.moveTo(i, j, getZFromPoint(i, j));
-				grid.lineTo(i + 1, j, getZFromPoint(i + 1, j));
+					g.moveTo(i, j, getZFromPoint(g.x + i, g.y + j));
+					g.lineTo(i + 1, j, getZFromPoint(g.x + i + 1, g.y + j));
+				}
 			}
 		}
 	}
 
-	function hideGrid() grid.clear();
+	function createGrid()
+	{
+		for (i in 0...gridBlockCount * gridBlockCount)
+		{
+			var grid = new Graphics(s3d);
+			grid.material.mainPass.addShader(new TopLayer());
+			gridParts.push(grid);
+		}
+
+		var w = Math.floor(mapConfig.size.x / gridBlockCount);
+		var h = Math.floor(mapConfig.size.y / gridBlockCount);
+		var x = 0;
+		var y = 0;
+		for (g in gridParts)
+		{
+			g.clear();
+			g.lineStyle(2, 0x999900, 1);
+			g.x = x * w;
+			g.y = y * h;
+
+			for (i in 0...w)
+			{
+				for (j in 0...h)
+				{
+					g.moveTo(i, j, getZFromPoint(g.x + i, g.y + j));
+					g.lineTo(i, j + 1, getZFromPoint(g.x + i, g.y + j + 1));
+
+					g.moveTo(i, j, getZFromPoint(g.x + i, g.y + j));
+					g.lineTo(i + 1, j, getZFromPoint(g.x + i + 1, g.y + j));
+				}
+			}
+
+			x++;
+			if (x == gridBlockCount)
+			{
+				y++;
+				x = 0;
+			}
+		}
+	}
+
+	function getZFromPoint(targetX, targetY)
+	{
+		var targetGrid:Grid = cast world.terrainLayers[0].primitive;
+
+		for (p in targetGrid.points) if (targetX == p.x && targetY == p.y) return p.z;
+
+		return 0;
+	}
+
+	function showGrid() for (g in gridParts) g.visible = true;
+	function hideGrid() for (g in gridParts) g.visible = false;
 
 	function drawPathFindingLayer():Void
 	{
@@ -774,7 +845,7 @@ class EditorState extends Base2dState
 
 		updateCamera(d);
 
-		grid.visible = camDistance < 90;
+		//grid.visible = model.showGrid && camDistance < 90;
 	}
 
 	function updateCamera(d:Float)
@@ -782,9 +853,15 @@ class EditorState extends Base2dState
 		camDistance = Math.max(10, camDistance);
 		camDistance = Math.min(300, camDistance);
 
+		cameraObject.x = Math.min(Math.max(cameraObject.x, 0), mapConfig.size.x);
 		currentCameraPoint.x += (cameraObject.x - currentCameraPoint.x) / cameraSpeed.x * d * 30;
+
+		cameraObject.y = Math.min(Math.max(cameraObject.y, 0), mapConfig.size.y);
 		currentCameraPoint.y += (cameraObject.y - currentCameraPoint.y) / cameraSpeed.y * d * 30;
-		currentCamDistance += (camDistance - currentCamDistance) / cameraSpeed.z * d * 30;
+
+		var distanceOffset = (camDistance - currentCamDistance) / cameraSpeed.z * d * 30;
+		if (Math.abs(distanceOffset) < 0.001) currentCamDistance = camDistance;
+		else currentCamDistance += distanceOffset;
 
 		s3d.camera.target.set(currentCameraPoint.x, currentCameraPoint.y);
 
@@ -818,7 +895,7 @@ class EditorState extends Base2dState
 	public function save()
 	{
 		var terrainLayers = [];
-		var terrainModule = cast(getModule(Terrain), Terrain);
+		var terrainModule = cast(getModule(TerrainModule), TerrainModule);
 		for (i in 1...world.terrainLayers.length)
 		{
 			var l = world.terrainLayers[i];
@@ -839,7 +916,8 @@ class EditorState extends Base2dState
 			triggers: model.triggers,
 			units: model.units,
 			staticObjects: model.staticObjects,
-			terrainLayers: terrainLayers
+			terrainLayers: terrainLayers,
+			heightMap: Base64.encode(world.heightMap.getPixels().bytes)
 		};
 		var result = Json.stringify(worldConfig);
 
@@ -929,7 +1007,8 @@ enum EditorActionType {
 
 enum EditorViewId {
 	VDialogManager;
-	VTerrainEditor;
+	VTerrainModule;
+	VHeightMapModule;
 }
 
 typedef EditorCore =
@@ -942,4 +1021,5 @@ typedef EditorCore =
 	public var logAction:EditorAction->Void;
 	public var registerView:EditorViewId->RenderResult->Void;
 	public var dialogManager:EditorDialogManager;
+	public var updateGrid:Rect->Void;
 }

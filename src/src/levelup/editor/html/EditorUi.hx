@@ -70,6 +70,12 @@ class EditorUi extends View
 						>
 							<i class="fas fa-paint-brush"></i>
 						</div>
+						<div
+							class={"lu_title lu_button lu_button--secondary" + (model.toolState == ToolState.HeightMapEditor ? " lu_button--selected" : "")}
+							onclick = {e -> model.toolState = ToolState.HeightMapEditor}
+						>
+							<i class="fas fa-map"></i>
+						</div>
 					</div>
 					<switch {model.toolState}>
 						<case {ToolState.Library}>
@@ -86,8 +92,12 @@ class EditorUi extends View
 							<EditorPreview
 								assetConfig=$hoveredAsset
 							/>
+
 						<case {ToolState.TerrainEditor}>
-							{getModuleView(EditorViewId.VTerrainEditor)}
+							{getModuleView(EditorViewId.VTerrainModule)}
+
+						<case {ToolState.HeightMapEditor}>
+							{getModuleView(EditorViewId.VHeightMapModule)}
 					</switch>
 				</div>
 				<div class="lu_editor_footer">

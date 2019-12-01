@@ -24,6 +24,7 @@ import levelup.editor.EditorState.EditorViewId;
 import levelup.editor.module.terrain.TerrainEditorView;
 import levelup.shader.AlphaMask;
 import levelup.shader.Opacity;
+import levelup.shader.TopLayer;
 import levelup.util.GeomUtil3D;
 import tink.pure.List;
 import tink.state.Observable;
@@ -32,7 +33,7 @@ import tink.state.Observable;
  * ...
  * @author Krisztian Somoracz
  */
-@:tink class Terrain
+@:tink class TerrainModule
 {
 	var core:EditorCore = _;
 
@@ -71,7 +72,7 @@ import tink.state.Observable;
 		});
 		var terrainChooserView = terrainChooser.reactify();
 
-		core.registerView(EditorViewId.VTerrainEditor, TerrainEditorView.fromHxx({
+		core.registerView(EditorViewId.VTerrainModule, TerrainEditorView.fromHxx({
 			baseTerrainId: core.model.observables.baseTerrainId,
 			changeBaseTerrainIdRequest: t ->
 			{
@@ -107,8 +108,8 @@ import tink.state.Observable;
 		}));
 
 		preview = new h3d.scene.Graphics(core.s3d);
+		preview.material.mainPass.addShader(new TopLayer());
 		preview.visible = false;
-		preview.z = 0.1;
 
 		Observable.auto(() ->
 			core.model.observables.toolState.value == ToolState.TerrainEditor
