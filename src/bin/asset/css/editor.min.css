@@ -2,7 +2,7 @@
 .lu_editor_left{height:100%;display:flex;flex-direction:column;width:15em;align-items:center;}
 .lu_editor_header{width:100%;display:flex;background-color:#31302e;border-bottom:1px solid #4a4947;z-index:1;}
 .lu_editor_right{width:100%;height:calc(100% - 40px);position:absolute;pointer-events:visible;display:flex;flex-direction:column;width:15em;right:0;top:40px;align-items:center;}
-.lu_editor__base_panel{width:15em;background-color:#5E6161DD;color:#FFF;height:100%;}
+.lu_editor__base_panel{width:15em;background-color:#5E6161DD;color:#FFF;height:calc(100% - 30px);}
 .lu_editor__preview{width:15em;background-color:#5E6161DD;color:#FFF;}
 .lu_editor__preview_image{display:block;height:240px;}
 .lu_editor__empty_preview{width:240px;height:240px;background-color:#222222;line-height:240px;text-align:center;font-size:4em;}
@@ -14,10 +14,14 @@
 .lu_terrain_brush_preview--circle{border-radius:25px;}
 .lu_terrain_brush_preview:hover{background-color:2px solid #CCC;}
 .lu_terrain_brush_preview--selected{background-color:#69fd75;filter:drop-shadow(0px 0px 2px black);}
-.lu_terrain_layer{cursor:pointer;width:calc(100% - 4px);height:40px;border:2px solid #FFFFFF00;margin:2px 0;background-size:100%;position:relative;}
+.lu_terrain_layer_list_container{height:calc(100% - 380px);}
+.lu_terrain_layer_list{height:100%;overflow:auto;flex-flow:wrap;align-content:start;}
+.lu_terrain_layer{cursor:pointer;width:calc(100% - 4px);height:40px;border:2px solid #FFFFFF00;margin:1px 0;background-size:100%;position:relative;}
 .lu_terrain_layer:hover{border:2px solid #FFFFFF;}
 .lu_terrain_layer--selected{border:2px solid #69fd75;}
 .lu_terrain_layer__selected_icon{position:absolute;left:10px;top:50%;pointer-events:none;transform:translateY(-50%);filter:drop-shadow(0px 0px 2px black);}
+.lu_terrain_layer__locked_icon{position:absolute;right:10px;top:50%;pointer-events:none;transform:translateY(-50%);filter:drop-shadow(0px 0px 2px black);}
+.lu_terrain_layer__drag_icon{position:absolute;right:10px;top:50%;transform:translateY(-50%);filter:drop-shadow(0px 0px 2px black);}
 .lu_terrain_list{display:flex;flex-wrap:wrap;padding:2px;width:100%;}
 .lu_terrain_preview{width:calc(20% - 9px);border:2px solid #FFFFFF00;margin:2px;height:40px;background-size:100%;cursor:pointer;}
 .lu_terrain_preview:hover{border:2px solid #FFFFFF;}

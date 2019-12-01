@@ -14,6 +14,7 @@ class Berserker extends BaseUnit
 	public function new(s2d:Object, parent, owner:PlayerId)
 	{
 		super(s2d, parent, owner, {
+			id: "berserker",
 			icon: Res.model.character.orc.berserker.icon.toTile(),
 			idleModel: Res.model.character.orc.berserker.IdleAnim,
 			idleAnimSpeedMultiplier: 0.3,

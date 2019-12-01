@@ -14,6 +14,7 @@ class Archer extends BaseUnit
 	public function new(s2d:Object, parent, owner:PlayerId)
 	{
 		super(s2d, parent, owner, {
+			id: "archer",
 			icon: Res.model.character.orc.minion.icon.toTile(),
 			idleModel: Res.model.character.human.archer.IdleAnim,
 			idleAnimSpeedMultiplier: 1,

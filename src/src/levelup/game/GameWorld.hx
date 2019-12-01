@@ -63,6 +63,7 @@ class GameWorld extends World
 	public var onWorldWheel:Event->Void;
 
 	public var units(default, null):Array<BaseUnit> = [];
+	public var staticObjects(default, null):Array<Object> = [];
 	public var regionDatas(default, null):Array<RegionData> = [];
 
 	public var onUnitEntersToRegion:Region->BaseUnit->Void = null;
@@ -232,6 +233,7 @@ class GameWorld extends World
 		{
 			var instance:Object = cache.loadModel(Asset.getAsset(o.id).model);
 			addToWorldPoint(instance, o.x, o.y, o.z, o.scale, o.rotation);
+			staticObjects.push(instance);
 		}
 
 		graph = new Graph(graphArray, { diagonal: true });
@@ -286,7 +288,14 @@ class GameWorld extends World
 		if (now - lastUpdateTime >= heightPositionFrequency)
 		{
 			lastUpdateTime = now;
-			for (c in children) c.z = GeomUtil3D.getHeightByPosition(heightGrid, c.x, c.y);
+			for (u in units)
+			{
+				u.view.z = GeomUtil3D.getHeightByPosition(heightGrid, u.view.x, u.view.y) + u.config.zOffset;
+			}
+			for (o in staticObjects)
+			{
+				o.z = GeomUtil3D.getHeightByPosition(heightGrid, o.x, o.y);
+			}
 		}
 
 		//resetWorldWeight();

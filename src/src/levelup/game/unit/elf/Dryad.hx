@@ -1,4 +1,4 @@
-package levelup.game.unit.orc;
+package levelup.game.unit.elf;
 
 import levelup.game.unit.BaseUnit;
 import levelup.game.GameState.PlayerId;
@@ -9,21 +9,21 @@ import hxd.Res;
  * ...
  * @author Krisztian Somoracz
  */
-class Minion extends BaseUnit
+class Dryad extends BaseUnit
 {
 	public function new(s2d:Object, parent, owner:PlayerId)
 	{
 		super(s2d, parent, owner, {
-			id: "minion",
-			icon: Res.model.character.orc.minion.icon.toTile(),
-			idleModel: Res.model.character.orc.minion.IdleAnim,
+			id: "dryad",
+			icon: Res.model.character.elf.dryad.icon.toTile(),
+			idleModel: Res.model.character.elf.dryad.IdleAnim,
 			idleAnimSpeedMultiplier: 0.5,
-			runModel: Res.model.character.orc.minion.WalkAnim,
+			runModel: Res.model.character.elf.dryad.RunAnim,
 			runAnimSpeedMultiplier: 1.5,
-			attackModel: Res.model.character.orc.minion.WorkRoutineAnim,
-			deathModel: Res.model.character.orc.minion.DeathAnim,
+			attackModel: Res.model.character.elf.dryad.Attack01Anim,
+			deathModel: Res.model.character.elf.dryad.DeathAnim,
 			modelScale: 0.008,
-			speed: 4,
+			speed: 1,
 			speedMultiplier: 1,
 			attackRange: 2.1,
 			attackSpeed: 1800,

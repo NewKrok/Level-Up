@@ -8,6 +8,7 @@ import h3d.pass.DefaultShadowMap;
 import h3d.prim.Cube;
 import h3d.scene.Graphics;
 import h3d.scene.Mesh;
+import h3d.scene.Object;
 import h3d.scene.fwd.DirLight;
 import haxe.Json;
 import hpp.heaps.Base2dStage;
@@ -25,12 +26,20 @@ import levelup.game.html.GameUi;
 import levelup.game.html.LobbyUi;
 import levelup.game.ui.HeroUi;
 import levelup.game.unit.BaseUnit;
+import levelup.game.unit.elf.BattleOwl;
+import levelup.game.unit.elf.DemonHunter;
+import levelup.game.unit.elf.Druid;
+import levelup.game.unit.elf.Dryad;
+import levelup.game.unit.elf.Ranger;
+import levelup.game.unit.elf.RockGolem;
+import levelup.game.unit.elf.Treeant;
 import levelup.game.unit.human.Archer;
 import levelup.game.unit.human.Footman;
 import levelup.game.unit.orc.BandWagon;
 import levelup.game.unit.orc.Berserker;
 import levelup.game.unit.orc.Drake;
 import levelup.game.unit.orc.Grunt;
+import levelup.game.unit.elf.Knome;
 import levelup.game.unit.orc.Minion;
 import levelup.util.SaveUtil;
 import motion.Actuate;
@@ -176,7 +185,7 @@ class GameState extends Base2dState
 		world.onWorldWheel = e -> camDistance += e.wheelDelta * 8;
 		world.onClickOnUnit = u -> if (u.owner == PlayerId.Player1) selectUnit(u);
 
-		for (u in mapConfig.units) createUnit(u.id, u.owner, u.x, u.y);
+		for (u in mapConfig.units) createUnit(u.id, u.owner, u.x, u.y, u.scale, u.rotation);
 
 		model.initGame();
 
@@ -284,33 +293,35 @@ class GameState extends Base2dState
 
 	function getRegion(regions:Array<Region>, id:String) return regions.filter(function (r) { return r.id == id; })[0];
 
-	/*function moveToRandomPoint(c)
-	{
-		var p = world.getRandomWalkablePoint();
-		if (p != null)
-		{
-			c.moveTo({ x: p.y, y: p.x }).handle(function () { moveToRandomPoint(c); });
-		}
-		else
-		{
-			Timer.delay(moveToRandomPoint.bind(c), 1000);
-		}
-	}*/
-
-	function createUnit(id:String, owner:PlayerId, posX:Float, posY:Float)
+	function createUnit(id:String, owner:PlayerId, posX:Float, posY:Float, scale:Float, rotation:Float)
 	{
 		var unit = switch (id) {
+			// orc
 			case "bandwagon": new BandWagon(s2d, world, owner);
 			case "berserker": new Berserker(s2d, world, owner);
 			case "drake": new Drake(s2d, world, owner);
 			case "minion": new Minion(s2d, world, owner);
 			case "grunt": new Grunt(s2d, world, owner);
+			// human
 			case "archer": new Archer(s2d, world, owner);
 			case "footman": new Footman(s2d, world, owner);
+			// elf
+			case "knome": new Knome(s2d, world, owner);
+			case "demonhunter": new DemonHunter(s2d, world, owner);
+			case "druid": new Druid(s2d, world, owner);
+			case "dryad": new Dryad(s2d, world, owner);
+			case "ranger": new Ranger(s2d, world, owner);
+			case "rockgolem": new RockGolem(s2d, world, owner);
+			case "treeant": new Treeant(s2d, world, owner);
+			case "battleowl": new BattleOwl(s2d, world, owner);
+
 			case _: null;
 		};
 		unit.view.x = posX * world.blockSize + world.blockSize / 2;
 		unit.view.y = posY * world.blockSize + world.blockSize / 2;
+		unit.view.setScale(scale);
+		unit.view.setRotation(0, 0, scale);
+
 		world.addEntity(unit);
 
 		if (owner == PlayerId.Player1)
@@ -558,7 +569,7 @@ class GameState extends Base2dState
 					case Log(message): trace(message);
 					case LoadLevel(levelName): HppG.changeState(GameState, [s2d, s3d, MapData.getRawMap(levelName)]);
 					case EnableTrigger(id): for (t in mapConfig.triggers) if (t.id == id) enableTrigger(t);
-					case CreateUnit(unitId, owner): createUnit(unitId, owner, Math.floor(Math.random() * 5 + 5), Math.floor(Math.random() * 10 + 5));
+					case CreateUnit(unitId, owner): createUnit(unitId, owner, Math.floor(Math.random() * 5 + 5), Math.floor(Math.random() * 10 + 5), 1, 0);
 
 					case _: trace("Unknown action in action list: " + actions);
 				}
@@ -628,6 +639,7 @@ typedef StaticObjectConfig =
 	var z(default, never):Float;
 	var scale(default, never):Float;
 	var rotation(default, never):Float;
+	@:optional var instance(default, never):Object;
 }
 
 typedef InitialUnitData =

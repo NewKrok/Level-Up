@@ -14,6 +14,7 @@ class Footman extends BaseUnit
 	public function new(s2d:Object, parent, owner:PlayerId)
 	{
 		super(s2d, parent, owner, {
+			id: "footman",
 			icon: Res.model.character.orc.minion.icon.toTile(),
 			idleModel: Res.model.character.human.footman.IdleAnim,
 			idleAnimSpeedMultiplier: 1,

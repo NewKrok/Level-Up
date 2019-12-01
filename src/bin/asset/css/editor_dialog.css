@@ -16,6 +16,7 @@
 	color: #FFF;
 	border: 1px solid #4a4947;
 	width: 60%;
+	min-width: min-content;
 	position: relative;
 }
 

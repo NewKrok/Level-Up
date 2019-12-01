@@ -1,4 +1,4 @@
-package levelup.game.unit.orc;
+package levelup.game.unit.elf;
 
 import levelup.game.unit.BaseUnit;
 import levelup.game.GameState.PlayerId;
@@ -9,19 +9,19 @@ import hxd.Res;
  * ...
  * @author Krisztian Somoracz
  */
-class Minion extends BaseUnit
+class Knome extends BaseUnit
 {
 	public function new(s2d:Object, parent, owner:PlayerId)
 	{
 		super(s2d, parent, owner, {
-			id: "minion",
-			icon: Res.model.character.orc.minion.icon.toTile(),
-			idleModel: Res.model.character.orc.minion.IdleAnim,
+			id: "knome",
+			icon: Res.model.character.elf.knome.icon.toTile(),
+			idleModel: Res.model.character.elf.knome.IdleAnim,
 			idleAnimSpeedMultiplier: 0.5,
-			runModel: Res.model.character.orc.minion.WalkAnim,
+			runModel: Res.model.character.elf.knome.WalkAnim,
 			runAnimSpeedMultiplier: 1.5,
-			attackModel: Res.model.character.orc.minion.WorkRoutineAnim,
-			deathModel: Res.model.character.orc.minion.DeathAnim,
+			attackModel: Res.model.character.elf.knome.WorkRoutineAnim,
+			deathModel: Res.model.character.elf.knome.DeathAnim,
 			modelScale: 0.008,
 			speed: 4,
 			speedMultiplier: 1,

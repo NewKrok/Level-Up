@@ -181,8 +181,7 @@ class Asset
 				model: Res.model.character.human.archer.IdleAnim,
 				hasAnimation: true,
 				previewUrl: "./asset/img/preview/unit/human/archer.jpg"
-			}
-			,
+			},
 			{
 				race: RaceId.Human,
 				id: "footman",
@@ -191,6 +190,78 @@ class Asset
 				model: Res.model.character.human.footman.IdleAnim,
 				hasAnimation: true,
 				previewUrl: "./asset/img/preview/unit/human/footman.jpg"
+			},
+			{
+				race: RaceId.Elf,
+				id: "knome",
+				name: "Knome",
+				scale: 0.008,
+				model: Res.model.character.elf.knome.IdleAnim,
+				hasAnimation: true,
+				previewUrl: "./asset/img/preview/unit/elf/knome.jpg"
+			},
+			{
+				race: RaceId.Elf,
+				id: "demonhunter",
+				name: "Demon Hunter",
+				scale: 0.008,
+				model: Res.model.character.elf.demonhunter.IdleAnim,
+				hasAnimation: true,
+				previewUrl: "./asset/img/preview/unit/elf/demonhunter.jpg"
+			},
+			{
+				race: RaceId.Elf,
+				id: "druid",
+				name: "Druid",
+				scale: 0.008,
+				model: Res.model.character.elf.druid.IdleAnim,
+				hasAnimation: true,
+				previewUrl: "./asset/img/preview/unit/elf/druid.jpg"
+			},
+			{
+				race: RaceId.Elf,
+				id: "dryad",
+				name: "Dryad",
+				scale: 0.008,
+				model: Res.model.character.elf.dryad.IdleAnim,
+				hasAnimation: true,
+				previewUrl: "./asset/img/preview/unit/elf/dryad.jpg"
+			},
+			{
+				race: RaceId.Elf,
+				id: "ranger",
+				name: "Ranger",
+				scale: 0.008,
+				model: Res.model.character.elf.ranger.IdleAnim,
+				hasAnimation: true,
+				previewUrl: "./asset/img/preview/unit/elf/ranger.jpg"
+			},
+			{
+				race: RaceId.Elf,
+				id: "rockgolem",
+				name: "Rock Golem",
+				scale: 0.008,
+				model: Res.model.character.elf.rockgolem.IdleAnim,
+				hasAnimation: true,
+				previewUrl: "./asset/img/preview/unit/elf/rockgolem.jpg"
+			},
+			{
+				race: RaceId.Elf,
+				id: "treeant",
+				name: "Treeant",
+				scale: 0.008,
+				model: Res.model.character.elf.treeant.IdleAnim,
+				hasAnimation: true,
+				previewUrl: "./asset/img/preview/unit/elf/treeant.jpg"
+			},
+			{
+				race: RaceId.Elf,
+				id: "battleowl",
+				name: "Battle Owl",
+				scale: 0.004,
+				model: Res.model.character.elf.battleowl.IdleAnim,
+				hasAnimation: true,
+				previewUrl: "./asset/img/preview/unit/elf/battleowl.jpg"
 			}
 		];
 	}

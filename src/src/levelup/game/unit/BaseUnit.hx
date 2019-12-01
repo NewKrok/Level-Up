@@ -1,5 +1,7 @@
 package levelup.game.unit;
 
+import h3d.Vector;
+import h3d.shader.ColorMult;
 import levelup.AsyncUtil;
 import levelup.AsyncUtil.Result;
 import levelup.game.GameState.PlayerId;
@@ -89,12 +91,15 @@ import tink.state.State;
 		view.scale(config.modelScale);
 
 		// 1.8 is a hacky solution to make easier the unit selection
-		collider = new Capsule(new Point(0, 0, 0), new Point(0, 0, 1.8 * config.unitSize), config.unitSize);
+		collider = new Capsule(new Point(0, 0, -1), new Point(0, 0, 1), config.unitSize);
+
+		var colorShader = new ColorMult();
+		colorShader.color = new Vector(0.5, 0.5, 0.5, 0.8);
 
 		interact = new Interactive(collider, parent);
 		interact.onClick = _ -> if (onClick != null) onClick(this);
-		interact.onOver = _ -> view.getMaterials()[0].blendMode = BlendMode.Screen;
-		interact.onOut = _ -> view.getMaterials()[0].blendMode = BlendMode.None;
+		interact.onOver = _ -> view.getMaterials()[0].mainPass.addShader(colorShader);
+		interact.onOut = _ -> view.getMaterials()[0].mainPass.removeShader(colorShader);
 
 		for (m in view.getMaterials())
 		{
@@ -508,6 +513,7 @@ import tink.state.State;
 
 typedef UnitConfig =
 {
+	var id:String;
 	var icon:Tile;
 	var idleModel:Model;
 	var idleAnimSpeedMultiplier:Float;

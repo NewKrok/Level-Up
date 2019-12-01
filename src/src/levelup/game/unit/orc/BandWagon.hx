@@ -14,6 +14,7 @@ class BandWagon extends BaseUnit
 	public function new(s2d:Object, parent, owner:PlayerId)
 	{
 		super(s2d, parent, owner, {
+			id: "bandwagon",
 			icon: Res.model.character.orc.bandwagon.icon.toTile(),
 			idleModel: Res.model.character.orc.bandwagon.IdleAnim,
 			idleAnimSpeedMultiplier: 0.1,

@@ -1,4 +1,4 @@
-package levelup.game.unit.orc;
+package levelup.game.unit.elf;
 
 import levelup.game.GameState.PlayerId;
 import h2d.Object;
@@ -9,20 +9,20 @@ import levelup.game.unit.BaseUnit;
  * ...
  * @author Krisztian Somoracz
  */
-class Drake extends BaseUnit
+class BattleOwl extends BaseUnit
 {
 	public function new(s2d:Object, parent, owner:PlayerId)
 	{
 		super(s2d, parent, owner, {
-			id: "drake",
-			icon: Res.model.character.orc.drake.icon.toTile(),
-			idleModel: Res.model.character.orc.drake.IdleAnim,
+			id: "battleowl",
+			icon: Res.model.character.elf.battleowl.icon.toTile(),
+			idleModel: Res.model.character.elf.battleowl.IdleAnim,
 			idleAnimSpeedMultiplier: 2.5,
-			runModel: Res.model.character.orc.drake.WalkAnim,
+			runModel: Res.model.character.elf.battleowl.FlyAnim,
 			runAnimSpeedMultiplier: 1.5,
-			attackModel: Res.model.character.orc.drake.Attack01Anim,
-			deathModel: Res.model.character.orc.drake.DeathAnim,
-			modelScale: 0.0037,
+			attackModel: Res.model.character.elf.battleowl.Attack01Anim,
+			deathModel: Res.model.character.elf.battleowl.DeathAnim,
+			modelScale: 0.004,
 			speed: 2,
 			speedMultiplier: 1,
 			attackRange: 2.1,
@@ -35,7 +35,7 @@ class Drake extends BaseUnit
 			detectionRange: 5,
 			unitSize: 1,
 			isFlyingUnit: true,
-			zOffset: 2.5
+			zOffset: 3.5
 		});
 	}
 }

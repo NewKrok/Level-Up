@@ -14,6 +14,7 @@ class Grunt extends BaseUnit
 	public function new(s2d:Object, parent, owner:PlayerId)
 	{
 		super(s2d, parent, owner, {
+			id: "grunt",
 			icon: Res.model.character.orc.grunt.icon.toTile(),
 			idleModel: Res.model.character.orc.grunt.IdleAnim,
 			idleAnimSpeedMultiplier: 0.2,

@@ -1,4 +1,4 @@
-package levelup.game.unit.orc;
+package levelup.game.unit.elf;
 
 import levelup.game.unit.BaseUnit;
 import levelup.game.GameState.PlayerId;
@@ -9,21 +9,21 @@ import hxd.Res;
  * ...
  * @author Krisztian Somoracz
  */
-class Minion extends BaseUnit
+class DemonHunter extends BaseUnit
 {
 	public function new(s2d:Object, parent, owner:PlayerId)
 	{
 		super(s2d, parent, owner, {
-			id: "minion",
-			icon: Res.model.character.orc.minion.icon.toTile(),
-			idleModel: Res.model.character.orc.minion.IdleAnim,
+			id: "demonhunter",
+			icon: Res.model.character.elf.demonhunter.icon.toTile(),
+			idleModel: Res.model.character.elf.demonhunter.IdleAnim,
 			idleAnimSpeedMultiplier: 0.5,
-			runModel: Res.model.character.orc.minion.WalkAnim,
+			runModel: Res.model.character.elf.demonhunter.RunAnim,
 			runAnimSpeedMultiplier: 1.5,
-			attackModel: Res.model.character.orc.minion.WorkRoutineAnim,
-			deathModel: Res.model.character.orc.minion.DeathAnim,
+			attackModel: Res.model.character.elf.demonhunter.Attack01Anim,
+			deathModel: Res.model.character.elf.demonhunter.DeathAnim,
 			modelScale: 0.008,
-			speed: 4,
+			speed: 2,
 			speedMultiplier: 1,
 			attackRange: 2.1,
 			attackSpeed: 1800,

@@ -369,7 +369,8 @@ class EditorState extends Base2dState
 				z: z,
 				scale: scale,
 				rotation: rotation,
-				owner: owner
+				owner: owner,
+				instance: instance
 			});
 		}
 
@@ -379,7 +380,8 @@ class EditorState extends Base2dState
 			interactive: interactive
 		});
 
-		instance.setScale(previewInstanceScale);
+		instance.setScale(scale);
+		instance.setRotation(0, 0, rotation);
 		instance.z = config.zOffset == null ? 0 : config.zOffset;
 
 		if (config.hasAnimation != null && config.hasAnimation)
@@ -907,6 +909,17 @@ class EditorState extends Base2dState
 			});
 		}
 
+		var units = [for (u in model.units) {
+			owner: u.owner,
+			id: u.id,
+			name: u.name,
+			x: u.instance.x,
+			y: u.instance.y,
+			z: u.instance.z,
+			scale: u.instance.scaleX,
+			rotation: u.instance.getRotationQuat().z,
+		}];
+
 		var worldConfig:WorldConfig = {
 			name: model.name,
 			size: model.size,
@@ -914,7 +927,7 @@ class EditorState extends Base2dState
 			pathFindingMap: model.pathFindingMap,
 			regions: model.regions,
 			triggers: model.triggers,
-			units: model.units,
+			units: units,
 			staticObjects: model.staticObjects,
 			terrainLayers: terrainLayers,
 			heightMap: Base64.encode(world.heightMap.getPixels().bytes)
@@ -932,6 +945,8 @@ class EditorState extends Base2dState
 				break;
 			}
 		}
+
+		trace(result);
 		if (isNewMap) SaveUtil.editorData.customMaps.push(result);
 
 		SaveUtil.save();
