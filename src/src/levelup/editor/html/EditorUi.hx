@@ -25,6 +25,7 @@ class EditorUi extends View
 
 	@:skipCheck @:attr var environmentsList:List<AssetConfig>;
 	@:skipCheck @:attr var propsList:List<AssetConfig>;
+	@:skipCheck @:attr var buildingList:List<AssetConfig>;
 	@:skipCheck @:attr var unitsList:List<AssetConfig>;
 	@:skipCheck @:attr var selectedWorldAsset:AssetItem;
 
@@ -83,6 +84,7 @@ class EditorUi extends View
 								ref={editorLibrary}
 								environmentsList={environmentsList}
 								propsList={propsList}
+								buildingList={buildingList}
 								unitsList={unitsList}
 								previewRequest={previewRequest}
 								onAssetMouseOver={asset -> hoveredAsset = asset}

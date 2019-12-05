@@ -1,6 +1,7 @@
 package levelup.game.unit;
 
 import h3d.Vector;
+import h3d.scene.Graphics;
 import h3d.shader.ColorMult;
 import levelup.AsyncUtil;
 import levelup.AsyncUtil.Result;
@@ -25,6 +26,7 @@ import hpp.util.GeomUtil.SimplePoint;
 import hxd.res.FontBuilder;
 import hxd.res.Model;
 import js.lib.Date;
+import levelup.util.GeomUtil3D;
 import motion.Actuate;
 import motion.easing.Linear;
 import tink.state.State;
@@ -47,6 +49,7 @@ import tink.state.State;
 	public var onClick:BaseUnit->Void;
 
 	public var view:Object;
+	public var selectionCircle:Graphics;
 	public var rotationSpeed:Float = 5;
 	public var path(get, never):Array<SimplePoint>;
 
@@ -90,6 +93,8 @@ import tink.state.State;
 		parent.addChild(view);
 		view.scale(config.modelScale);
 
+		createSelectionCircle();
+
 		// 1.8 is a hacky solution to make easier the unit selection
 		collider = new Capsule(new Point(0, 0, -1), new Point(0, 0, 1), config.unitSize);
 
@@ -101,13 +106,13 @@ import tink.state.State;
 		interact.onOver = _ -> view.getMaterials()[0].mainPass.addShader(colorShader);
 		interact.onOut = _ -> view.getMaterials()[0].mainPass.removeShader(colorShader);
 
-		for (m in view.getMaterials())
+		/*for (m in view.getMaterials())
 		{
 			var t = m.mainPass.getShader(Texture);
 			if(t != null) t.killAlpha = true;
 			m.mainPass.culling = None;
 			m.getPass("shadow").culling = None;
-		}
+		}*/
 
 		life.set(config.maxLife);
 		life.observe().bind(function(v)
@@ -145,6 +150,25 @@ import tink.state.State;
 					view.currentAnimation.speed = 1;
 			}
 		});
+	}
+
+	function createSelectionCircle()
+	{
+		selectionCircle = new Graphics(view);
+		selectionCircle.lineStyle(4, 0xFFFFFF);
+		var angle = 0.0;
+		var piece = Std.int(5 + config.unitSize / 10 * 10);
+		for (i in 0...piece)
+		{
+			angle += Math.PI * 2 / (piece - 1);
+			var xPos = Math.cos(angle) * config.unitSize / 2;
+			var yPos = Math.sin(angle) * config.unitSize / 2;
+			var zPos = 2;//GeomUtil3D.getHeightByPosition(core.world.heightGrid, xPos, yPos);
+
+			if (i == 0) selectionCircle.moveTo(xPos, yPos, zPos);
+			else selectionCircle.lineTo(xPos, yPos, zPos);
+		}
+		selectionCircle.visible = false;
 	}
 
 	function runAttackAnimation()
@@ -488,6 +512,9 @@ import tink.state.State;
 			&& target.state != Dead
 			&& GeomUtil.getDistance(getWorldPoint(), target.getWorldPoint()) <= config.attackRange;
 	}
+
+	public function select() selectionCircle.visible = true;
+	public function deselect() selectionCircle.visible = false;
 
 	public function dispose()
 	{

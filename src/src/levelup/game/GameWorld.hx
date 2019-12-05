@@ -1,38 +1,28 @@
 package levelup.game;
 
-import h3d.Vector;
 import h3d.col.Point;
 import h3d.mat.BlendMode;
-import h3d.mat.Texture;
-import h3d.prim.Grid;
-import h3d.prim.Plane2D;
-import h3d.prim.Polygon;
-import h3d.prim.UV;
-import h3d.shader.Displacement;
-import h3d.shader.NormalMap;
-import haxe.crypto.Base64;
-import hxd.BitmapData;
-import hxd.PixelFormat;
-import hxd.Pixels;
-import hxd.fmt.fbx.Geometry;
-import levelup.TerrainAssets.TerrainConfig;
-import levelup.game.GameState.WorldConfig;
-import levelup.game.unit.BaseUnit;
-import levelup.game.js.Graph;
-import h2d.Scene;
-import h3d.col.Bounds;
 import h3d.mat.Data.Wrap;
 import h3d.mat.Material;
-import h3d.prim.Cube;
+import h3d.mat.Texture;
+import h3d.prim.Grid;
 import h3d.prim.ModelCache;
 import h3d.scene.Interactive;
 import h3d.scene.Mesh;
 import h3d.scene.Object;
 import h3d.scene.World;
+import haxe.crypto.Base64;
 import hpp.util.GeomUtil;
 import hpp.util.GeomUtil.SimplePoint;
+import hxd.BitmapData;
 import hxd.Event;
-import hxd.Res;
+import hxd.PixelFormat;
+import hxd.Pixels;
+import levelup.Asset.AssetConfig;
+import levelup.TerrainAssets.TerrainConfig;
+import levelup.game.GameState.WorldConfig;
+import levelup.game.js.Graph;
+import levelup.game.unit.BaseUnit;
 import levelup.shader.AlphaMask;
 import levelup.util.GeomUtil3D;
 
@@ -63,7 +53,7 @@ class GameWorld extends World
 	public var onWorldWheel:Event->Void;
 
 	public var units(default, null):Array<BaseUnit> = [];
-	public var staticObjects(default, null):Array<Object> = [];
+	public var staticObjects(default, null):Array<StaticObject> = [];
 	public var regionDatas(default, null):Array<RegionData> = [];
 
 	public var onUnitEntersToRegion:Region->BaseUnit->Void = null;
@@ -74,8 +64,6 @@ class GameWorld extends World
 	var interact:Interactive;
 	var isWorldGraphDirty:Bool = false;
 	var lastRerouteTime:Float = 0;
-	var lastUpdateTime:Float = 0;
-	var heightPositionFrequency = 20;
 
 	public function new(parent, worldConfig:WorldConfig, blockSize:Float, chunkSize:Int, worldSize:Int, ?parent, ?autoCollect = true)
 	{
@@ -86,7 +74,7 @@ class GameWorld extends World
 		instance = this;
 
 		heightMap = new BitmapData(cast worldConfig.size.y * 2, cast worldConfig.size.x * 2);
-		heightMap.fill(0, 0, heightMap.width, heightMap.height, 0x000000);
+		heightMap.fill(0, 0, heightMap.width, heightMap.height, 0x333333);
 
 		if (worldConfig.heightMap != null)
 		{
@@ -233,7 +221,10 @@ class GameWorld extends World
 		{
 			var instance:Object = cache.loadModel(Asset.getAsset(o.id).model);
 			addToWorldPoint(instance, o.x, o.y, o.z, o.scale, o.rotation);
-			staticObjects.push(instance);
+			staticObjects.push({
+				instance: instance,
+				zOffset: o.zOffset
+			});
 		}
 
 		graph = new Graph(graphArray, { diagonal: true });
@@ -282,23 +273,13 @@ class GameWorld extends World
 		for (u in units)
 		{
 			if (isRerouteNeeded) u.reroute();
+			u.view.z = GeomUtil3D.getHeightByPosition(heightGrid, u.view.x, u.view.y) + u.config.zOffset;
 			u.update(d);
 		}
 
-		if (now - lastUpdateTime >= heightPositionFrequency)
-		{
-			lastUpdateTime = now;
-			for (u in units)
-			{
-				u.view.z = GeomUtil3D.getHeightByPosition(heightGrid, u.view.x, u.view.y) + u.config.zOffset;
-			}
-			for (o in staticObjects)
-			{
-				o.z = GeomUtil3D.getHeightByPosition(heightGrid, o.x, o.y);
-			}
-		}
+		for (o in staticObjects) o.instance.z = GeomUtil3D.getHeightByPosition(heightGrid, o.instance.x, o.instance.y) + o.zOffset;
 
-		//resetWorldWeight();
+		resetWorldWeight();
 		calculateUnitInteractions(d);
 		checkRegionDatas();
 	}
@@ -447,4 +428,10 @@ typedef Region =
 	var y:Int;
 	var width:Int;
 	var height:Int;
+}
+
+typedef StaticObject =
+{
+	var instance:Object;
+	var zOffset:Float;
 }

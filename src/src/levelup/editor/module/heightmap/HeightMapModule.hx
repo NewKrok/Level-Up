@@ -1,35 +1,20 @@
 package levelup.editor.module.heightmap;
 
-import coconut.ui.RenderResult;
 import h2d.Bitmap;
 import h2d.Graphics;
+import h2d.Mask;
+import h2d.Object;
 import h2d.Tile;
-import h3d.col.Point;
-import h3d.mat.BlendMode;
-import h3d.mat.Data.Face;
-import h3d.mat.Data.Wrap;
-import h3d.mat.Material;
 import h3d.mat.Texture;
-import h3d.prim.Cube;
-import h3d.prim.Cylinder;
-import h3d.prim.Polygon;
-import h3d.scene.Mesh;
-import h3d.scene.Scene;
+import hpp.heaps.HppG;
 import hpp.util.GeomUtil.SimplePoint;
-import hxd.BitmapData;
 import hxd.Event;
-import hxd.Res;
 import hxd.clipper.Rect;
-import levelup.editor.EditorModel;
-import levelup.editor.EditorState.EditorActionType;
+import levelup.editor.EditorModel.ToolState;
 import levelup.editor.EditorState.EditorCore;
 import levelup.editor.EditorState.EditorViewId;
-import levelup.shader.AlphaMask;
-import levelup.shader.Opacity;
 import levelup.shader.TopLayer;
 import levelup.util.GeomUtil3D;
-import tink.pure.List;
-import tink.state.Observable;
 
 /**
  * ...
@@ -48,6 +33,10 @@ import tink.state.Observable;
 	var dragStartPoint:SimplePoint = null;
 
 	var alphaMap:Graphics = new Graphics();
+	var heightMapPreview:Bitmap;
+	var heightMapPreviewContainer:Object;
+
+	var drawSpeedState = 0;
 
 	public function new()
 	{
@@ -56,6 +45,7 @@ import tink.state.Observable;
 		core.registerView(EditorViewId.VHeightMapModule, HeightMapEditorView.fromHxx({
 			selectedBrushId: model.observables.selectedBrushId,
 			changeSelectedBrushRequest: id -> model.selectedBrushId = id,
+			changeDrawSpeed: e -> model.drawSpeed = e,
 			changeBrushSize: e -> model.brushSize = e,
 			changeBrushOpacity: e -> model.brushOpacity = e,
 			changeBrushGradient: e -> model.brushGradient = e,
@@ -70,6 +60,21 @@ import tink.state.Observable;
 			preview.visible = v == ToolState.HeightMapEditor;
 			if (!preview.visible) isDrawActive = false;
 		});
+
+		heightMapPreviewContainer = new Object(core.s2d);
+		var g = new Graphics(heightMapPreviewContainer);
+		g.beginFill(0, 1);
+		g.drawRect(0, 0, 240, 240);
+		g.endFill();
+		var mask = new Mask(200, 200, heightMapPreviewContainer);
+		mask.x = 20;
+		mask.y = 20;
+		heightMapPreview = new Bitmap(Tile.fromBitmap(core.world.heightMap), mask);
+		heightMapPreview.scale(2);
+		heightMapPreview.rotation = -Math.PI / 2;
+		heightMapPreview.y = 200;
+
+		core.model.observables.toolState.bind(v -> heightMapPreviewContainer.visible = v == ToolState.HeightMapEditor);
 	}
 
 	public function onWorldClick(e:Event):Void
@@ -103,7 +108,8 @@ import tink.state.Observable;
 		{
 			drawPreview(core.snapPosition(e.relX), core.snapPosition(e.relY));
 
-			if (isDrawActive) draw(e);
+			drawSpeedState++;
+			if (isDrawActive && drawSpeedState % (100 - model.drawSpeed) == 0) draw(e);
 		}
 	}
 
@@ -209,23 +215,24 @@ import tink.state.Observable;
 				}
 				else
 				{
-					var angle = 0.0;
-					for (j in 0...cast model.brushSize)
+					for (i in 0...cast model.brushSize)
 					{
-						var count = Math.round(12 * (j * 0.5));
-						for (i in 0...count)
+						for (j in 0...cast model.brushSize)
 						{
-							angle += Math.PI / count;
+							var absI = Math.abs(i - model.brushSize / 2);
+							var absJ = Math.abs(j - model.brushSize / 2);
+							var middleDistance = Math.sqrt(absI * absI + absJ * absJ);
+							var ratio = middleDistance > model.brushSize / 2 ? 0 : 1 - (middleDistance / (model.brushSize / 2) * model.brushGradient);
 
-							var alphaByGradient = model.brushGradient == 0 ? 1 : (1 - j / model.brushSize) * (1 - model.brushGradient);
+							var alphaByGradient = model.brushGradient == 0 ? 1 : Math.sin(ratio * Math.PI / 2);
 							var alphaByNoise = model.brushNoise == 0 ? 1 : Math.random();
 
 							if (model.brushNoise == 0 || Math.random() > model.brushNoise)
 							{
 								alphaMap.beginFill(0xFFFFFF, model.brushOpacity * alphaByGradient * alphaByNoise);
 								alphaMap.drawRect(
-									calculatedX + j / 2 * Math.cos(angle),
-									calculatedY + j / 2 * Math.sin(angle) - 1,
+									calculatedX - model.brushSize / 2 + i,
+									calculatedY - model.brushSize / 2 + j,
 									1,
 									1
 								);
@@ -256,10 +263,12 @@ import tink.state.Observable;
 					{
 						for (j in 0...cast model.brushSize)
 						{
-							var absI = Math.abs(i - model.brushSize);
-							var absJ = Math.abs(j - model.brushSize);
+							var absI = Math.abs(i - model.brushSize / 2);
+							var absJ = Math.abs(j - model.brushSize / 2);
+							var middleDistance = absI < absJ ? absJ : absI;
+							var ratio = 1 - (middleDistance / (model.brushSize / 2) * model.brushGradient);
 
-							var alphaByGradient = model.brushGradient == 0 ? 1 : (1 - ((absI < absJ ? absJ : absI) / model.brushSize)) * (1 - model.brushGradient);
+							var alphaByGradient = model.brushGradient == 0 ? 1 : Math.sin(ratio * Math.PI / 2);
 							var alphaByNoise = model.brushNoise == 0 ? 1 : Math.random();
 
 							if (model.brushNoise == 0 || Math.random() > model.brushNoise)
@@ -285,6 +294,7 @@ import tink.state.Observable;
 			alphaMap.endFill();
 
 			bmp.setPixels(tex.capturePixels());
+			heightMapPreview.tile = Tile.fromBitmap(bmp);
 
 			core.world.updateHeightMap();
 			core.updateGrid(boundingRect);
@@ -294,5 +304,11 @@ import tink.state.Observable;
 	public function onWorldWheel(e:Event):Void
 	{
 
+	}
+
+	public function update(d:Float):Void
+	{
+		heightMapPreviewContainer.x = HppG.stage2d.width - 240;
+		heightMapPreviewContainer.y = HppG.stage2d.height - 240;
 	}
 }

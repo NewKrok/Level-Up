@@ -41,6 +41,10 @@
 	height: calc(100% - 30px);
 }
 
+.lu_editor__base_panel--height_map {
+	height: calc(100% - 270px);
+}
+
 .lu_editor__preview {
 	width: 15em;
 	background-color: #5E6161DD;
@@ -76,7 +80,7 @@
 }
 
 .lu_library_list_container {
-	height: calc(100% - 49px);
+	height: calc(100% - 99px);
 }
 
 .lu_terrain_brush_selector {
@@ -278,4 +282,10 @@
 
 .lu_snap__button:hover {
 	background-color: #252524;
+}
+
+.lu_height_map__title {
+	bottom: 0;
+	position: absolute;
+	width: calc(100% - 10px);
 }

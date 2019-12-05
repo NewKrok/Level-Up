@@ -233,6 +233,8 @@ import tink.state.Observable;
 
 			lastDrawedPoint.x = previewPos.x;
 			lastDrawedPoint.y = previewPos.y;
+			var calculatedX = (core.model.isYDragLocked ? dragStartPoint.x : previewPos.x) * 2;
+			var calculatedY = (core.model.isXDragLocked ? dragStartPoint.y : previewPos.y) * 2;
 
 			var tex = core.world.terrainLayers[model.selectedLayerIndex].material.mainPass.getShader(AlphaMask).texture;
 			tex.flags.set(Target);
@@ -243,31 +245,32 @@ import tink.state.Observable;
 				if (model.brushNoise == 0 && model.brushGradient == 0)
 				{
 					alphaMap.drawCircle(
-						(core.model.isYDragLocked ? dragStartPoint.x : previewPos.x) * 2,
-						(core.model.isXDragLocked ? dragStartPoint.y : previewPos.y) * 2,
+						calculatedX,
+						calculatedY,
 						model.brushSize,
 						12
 					);
 				}
 				else
 				{
-					var angle = 0.0;
-					for (j in 0...cast model.brushSize * 2)
+					for (i in 0...cast model.brushSize * 2)
 					{
-						var count = Math.round(12 * (j * 0.5));
-						for (i in 0...count)
+						for (j in 0...cast model.brushSize * 2)
 						{
-							angle += Math.PI / count;
+							var absI = Math.abs(i - model.brushSize);
+							var absJ = Math.abs(j - model.brushSize);
+							var middleDistance = Math.sqrt(absI * absI + absJ * absJ);
+							var ratio = middleDistance > model.brushSize ? 0 : 1 - (middleDistance / model.brushSize * model.brushGradient);
 
-							var alphaByGradient = model.brushGradient == 0 ? 1 : (1 - j / (model.brushSize * 2)) * (1 - model.brushGradient);
+							var alphaByGradient = model.brushGradient == 0 ? 1 : Math.sin(ratio * Math.PI / 2);
 							var alphaByNoise = model.brushNoise == 0 ? 1 : Math.random();
 
 							if (model.brushNoise == 0 || Math.random() > model.brushNoise)
 							{
 								alphaMap.beginFill(0xFFFFFF, model.brushOpacity * alphaByGradient * alphaByNoise);
 								alphaMap.drawRect(
-									(core.model.isYDragLocked ? dragStartPoint.x : previewPos.x) * 2 + j / 2 * Math.cos(angle),
-									(core.model.isXDragLocked ? dragStartPoint.y : previewPos.y) * 2 + j / 2 * Math.sin(angle) - 1,
+									calculatedX - model.brushSize + i,
+									calculatedY - model.brushSize + j,
 									1,
 									1
 								);
@@ -281,8 +284,8 @@ import tink.state.Observable;
 				if (model.brushNoise == 0 && model.brushGradient == 0)
 				{
 					alphaMap.drawRect(
-						(core.model.isYDragLocked ? dragStartPoint.x : previewPos.x) * 2 - model.brushSize,
-						(core.model.isXDragLocked ? dragStartPoint.y : previewPos.y) * 2 - model.brushSize,
+						calculatedX - model.brushSize,
+						calculatedY - model.brushSize,
 						model.brushSize * 2,
 						model.brushSize * 2
 					);
@@ -295,16 +298,18 @@ import tink.state.Observable;
 						{
 							var absI = Math.abs(i - model.brushSize);
 							var absJ = Math.abs(j - model.brushSize);
+							var middleDistance = absI < absJ ? absJ : absI;
+							var ratio = 1 - (middleDistance / model.brushSize * model.brushGradient);
 
-							var alphaByGradient = model.brushGradient == 0 ? 1 : (1 - ((absI < absJ ? absJ : absI) / model.brushSize)) * 2 * (1 - model.brushGradient);
+							var alphaByGradient = model.brushGradient == 0 ? 1 : Math.sin(ratio * Math.PI / 2);
 							var alphaByNoise = model.brushNoise == 0 ? 1 : Math.random();
 
 							if (model.brushNoise == 0 || Math.random() > model.brushNoise)
 							{
 								alphaMap.beginFill(0xFFFFFF, model.brushOpacity * alphaByGradient * alphaByNoise);
 								alphaMap.drawRect(
-									(core.model.isYDragLocked ? dragStartPoint.x : previewPos.x) * 2 - model.brushSize + i,
-									(core.model.isXDragLocked ? dragStartPoint.y : previewPos.y) * 2 - model.brushSize + j,
+									calculatedX - model.brushSize + i,
+									calculatedY - model.brushSize + j,
 									1,
 									1
 								);
@@ -322,4 +327,6 @@ import tink.state.Observable;
 	{
 
 	}
+
+	public function update(d:Float):Void {}
 }

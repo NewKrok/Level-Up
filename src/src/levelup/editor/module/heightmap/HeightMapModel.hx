@@ -13,4 +13,5 @@ class HeightMapModel implements Model
 	@:editable var brushOpacity:Float = 0.05;
 	@:editable var brushGradient:Float = 0;
 	@:editable var brushNoise:Float = 0;
+	@:editable var drawSpeed:Float = 90;
 }

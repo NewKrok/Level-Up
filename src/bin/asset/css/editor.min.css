@@ -3,12 +3,13 @@
 .lu_editor_header{width:100%;display:flex;background-color:#31302e;border-bottom:1px solid #4a4947;z-index:1;}
 .lu_editor_right{width:100%;height:calc(100% - 40px);position:absolute;pointer-events:visible;display:flex;flex-direction:column;width:15em;right:0;top:40px;align-items:center;}
 .lu_editor__base_panel{width:15em;background-color:#5E6161DD;color:#FFF;height:calc(100% - 30px);}
+.lu_editor__base_panel--height_map{height:calc(100% - 270px);}
 .lu_editor__preview{width:15em;background-color:#5E6161DD;color:#FFF;}
 .lu_editor__preview_image{display:block;height:240px;}
 .lu_editor__empty_preview{width:240px;height:240px;background-color:#222222;line-height:240px;text-align:center;font-size:4em;}
 .lu_selected_item{width:100%;max-height:calc(100% - 60px);background-color:#5E6161DD;color:#FFF;pointer-events:visible;}
 .lu_tab_menu{color:#FFF;width:100%;background-color:#5E6161;}
-.lu_library_list_container{height:calc(100% - 49px);}
+.lu_library_list_container{height:calc(100% - 99px);}
 .lu_terrain_brush_selector{display:flex;flex-wrap:wrap;padding:2px;justify-content:space-evenly;}
 .lu_terrain_brush_preview{width:40px;height:40px;cursor:pointer;background-color:#FFF;margin:5px;}
 .lu_terrain_brush_preview--circle{border-radius:25px;}
@@ -41,3 +42,4 @@
 .lu_snap__button:last-of-type{margin-right:0;}
 .lu_snap__button--selected{cursor:initial;pointer-events:none;background-color:#252524;font-weight:bold;}
 .lu_snap__button:hover{background-color:#252524;}
+.lu_height_map__title{bottom:0;position:absolute;width:calc(100% - 10px);}

@@ -23,16 +23,19 @@ class EditorLibrary extends View
 
 	@:skipCheck @:attr var environmentsList:List<AssetConfig>;
 	@:skipCheck @:attr var propsList:List<AssetConfig>;
+	@:skipCheck @:attr var buildingList:List<AssetConfig>;
 	@:skipCheck @:attr var unitsList:List<AssetConfig>;
 
 	@:computed var list:List<AssetConfig> = switch (selectedListIndex) {
-		case 0: environmentsList;
+		case 0: environmentsList.filter(e -> return e.environmentId == selectedEnvironmentIndex);
 		case 1: propsList;
-		case 2: unitsList.filter(e -> return e.race == selectedRace);
+		case 2: buildingList;
+		case 3: unitsList.filter(e -> return e.race == selectedRace);
 		case _: List.fromArray([]);
 	};
 
 	@:state var selectedListIndex:Int = 0;
+	@:state var selectedEnvironmentIndex:Int = 0;
 	@:state var selectedRace:RaceId = RaceId.Human;
 	@:skipCheck @:state var selectedAsset:AssetConfig = null;
 
@@ -41,9 +44,20 @@ class EditorLibrary extends View
 			<select class="lu_selector lu_offset" onchange={e -> { removeSelection(); selectedListIndex = cast(e.currentTarget, SelectElement).selectedIndex; }}>
 				<option>({environmentsList.length}) Environments</option>
 				<option>({propsList.length}) Props</option>
+				<option>({buildingList.length}) Buildings</option>
 				<option>({unitsList.length}) Units</option>
 			</select>
-			<if {selectedListIndex == 2}>
+			<if {selectedListIndex == 0}>
+				<div class="lu_row">
+					<select class="lu_selector lu_offset" onchange={e -> selectedEnvironmentIndex = cast(e.currentTarget, SelectElement).selectedIndex}>
+						<option selected={selectedEnvironmentIndex == 0}>Bridge</option>
+						<option selected={selectedEnvironmentIndex == 1}>Rock</option>
+						<option selected={selectedEnvironmentIndex == 2}>Tree</option>
+						<option selected={selectedEnvironmentIndex == 3}>Trunk</option>
+					</select>
+				</div>
+			</if>
+			<if {selectedListIndex == 3}>
 				<div class="lu_row">
 					<div class="lu_player_color_box lu_left_offset" style={"background-color: #" + PlayerColor.colors[selectedPlayer]} ></div>
 					<select class="lu_selector lu_horizontal_offset" onchange={e -> onPlayerSelect(cast(e.currentTarget, SelectElement).selectedIndex)}>

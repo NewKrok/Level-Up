@@ -637,6 +637,7 @@ typedef StaticObjectConfig =
 	var x(default, never):Float;
 	var y(default, never):Float;
 	var z(default, never):Float;
+	var zOffset(default, never):Float;
 	var scale(default, never):Float;
 	var rotation(default, never):Float;
 	@:optional var instance(default, never):Object;

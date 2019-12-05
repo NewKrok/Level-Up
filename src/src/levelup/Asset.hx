@@ -1,5 +1,6 @@
 package levelup;
 
+import h3d.mat.BlendMode;
 import hxd.Res;
 import hxd.res.Model;
 import levelup.game.GameState.RaceId;
@@ -18,6 +19,9 @@ class Asset
 		var foundPropElements = props.filter(function (e) { return e.id == id; });
 		if (foundPropElements != null && foundPropElements.length > 0) return foundPropElements[0];
 
+		var foundBuildingElements = buildings.filter(function (e) { return e.id == id; });
+		if (foundBuildingElements != null && foundBuildingElements.length > 0) return foundBuildingElements[0];
+
 		var foundUnitElements = units.filter(function (e) { return e.id == id; });
 		if (foundUnitElements != null && foundUnitElements.length > 0) return foundUnitElements[0];
 
@@ -26,11 +30,69 @@ class Asset
 
 	static public var environment(default, null):Array<AssetConfig>;
 	static public var props(default, null):Array<AssetConfig>;
+	static public var buildings(default, null):Array<AssetConfig>;
 	static public var units(default, null):Array<AssetConfig>;
 
 	static public function init()
 	{
 		environment = [
+			{
+				id: "Bridge01",
+				name: "Bridge 01",
+				scale: 0.005,
+				environmentId: EnvironmentId.Bridge,
+				model: Res.model.environment.bridge.Bridge01,
+				previewUrl: "./asset/img/preview/environment/bridge/bridge_01.jpg",
+				zOffset: 1
+			},
+			{
+				id: "Rock01",
+				name: "Rock 01",
+				scale: 0.005,
+				environmentId: EnvironmentId.Rock,
+				model: Res.model.environment.rock.Rock01,
+				previewUrl: "./asset/img/preview/environment/rock/rock_01.jpg"
+			},
+			{
+				id: "Rock07",
+				name: "Rock 07",
+				scale: 0.005,
+				environmentId: EnvironmentId.Rock,
+				model: Res.model.environment.rock.Rock07,
+				previewUrl: "./asset/img/preview/environment/rock/rock_07.jpg"
+			},
+			{
+				id: "Tree01",
+				name: "Tree 01",
+				scale: 0.005,
+				environmentId: EnvironmentId.Tree,
+				model: Res.model.environment.tree.Tree01,
+				previewUrl: "./asset/img/preview/environment/tree/tree_01.jpg"
+			},
+			{
+				id: "Tree08",
+				name: "Tree 08",
+				scale: 0.005,
+				environmentId: EnvironmentId.Tree,
+				model: Res.model.environment.tree.Tree08,
+				previewUrl: "./asset/img/preview/environment/tree/tree_08.jpg"
+			},
+			{
+				id: "Tree40",
+				name: "Tree 40",
+				scale: 0.005,
+				environmentId: EnvironmentId.Tree,
+				model: Res.model.environment.tree.Tree40,
+				previewUrl: "./asset/img/preview/environment/tree/tree_08.jpg"
+			},
+			{
+				id: "Trunk01",
+				name: "Trunk 01",
+				scale: 0.005,
+				environmentId: EnvironmentId.Trunk,
+				model: Res.model.environment.trunk.Trunk01,
+				previewUrl: "./asset/img/preview/environment/tree/tree_08.jpg"
+			},
 			{
 				id: "SM_Altar",
 				name: "SM_Altar",
@@ -124,6 +186,16 @@ class Asset
 			{ id: "SM_Wooden_Barrel", name: "SM_Wooden_Barrel", scale: 0.05, model: Res.model.props.SM_Wooden_Barrel },
 			{ id: "SM_Wooden_Shelf", name: "SM_Wooden_Shelf", scale: 0.05, model: Res.model.props.SM_Wooden_Shelf },
 			{ id: "SM_Wooden_Table", name: "SM_Wooden_Table", scale: 0.05, model: Res.model.props.SM_Wooden_Table }
+		];
+
+		buildings = [
+			{
+				id: "House01",
+				name: "House 01",
+				scale: 0.005,
+				model: Res.model.building.House01,
+				previewUrl: "./asset/img/preview/building/House01.jpg"
+			}
 		];
 
 		units = [
@@ -272,8 +344,17 @@ typedef AssetConfig = {
 	var name(default, never):String;
 	var model(default, never):Model;
 	var scale(default, never):Float;
+	@:optional var environmentId(default, never):EnvironmentId;
 	@:optional var race(default, never):RaceId;
 	@:optional var zOffset(default, never):Float;
 	@:optional var hasAnimation(default, never):Bool;
 	@:optional var previewUrl(default, never):String;
+}
+
+enum abstract EnvironmentId(Int) from Int to Int
+{
+	var Bridge = 0;
+	var Rock = 1;
+	var Tree = 2;
+	var Trunk = 3;
 }

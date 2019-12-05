@@ -23,7 +23,7 @@ class Main extends Base2dApp
 	override function init()
 	{
 		super.init();
-		stage.stageScaleMode = StageScaleMode.SHOW_ALL;
+		stage.stageScaleMode = StageScaleMode.NO_SCALE;
 		Asset.init();
 		TerrainAssets.init();
 		SaveUtil.load();

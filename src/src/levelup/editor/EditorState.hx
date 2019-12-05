@@ -5,6 +5,7 @@ import h2d.Scene;
 import h3d.Quat;
 import h3d.Vector;
 import h3d.mat.BlendMode;
+import h3d.mat.Data.Face;
 import h3d.pass.DefaultShadowMap;
 import h3d.prim.Grid;
 import h3d.prim.ModelCache;
@@ -76,7 +77,7 @@ class EditorState extends Base2dState
 	var debugUnitPath:Graphics;
 	var debugDetectionRadius:Graphics;
 
-	var selectedUnit:State<BaseUnit> = new State<BaseUnit>(null);
+	var selectionCircle:Graphics;
 	var isDisposed:Bool = false;
 
 	var isMapDragActive:Bool = false;
@@ -136,7 +137,7 @@ class EditorState extends Base2dState
 
 		model.observables.baseTerrainId.bind(id -> world.changeBaseTerrain(id));
 		model.observables.showGrid.bind(v -> v ? showGrid() : hideGrid());
-		model.observables.toolState.bind(v -> v == ToolState.Library ? enableAssetInteractives() : blockAssetInteractives());
+		model.observables.toolState.bind(v -> v == ToolState.Library ? enableAssetInteractives() : disableAssetInteractives());
 
 		dialogManager = new EditorDialogManager(cast this);
 
@@ -193,10 +194,10 @@ class EditorState extends Base2dState
 		{
 			for (m in modules) m.onWorldMouseUp(e);
 
-			if (model.toolState == ToolState.Library) enableAssetInteractives();
-
 			if (e.button == 0)
 			{
+				if (model.toolState == ToolState.Library && previewInstance == null) enableAssetInteractives();
+
 				if (draggedInstance == null)
 				{
 					isMouseDrawActive = false;
@@ -217,10 +218,12 @@ class EditorState extends Base2dState
 				else if (draggedInstance != null && GeomUtil.getDistance(cast draggedInstance, dragInstanceStartPoint) < 0.2)
 				{
 					selectedWorldAsset.set({ instance: draggedInstance, config: activeWorldInstance.config });
+					updateSelectionCircle();
 				}
 				else if (GeomUtil.getDistance({ x: e.relX, y: e.relY }, cameraDragStartPoint) < 0.2)
 				{
 					selectedWorldAsset.set(null);
+					updateSelectionCircle();
 				}
 
 				if (draggedInstance != null)
@@ -249,7 +252,11 @@ class EditorState extends Base2dState
 			{
 				if (!model.isYDragLocked) previewInstance.x = snapPosition(e.relX);
 				if (!model.isXDragLocked) previewInstance.y = snapPosition(e.relY);
-				previewInstance.z = GeomUtil3D.getHeightByPosition(world.heightGrid, previewInstance.x, previewInstance.y);
+				previewInstance.z = GeomUtil3D.getHeightByPosition(
+					world.heightGrid,
+					previewInstance.x,
+					previewInstance.y
+				) + (selectedAssetConfig.zOffset != null ? selectedAssetConfig.zOffset : 0);
 			}
 
 			if (draggedInstance != null)
@@ -265,6 +272,8 @@ class EditorState extends Base2dState
 					snapPosition(model.isXDragLocked ? dragInstanceStartPoint.y : dragInstanceStartPoint.y + (e.relY - dragInstanceWorldStartPoint.y)),
 					draggedInstance.z
 				);
+
+				updateSelectionCircle();
 			}
 			else if (isMapDragActive)
 			{
@@ -311,6 +320,7 @@ class EditorState extends Base2dState
 			previewRequest: createPreview,
 			environmentsList: List.fromArray(Asset.environment),
 			propsList: List.fromArray(Asset.props),
+			buildingList: List.fromArray(Asset.buildings),
 			unitsList: List.fromArray(Asset.units),
 			selectedWorldAsset: selectedWorldAsset,
 			model: model,
@@ -321,10 +331,43 @@ class EditorState extends Base2dState
 		modules.push(cast new TerrainModule(cast this));
 		modules.push(cast new HeightMapModule(cast this));
 
+		selectionCircle = new Graphics(world);
+
 		createGrid();
 
 		Window.getInstance().addEventTarget(onKeyEvent);
 		isLevelLoaded = true;
+	}
+
+	function updateSelectionCircle()
+	{
+		if (selectedWorldAsset == null)
+		{
+			selectionCircle.visible = false;
+		}
+		else
+		{
+			selectionCircle.visible = true;
+			selectionCircle.clear();
+			selectionCircle.lineStyle(4, 0xFFFFFF);
+			var angle = 0.0;
+			var b = selectedWorldAsset.value.instance.getMeshes()[0].getBounds();
+			var size = (b.xMax > b.yMax ? b.xMax : b.yMax) / 25;
+			var piece = Std.int(12 + size / 10 * 10);
+
+			trace("TODO: WHAT IS THE PROBLEM WITH THE SIZE?!");
+
+			for (i in 0...piece)
+			{
+				angle += Math.PI * 2 / (piece - 1);
+				var xPos = selectedWorldAsset.value.instance.x + Math.cos(angle) * size / 2;
+				var yPos = selectedWorldAsset.value.instance.y + Math.sin(angle) * size / 2;
+				var zPos = 0.1 + GeomUtil3D.getHeightByPosition(world.heightGrid, xPos, yPos);
+
+				if (i == 0) selectionCircle.moveTo(xPos, yPos, zPos);
+				else selectionCircle.lineTo(xPos, yPos, zPos);
+			}
+		}
 	}
 
 	function getModule(c) return modules.filter(m ->Std.is(m, c))[0];
@@ -352,6 +395,7 @@ class EditorState extends Base2dState
 				x: x,
 				y: y,
 				z: z,
+				zOffset: config.zOffset,
 				scale: scale,
 				rotation: rotation
 			});
@@ -367,6 +411,7 @@ class EditorState extends Base2dState
 				x: x,
 				y: y,
 				z: z,
+				zOffset: config.zOffset,
 				scale: scale,
 				rotation: rotation,
 				owner: owner,
@@ -399,16 +444,22 @@ class EditorState extends Base2dState
 			draggedInteractive = interactive;
 			interactive.visible = false;
 
-			blockAssetInteractives(interactive);
+			disableAssetInteractives(interactive);
 		};
 
-		interactive.onRelease = e -> enableAssetInteractives();
+		interactive.onRelease = e -> if (e.button == 0 && previewInstance == null) enableAssetInteractives();
 
 		var colorShader = new ColorMult();
 		colorShader.color = new Vector(1, 1, 0, 0.2);
 
 		interactive.onOver = e -> instance.getMaterials()[0].mainPass.addShader(colorShader);
 		interactive.onOut = e -> instance.getMaterials()[0].mainPass.removeShader(colorShader);
+
+		if (previewInstance != null)
+		{
+			interactive.visible = false;
+			interactive.cancelEvents = true;
+		}
 
 		world.addToWorldPoint(instance, x, y, z, scale, rotation);
 
@@ -456,14 +507,14 @@ class EditorState extends Base2dState
 					model.isYDragLocked = !model.isYDragLocked;
 					if (draggedInstance != null) dragInstanceWorldStartPoint = null;
 
-				case Key.UP if (previewInstance != null):
+				case Key.UP | Key.W if (previewInstance != null):
 					previewInstanceScale += selectedAssetConfig.scale * 0.1;
 					previewInstance.setScale(previewInstanceScale);
 				case Key.DOWN if (previewInstance != null):
 					previewInstanceScale -= selectedAssetConfig.scale * 0.1;
 					previewInstance.setScale(previewInstanceScale);
 
-				case Key.UP if (selectedInstance != null):
+				case Key.UP | Key.W if (selectedInstance != null):
 					logAction({
 						actionType: EditorActionType.Scale,
 						target: selectedInstance,
@@ -472,7 +523,7 @@ class EditorState extends Base2dState
 					});
 					selectedInstance.setScale(selectedInstance.scaleX + selectedConfig.scale * 0.1);
 					editorUi.forceUpdateSelectedUser();
-				case Key.DOWN if (selectedInstance != null):
+				case Key.DOWN | Key.S if (selectedInstance != null):
 					logAction({
 						actionType: EditorActionType.Scale,
 						target: selectedInstance,
@@ -482,14 +533,14 @@ class EditorState extends Base2dState
 					selectedInstance.setScale(selectedInstance.scaleX - selectedConfig.scale * 0.1);
 					editorUi.forceUpdateSelectedUser();
 
-				case Key.LEFT if (previewInstance != null):
+				case Key.LEFT | Key.A if (previewInstance != null):
 					previewInstanceRotation += Math.PI / 8;
 					previewInstance.setRotation(0, 0, previewInstanceRotation);
-				case Key.RIGHT if (previewInstance != null):
+				case Key.RIGHT | Key.D if (!hadActiveCommandWithCtrl && previewInstance != null):
 					previewInstanceRotation -= Math.PI / 8;
 					previewInstance.setRotation(0, 0, previewInstanceRotation);
 
-				case Key.LEFT if (selectedInstance != null):
+				case Key.LEFT | Key.A if (selectedInstance != null):
 					var prevQ = selectedInstance.getRotationQuat().clone();
 					selectedInstance.rotate(0, 0, Math.PI / 8);
 					logAction({
@@ -500,7 +551,7 @@ class EditorState extends Base2dState
 					});
 					editorUi.forceUpdateSelectedUser();
 
-				case Key.RIGHT if (selectedInstance != null):
+				case Key.RIGHT | Key.D if (!hadActiveCommandWithCtrl && selectedInstance != null):
 					var prevQ = selectedInstance.getRotationQuat().clone();
 					selectedInstance.rotate(0, 0, -Math.PI / 8);
 					logAction({
@@ -528,13 +579,17 @@ class EditorState extends Base2dState
 
 				case Key.ESCAPE if (selectedWorldAsset.value != null): selectedWorldAsset.set(null);
 
-				case Key.D if (selectedWorldAsset.value != null): createPreview(selectedWorldAsset.value.config);
-				case Key.S if (!Key.isDown(Key.CTRL)): editorUi.increaseSnap();
+				case Key.D if (hadActiveCommandWithCtrl && selectedWorldAsset.value != null):
+					createPreview(selectedWorldAsset.value.config);
+					previewInstance.setScale(selectedWorldAsset.value.instance.scaleX);
+					previewInstance.setRotation(0, 0, selectedWorldAsset.value.instance.getRotationQuat().z);
+
+				case Key.N if (!Key.isDown(Key.CTRL)): editorUi.increaseSnap();
 				case Key.G if (!Key.isDown(Key.CTRL)): model.showGrid = !model.showGrid;
 			}
 	}
 
-	function blockAssetInteractives(except = null)
+	function disableAssetInteractives(except = null)
 	{
 		for (i in worldInstances)
 		{
@@ -563,6 +618,7 @@ class EditorState extends Base2dState
 		{
 			previewInstance.remove();
 			previewInstance = null;
+			enableAssetInteractives();
 		}
 
 		if (selectedAssetConfig != null)
@@ -570,6 +626,7 @@ class EditorState extends Base2dState
 			previewInstanceScale = asset.scale;
 			previewInstanceRotation = -Math.PI / 2;
 			previewInstance = cache.loadModel(selectedAssetConfig.model);
+			//for (m in previewInstance.getMaterials()) m.mainPass.setBlendMode(BlendMode.Screen);
 
 			if (selectedAssetConfig.hasAnimation != null && selectedAssetConfig.hasAnimation)
 			{
@@ -578,9 +635,9 @@ class EditorState extends Base2dState
 			previewInstance.setScale(previewInstanceScale);
 			previewInstance.setRotation(0, 0, previewInstanceRotation);
 			if (selectedAssetConfig.zOffset != null) previewInstance.z = selectedAssetConfig.zOffset;
-			previewInstance.getMaterials()[0].blendMode = BlendMode.Screen;
 
 			s3d.addChild(previewInstance);
+			disableAssetInteractives();
 		}
 
 		Browser.document.getElementById("webgl").focus();
@@ -613,11 +670,6 @@ class EditorState extends Base2dState
 			terrainLayers: rawData.terrainLayers,
 			heightMap: rawData.heightMap
 		};
-	}
-
-	function selectUnit(u)
-	{
-		selectedUnit.set(u);
 	}
 
 	function logAction(a:EditorAction)
@@ -845,6 +897,9 @@ class EditorState extends Base2dState
 		drawDebugRegions();
 		drawDebugInteractionRadius();*/
 
+		for (i in worldInstances) i.instance.z = GeomUtil3D.getHeightByPosition(world.heightGrid, i.instance.x, i.instance.y);
+		for (m in modules) m.update(d);
+
 		updateCamera(d);
 
 		//grid.visible = model.showGrid && camDistance < 90;
@@ -916,6 +971,7 @@ class EditorState extends Base2dState
 			x: u.instance.x,
 			y: u.instance.y,
 			z: u.instance.z,
+			zOffset: u.zOffset,
 			scale: u.instance.scaleX,
 			rotation: u.instance.getRotationQuat().z,
 		}];
@@ -946,7 +1002,6 @@ class EditorState extends Base2dState
 			}
 		}
 
-		trace(result);
 		if (isNewMap) SaveUtil.editorData.customMaps.push(result);
 
 		SaveUtil.save();
@@ -982,6 +1037,7 @@ typedef EditorModule =
 	var onWorldMouseUp:Event->Void;
 	var onWorldMouseMove:Event->Void;
 	var onWorldWheel:Event->Void;
+	var update:Float->Void;
 }
 
 typedef AssetItem =
