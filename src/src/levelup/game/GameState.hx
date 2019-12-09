@@ -6,6 +6,7 @@ import h2d.Scene;
 import h3d.Vector;
 import h3d.pass.DefaultShadowMap;
 import h3d.prim.Cube;
+import h3d.prim.ModelCache;
 import h3d.scene.Graphics;
 import h3d.scene.Mesh;
 import h3d.scene.Object;
@@ -60,6 +61,7 @@ class GameState extends Base2dState
 	var world:GameWorld;
 	var mapConfig:WorldConfig;
 	var model:GameModel;
+	var cache:ModelCache = new ModelCache();
 
 	var s2d:h2d.Scene;
 	var s3d:h3d.scene.Scene;
@@ -128,6 +130,7 @@ class GameState extends Base2dState
 		debugDetectionRadius.z = 0.2;
 
 		world = new GameWorld(s3d, mapConfig, 1, 64, 64, s3d);
+
 		world.done();
 
 		var dirLight = new DirLight(null, s3d);
@@ -186,6 +189,14 @@ class GameState extends Base2dState
 		world.onClickOnUnit = u -> if (u.owner == PlayerId.Player1) selectUnit(u);
 
 		for (u in mapConfig.units) createUnit(u.id, u.owner, u.x, u.y, u.scale, u.rotation);
+
+		for (o in mapConfig.staticObjects.concat([]))
+		{
+			var config = Asset.getAsset(o.id);
+			var instance:Object = cache.loadModel(config.model);
+			if (config.hasTransparentTexture != null && config.hasTransparentTexture) for (m in instance.getMaterials()) m.textureShader.killAlpha = true;
+			world.addToWorldPoint(instance, o.x, o.y, o.z, o.scale, o.rotation);
+		}
 
 		model.initGame();
 

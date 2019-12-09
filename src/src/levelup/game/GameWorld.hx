@@ -219,12 +219,10 @@ class GameWorld extends World
 
 		for (o in worldConfig.staticObjects)
 		{
-			var instance:Object = cache.loadModel(Asset.getAsset(o.id).model);
-			addToWorldPoint(instance, o.x, o.y, o.z, o.scale, o.rotation);
-			staticObjects.push({
+			/*staticObjects.push({
 				instance: instance,
 				zOffset: o.zOffset
-			});
+			});*/
 		}
 
 		graph = new Graph(graphArray, { diagonal: true });

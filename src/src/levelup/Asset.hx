@@ -49,6 +49,7 @@ class Asset
 				id: "Plant01",
 				name: "Plant 01",
 				scale: 0.008,
+				hasTransparentTexture: true,
 				environmentId: EnvironmentId.Plant,
 				model: Res.model.environment.plant.Plant01,
 				previewUrl: "./asset/img/preview/environment/plant/plant_01.jpg"
@@ -57,6 +58,7 @@ class Asset
 				id: "Plant02",
 				name: "Plant 02",
 				scale: 0.008,
+				hasTransparentTexture: true,
 				environmentId: EnvironmentId.Plant,
 				model: Res.model.environment.plant.Plant02,
 				previewUrl: "./asset/img/preview/environment/plant/plant_02.jpg"
@@ -65,6 +67,7 @@ class Asset
 				id: "Plant03",
 				name: "Plant 03",
 				scale: 0.008,
+				hasTransparentTexture: true,
 				environmentId: EnvironmentId.Plant,
 				model: Res.model.environment.plant.Plant03,
 				previewUrl: "./asset/img/preview/environment/plant/plant_03.jpg"
@@ -73,6 +76,7 @@ class Asset
 				id: "Plant04",
 				name: "Plant 04",
 				scale: 0.008,
+				hasTransparentTexture: true,
 				environmentId: EnvironmentId.Plant,
 				model: Res.model.environment.plant.Plant04,
 				previewUrl: "./asset/img/preview/environment/plant/plant_04.jpg"
@@ -81,6 +85,7 @@ class Asset
 				id: "Plant05",
 				name: "Plant 05",
 				scale: 0.008,
+				hasTransparentTexture: true,
 				environmentId: EnvironmentId.Plant,
 				model: Res.model.environment.plant.Plant05,
 				previewUrl: "./asset/img/preview/environment/plant/plant_05.jpg"
@@ -89,6 +94,7 @@ class Asset
 				id: "Plant06",
 				name: "Plant 06",
 				scale: 0.008,
+				hasTransparentTexture: true,
 				environmentId: EnvironmentId.Plant,
 				model: Res.model.environment.plant.Plant06,
 				previewUrl: "./asset/img/preview/environment/plant/plant_06.jpg"
@@ -97,6 +103,7 @@ class Asset
 				id: "Plant07",
 				name: "Plant 07",
 				scale: 0.008,
+				hasTransparentTexture: true,
 				environmentId: EnvironmentId.Plant,
 				model: Res.model.environment.plant.Plant07,
 				previewUrl: "./asset/img/preview/environment/plant/plant_07.jpg"
@@ -105,6 +112,7 @@ class Asset
 				id: "Plant08",
 				name: "Plant 08",
 				scale: 0.008,
+				hasTransparentTexture: true,
 				environmentId: EnvironmentId.Plant,
 				model: Res.model.environment.plant.Plant08,
 				previewUrl: "./asset/img/preview/environment/plant/plant_08.jpg"
@@ -113,6 +121,7 @@ class Asset
 				id: "Plant09",
 				name: "Plant 09",
 				scale: 0.008,
+				hasTransparentTexture: true,
 				environmentId: EnvironmentId.Plant,
 				model: Res.model.environment.plant.Plant09,
 				previewUrl: "./asset/img/preview/environment/plant/plant_09.jpg"
@@ -121,6 +130,7 @@ class Asset
 				id: "Plant10",
 				name: "Plant 10",
 				scale: 0.008,
+				hasTransparentTexture: true,
 				environmentId: EnvironmentId.Plant,
 				model: Res.model.environment.plant.Plant10,
 				previewUrl: "./asset/img/preview/environment/plant/plant_10.jpg"
@@ -129,6 +139,7 @@ class Asset
 				id: "Plant11",
 				name: "Plant 11",
 				scale: 0.008,
+				hasTransparentTexture: true,
 				environmentId: EnvironmentId.Plant,
 				model: Res.model.environment.plant.Plant11,
 				previewUrl: "./asset/img/preview/environment/plant/plant_11.jpg"
@@ -137,6 +148,7 @@ class Asset
 				id: "Plant12",
 				name: "Plant 12",
 				scale: 0.008,
+				hasTransparentTexture: true,
 				environmentId: EnvironmentId.Plant,
 				model: Res.model.environment.plant.Plant12,
 				previewUrl: "./asset/img/preview/environment/plant/plant_12.jpg"
@@ -145,6 +157,7 @@ class Asset
 				id: "Plant13",
 				name: "Plant 13",
 				scale: 0.008,
+				hasTransparentTexture: true,
 				environmentId: EnvironmentId.Plant,
 				model: Res.model.environment.plant.Plant13,
 				previewUrl: "./asset/img/preview/environment/plant/plant_13.jpg"
@@ -153,6 +166,7 @@ class Asset
 				id: "Plant14",
 				name: "Plant 14",
 				scale: 0.008,
+				hasTransparentTexture: true,
 				environmentId: EnvironmentId.Plant,
 				model: Res.model.environment.plant.Plant14,
 				previewUrl: "./asset/img/preview/environment/plant/plant_14.jpg"
@@ -161,6 +175,7 @@ class Asset
 				id: "Plant15",
 				name: "Plant 15",
 				scale: 0.008,
+				hasTransparentTexture: true,
 				environmentId: EnvironmentId.Plant,
 				model: Res.model.environment.plant.Plant15,
 				previewUrl: "./asset/img/preview/environment/plant/plant_15.jpg"
@@ -169,6 +184,7 @@ class Asset
 				id: "Plant16",
 				name: "Plant 16",
 				scale: 0.008,
+				hasTransparentTexture: true,
 				environmentId: EnvironmentId.Plant,
 				model: Res.model.environment.plant.Plant16,
 				previewUrl: "./asset/img/preview/environment/plant/plant_16.jpg"
@@ -177,6 +193,7 @@ class Asset
 				id: "Plant17",
 				name: "Plant 17",
 				scale: 0.008,
+				hasTransparentTexture: true,
 				environmentId: EnvironmentId.Plant,
 				model: Res.model.environment.plant.Plant17,
 				previewUrl: "./asset/img/preview/environment/plant/plant_17.jpg"
@@ -185,6 +202,7 @@ class Asset
 				id: "Plant18",
 				name: "Plant 18",
 				scale: 0.008,
+				hasTransparentTexture: true,
 				environmentId: EnvironmentId.Plant,
 				model: Res.model.environment.plant.Plant18,
 				previewUrl: "./asset/img/preview/environment/plant/plant_18.jpg"
@@ -193,6 +211,7 @@ class Asset
 				id: "Plant19",
 				name: "Plant 19",
 				scale: 0.008,
+				hasTransparentTexture: true,
 				environmentId: EnvironmentId.Plant,
 				model: Res.model.environment.plant.Plant19,
 				previewUrl: "./asset/img/preview/environment/plant/plant_19.jpg"
@@ -201,6 +220,7 @@ class Asset
 				id: "Plant20",
 				name: "Plant 20",
 				scale: 0.008,
+				hasTransparentTexture: true,
 				environmentId: EnvironmentId.Plant,
 				model: Res.model.environment.plant.Plant20,
 				previewUrl: "./asset/img/preview/environment/plant/plant_20.jpg"
@@ -209,6 +229,7 @@ class Asset
 				id: "Plant21",
 				name: "Plant 21",
 				scale: 0.008,
+				hasTransparentTexture: true,
 				environmentId: EnvironmentId.Plant,
 				model: Res.model.environment.plant.Plant21,
 				previewUrl: "./asset/img/preview/environment/plant/plant_21.jpg"
@@ -217,6 +238,7 @@ class Asset
 				id: "Plant22",
 				name: "Plant 22",
 				scale: 0.008,
+				hasTransparentTexture: true,
 				environmentId: EnvironmentId.Plant,
 				model: Res.model.environment.plant.Plant22,
 				previewUrl: "./asset/img/preview/environment/plant/plant_22.jpg"
@@ -225,6 +247,7 @@ class Asset
 				id: "Plant23",
 				name: "Plant 23",
 				scale: 0.008,
+				hasTransparentTexture: true,
 				environmentId: EnvironmentId.Plant,
 				model: Res.model.environment.plant.Plant23,
 				previewUrl: "./asset/img/preview/environment/plant/plant_23.jpg"
@@ -233,6 +256,7 @@ class Asset
 				id: "Plant24",
 				name: "Plant 24",
 				scale: 0.008,
+				hasTransparentTexture: true,
 				environmentId: EnvironmentId.Plant,
 				model: Res.model.environment.plant.Plant24,
 				previewUrl: "./asset/img/preview/environment/plant/plant_24.jpg"
@@ -241,6 +265,7 @@ class Asset
 				id: "Plant25",
 				name: "Plant 25",
 				scale: 0.008,
+				hasTransparentTexture: true,
 				environmentId: EnvironmentId.Plant,
 				model: Res.model.environment.plant.Plant25,
 				previewUrl: "./asset/img/preview/environment/plant/plant_25.jpg"
@@ -249,6 +274,7 @@ class Asset
 				id: "Plant26",
 				name: "Plant 26",
 				scale: 0.008,
+				hasTransparentTexture: true,
 				environmentId: EnvironmentId.Plant,
 				model: Res.model.environment.plant.Plant26,
 				previewUrl: "./asset/img/preview/environment/plant/plant_26.jpg"
@@ -257,6 +283,7 @@ class Asset
 				id: "Plant27",
 				name: "Plant 27",
 				scale: 0.008,
+				hasTransparentTexture: true,
 				environmentId: EnvironmentId.Plant,
 				model: Res.model.environment.plant.Plant27,
 				previewUrl: "./asset/img/preview/environment/plant/plant_27.jpg"
@@ -265,6 +292,7 @@ class Asset
 				id: "Plant28",
 				name: "Plant 28",
 				scale: 0.008,
+				hasTransparentTexture: true,
 				environmentId: EnvironmentId.Plant,
 				model: Res.model.environment.plant.Plant28,
 				previewUrl: "./asset/img/preview/environment/plant/plant_28.jpg"
@@ -273,6 +301,7 @@ class Asset
 				id: "Plant29",
 				name: "Plant 29",
 				scale: 0.008,
+				hasTransparentTexture: true,
 				environmentId: EnvironmentId.Plant,
 				model: Res.model.environment.plant.Plant29,
 				previewUrl: "./asset/img/preview/environment/plant/plant_29.jpg"
@@ -281,6 +310,7 @@ class Asset
 				id: "Plant30",
 				name: "Plant 30",
 				scale: 0.008,
+				hasTransparentTexture: true,
 				environmentId: EnvironmentId.Plant,
 				model: Res.model.environment.plant.Plant30,
 				previewUrl: "./asset/img/preview/environment/plant/plant_30.jpg"
@@ -289,6 +319,7 @@ class Asset
 				id: "Plant31",
 				name: "Plant 31",
 				scale: 0.008,
+				hasTransparentTexture: true,
 				environmentId: EnvironmentId.Plant,
 				model: Res.model.environment.plant.Plant31,
 				previewUrl: "./asset/img/preview/environment/plant/plant_31.jpg"
@@ -297,6 +328,7 @@ class Asset
 				id: "Plant32",
 				name: "Plant 32",
 				scale: 0.008,
+				hasTransparentTexture: true,
 				environmentId: EnvironmentId.Plant,
 				model: Res.model.environment.plant.Plant32,
 				previewUrl: "./asset/img/preview/environment/plant/plant_32.jpg"
@@ -305,6 +337,7 @@ class Asset
 				id: "Plant33",
 				name: "Plant 33",
 				scale: 0.008,
+				hasTransparentTexture: true,
 				environmentId: EnvironmentId.Plant,
 				model: Res.model.environment.plant.Plant33,
 				previewUrl: "./asset/img/preview/environment/plant/plant_33.jpg"
@@ -313,6 +346,7 @@ class Asset
 				id: "Plant34",
 				name: "Plant 34",
 				scale: 0.008,
+				hasTransparentTexture: true,
 				environmentId: EnvironmentId.Plant,
 				model: Res.model.environment.plant.Plant34,
 				previewUrl: "./asset/img/preview/environment/plant/plant_34.jpg"
@@ -321,6 +355,7 @@ class Asset
 				id: "Plant35",
 				name: "Plant 35",
 				scale: 0.008,
+				hasTransparentTexture: true,
 				environmentId: EnvironmentId.Plant,
 				model: Res.model.environment.plant.Plant35,
 				previewUrl: "./asset/img/preview/environment/plant/plant_35.jpg"
@@ -329,6 +364,7 @@ class Asset
 				id: "Plant36",
 				name: "Plant 36",
 				scale: 0.008,
+				hasTransparentTexture: true,
 				environmentId: EnvironmentId.Plant,
 				model: Res.model.environment.plant.Plant36,
 				previewUrl: "./asset/img/preview/environment/plant/plant_36.jpg"
@@ -337,6 +373,7 @@ class Asset
 				id: "Plant37",
 				name: "Plant 37",
 				scale: 0.008,
+				hasTransparentTexture: true,
 				environmentId: EnvironmentId.Plant,
 				model: Res.model.environment.plant.Plant37,
 				previewUrl: "./asset/img/preview/environment/plant/plant_37.jpg"
@@ -345,6 +382,7 @@ class Asset
 				id: "Plant38",
 				name: "Plant 38",
 				scale: 0.008,
+				hasTransparentTexture: true,
 				environmentId: EnvironmentId.Plant,
 				model: Res.model.environment.plant.Plant38,
 				previewUrl: "./asset/img/preview/environment/plant/plant_38.jpg"
@@ -353,6 +391,7 @@ class Asset
 				id: "Plant39",
 				name: "Plant 39",
 				scale: 0.008,
+				hasTransparentTexture: true,
 				environmentId: EnvironmentId.Plant,
 				model: Res.model.environment.plant.Plant39,
 				previewUrl: "./asset/img/preview/environment/plant/plant_39.jpg"
@@ -361,6 +400,7 @@ class Asset
 				id: "Plant40",
 				name: "Plant 40",
 				scale: 0.008,
+				hasTransparentTexture: true,
 				environmentId: EnvironmentId.Plant,
 				model: Res.model.environment.plant.Plant40,
 				previewUrl: "./asset/img/preview/environment/plant/plant_40.jpg"
@@ -369,6 +409,7 @@ class Asset
 				id: "Plant41",
 				name: "Plant 41",
 				scale: 0.008,
+				hasTransparentTexture: true,
 				environmentId: EnvironmentId.Plant,
 				model: Res.model.environment.plant.Plant41,
 				previewUrl: "./asset/img/preview/environment/plant/plant_41.jpg"
@@ -601,25 +642,370 @@ class Asset
 				id: "Tree01",
 				name: "Tree 01",
 				scale: 0.005,
+				hasTransparentTexture: true,
 				environmentId: EnvironmentId.Tree,
 				model: Res.model.environment.tree.Tree01,
 				previewUrl: "./asset/img/preview/environment/tree/tree_01.jpg"
 			},
 			{
+				id: "Tree02",
+				name: "Tree 02",
+				scale: 0.005,
+				hasTransparentTexture: true,
+				environmentId: EnvironmentId.Tree,
+				model: Res.model.environment.tree.Tree02,
+				previewUrl: "./asset/img/preview/environment/tree/tree_02.jpg"
+			},
+			{
+				id: "Tree03",
+				name: "Tree 03",
+				scale: 0.005,
+				hasTransparentTexture: true,
+				environmentId: EnvironmentId.Tree,
+				model: Res.model.environment.tree.Tree03,
+				previewUrl: "./asset/img/preview/environment/tree/tree_03.jpg"
+			},
+			{
+				id: "Tree04",
+				name: "Tree 04",
+				scale: 0.005,
+				hasTransparentTexture: true,
+				environmentId: EnvironmentId.Tree,
+				model: Res.model.environment.tree.Tree04,
+				previewUrl: "./asset/img/preview/environment/tree/tree_04.jpg"
+			},
+			{
+				id: "Tree05",
+				name: "Tree 05",
+				scale: 0.005,
+				hasTransparentTexture: true,
+				environmentId: EnvironmentId.Tree,
+				model: Res.model.environment.tree.Tree05,
+				previewUrl: "./asset/img/preview/environment/tree/tree_05.jpg"
+			},
+			{
+				id: "Tree06",
+				name: "Tree 06",
+				scale: 0.005,
+				hasTransparentTexture: true,
+				environmentId: EnvironmentId.Tree,
+				model: Res.model.environment.tree.Tree06,
+				previewUrl: "./asset/img/preview/environment/tree/tree_06.jpg"
+			},
+			{
+				id: "Tree07",
+				name: "Tree 07",
+				scale: 0.005,
+				hasTransparentTexture: true,
+				environmentId: EnvironmentId.Tree,
+				model: Res.model.environment.tree.Tree07,
+				previewUrl: "./asset/img/preview/environment/tree/tree_07.jpg"
+			},
+			{
 				id: "Tree08",
 				name: "Tree 08",
 				scale: 0.005,
+				hasTransparentTexture: true,
 				environmentId: EnvironmentId.Tree,
 				model: Res.model.environment.tree.Tree08,
 				previewUrl: "./asset/img/preview/environment/tree/tree_08.jpg"
 			},
 			{
+				id: "Tree09",
+				name: "Tree 09",
+				scale: 0.005,
+				hasTransparentTexture: true,
+				environmentId: EnvironmentId.Tree,
+				model: Res.model.environment.tree.Tree09,
+				previewUrl: "./asset/img/preview/environment/tree/tree_09.jpg"
+			},
+			{
+				id: "Tree10",
+				name: "Tree 10",
+				scale: 0.005,
+				hasTransparentTexture: true,
+				environmentId: EnvironmentId.Tree,
+				model: Res.model.environment.tree.Tree10,
+				previewUrl: "./asset/img/preview/environment/tree/tree_10.jpg"
+			},
+			{
+				id: "Tree11",
+				name: "Tree 11",
+				scale: 0.005,
+				hasTransparentTexture: true,
+				environmentId: EnvironmentId.Tree,
+				model: Res.model.environment.tree.Tree11,
+				previewUrl: "./asset/img/preview/environment/tree/tree_11.jpg"
+			},
+			{
+				id: "Tree12",
+				name: "Tree 12",
+				scale: 0.005,
+				hasTransparentTexture: true,
+				environmentId: EnvironmentId.Tree,
+				model: Res.model.environment.tree.Tree12,
+				previewUrl: "./asset/img/preview/environment/tree/tree_12.jpg"
+			},
+			{
+				id: "Tree13",
+				name: "Tree 13",
+				scale: 0.005,
+				hasTransparentTexture: true,
+				environmentId: EnvironmentId.Tree,
+				model: Res.model.environment.tree.Tree13,
+				previewUrl: "./asset/img/preview/environment/tree/tree_13.jpg"
+			},
+			{
+				id: "Tree14",
+				name: "Tree 14",
+				scale: 0.005,
+				hasTransparentTexture: true,
+				environmentId: EnvironmentId.Tree,
+				model: Res.model.environment.tree.Tree14,
+				previewUrl: "./asset/img/preview/environment/tree/tree_14.jpg"
+			},
+			{
+				id: "Tree15",
+				name: "Tree 15",
+				scale: 0.005,
+				hasTransparentTexture: true,
+				environmentId: EnvironmentId.Tree,
+				model: Res.model.environment.tree.Tree15,
+				previewUrl: "./asset/img/preview/environment/tree/tree_15.jpg"
+			},
+			{
+				id: "Tree16",
+				name: "Tree 16",
+				scale: 0.005,
+				hasTransparentTexture: true,
+				environmentId: EnvironmentId.Tree,
+				model: Res.model.environment.tree.Tree16,
+				previewUrl: "./asset/img/preview/environment/tree/tree_16.jpg"
+			},
+			{
+				id: "Tree17",
+				name: "Tree 17",
+				scale: 0.005,
+				hasTransparentTexture: true,
+				environmentId: EnvironmentId.Tree,
+				model: Res.model.environment.tree.Tree17,
+				previewUrl: "./asset/img/preview/environment/tree/tree_17.jpg"
+			},
+			{
+				id: "Tree18",
+				name: "Tree 18",
+				scale: 0.005,
+				hasTransparentTexture: true,
+				environmentId: EnvironmentId.Tree,
+				model: Res.model.environment.tree.Tree18,
+				previewUrl: "./asset/img/preview/environment/tree/tree_18.jpg"
+			},
+			{
+				id: "Tree19",
+				name: "Tree 19",
+				scale: 0.005,
+				hasTransparentTexture: true,
+				environmentId: EnvironmentId.Tree,
+				model: Res.model.environment.tree.Tree19,
+				previewUrl: "./asset/img/preview/environment/tree/tree_19.jpg"
+			},
+			{
+				id: "Tree20",
+				name: "Tree 20",
+				scale: 0.005,
+				hasTransparentTexture: true,
+				environmentId: EnvironmentId.Tree,
+				model: Res.model.environment.tree.Tree20,
+				previewUrl: "./asset/img/preview/environment/tree/tree_20.jpg"
+			},
+			{
+				id: "Tree21",
+				name: "Tree 21",
+				scale: 0.005,
+				hasTransparentTexture: true,
+				environmentId: EnvironmentId.Tree,
+				model: Res.model.environment.tree.Tree21,
+				previewUrl: "./asset/img/preview/environment/tree/tree_21.jpg"
+			},
+			{
+				id: "Tree22",
+				name: "Tree 22",
+				scale: 0.005,
+				hasTransparentTexture: true,
+				environmentId: EnvironmentId.Tree,
+				model: Res.model.environment.tree.Tree22,
+				previewUrl: "./asset/img/preview/environment/tree/tree_22.jpg"
+			},
+			{
+				id: "Tree23",
+				name: "Tree 23",
+				scale: 0.005,
+				hasTransparentTexture: true,
+				environmentId: EnvironmentId.Tree,
+				model: Res.model.environment.tree.Tree23,
+				previewUrl: "./asset/img/preview/environment/tree/tree_23.jpg"
+			},
+			{
+				id: "Tree24",
+				name: "Tree 24",
+				scale: 0.005,
+				hasTransparentTexture: true,
+				environmentId: EnvironmentId.Tree,
+				model: Res.model.environment.tree.Tree24,
+				previewUrl: "./asset/img/preview/environment/tree/tree_24.jpg"
+			},
+			{
+				id: "Tree25",
+				name: "Tree 25",
+				scale: 0.005,
+				hasTransparentTexture: true,
+				environmentId: EnvironmentId.Tree,
+				model: Res.model.environment.tree.Tree25,
+				previewUrl: "./asset/img/preview/environment/tree/tree_25.jpg"
+			},
+			{
+				id: "Tree26",
+				name: "Tree 26",
+				scale: 0.005,
+				hasTransparentTexture: true,
+				environmentId: EnvironmentId.Tree,
+				model: Res.model.environment.tree.Tree26,
+				previewUrl: "./asset/img/preview/environment/tree/tree_26.jpg"
+			},
+			{
+				id: "Tree27",
+				name: "Tree 27",
+				scale: 0.005,
+				hasTransparentTexture: true,
+				environmentId: EnvironmentId.Tree,
+				model: Res.model.environment.tree.Tree27,
+				previewUrl: "./asset/img/preview/environment/tree/tree_27.jpg"
+			},
+			{
+				id: "Tree28",
+				name: "Tree 28",
+				scale: 0.005,
+				hasTransparentTexture: true,
+				environmentId: EnvironmentId.Tree,
+				model: Res.model.environment.tree.Tree28,
+				previewUrl: "./asset/img/preview/environment/tree/tree_28.jpg"
+			},
+			{
+				id: "Tree29",
+				name: "Tree 29",
+				scale: 0.005,
+				hasTransparentTexture: true,
+				environmentId: EnvironmentId.Tree,
+				model: Res.model.environment.tree.Tree29,
+				previewUrl: "./asset/img/preview/environment/tree/tree_29.jpg"
+			},
+			{
+				id: "Tree30",
+				name: "Tree 30",
+				scale: 0.005,
+				hasTransparentTexture: true,
+				environmentId: EnvironmentId.Tree,
+				model: Res.model.environment.tree.Tree30,
+				previewUrl: "./asset/img/preview/environment/tree/tree_30.jpg"
+			},
+			{
+				id: "Tree31",
+				name: "Tree 31",
+				scale: 0.005,
+				hasTransparentTexture: true,
+				environmentId: EnvironmentId.Tree,
+				model: Res.model.environment.tree.Tree31,
+				previewUrl: "./asset/img/preview/environment/tree/tree_31.jpg"
+			},
+			{
+				id: "Tree32",
+				name: "Tree 32",
+				scale: 0.005,
+				hasTransparentTexture: true,
+				environmentId: EnvironmentId.Tree,
+				model: Res.model.environment.tree.Tree32,
+				previewUrl: "./asset/img/preview/environment/tree/tree_32.jpg"
+			},
+			{
+				id: "Tree33",
+				name: "Tree 33",
+				scale: 0.005,
+				hasTransparentTexture: true,
+				environmentId: EnvironmentId.Tree,
+				model: Res.model.environment.tree.Tree33,
+				previewUrl: "./asset/img/preview/environment/tree/tree_33.jpg"
+			},
+			{
+				id: "Tree34",
+				name: "Tree 34",
+				scale: 0.005,
+				hasTransparentTexture: true,
+				environmentId: EnvironmentId.Tree,
+				model: Res.model.environment.tree.Tree34,
+				previewUrl: "./asset/img/preview/environment/tree/tree_34.jpg"
+			},
+			{
+				id: "Tree35",
+				name: "Tree 35",
+				scale: 0.005,
+				hasTransparentTexture: true,
+				environmentId: EnvironmentId.Tree,
+				model: Res.model.environment.tree.Tree35,
+				previewUrl: "./asset/img/preview/environment/tree/tree_35.jpg"
+			},
+			{
+				id: "Tree36",
+				name: "Tree 36",
+				scale: 0.005,
+				hasTransparentTexture: true,
+				environmentId: EnvironmentId.Tree,
+				model: Res.model.environment.tree.Tree36,
+				previewUrl: "./asset/img/preview/environment/tree/tree_36.jpg"
+			},
+			{
+				id: "Tree37",
+				name: "Tree 37",
+				scale: 0.005,
+				hasTransparentTexture: true,
+				environmentId: EnvironmentId.Tree,
+				model: Res.model.environment.tree.Tree37,
+				previewUrl: "./asset/img/preview/environment/tree/tree_37.jpg"
+			},
+			{
+				id: "Tree38",
+				name: "Tree 38",
+				scale: 0.005,
+				hasTransparentTexture: true,
+				environmentId: EnvironmentId.Tree,
+				model: Res.model.environment.tree.Tree38,
+				previewUrl: "./asset/img/preview/environment/tree/tree_38.jpg"
+			},
+			{
+				id: "Tree39",
+				name: "Tree 39",
+				scale: 0.005,
+				hasTransparentTexture: true,
+				environmentId: EnvironmentId.Tree,
+				model: Res.model.environment.tree.Tree39,
+				previewUrl: "./asset/img/preview/environment/tree/tree_39.jpg"
+			},
+			{
 				id: "Tree40",
 				name: "Tree 40",
 				scale: 0.005,
+				hasTransparentTexture: true,
 				environmentId: EnvironmentId.Tree,
 				model: Res.model.environment.tree.Tree40,
-				previewUrl: "./asset/img/preview/environment/tree/tree_08.jpg"
+				previewUrl: "./asset/img/preview/environment/tree/tree_40.jpg"
+			},
+			{
+				id: "Tree41",
+				name: "Tree 41",
+				scale: 0.005,
+				hasTransparentTexture: true,
+				environmentId: EnvironmentId.Tree,
+				model: Res.model.environment.tree.Tree41,
+				previewUrl: "./asset/img/preview/environment/tree/tree_41.jpg"
 			},
 			{
 				id: "Trunk01",
@@ -885,6 +1271,7 @@ typedef AssetConfig = {
 	@:optional var zOffset(default, never):Float;
 	@:optional var hasAnimation(default, never):Bool;
 	@:optional var previewUrl(default, never):String;
+	@:optional var hasTransparentTexture(default, never):Bool;
 }
 
 enum abstract EnvironmentId(Int) from Int to Int

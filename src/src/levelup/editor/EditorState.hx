@@ -40,6 +40,7 @@ import levelup.game.GameWorld;
 import levelup.game.GameWorld.Region;
 import levelup.game.unit.BaseUnit;
 import levelup.shader.AlphaMask;
+import levelup.shader.Opacity;
 import levelup.shader.TopLayer;
 import levelup.util.GeomUtil3D;
 import levelup.util.SaveUtil;
@@ -385,6 +386,8 @@ class EditorState extends Base2dState
 	function createAsset(config:AssetConfig, x, y, z, scale, rotation, owner = null)
 	{
 		var instance:Object = cache.loadModel(config.model);
+		if (config.hasTransparentTexture != null && config.hasTransparentTexture) for (m in instance.getMaterials()) m.textureShader.killAlpha = true;
+
 		var interactive = new Interactive(instance.getCollider(), world);
 
 		if (config.race == null)
@@ -454,8 +457,6 @@ class EditorState extends Base2dState
 
 		interactive.onOver = e -> for (m in instance.getMaterials()) m.mainPass.addShader(colorShader);
 		interactive.onOut = e -> for (m in instance.getMaterials()) m.mainPass.removeShader(colorShader);
-
-		for (m in instance.getMaterials()) m.mainPass.setBlendMode(BlendMode.Alpha);
 
 		if (previewInstance != null)
 		{
@@ -628,6 +629,7 @@ class EditorState extends Base2dState
 			previewInstanceScale = asset.scale;
 			previewInstanceRotation = -Math.PI / 2;
 			previewInstance = cache.loadModel(selectedAssetConfig.model);
+			if (asset.hasTransparentTexture != null && asset.hasTransparentTexture) for (m in previewInstance.getMaterials()) m.textureShader.killAlpha = true;
 
 			if (selectedAssetConfig.hasAnimation != null && selectedAssetConfig.hasAnimation)
 			{
