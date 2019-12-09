@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8"/>
+	<title>Model Converter</title>
+
+	<script>
+		var converterConfig = [
+			{ from: new RegExp("D:/000-Unreal-Engine-4/006-Easter-Pack/Textures/_Out/Rock/Rocks01Diffuse.jpg", 'g'), to: "texture/Rocks01Diffuse.jpg" },
+			{ from: new RegExp("D:/000-Unreal-Engine-4/006-Easter-Pack/Textures/_Out/Rock/Rocks01Normal.jpg", 'g'), to: "texture/Rocks01Normal.jpg" },
+			{ from: new RegExp("D:/000-Unreal-Engine-4/006-Easter-Pack/Textures/_Out/Plants/Plants01Diffuse.tga", 'g'), to: "texture/Plants01Diffuse.png" },
+			{ from: new RegExp("D:/000-Unreal-Engine-4/006-Easter-Pack/Textures/_Out/Plants/Plants01Normal.jpg", 'g'), to: "texture/Plants01Normal.jpg" },
+			{ from: /RelativeFilename:.+/gm, to: 'RelativeFilename: ""' },
+			{ from: /P: "RelPath".+/gm, to: 'P: "Path", "KString", "XRefUrl", "", ""' }
+		];
+
+		createFile = function (raw)
+		{
+			var data = new Blob([raw], {type: 'text/plain'});
+			return window.URL.createObjectURL(data);
+		};
+
+		function handleFiles(files)
+		{
+			for (key in files)
+			{
+				if (isNaN(key)) return;
+
+				var file = files[key];
+
+				console.log("start converting process on " + file.name + "...");
+				var convert = fileName =>
+				{
+					new Blob([file]).text().then(result => {
+
+						for (configKey in converterConfig)
+						{
+							var config = converterConfig[configKey];
+							result = result.replace(config.from, config.to);
+						}
+
+						var data = new Blob([result], {type: 'text/plain'});
+						var url = window.URL.createObjectURL(data);
+						var link = document.createElement("a");
+						link.innerText = "download " + fileName;
+						link.href = createFile(result);
+						link.target = "_blank";
+						link.download = fileName;
+						document.getElementById("list").append(link);
+					});
+				}
+				convert(file.name);
+			}
+		}
+	</script>
+</head>
+<body style="margin:0;padding:0">
+	<div><input type="file" id="input" multiple onchange="handleFiles(this.files)"></div>
+	<div id="list" style="display: flex; flex-direction: column;">
+	</div>
+</body>
+</html>

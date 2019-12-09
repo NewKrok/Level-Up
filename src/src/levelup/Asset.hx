@@ -46,6 +46,334 @@ class Asset
 				zOffset: 1
 			},
 			{
+				id: "Plant01",
+				name: "Plant 01",
+				scale: 0.008,
+				environmentId: EnvironmentId.Plant,
+				model: Res.model.environment.plant.Plant01,
+				previewUrl: "./asset/img/preview/environment/plant/plant_01.jpg"
+			},
+			{
+				id: "Plant02",
+				name: "Plant 02",
+				scale: 0.008,
+				environmentId: EnvironmentId.Plant,
+				model: Res.model.environment.plant.Plant02,
+				previewUrl: "./asset/img/preview/environment/plant/plant_02.jpg"
+			},
+			{
+				id: "Plant03",
+				name: "Plant 03",
+				scale: 0.008,
+				environmentId: EnvironmentId.Plant,
+				model: Res.model.environment.plant.Plant03,
+				previewUrl: "./asset/img/preview/environment/plant/plant_03.jpg"
+			},
+			{
+				id: "Plant04",
+				name: "Plant 04",
+				scale: 0.008,
+				environmentId: EnvironmentId.Plant,
+				model: Res.model.environment.plant.Plant04,
+				previewUrl: "./asset/img/preview/environment/plant/plant_04.jpg"
+			},
+			{
+				id: "Plant05",
+				name: "Plant 05",
+				scale: 0.008,
+				environmentId: EnvironmentId.Plant,
+				model: Res.model.environment.plant.Plant05,
+				previewUrl: "./asset/img/preview/environment/plant/plant_05.jpg"
+			},
+			{
+				id: "Plant06",
+				name: "Plant 06",
+				scale: 0.008,
+				environmentId: EnvironmentId.Plant,
+				model: Res.model.environment.plant.Plant06,
+				previewUrl: "./asset/img/preview/environment/plant/plant_06.jpg"
+			},
+			{
+				id: "Plant07",
+				name: "Plant 07",
+				scale: 0.008,
+				environmentId: EnvironmentId.Plant,
+				model: Res.model.environment.plant.Plant07,
+				previewUrl: "./asset/img/preview/environment/plant/plant_07.jpg"
+			},
+			{
+				id: "Plant08",
+				name: "Plant 08",
+				scale: 0.008,
+				environmentId: EnvironmentId.Plant,
+				model: Res.model.environment.plant.Plant08,
+				previewUrl: "./asset/img/preview/environment/plant/plant_08.jpg"
+			},
+			{
+				id: "Plant09",
+				name: "Plant 09",
+				scale: 0.008,
+				environmentId: EnvironmentId.Plant,
+				model: Res.model.environment.plant.Plant09,
+				previewUrl: "./asset/img/preview/environment/plant/plant_09.jpg"
+			},
+			{
+				id: "Plant10",
+				name: "Plant 10",
+				scale: 0.008,
+				environmentId: EnvironmentId.Plant,
+				model: Res.model.environment.plant.Plant10,
+				previewUrl: "./asset/img/preview/environment/plant/plant_10.jpg"
+			},
+			{
+				id: "Plant11",
+				name: "Plant 11",
+				scale: 0.008,
+				environmentId: EnvironmentId.Plant,
+				model: Res.model.environment.plant.Plant11,
+				previewUrl: "./asset/img/preview/environment/plant/plant_11.jpg"
+			},
+			{
+				id: "Plant12",
+				name: "Plant 12",
+				scale: 0.008,
+				environmentId: EnvironmentId.Plant,
+				model: Res.model.environment.plant.Plant12,
+				previewUrl: "./asset/img/preview/environment/plant/plant_12.jpg"
+			},
+			{
+				id: "Plant13",
+				name: "Plant 13",
+				scale: 0.008,
+				environmentId: EnvironmentId.Plant,
+				model: Res.model.environment.plant.Plant13,
+				previewUrl: "./asset/img/preview/environment/plant/plant_13.jpg"
+			},
+			{
+				id: "Plant14",
+				name: "Plant 14",
+				scale: 0.008,
+				environmentId: EnvironmentId.Plant,
+				model: Res.model.environment.plant.Plant14,
+				previewUrl: "./asset/img/preview/environment/plant/plant_14.jpg"
+			},
+			{
+				id: "Plant15",
+				name: "Plant 15",
+				scale: 0.008,
+				environmentId: EnvironmentId.Plant,
+				model: Res.model.environment.plant.Plant15,
+				previewUrl: "./asset/img/preview/environment/plant/plant_15.jpg"
+			},
+			{
+				id: "Plant16",
+				name: "Plant 16",
+				scale: 0.008,
+				environmentId: EnvironmentId.Plant,
+				model: Res.model.environment.plant.Plant16,
+				previewUrl: "./asset/img/preview/environment/plant/plant_16.jpg"
+			},
+			{
+				id: "Plant17",
+				name: "Plant 17",
+				scale: 0.008,
+				environmentId: EnvironmentId.Plant,
+				model: Res.model.environment.plant.Plant17,
+				previewUrl: "./asset/img/preview/environment/plant/plant_17.jpg"
+			},
+			{
+				id: "Plant18",
+				name: "Plant 18",
+				scale: 0.008,
+				environmentId: EnvironmentId.Plant,
+				model: Res.model.environment.plant.Plant18,
+				previewUrl: "./asset/img/preview/environment/plant/plant_18.jpg"
+			},
+			{
+				id: "Plant19",
+				name: "Plant 19",
+				scale: 0.008,
+				environmentId: EnvironmentId.Plant,
+				model: Res.model.environment.plant.Plant19,
+				previewUrl: "./asset/img/preview/environment/plant/plant_19.jpg"
+			},
+			{
+				id: "Plant20",
+				name: "Plant 20",
+				scale: 0.008,
+				environmentId: EnvironmentId.Plant,
+				model: Res.model.environment.plant.Plant20,
+				previewUrl: "./asset/img/preview/environment/plant/plant_20.jpg"
+			},
+			{
+				id: "Plant21",
+				name: "Plant 21",
+				scale: 0.008,
+				environmentId: EnvironmentId.Plant,
+				model: Res.model.environment.plant.Plant21,
+				previewUrl: "./asset/img/preview/environment/plant/plant_21.jpg"
+			},
+			{
+				id: "Plant22",
+				name: "Plant 22",
+				scale: 0.008,
+				environmentId: EnvironmentId.Plant,
+				model: Res.model.environment.plant.Plant22,
+				previewUrl: "./asset/img/preview/environment/plant/plant_22.jpg"
+			},
+			{
+				id: "Plant23",
+				name: "Plant 23",
+				scale: 0.008,
+				environmentId: EnvironmentId.Plant,
+				model: Res.model.environment.plant.Plant23,
+				previewUrl: "./asset/img/preview/environment/plant/plant_23.jpg"
+			},
+			{
+				id: "Plant24",
+				name: "Plant 24",
+				scale: 0.008,
+				environmentId: EnvironmentId.Plant,
+				model: Res.model.environment.plant.Plant24,
+				previewUrl: "./asset/img/preview/environment/plant/plant_24.jpg"
+			},
+			{
+				id: "Plant25",
+				name: "Plant 25",
+				scale: 0.008,
+				environmentId: EnvironmentId.Plant,
+				model: Res.model.environment.plant.Plant25,
+				previewUrl: "./asset/img/preview/environment/plant/plant_25.jpg"
+			},
+			{
+				id: "Plant26",
+				name: "Plant 26",
+				scale: 0.008,
+				environmentId: EnvironmentId.Plant,
+				model: Res.model.environment.plant.Plant26,
+				previewUrl: "./asset/img/preview/environment/plant/plant_26.jpg"
+			},
+			{
+				id: "Plant27",
+				name: "Plant 27",
+				scale: 0.008,
+				environmentId: EnvironmentId.Plant,
+				model: Res.model.environment.plant.Plant27,
+				previewUrl: "./asset/img/preview/environment/plant/plant_27.jpg"
+			},
+			{
+				id: "Plant28",
+				name: "Plant 28",
+				scale: 0.008,
+				environmentId: EnvironmentId.Plant,
+				model: Res.model.environment.plant.Plant28,
+				previewUrl: "./asset/img/preview/environment/plant/plant_28.jpg"
+			},
+			{
+				id: "Plant29",
+				name: "Plant 29",
+				scale: 0.008,
+				environmentId: EnvironmentId.Plant,
+				model: Res.model.environment.plant.Plant29,
+				previewUrl: "./asset/img/preview/environment/plant/plant_29.jpg"
+			},
+			{
+				id: "Plant30",
+				name: "Plant 30",
+				scale: 0.008,
+				environmentId: EnvironmentId.Plant,
+				model: Res.model.environment.plant.Plant30,
+				previewUrl: "./asset/img/preview/environment/plant/plant_30.jpg"
+			},
+			{
+				id: "Plant31",
+				name: "Plant 31",
+				scale: 0.008,
+				environmentId: EnvironmentId.Plant,
+				model: Res.model.environment.plant.Plant31,
+				previewUrl: "./asset/img/preview/environment/plant/plant_31.jpg"
+			},
+			{
+				id: "Plant32",
+				name: "Plant 32",
+				scale: 0.008,
+				environmentId: EnvironmentId.Plant,
+				model: Res.model.environment.plant.Plant32,
+				previewUrl: "./asset/img/preview/environment/plant/plant_32.jpg"
+			},
+			{
+				id: "Plant33",
+				name: "Plant 33",
+				scale: 0.008,
+				environmentId: EnvironmentId.Plant,
+				model: Res.model.environment.plant.Plant33,
+				previewUrl: "./asset/img/preview/environment/plant/plant_33.jpg"
+			},
+			{
+				id: "Plant34",
+				name: "Plant 34",
+				scale: 0.008,
+				environmentId: EnvironmentId.Plant,
+				model: Res.model.environment.plant.Plant34,
+				previewUrl: "./asset/img/preview/environment/plant/plant_34.jpg"
+			},
+			{
+				id: "Plant35",
+				name: "Plant 35",
+				scale: 0.008,
+				environmentId: EnvironmentId.Plant,
+				model: Res.model.environment.plant.Plant35,
+				previewUrl: "./asset/img/preview/environment/plant/plant_35.jpg"
+			},
+			{
+				id: "Plant36",
+				name: "Plant 36",
+				scale: 0.008,
+				environmentId: EnvironmentId.Plant,
+				model: Res.model.environment.plant.Plant36,
+				previewUrl: "./asset/img/preview/environment/plant/plant_36.jpg"
+			},
+			{
+				id: "Plant37",
+				name: "Plant 37",
+				scale: 0.008,
+				environmentId: EnvironmentId.Plant,
+				model: Res.model.environment.plant.Plant37,
+				previewUrl: "./asset/img/preview/environment/plant/plant_37.jpg"
+			},
+			{
+				id: "Plant38",
+				name: "Plant 38",
+				scale: 0.008,
+				environmentId: EnvironmentId.Plant,
+				model: Res.model.environment.plant.Plant38,
+				previewUrl: "./asset/img/preview/environment/plant/plant_38.jpg"
+			},
+			{
+				id: "Plant39",
+				name: "Plant 39",
+				scale: 0.008,
+				environmentId: EnvironmentId.Plant,
+				model: Res.model.environment.plant.Plant39,
+				previewUrl: "./asset/img/preview/environment/plant/plant_39.jpg"
+			},
+			{
+				id: "Plant40",
+				name: "Plant 40",
+				scale: 0.008,
+				environmentId: EnvironmentId.Plant,
+				model: Res.model.environment.plant.Plant40,
+				previewUrl: "./asset/img/preview/environment/plant/plant_40.jpg"
+			},
+			{
+				id: "Plant41",
+				name: "Plant 41",
+				scale: 0.008,
+				environmentId: EnvironmentId.Plant,
+				model: Res.model.environment.plant.Plant41,
+				previewUrl: "./asset/img/preview/environment/plant/plant_41.jpg"
+			},
+			{
 				id: "Rock01",
 				name: "Rock 01",
 				scale: 0.005,
@@ -54,12 +382,220 @@ class Asset
 				previewUrl: "./asset/img/preview/environment/rock/rock_01.jpg"
 			},
 			{
+				id: "Rock02",
+				name: "Rock 02",
+				scale: 0.005,
+				environmentId: EnvironmentId.Rock,
+				model: Res.model.environment.rock.Rock02,
+				previewUrl: "./asset/img/preview/environment/rock/rock_02.jpg"
+			},
+			{
+				id: "Rock03",
+				name: "Rock 03",
+				scale: 0.005,
+				environmentId: EnvironmentId.Rock,
+				model: Res.model.environment.rock.Rock03,
+				previewUrl: "./asset/img/preview/environment/rock/rock_03.jpg"
+			},
+			{
+				id: "Rock04",
+				name: "Rock 04",
+				scale: 0.005,
+				environmentId: EnvironmentId.Rock,
+				model: Res.model.environment.rock.Rock04,
+				previewUrl: "./asset/img/preview/environment/rock/rock_04.jpg"
+			},
+			{
+				id: "Rock05",
+				name: "Rock 05",
+				scale: 0.005,
+				environmentId: EnvironmentId.Rock,
+				model: Res.model.environment.rock.Rock05,
+				previewUrl: "./asset/img/preview/environment/rock/rock_05.jpg"
+			},
+			{
+				id: "Rock06",
+				name: "Rock 06",
+				scale: 0.005,
+				environmentId: EnvironmentId.Rock,
+				model: Res.model.environment.rock.Rock06,
+				previewUrl: "./asset/img/preview/environment/rock/rock_06.jpg"
+			},
+			{
 				id: "Rock07",
 				name: "Rock 07",
 				scale: 0.005,
 				environmentId: EnvironmentId.Rock,
 				model: Res.model.environment.rock.Rock07,
 				previewUrl: "./asset/img/preview/environment/rock/rock_07.jpg"
+			},
+			{
+				id: "Rock08",
+				name: "Rock 08",
+				scale: 0.005,
+				environmentId: EnvironmentId.Rock,
+				model: Res.model.environment.rock.Rock08,
+				previewUrl: "./asset/img/preview/environment/rock/rock_08.jpg"
+			},
+			{
+				id: "Rock09",
+				name: "Rock 09",
+				scale: 0.005,
+				environmentId: EnvironmentId.Rock,
+				model: Res.model.environment.rock.Rock09,
+				previewUrl: "./asset/img/preview/environment/rock/rock_09.jpg"
+			},
+			{
+				id: "Rock10",
+				name: "Rock 10",
+				scale: 0.005,
+				environmentId: EnvironmentId.Rock,
+				model: Res.model.environment.rock.Rock10,
+				previewUrl: "./asset/img/preview/environment/rock/rock_10.jpg"
+			},
+			{
+				id: "Rock11",
+				name: "Rock 11",
+				scale: 0.005,
+				environmentId: EnvironmentId.Rock,
+				model: Res.model.environment.rock.Rock11,
+				previewUrl: "./asset/img/preview/environment/rock/rock_11.jpg"
+			},
+			{
+				id: "Rock12",
+				name: "Rock 12",
+				scale: 0.005,
+				environmentId: EnvironmentId.Rock,
+				model: Res.model.environment.rock.Rock12,
+				previewUrl: "./asset/img/preview/environment/rock/rock_12.jpg"
+			},
+			{
+				id: "Rock13",
+				name: "Rock 13",
+				scale: 0.005,
+				environmentId: EnvironmentId.Rock,
+				model: Res.model.environment.rock.Rock13,
+				previewUrl: "./asset/img/preview/environment/rock/rock_13.jpg"
+			},
+			{
+				id: "Rock14",
+				name: "Rock 14",
+				scale: 0.005,
+				environmentId: EnvironmentId.Rock,
+				model: Res.model.environment.rock.Rock14,
+				previewUrl: "./asset/img/preview/environment/rock/rock_14.jpg"
+			},
+			{
+				id: "Rock15",
+				name: "Rock 15",
+				scale: 0.005,
+				environmentId: EnvironmentId.Rock,
+				model: Res.model.environment.rock.Rock15,
+				previewUrl: "./asset/img/preview/environment/rock/rock_15.jpg"
+			},
+			{
+				id: "Rock16",
+				name: "Rock 16",
+				scale: 0.005,
+				environmentId: EnvironmentId.Rock,
+				model: Res.model.environment.rock.Rock16,
+				previewUrl: "./asset/img/preview/environment/rock/rock_16.jpg"
+			},
+			{
+				id: "Rock17",
+				name: "Rock 17",
+				scale: 0.005,
+				environmentId: EnvironmentId.Rock,
+				model: Res.model.environment.rock.Rock17,
+				previewUrl: "./asset/img/preview/environment/rock/rock_17.jpg"
+			},
+			{
+				id: "Rock18",
+				name: "Rock 18",
+				scale: 0.005,
+				environmentId: EnvironmentId.Rock,
+				model: Res.model.environment.rock.Rock18,
+				previewUrl: "./asset/img/preview/environment/rock/rock_18.jpg"
+			},
+			{
+				id: "Rock19",
+				name: "Rock 19",
+				scale: 0.005,
+				environmentId: EnvironmentId.Rock,
+				model: Res.model.environment.rock.Rock19,
+				previewUrl: "./asset/img/preview/environment/rock/rock_19.jpg"
+			},
+			{
+				id: "Rock20",
+				name: "Rock 20",
+				scale: 0.005,
+				environmentId: EnvironmentId.Rock,
+				model: Res.model.environment.rock.Rock20,
+				previewUrl: "./asset/img/preview/environment/rock/rock_20.jpg"
+			},
+			{
+				id: "Rock21",
+				name: "Rock 21",
+				scale: 0.005,
+				environmentId: EnvironmentId.Rock,
+				model: Res.model.environment.rock.Rock21,
+				previewUrl: "./asset/img/preview/environment/rock/rock_21.jpg"
+			},
+			{
+				id: "Rock22",
+				name: "Rock 22",
+				scale: 0.005,
+				environmentId: EnvironmentId.Rock,
+				model: Res.model.environment.rock.Rock22,
+				previewUrl: "./asset/img/preview/environment/rock/rock_22.jpg"
+			},
+			{
+				id: "Rock23",
+				name: "Rock 23",
+				scale: 0.005,
+				environmentId: EnvironmentId.Rock,
+				model: Res.model.environment.rock.Rock23,
+				previewUrl: "./asset/img/preview/environment/rock/rock_23.jpg"
+			},
+			{
+				id: "Rock24",
+				name: "Rock 24",
+				scale: 0.005,
+				environmentId: EnvironmentId.Rock,
+				model: Res.model.environment.rock.Rock24,
+				previewUrl: "./asset/img/preview/environment/rock/rock_24.jpg"
+			},
+			{
+				id: "Rock25",
+				name: "Rock 25",
+				scale: 0.005,
+				environmentId: EnvironmentId.Rock,
+				model: Res.model.environment.rock.Rock25,
+				previewUrl: "./asset/img/preview/environment/rock/rock_25.jpg"
+			},
+			{
+				id: "Rock26",
+				name: "Rock 26",
+				scale: 0.005,
+				environmentId: EnvironmentId.Rock,
+				model: Res.model.environment.rock.Rock26,
+				previewUrl: "./asset/img/preview/environment/rock/rock_26.jpg"
+			},
+			{
+				id: "Rock27",
+				name: "Rock 27",
+				scale: 0.005,
+				environmentId: EnvironmentId.Rock,
+				model: Res.model.environment.rock.Rock27,
+				previewUrl: "./asset/img/preview/environment/rock/rock_27.jpg"
+			},
+			{
+				id: "Rock28",
+				name: "Rock 28",
+				scale: 0.005,
+				environmentId: EnvironmentId.Rock,
+				model: Res.model.environment.rock.Rock28,
+				previewUrl: "./asset/img/preview/environment/rock/rock_28.jpg"
 			},
 			{
 				id: "Tree01",
@@ -357,4 +893,5 @@ enum abstract EnvironmentId(Int) from Int to Int
 	var Rock = 1;
 	var Tree = 2;
 	var Trunk = 3;
+	var Plant = 4;
 }

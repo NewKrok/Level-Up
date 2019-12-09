@@ -452,8 +452,10 @@ class EditorState extends Base2dState
 		var colorShader = new ColorMult();
 		colorShader.color = new Vector(1, 1, 0, 0.2);
 
-		interactive.onOver = e -> instance.getMaterials()[0].mainPass.addShader(colorShader);
-		interactive.onOut = e -> instance.getMaterials()[0].mainPass.removeShader(colorShader);
+		interactive.onOver = e -> for (m in instance.getMaterials()) m.mainPass.addShader(colorShader);
+		interactive.onOut = e -> for (m in instance.getMaterials()) m.mainPass.removeShader(colorShader);
+
+		for (m in instance.getMaterials()) m.mainPass.setBlendMode(BlendMode.Alpha);
 
 		if (previewInstance != null)
 		{
@@ -626,7 +628,6 @@ class EditorState extends Base2dState
 			previewInstanceScale = asset.scale;
 			previewInstanceRotation = -Math.PI / 2;
 			previewInstance = cache.loadModel(selectedAssetConfig.model);
-			//for (m in previewInstance.getMaterials()) m.mainPass.setBlendMode(BlendMode.Screen);
 
 			if (selectedAssetConfig.hasAnimation != null && selectedAssetConfig.hasAnimation)
 			{

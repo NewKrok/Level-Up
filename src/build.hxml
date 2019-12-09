@@ -9,6 +9,10 @@
 -lib actuate
 -lib hpp
 -lib embed-js
+#-lib uglifyjs
+#-lib closure
+
+#-dce full
 
 -cp src
 

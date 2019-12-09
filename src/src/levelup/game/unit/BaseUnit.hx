@@ -95,7 +95,6 @@ import tink.state.State;
 
 		createSelectionCircle();
 
-		// 1.8 is a hacky solution to make easier the unit selection
 		collider = new Capsule(new Point(0, 0, -1), new Point(0, 0, 1), config.unitSize);
 
 		var colorShader = new ColorMult();

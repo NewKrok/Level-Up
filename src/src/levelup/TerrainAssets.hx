@@ -22,6 +22,12 @@ class TerrainAssets
 	{
 		terrains = [
 			{
+				id: "landscapewoodchips01diffuse",
+				type: TerrainType.Forest,
+				previewUrl: "asset/img/preview/terrain/forest/landscapewoodchips01diffuse.jpg",
+				texture: Res.texture.terrain.forest.landscapewoodchips01diffuse.toTexture()
+			},
+			{
 				id: "autumn_leaves",
 				type: TerrainType.Forest,
 				previewUrl: "asset/img/preview/terrain/forest/autumn_leaves.jpg",
@@ -226,6 +232,12 @@ class TerrainAssets
 				texture: Res.texture.terrain.road.vol_7_3_base_color.toTexture()
 			},
 			{
+				id: "landscapestones01diffuse",
+				type: TerrainType.Road,
+				previewUrl: "asset/img/preview/terrain/road/landscapestones01diffuse.jpg",
+				texture: Res.texture.terrain.road.landscapestones01diffuse.toTexture()
+			},
+			{
 				id: "vol_5_1_base_color",
 				type: TerrainType.Other,
 				previewUrl: "asset/img/preview/terrain/other/vol_5_1_base_color.jpg",
@@ -290,6 +302,30 @@ class TerrainAssets
 				type: TerrainType.Stone,
 				previewUrl: "asset/img/preview/terrain/stone/vol_27_1_base_color.jpg",
 				texture: Res.texture.terrain.stone.vol_27_1_base_color.toTexture()
+			},
+			{
+				id: "landscaperock01diffuse",
+				type: TerrainType.Stone,
+				previewUrl: "asset/img/preview/terrain/stone/landscaperock01diffuse.jpg",
+				texture: Res.texture.terrain.stone.landscaperock01diffuse.toTexture()
+			},
+			{
+				id: "landscapedirt01diffuse",
+				type: TerrainType.Dirt,
+				previewUrl: "asset/img/preview/terrain/dirt/landscapedirt01diffuse.jpg",
+				texture: Res.texture.terrain.dirt.landscapedirt01diffuse.toTexture()
+			},
+			{
+				id: "landscapegrass01diffuse",
+				type: TerrainType.Field,
+				previewUrl: "asset/img/preview/terrain/field/landscapegrass01diffuse.jpg",
+				texture: Res.texture.terrain.field.landscapegrass01diffuse.toTexture()
+			},
+			{
+				id: "landscapegrass02diffuse",
+				type: TerrainType.Field,
+				previewUrl: "asset/img/preview/terrain/field/landscapegrass02diffuse.jpg",
+				texture: Res.texture.terrain.field.landscapegrass02diffuse.toTexture()
 			}
 		];
 	}

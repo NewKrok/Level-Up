@@ -49,11 +49,12 @@ class EditorLibrary extends View
 			</select>
 			<if {selectedListIndex == 0}>
 				<div class="lu_row">
-					<select class="lu_selector lu_offset" onchange={e -> selectedEnvironmentIndex = cast(e.currentTarget, SelectElement).selectedIndex}>
-						<option selected={selectedEnvironmentIndex == 0}>Bridge</option>
-						<option selected={selectedEnvironmentIndex == 1}>Rock</option>
-						<option selected={selectedEnvironmentIndex == 2}>Tree</option>
-						<option selected={selectedEnvironmentIndex == 3}>Trunk</option>
+					<select class="lu_selector lu_offset" onchange={e -> selectedEnvironmentIndex = cast cast(e.currentTarget, SelectElement).value}>
+						<option selected={selectedEnvironmentIndex == 0} value="0">Bridge</option>
+						<option selected={selectedEnvironmentIndex == 4} value="4">Plant</option>
+						<option selected={selectedEnvironmentIndex == 1} value="1">Rock</option>
+						<option selected={selectedEnvironmentIndex == 2} value="2">Tree</option>
+						<option selected={selectedEnvironmentIndex == 3} value="3">Trunk</option>
 					</select>
 				</div>
 			</if>
