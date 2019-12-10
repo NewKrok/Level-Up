@@ -4,6 +4,14 @@
 ## Try it now - in progress...
 http://flashplusplus.net/haxe/levelup/index.html
 
+## Screenshot(s)
+Ingame
+![image](https://user-images.githubusercontent.com/13141660/70577922-89e48080-1bac-11ea-9b10-8f8183ee4ca3.png)
+
+Editor
+![image](https://user-images.githubusercontent.com/13141660/70577969-b00a2080-1bac-11ea-9702-de1203783941.png)
+![image](https://user-images.githubusercontent.com/13141660/70577990-c1532d00-1bac-11ea-96a5-d91d6f23c0ce.png)
+
 ## TODO - general
 - Fix for some render issues like some unit has a black "shadow"
 - Add missing Human, Orc, Elf, Undead characters
@@ -33,11 +41,9 @@ http://flashplusplus.net/haxe/levelup/index.html
 - Team editor
 - Possibility to change the cam view angle
 - Fix asset selection - there is a problem with colliders
-- Change grid density based on the camera distance
 - etc...
 
 ## TODO - Terrain editor
-- Mark locked base terrain with an icon
 - Possibility to change the layer order
 - Undo / Redo functionality
 - Fix paint bug when the position is locked - after mouse up
@@ -47,16 +53,6 @@ http://flashplusplus.net/haxe/levelup/index.html
 - Add eraser brush
 - Add flat brush
 - Undo / Redo functionality
-
-## Screenshot(s)
-Lobby
-![image](https://user-images.githubusercontent.com/13141660/68549518-17d81a80-03f9-11ea-831a-d97de774f63c.png)
-
-Editor
-![image](https://user-images.githubusercontent.com/13141660/69908241-d62e0480-13e5-11ea-9805-864f7e3db6f6.png)
-![image](https://user-images.githubusercontent.com/13141660/69503789-c57d1a80-0f1d-11ea-8d7f-698ed12e7ee1.png)
-![image](https://user-images.githubusercontent.com/13141660/69002269-3902a480-08ec-11ea-826a-e8aeacb79999.png)
-![image](https://user-images.githubusercontent.com/13141660/69002283-90a11000-08ec-11ea-8334-5e5f7049ceb1.png)
 
 
 ## Dependencies
