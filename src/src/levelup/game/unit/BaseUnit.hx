@@ -389,7 +389,7 @@ import tink.state.State;
 
 	function setRotation()
 	{
-		if (currentTargetPoint.y != view.y || currentTargetPoint.x != view.x || state.value == AttackTriggered)
+		if (state.value != Idle && (currentTargetPoint.y != view.y || currentTargetPoint.x != view.x || state.value == AttackTriggered))
 		{
 			if (viewRotation < 0) viewRotation += Math.PI * 2;
 			var diff = currentTargetAngle - viewRotation;

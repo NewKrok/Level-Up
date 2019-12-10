@@ -1,5 +1,6 @@
 package levelup.util;
 
+import h3d.Vector;
 import haxe.ds.Map;
 import hpp.util.DeviceData;
 import hxd.Save;
@@ -10,8 +11,8 @@ import hxd.Save;
  */
 class SaveUtil
 {
-	private static var savedGameDataName:String = "fpp_level_up--game";
-	private static var savedEditorDataName:String = "fpp_level_up--editor";
+	private static var savedGameDataName:String = "(game) fpp_level_up";
+	private static var savedEditorDataName:String = "(editor) fpp_level_up";
 
 	public static var gameData(default, null):SavedGameData;
 	public static var editorData(default, null):SavedEditorData;

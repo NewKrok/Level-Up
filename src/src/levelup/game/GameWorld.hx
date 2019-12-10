@@ -1,5 +1,6 @@
 package levelup.game;
 
+import h3d.Quat;
 import h3d.col.Point;
 import h3d.mat.BlendMode;
 import h3d.mat.Data.Wrap;
@@ -243,11 +244,11 @@ class GameWorld extends World
 		}
 	}
 
-	public function addToWorldPoint(model:Object, x:Float, y:Float, z:Float = 1, scale = 1., rotation = 0.):Void
+	public function addToWorldPoint(model:Object, x:Float, y:Float, z:Float = 1, scale = 1., rotation:Quat = null):Void
 	{
 		model.setPosition(x, y, z);
 		model.setScale(scale);
-		model.setRotation(0, 0, rotation);
+		if (rotation != null) model.setRotationQuat(rotation);
 		addChild(model);
 	}
 

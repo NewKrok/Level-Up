@@ -42,6 +42,7 @@ import levelup.game.unit.BaseUnit;
 import levelup.shader.AlphaMask;
 import levelup.shader.Opacity;
 import levelup.shader.TopLayer;
+import levelup.util.AdventureParser;
 import levelup.util.GeomUtil3D;
 import levelup.util.SaveUtil;
 import motion.Actuate;
@@ -97,8 +98,6 @@ class EditorState extends Base2dState
 	var selectedWorldAsset:State<AssetItem> = new State<AssetItem>(null);
 	var selectedAssetConfig:AssetConfig;
 	var previewInstance:Object;
-	var previewInstanceRotation:Float = 0;
-	var previewInstanceScale:Float = 0.05;
 
 	var lastEscPressTime:Float = 0;
 
@@ -122,7 +121,7 @@ class EditorState extends Base2dState
 
 		this.s3d = s3d;
 		this.s2d = s2d;
-		mapConfig = loadLevel(rawMap);
+		mapConfig = AdventureParser.loadLevel(rawMap);
 
 		model = new EditorModel(
 		{
@@ -138,7 +137,15 @@ class EditorState extends Base2dState
 
 		model.observables.baseTerrainId.bind(id -> world.changeBaseTerrain(id));
 		model.observables.showGrid.bind(v -> v ? showGrid() : hideGrid());
-		model.observables.toolState.bind(v -> v == ToolState.Library ? enableAssetInteractives() : disableAssetInteractives());
+		model.observables.toolState.bind(v ->
+		{
+			if (v == ToolState.Library) enableAssetInteractives();
+			else
+			{
+				disableAssetInteractives();
+				createPreview(null);
+			}
+		});
 
 		dialogManager = new EditorDialogManager(cast this);
 
@@ -211,8 +218,8 @@ class EditorState extends Base2dState
 						previewInstance.x,
 						previewInstance.y,
 						previewInstance.z,
-						previewInstanceScale,
-						previewInstanceRotation,
+						previewInstance.scaleX,
+						previewInstance.getRotationQuat().clone(),
 						model.selectedPlayer
 					);
 				}
@@ -312,7 +319,13 @@ class EditorState extends Base2dState
 		s3d.addChild(cameraObject);
 		s3d.camera.target.x = s3d.camera.pos.x;
 		s3d.camera.target.y = s3d.camera.pos.y;
-		jumpCamera(10, 10, 23);
+
+		if (mapConfig.editorLastCamPosition == null) jumpCamera(10, 10);
+		else
+		{
+			camDistance = mapConfig.editorLastCamPosition.z;
+			jumpCamera(mapConfig.editorLastCamPosition.x, mapConfig.editorLastCamPosition.y);
+		}
 
 		editorUi = new EditorUi({
 			backToLobby: () -> HppG.changeState(GameState, [stage, s3d, MapData.getRawMap("lobby")]),
@@ -428,10 +441,6 @@ class EditorState extends Base2dState
 			interactive: interactive
 		});
 
-		instance.setScale(scale);
-		instance.setRotation(0, 0, rotation);
-		instance.z = config.zOffset == null ? 0 : config.zOffset;
-
 		if (config.hasAnimation != null && config.hasAnimation)
 		{
 			instance.playAnimation(cache.loadAnimation(config.model));
@@ -511,37 +520,33 @@ class EditorState extends Base2dState
 					if (draggedInstance != null) dragInstanceWorldStartPoint = null;
 
 				case Key.UP | Key.W if (previewInstance != null):
-					previewInstanceScale += selectedAssetConfig.scale * 0.1;
-					previewInstance.setScale(previewInstanceScale);
-				case Key.DOWN if (previewInstance != null):
-					previewInstanceScale -= selectedAssetConfig.scale * 0.1;
-					previewInstance.setScale(previewInstanceScale);
+					previewInstance.scale(1.1);
+				case Key.DOWN | Key.S if (previewInstance != null):
+					previewInstance.scale(0.9);
 
 				case Key.UP | Key.W if (selectedInstance != null):
 					logAction({
 						actionType: EditorActionType.Scale,
 						target: selectedInstance,
 						oldValueFloat: selectedInstance.scaleX,
-						newValueFloat: selectedInstance.scaleX + selectedConfig.scale * 0.1
+						newValueFloat: selectedInstance.scaleX * 0.9
 					});
-					selectedInstance.setScale(selectedInstance.scaleX + selectedConfig.scale * 0.1);
+					selectedInstance.scale(1.1);
 					editorUi.forceUpdateSelectedUser();
 				case Key.DOWN | Key.S if (selectedInstance != null):
 					logAction({
 						actionType: EditorActionType.Scale,
 						target: selectedInstance,
 						oldValueFloat: selectedInstance.scaleX,
-						newValueFloat: selectedInstance.scaleX - selectedConfig.scale * 0.1
+						newValueFloat: selectedInstance.scaleX * 1.1
 					});
-					selectedInstance.setScale(selectedInstance.scaleX - selectedConfig.scale * 0.1);
+					selectedInstance.scale(0.9);
 					editorUi.forceUpdateSelectedUser();
 
 				case Key.LEFT | Key.A if (previewInstance != null):
-					previewInstanceRotation += Math.PI / 8;
-					previewInstance.setRotation(0, 0, previewInstanceRotation);
+					previewInstance.rotate(0, 0, Math.PI / 8);
 				case Key.RIGHT | Key.D if (!hadActiveCommandWithCtrl && previewInstance != null):
-					previewInstanceRotation -= Math.PI / 8;
-					previewInstance.setRotation(0, 0, previewInstanceRotation);
+					previewInstance.rotate(0, 0, -Math.PI / 8);
 
 				case Key.LEFT | Key.A if (selectedInstance != null):
 					var prevQ = selectedInstance.getRotationQuat().clone();
@@ -565,6 +570,11 @@ class EditorState extends Base2dState
 					});
 					editorUi.forceUpdateSelectedUser();
 
+				case Key.UP | Key.W: cameraObject.x += 5;
+				case Key.DOWN | Key.S: cameraObject.x -= 5;
+				case Key.LEFT | Key.A: cameraObject.y -= 5;
+				case Key.RIGHT | Key.D: cameraObject.y += 5;
+
 				case Key.SPACE if (previewInstance != null): editorUi.removeSelection();
 				case Key.ESCAPE if (previewInstance != null):
 					var now = Date.now().getTime();
@@ -575,17 +585,15 @@ class EditorState extends Base2dState
 					}
 					lastEscPressTime = now;
 
-					previewInstanceRotation = -Math.PI / 2;
-					previewInstanceScale = selectedAssetConfig.scale;
-					previewInstance.setScale(previewInstanceScale);
-					previewInstance.setRotation(0, 0, previewInstanceRotation);
+					previewInstance.setScale(selectedAssetConfig.scale);
+					previewInstance.setRotation(0, 0, 0);
 
 				case Key.ESCAPE if (selectedWorldAsset.value != null): selectedWorldAsset.set(null);
 
-				case Key.D if (hadActiveCommandWithCtrl && selectedWorldAsset.value != null):
+				case Key.C if (selectedWorldAsset.value != null):
 					createPreview(selectedWorldAsset.value.config);
 					previewInstance.setScale(selectedWorldAsset.value.instance.scaleX);
-					previewInstance.setRotation(0, 0, selectedWorldAsset.value.instance.getRotationQuat().z);
+					previewInstance.setRotationQuat(selectedWorldAsset.value.instance.getRotationQuat().clone());
 
 				case Key.N if (!Key.isDown(Key.CTRL)): editorUi.increaseSnap();
 				case Key.G if (!Key.isDown(Key.CTRL)): model.showGrid = !model.showGrid;
@@ -626,8 +634,6 @@ class EditorState extends Base2dState
 
 		if (selectedAssetConfig != null)
 		{
-			previewInstanceScale = asset.scale;
-			previewInstanceRotation = -Math.PI / 2;
 			previewInstance = cache.loadModel(selectedAssetConfig.model);
 			if (asset.hasTransparentTexture != null && asset.hasTransparentTexture) for (m in previewInstance.getMaterials()) m.textureShader.killAlpha = true;
 
@@ -635,8 +641,8 @@ class EditorState extends Base2dState
 			{
 				previewInstance.playAnimation(cache.loadAnimation(selectedAssetConfig.model));
 			}
-			previewInstance.setScale(previewInstanceScale);
-			previewInstance.setRotation(0, 0, previewInstanceRotation);
+			previewInstance.setScale(selectedAssetConfig.scale);
+			previewInstance.setRotation(0, 0, 0);
 			if (selectedAssetConfig.zOffset != null) previewInstance.z = selectedAssetConfig.zOffset;
 
 			s3d.addChild(previewInstance);
@@ -644,35 +650,6 @@ class EditorState extends Base2dState
 		}
 
 		Browser.document.getElementById("webgl").focus();
-	}
-
-	function loadLevel(rawDataStr:String)
-	{
-		var rawData = Json.parse(rawDataStr);
-
-		var pathFindingMap:Array<Array<WorldEntity>> = rawData.pathFindingMap;
-		var staticObjects:Array<StaticObjectConfig> = rawData.staticObjects;
-
-		var regions:Array<Region> = [for (r in cast(rawData.regions, Array<Dynamic>)) {
-			id: r.id,
-			x: r.x,
-			y: r.y,
-			width: r.width,
-			height: r.height
-		}];
-
-		return {
-			name: rawData.name,
-			size: rawData.size,
-			baseTerrainId: rawData.baseTerrainId,
-			pathFindingMap: pathFindingMap,
-			regions: regions,
-			triggers: [],
-			units: rawData.units,
-			staticObjects: staticObjects,
-			terrainLayers: rawData.terrainLayers,
-			heightMap: rawData.heightMap
-		};
 	}
 
 	function logAction(a:EditorAction)
@@ -932,14 +909,14 @@ class EditorState extends Base2dState
 		);
 	}
 
-	function jumpCamera(x:Float, y:Float, z:Float)
+	function jumpCamera(x:Float, y:Float, z:Float = null)
 	{
 		cameraObject.x = x;
 		cameraObject.y = y;
 
 		currentCameraPoint.x = x;
 		currentCameraPoint.y = y;
-		currentCameraPoint.z = z;
+		if (z != null) currentCameraPoint.z = z;
 
 		currentCamDistance = camDistance;
 
@@ -976,7 +953,7 @@ class EditorState extends Base2dState
 			z: u.instance.z,
 			zOffset: u.zOffset,
 			scale: u.instance.scaleX,
-			rotation: u.instance.getRotationQuat().z,
+			rotation: u.instance.getRotationQuat().clone(),
 		}];
 
 		var worldConfig:WorldConfig = {
@@ -989,7 +966,8 @@ class EditorState extends Base2dState
 			units: units,
 			staticObjects: model.staticObjects,
 			terrainLayers: terrainLayers,
-			heightMap: Base64.encode(world.heightMap.getPixels().bytes)
+			heightMap: Base64.encode(world.heightMap.getPixels().bytes),
+			editorLastCamPosition: new Vector(cameraObject.x, cameraObject.y, currentCamDistance)
 		};
 		var result = Json.stringify(worldConfig);
 

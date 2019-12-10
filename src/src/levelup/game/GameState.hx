@@ -3,6 +3,7 @@ package levelup.game;
 import coconut.ui.RenderResult;
 import h2d.Flow;
 import h2d.Scene;
+import h3d.Quat;
 import h3d.Vector;
 import h3d.pass.DefaultShadowMap;
 import h3d.prim.Cube;
@@ -42,6 +43,7 @@ import levelup.game.unit.orc.Drake;
 import levelup.game.unit.orc.Grunt;
 import levelup.game.unit.elf.Knome;
 import levelup.game.unit.orc.Minion;
+import levelup.util.AdventureParser;
 import levelup.util.SaveUtil;
 import motion.Actuate;
 import motion.easing.IEasing;
@@ -66,10 +68,7 @@ class GameState extends Base2dState
 	var s2d:h2d.Scene;
 	var s3d:h3d.scene.Scene;
 
-	var debugMapBlocks:Graphics;
-	var debugRegions:Graphics;
 	var debugUnitPath:Graphics;
-	var debugDetectionRadius:Graphics;
 
 	var heroUiContainer:Flow;
 
@@ -88,7 +87,6 @@ class GameState extends Base2dState
 	var lastMovePosition:SimplePoint = { x: 0, y: 0 };
 
 	var selectedUnit:State<BaseUnit> = new State<BaseUnit>(null);
-	var targetMarker:Mesh;
 	var isControlEnabled:Bool = false;
 	var isDisposed:Bool = false;
 
@@ -99,7 +97,7 @@ class GameState extends Base2dState
 		this.s3d = s3d;
 		this.s2d = s2d;
 		this.stateConfig = stateConfigParam == null ? { isTestRun: false } : stateConfigParam;
-		mapConfig = loadLevel(rawMap);
+		mapConfig = AdventureParser.loadLevel(rawMap);
 
 		heroUiContainer = new Flow(s2d);
 		heroUiContainer.scale(0.5);
@@ -120,17 +118,10 @@ class GameState extends Base2dState
 			}
 		});
 
-		debugMapBlocks = new Graphics(s3d);
-		debugMapBlocks.z = 0.2;
-		debugRegions = new Graphics(s3d);
-		debugRegions.z = 0.2;
 		debugUnitPath = new Graphics(s3d);
 		debugUnitPath.z = 0.2;
-		debugDetectionRadius = new Graphics(s3d);
-		debugDetectionRadius.z = 0.2;
 
 		world = new GameWorld(s3d, mapConfig, 1, 64, 64, s3d);
-
 		world.done();
 
 		var dirLight = new DirLight(null, s3d);
@@ -149,10 +140,6 @@ class GameState extends Base2dState
 		var c = new Cube(1, 1, 1);
 		c.addNormals();
 		c.addUVs();
-		targetMarker = new Mesh(c, null, s3d);
-		targetMarker.z = -0.8;
-		targetMarker.material.color.setColor(0xFFFF00);
-		targetMarker.material.shadows = false;
 
 		world.onWorldClick = e ->
 		{
@@ -209,18 +196,8 @@ class GameState extends Base2dState
 			}
 		}
 
-		// With intro
-		/*hasCameraAnimation = true;
-		jumpCamera(40, 10, 20);
-		Timer.delay(function() {
-			moveCamera(10, 10, 15, 4).handle(model.startGame);
-		}, 1000);
-		Timer.delay(function() {
-			playerCharacter.moveTo({ x: 10, y: 10 });
-		}, 3500);*/
-
-		// Without intro
-		jumpCamera(10, 10, camDistance);
+		jumpCamera(35, 40, camDistance);
+		if (world.units.length > 2) selectUnit(world.units[3]);
 		model.startGame();
 
 		if (mapConfig.name == "Lobby" && !stateConfig.isTestRun)
@@ -246,65 +223,7 @@ class GameState extends Base2dState
 		}
 	}
 
-	function loadLevel(rawDataStr:String)
-	{
-		var rawData = Json.parse(rawDataStr);
-
-		var pathFindingMap:Array<Array<WorldEntity>> = rawData.pathFindingMap;
-		var staticObjects:Array<StaticObjectConfig> = rawData.staticObjects;
-
-		var regions:Array<Region> = [for (r in cast(rawData.regions, Array<Dynamic>)) {
-			id: r.id,
-			x: r.x,
-			y: r.y,
-			width: r.width,
-			height: r.height
-		}];
-
-		var triggers:Array<Trigger> = [for (t in cast(rawData.triggers, Array<Dynamic>)) {
-			id: t.id != null ? t.id.toLowerCase() : Std.string(Math.random() * 9999999),
-			isEnabled: t.isEnabled != null ? t.isEnabled : true,
-			event: switch (t.event.toLowerCase().split(" ")) {
-				case [event, regionName] if (event.toLowerCase() == "enterregion"): EnterRegion(getRegion(regions, regionName));
-				case [event, time] if (event.toLowerCase() == "timeelapsed"): TimeElapsed(time);
-				case [event, time] if (event.toLowerCase() == "timeperiodic"): TimePeriodic(time);
-				case _: null;
-			},
-			condition: t.condition == null ? null : switch (t.condition.toLowerCase().split(" ")) {
-				case [condition, unitDefinition, expectedPlayer] if (condition.toLowerCase() == "ownerof"):
-					OwnerOf(switch(unitDefinition.toLowerCase())
-					{
-						case "triggeringunit": TriggeringUnit;
-						case _: null;
-					}, expectedPlayer);
-				case _: null;
-			},
-			actions: [for(actionEntry in cast(t.actions, Array<Dynamic>)) switch (actionEntry.toLowerCase().split(" ")) {
-				case [action, message] if (action.toLowerCase() == "log"): Log(message);
-				case [action, levelName] if (action.toLowerCase() == "loadlevel"): LoadLevel(levelName);
-				case [action, triggerId] if (action.toLowerCase() == "enabletrigger"): EnableTrigger(triggerId);
-				case [action, unitId, owner] if (action.toLowerCase() == "createunit"): CreateUnit(unitId, owner);
-				case _: null;
-			}],
-		}];
-
-		return {
-			name: rawData.name,
-			size: rawData.size,
-			baseTerrainId: rawData.baseTerrainId,
-			pathFindingMap: pathFindingMap,
-			regions: regions,
-			triggers: triggers,
-			units: rawData.units,
-			staticObjects: staticObjects,
-			terrainLayers: rawData.terrainLayers,
-			heightMap: rawData.heightMap
-		};
-	}
-
-	function getRegion(regions:Array<Region>, id:String) return regions.filter(function (r) { return r.id == id; })[0];
-
-	function createUnit(id:String, owner:PlayerId, posX:Float, posY:Float, scale:Float, rotation:Float)
+	function createUnit(id:String, owner:PlayerId, posX:Float, posY:Float, scale:Float, rotation:Quat = null)
 	{
 		var unit = switch (id) {
 			// orc
@@ -331,7 +250,7 @@ class GameState extends Base2dState
 		unit.view.x = posX * world.blockSize + world.blockSize / 2;
 		unit.view.y = posY * world.blockSize + world.blockSize / 2;
 		unit.view.setScale(scale);
-		unit.view.setRotation(0, 0, scale);
+		if (rotation != null) unit.view.setRotationQuat(rotation);
 
 		world.addEntity(unit);
 
@@ -350,56 +269,6 @@ class GameState extends Base2dState
 	{
 		selectedUnit.set(u);
 		setCameraTarget(selectedUnit.value);
-	}
-
-	function drawDebugMapBlocks():Void
-	{
-		debugMapBlocks.clear();
-
-		var i = 0;
-		for (row in world.graph.grid)
-		{
-			var j = 0;
-			for (col in row)
-			{
-				if (col.weight != 0)
-				{
-					/*debugMapBlocks.lineStyle(2, 0x000000);
-
-					debugMapBlocks.moveTo(i * world.blockSize, j * world.blockSize, 0);
-					debugMapBlocks.lineTo(i * world.blockSize + world.blockSize, j * world.blockSize, 0);
-					debugMapBlocks.lineTo(i * world.blockSize + world.blockSize, j * world.blockSize + world.blockSize, 0);
-					debugMapBlocks.lineTo(i * world.blockSize, j * world.blockSize + world.blockSize, 0);*/
-				}
-				else
-				{
-					debugMapBlocks.lineStyle(2, 0x0000FF);
-
-					debugMapBlocks.moveTo(i * world.blockSize, j * world.blockSize + world.blockSize, 0);
-					debugMapBlocks.lineTo(i * world.blockSize + world.blockSize, j * world.blockSize, 0);
-					debugMapBlocks.moveTo(i * world.blockSize, j * world.blockSize, 0);
-					debugMapBlocks.lineTo(i * world.blockSize + world.blockSize, j * world.blockSize + world.blockSize, 0);
-				}
-				j++;
-			}
-			i++;
-		}
-	}
-
-	function drawDebugRegions():Void
-	{
-		debugRegions.clear();
-
-		for (r in mapConfig.regions)
-		{
-			debugRegions.lineStyle(5, 0x5555AA);
-
-			debugRegions.moveTo(r.x, r.y, 0);
-			debugRegions.lineTo(r.x + r.width, r.y, 0);
-			debugRegions.lineTo(r.x + r.width, r.y + r.height, 0);
-			debugRegions.lineTo(r.x, r.y + r.height, 0);
-			debugRegions.lineTo(r.x, r.y, 0);
-		}
 	}
 
 	function drawDebugPath():Void
@@ -422,38 +291,6 @@ class GameState extends Base2dState
 		}
 	}
 
-	function drawDebugInteractionRadius():Void
-	{
-		debugDetectionRadius.clear();
-
-		for (u in world.units)
-		{
-			debugDetectionRadius.lineStyle(2, 0xFF0000);
-			debugDetectionRadius.moveTo(u.view.x + u.config.attackRange, u.view.y, 0);
-			for (i in 0...19) debugDetectionRadius.lineTo(
-				u.view.x + u.config.attackRange * Math.cos(i * 20 * (Math.PI / 180)),
-				u.view.y + u.config.attackRange * Math.sin(i * 20 * (Math.PI / 180)),
-				0
-			);
-
-			debugDetectionRadius.lineStyle(2, 0x0000FF);
-			debugDetectionRadius.moveTo(u.view.x + u.config.unitSize, u.view.y, 0);
-			for (i in 0...19) debugDetectionRadius.lineTo(
-				u.view.x + u.config.unitSize * Math.cos(i * 20 * (Math.PI / 180)),
-				u.view.y + u.config.unitSize * Math.sin(i * 20 * (Math.PI / 180)),
-				0
-			);
-
-			debugDetectionRadius.lineStyle(2, 0x00FF00);
-			debugDetectionRadius.moveTo(u.view.x + u.config.detectionRange, u.view.y, 0);
-			for (i in 0...19) debugDetectionRadius.lineTo(
-				u.view.x + u.config.detectionRange * Math.cos(i * 20 * (Math.PI / 180)),
-				u.view.y + u.config.detectionRange * Math.sin(i * 20 * (Math.PI / 180)),
-				0
-			);
-		}
-	}
-
 	override function update(d:Float)
 	{
 		if (world == null) return;
@@ -462,18 +299,6 @@ class GameState extends Base2dState
 		if (isDisposed) return;
 
 		updateCamera(d);
-
-		if (selectedUnit.value != null && selectedUnit.value.nearestTarget != null)
-		{
-			targetMarker.visible = true;
-			targetMarker.x = selectedUnit.value.nearestTarget.getPosition().x - 0.5;
-			targetMarker.y = selectedUnit.value.nearestTarget.getPosition().y - 0.5;
-		}
-
-		/*drawDebugMapBlocks();
-		drawDebugRegions();
-		drawDebugPath();
-		drawDebugInteractionRadius();*/
 	}
 
 	function updateCamera(d:Float)
@@ -580,7 +405,7 @@ class GameState extends Base2dState
 					case Log(message): trace(message);
 					case LoadLevel(levelName): HppG.changeState(GameState, [s2d, s3d, MapData.getRawMap(levelName)]);
 					case EnableTrigger(id): for (t in mapConfig.triggers) if (t.id == id) enableTrigger(t);
-					case CreateUnit(unitId, owner): createUnit(unitId, owner, Math.floor(Math.random() * 5 + 5), Math.floor(Math.random() * 10 + 5), 1, 0);
+					case CreateUnit(unitId, owner): createUnit(unitId, owner, Math.floor(Math.random() * 5 + 5), Math.floor(Math.random() * 10 + 5), 1);
 
 					case _: trace("Unknown action in action list: " + actions);
 				}
@@ -639,6 +464,7 @@ typedef WorldConfig =
 	@:optional var staticObjects(default, never):Array<StaticObjectConfig>;
 	@:optional var terrainLayers(default, never):Array<TerrainLayerInfo>;
 	@:optional var heightMap(default, never):String;
+	@:optional var editorLastCamPosition(default, never):Vector;
 }
 
 typedef StaticObjectConfig =
@@ -650,7 +476,7 @@ typedef StaticObjectConfig =
 	var z(default, never):Float;
 	var zOffset(default, never):Float;
 	var scale(default, never):Float;
-	var rotation(default, never):Float;
+	var rotation(default, never):Quat;
 	@:optional var instance(default, never):Object;
 }
 
