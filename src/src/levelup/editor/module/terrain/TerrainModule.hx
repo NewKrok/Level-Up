@@ -24,7 +24,7 @@ import levelup.editor.EditorState.EditorViewId;
 import levelup.editor.module.terrain.TerrainEditorView;
 import levelup.shader.AlphaMask;
 import levelup.shader.Opacity;
-import levelup.shader.TopLayer;
+import levelup.shader.ForcedZIndex;
 import levelup.util.GeomUtil3D;
 import tink.pure.List;
 import tink.state.Observable;
@@ -108,7 +108,7 @@ import tink.state.Observable;
 		}));
 
 		preview = new h3d.scene.Graphics(core.s3d);
-		preview.material.mainPass.addShader(new TopLayer());
+		preview.material.mainPass.addShader(new ForcedZIndex());
 		preview.visible = false;
 
 		Observable.auto(() ->

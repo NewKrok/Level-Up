@@ -13,7 +13,7 @@ import hxd.clipper.Rect;
 import levelup.editor.EditorModel.ToolState;
 import levelup.editor.EditorState.EditorCore;
 import levelup.editor.EditorState.EditorViewId;
-import levelup.shader.TopLayer;
+import levelup.shader.ForcedZIndex;
 import levelup.util.GeomUtil3D;
 
 /**
@@ -53,7 +53,7 @@ import levelup.util.GeomUtil3D;
 		}));
 
 		preview = new h3d.scene.Graphics(core.s3d);
-		preview.material.mainPass.addShader(new TopLayer());
+		preview.material.mainPass.addShader(new ForcedZIndex());
 		preview.visible = false;
 
 		core.model.observables.toolState.bind(v -> {

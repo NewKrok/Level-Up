@@ -1,6 +1,7 @@
 package levelup.game;
 
 import h3d.Quat;
+import h3d.Vector;
 import h3d.col.Point;
 import h3d.mat.BlendMode;
 import h3d.mat.Data.Wrap;
@@ -8,10 +9,13 @@ import h3d.mat.Material;
 import h3d.mat.Texture;
 import h3d.prim.Grid;
 import h3d.prim.ModelCache;
+import h3d.prim.Sphere;
 import h3d.scene.Interactive;
 import h3d.scene.Mesh;
 import h3d.scene.Object;
+import h3d.scene.Scene;
 import h3d.scene.World;
+import h3d.scene.fwd.DirLight;
 import haxe.crypto.Base64;
 import hpp.util.GeomUtil;
 import hpp.util.GeomUtil.SimplePoint;
@@ -19,6 +23,7 @@ import hxd.BitmapData;
 import hxd.Event;
 import hxd.PixelFormat;
 import hxd.Pixels;
+import hxd.res.Model;
 import levelup.Asset.AssetConfig;
 import levelup.TerrainAssets.TerrainConfig;
 import levelup.game.GameState.WorldConfig;
@@ -66,6 +71,17 @@ class GameWorld extends World
 	var isWorldGraphDirty:Bool = false;
 	var lastRerouteTime:Float = 0;
 
+	var sunAndMoon:DirLight;
+	var sunObj:Mesh;
+	var moonObj:Mesh;
+	var sunAngle = Math.PI;
+	var sunAndMoonOffset = -50;
+	var dayColor:Vector = new Vector(1, 1, 1, 1);
+	var NightColor:Vector = new Vector(0.2, 0.2, 0.6, 1);
+	var DawnColor:Vector = new Vector(0.5, 0.5, 0.5, 1);
+	var SunsetColor:Vector = new Vector(1, 0.8, 0.2, 1);
+	var dayTimeSpeed:Float = Math.PI / 1000;
+
 	public function new(parent, worldConfig:WorldConfig, blockSize:Float, chunkSize:Int, worldSize:Int, ?parent, ?autoCollect = true)
 	{
 		super(chunkSize, worldSize, parent, autoCollect);
@@ -111,6 +127,22 @@ class GameWorld extends World
 			);
 			regionDatas.push(rData);
 		}
+
+		sunAndMoon = new DirLight(null, parent);
+		sunAndMoon.color = new Vector(0.9, 0.9, 0.9);
+		var s = new Sphere();
+		s.addNormals();
+		s.addUVs();
+		sunObj = new Mesh(s, Material.create(Texture.fromColor(0xFFFF00)), parent);
+		sunObj.material.castShadows = false;
+		sunObj.material.receiveShadows = false;
+
+		var s = new Sphere();
+		s.addNormals();
+		s.addUVs();
+		moonObj = new Mesh(s, Material.create(Texture.fromColor(0x0000FF)), parent);
+		moonObj.material.castShadows = false;
+		moonObj.material.receiveShadows = false;
 	}
 
 	private function addStaticTerrainLayer(terrainConfig:TerrainConfig)
@@ -151,8 +183,9 @@ class GameWorld extends World
 		mesh.material.mainPass.addShader(alphaMask);
 		mesh.material.texture.wrap = Wrap.Repeat;
 		mesh.material.blendMode = BlendMode.Alpha;
-		mesh.z = 0.05 * terrainLayers.length;
-
+		mesh.material.castShadows = false;
+		//mesh.z = terrainLayers.length * 0.000001;
+		mesh.z = terrainLayers.length * 0.05;
 		terrainLayers.push(mesh);
 	}
 
@@ -218,13 +251,13 @@ class GameWorld extends World
 			}
 		}
 
-		for (o in worldConfig.staticObjects)
+		/*for (o in worldConfig.staticObjects)
 		{
-			/*staticObjects.push({
+			staticObjects.push({
 				instance: instance,
 				zOffset: o.zOffset
-			});*/
-		}
+			});
+		}*/
 
 		graph = new Graph(graphArray, { diagonal: true });
 	}
@@ -266,6 +299,8 @@ class GameWorld extends World
 	{
 		var now = Date.now().getTime();
 
+		updateDayTime();
+
 		var isRerouteNeeded = isWorldGraphDirty && now - lastRerouteTime >= 3000;
 		if (isRerouteNeeded) lastRerouteTime = now;
 
@@ -281,6 +316,69 @@ class GameWorld extends World
 		resetWorldWeight();
 		calculateUnitInteractions(d);
 		checkRegionDatas();
+	}
+
+	function updateDayTime()
+	{
+		var isDayTime = sunAngle > 0 && sunAngle < Math.PI;
+
+		var sunAndMoonAngle = isDayTime ? sunAngle + Math.PI : sunAngle;
+		var sunAndMoonX = -sunAndMoonOffset;
+		var sunAndMoonY = worldConfig.size.y * 0.6 * Math.cos(sunAndMoonAngle);
+		var sunAndMoonZ = worldConfig.size.y * 0.6 * Math.sin(sunAndMoonAngle);
+		sunAndMoon.setDirection(new Vector(sunAndMoonX, sunAndMoonY, sunAndMoonZ));
+
+		var dayTimeColorPercent = 1.0;
+		var ambientRed = isDayTime ? dayColor.x : NightColor.x;
+		var ambientGreen = isDayTime ? dayColor.y : NightColor.y;
+		var ambientBlue = isDayTime ? dayColor.z : NightColor.z;
+		var transitionAngle = Math.PI / 6;
+
+		if (sunAngle < transitionAngle)
+		{
+			dayTimeColorPercent = Math.min(sunAngle / transitionAngle, 1);
+			ambientRed = DawnColor.x + dayTimeColorPercent * (dayColor.x - DawnColor.x);
+			ambientGreen = DawnColor.y + dayTimeColorPercent * (dayColor.y - DawnColor.y);
+			ambientBlue = DawnColor.z + dayTimeColorPercent * (dayColor.z - DawnColor.z);
+		}
+		else if (sunAngle > Math.PI - transitionAngle && sunAngle < Math.PI)
+		{
+			dayTimeColorPercent = Math.min((sunAngle - (Math.PI - transitionAngle)) / transitionAngle, 1);
+			ambientRed = dayColor.x + dayTimeColorPercent * (SunsetColor.x - dayColor.x);
+			ambientGreen = dayColor.y + dayTimeColorPercent * (SunsetColor.y - dayColor.y);
+			ambientBlue = dayColor.z + dayTimeColorPercent * (SunsetColor.z - dayColor.z);
+		}
+		else if (sunAngle > Math.PI && sunAngle < Math.PI + transitionAngle)
+		{
+			dayTimeColorPercent = Math.min((sunAngle - Math.PI) / transitionAngle, 1);
+			ambientRed = SunsetColor.x + dayTimeColorPercent * (NightColor.x - SunsetColor.x);
+			ambientGreen = SunsetColor.y + dayTimeColorPercent * (NightColor.y - SunsetColor.y);
+			ambientBlue = SunsetColor.z + dayTimeColorPercent * (NightColor.z - SunsetColor.z);
+		}
+		else if (sunAngle > Math.PI * 2 - transitionAngle)
+		{
+			dayTimeColorPercent = Math.min((sunAngle - (Math.PI * 2 - transitionAngle)) / transitionAngle, 1);
+			ambientRed = NightColor.x + dayTimeColorPercent * (DawnColor.x - NightColor.x);
+			ambientGreen = NightColor.y + dayTimeColorPercent * (DawnColor.y - NightColor.y);
+			ambientBlue = NightColor.z + dayTimeColorPercent * (DawnColor.z - NightColor.z);
+		}
+
+		cast(parent, Scene).lightSystem.ambientLight.set(ambientRed, ambientGreen, ambientBlue, 1);
+		sunAndMoon.color.set(ambientRed, ambientGreen, ambientBlue, 1);
+
+		var sunObjAngle = sunAngle;
+		sunObj.x = worldConfig.size.x / 2 + sunAndMoonOffset;
+		sunObj.y = worldConfig.size.x / 2 + worldConfig.size.y * 0.6 * Math.cos(sunObjAngle);
+		sunObj.z = worldConfig.size.y * 0.6 * Math.sin(sunObjAngle);
+
+		var moonObjAngle = sunAngle + Math.PI;
+		moonObj.x = sunObj.x;
+		moonObj.y = worldConfig.size.x / 2 + worldConfig.size.y * 0.6 * Math.cos(moonObjAngle);
+		moonObj.z = worldConfig.size.y * 0.6 * Math.sin(moonObjAngle);
+
+		sunAngle += dayTimeSpeed;
+
+		if (sunAngle > Math.PI * 2) sunAngle -= Math.PI * 2;
 	}
 
 	function checkRegionDatas()

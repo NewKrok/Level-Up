@@ -12,7 +12,6 @@ import h3d.prim.ModelCache;
 import h3d.scene.Graphics;
 import h3d.scene.Interactive;
 import h3d.scene.Object;
-import h3d.scene.fwd.DirLight;
 import h3d.shader.ColorMult;
 import haxe.Json;
 import haxe.crypto.Base64;
@@ -41,7 +40,7 @@ import levelup.game.GameWorld.Region;
 import levelup.game.unit.BaseUnit;
 import levelup.shader.AlphaMask;
 import levelup.shader.Opacity;
-import levelup.shader.TopLayer;
+import levelup.shader.ForcedZIndex;
 import levelup.util.AdventureParser;
 import levelup.util.GeomUtil3D;
 import levelup.util.SaveUtil;
@@ -161,12 +160,6 @@ class EditorState extends Base2dState
 
 		world = new GameWorld(s3d, mapConfig, 1, 64, 64, s3d);
 		world.done();
-
-		var dirLight = new DirLight(null, s3d);
-		dirLight.setDirection(new Vector(3, 1, -2));
-		dirLight.color = new Vector(0.9, 0.9, 0.9);
-
-		s3d.lightSystem.ambientLight.setColor(0x444444);
 
 		var shadow:h3d.pass.DefaultShadowMap = s3d.renderer.getPass(h3d.pass.DefaultShadowMap);
 		shadow.size = 2048;
@@ -749,7 +742,7 @@ class EditorState extends Base2dState
 		for (i in 0...gridBlockCount * gridBlockCount)
 		{
 			var grid = new Graphics(s3d);
-			grid.material.mainPass.addShader(new TopLayer());
+			grid.material.mainPass.addShader(new ForcedZIndex(10));
 			gridParts.push(grid);
 		}
 
