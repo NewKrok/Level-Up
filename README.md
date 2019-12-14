@@ -17,6 +17,7 @@ Editor
 - Add missing Human, Orc, Elf, Undead characters
 - Team based colorization
 - Fix z-index render problem when the camera distance is to big
+- Fix "shadow-jump" bug during Day/Night change
 - etc...
 
 ## TODO - Game
