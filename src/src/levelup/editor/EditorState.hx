@@ -29,6 +29,7 @@ import levelup.Asset;
 import levelup.editor.EditorModel.ToolState;
 import levelup.editor.dialog.EditorDialogManager;
 import levelup.editor.html.EditorUi;
+import levelup.editor.module.dayandnight.DayAndNightModule;
 import levelup.editor.module.heightmap.HeightMapModule;
 import levelup.editor.module.terrain.TerrainModule;
 import levelup.game.GameState;
@@ -127,6 +128,12 @@ class EditorState extends Base2dState
 			name: mapConfig.name,
 			size: mapConfig.size,
 			baseTerrainId: mapConfig.baseTerrainId,
+			startingTime: mapConfig.startingTime,
+			sunAndMoonOffsetPercent: mapConfig.sunAndMoonOffsetPercent,
+			dayColor: mapConfig.dayColor,
+			nightColor: mapConfig.nightColor,
+			sunsetColor: mapConfig.sunsetColor,
+			dawnColor: mapConfig.dawnColor,
 			pathFindingMap: mapConfig.pathFindingMap,
 			regions: mapConfig.regions,
 			triggers: mapConfig.triggers,
@@ -135,6 +142,12 @@ class EditorState extends Base2dState
 		});
 
 		model.observables.baseTerrainId.bind(id -> world.changeBaseTerrain(id));
+		model.observables.startingTime.bind(v -> world.setTime(v));
+		model.observables.sunAndMoonOffsetPercent.bind(v -> world.setSunAndMoonOffsetPercent(v));
+		model.observables.dayColor.bind(v -> world.setDayColor(v));
+		model.observables.nightColor.bind(v -> world.setNightColor(v));
+		model.observables.sunsetColor.bind(v -> world.setSunsetColor(v));
+		model.observables.dawnColor.bind(v -> world.setDawnColor(v));
 		model.observables.showGrid.bind(v -> v ? showGrid() : hideGrid());
 		model.observables.toolState.bind(v ->
 		{
@@ -158,23 +171,17 @@ class EditorState extends Base2dState
 		debugDetectionRadius = new Graphics(s3d);
 		debugDetectionRadius.z = 0.2;
 
-		world = new GameWorld(s3d, mapConfig, 1, 64, 64, s3d);
+		world = new GameWorld(s3d, mapConfig, 1, 64, 64);
+		world.disableDayTime();
 		world.done();
-
-		var shadow:h3d.pass.DefaultShadowMap = s3d.renderer.getPass(h3d.pass.DefaultShadowMap);
-		shadow.size = 2048;
-		shadow.power = 20;
-		shadow.blur.radius = 5;
-		shadow.bias *= 0.1;
-		shadow.color.set(0.4, 0.4, 0.4);
 
 		world.onWorldClick = e ->
 		{
-			for (m in modules) m.onWorldClick(e);
+			for (m in modules) if (m.onWorldClick != null) m.onWorldClick(e);
 		}
 		world.onWorldMouseDown = e ->
 		{
-			for (m in modules) m.onWorldMouseDown(e);
+			for (m in modules) if (m.onWorldMouseDown != null) m.onWorldMouseDown(e);
 
 			if (e.button == 0)
 			{
@@ -193,7 +200,7 @@ class EditorState extends Base2dState
 		}
 		world.onWorldMouseUp = e ->
 		{
-			for (m in modules) m.onWorldMouseUp(e);
+			for (m in modules) if (m.onWorldMouseUp != null) m.onWorldMouseUp(e);
 
 			if (e.button == 0)
 			{
@@ -247,7 +254,7 @@ class EditorState extends Base2dState
 		}
 		world.onWorldMouseMove = e ->
 		{
-			for (m in modules) m.onWorldMouseMove(e);
+			for (m in modules) if (m.onWorldMouseMove != null) m.onWorldMouseMove(e);
 
 			if (previewInstance != null)
 			{
@@ -290,7 +297,7 @@ class EditorState extends Base2dState
 		}
 		world.onWorldWheel = e ->
 		{
-			for (m in modules) m.onWorldWheel(e);
+			for (m in modules) if (m.onWorldWheel != null) m.onWorldWheel(e);
 
 			camDistance += e.wheelDelta * 8;
 		}
@@ -337,6 +344,7 @@ class EditorState extends Base2dState
 
 		modules.push(cast new TerrainModule(cast this));
 		modules.push(cast new HeightMapModule(cast this));
+		modules.push(cast new DayAndNightModule(cast this));
 
 		selectionCircle = new Graphics(world);
 
@@ -871,7 +879,7 @@ class EditorState extends Base2dState
 		drawDebugInteractionRadius();*/
 
 		for (i in worldInstances) i.instance.z = GeomUtil3D.getHeightByPosition(world.heightGrid, i.instance.x, i.instance.y);
-		for (m in modules) m.update(d);
+		for (m in modules) if (m.update != null) m.update(d);
 
 		updateCamera(d);
 
@@ -953,6 +961,12 @@ class EditorState extends Base2dState
 			name: model.name,
 			size: model.size,
 			baseTerrainId: model.baseTerrainId,
+			startingTime: model.startingTime,
+			sunAndMoonOffsetPercent: model.sunAndMoonOffsetPercent,
+			dayColor: model.dayColor,
+			nightColor: model.nightColor,
+			sunsetColor: model.sunsetColor,
+			dawnColor: model.dawnColor,
 			pathFindingMap: model.pathFindingMap,
 			regions: model.regions,
 			triggers: model.triggers,
@@ -1054,6 +1068,12 @@ enum EditorViewId {
 	VDialogManager;
 	VTerrainModule;
 	VHeightMapModule;
+	VDayAndNightModule;
+	VRegionModule;
+	VCameraModule;
+	VWeatherModule;
+	VScriptModule;
+	VTeamModule;
 }
 
 typedef EditorCore =

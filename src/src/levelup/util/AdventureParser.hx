@@ -20,6 +20,13 @@ class AdventureParser
 	{
 		var rawData = Json.parse(rawDataStr);
 
+		var startingTime = rawData.startingTime == null ? 12 : rawData.startingTime;
+		var sunAndMoonOffsetPercent = rawData.sunAndMoonOffsetPercent == null ? 20 : rawData.sunAndMoonOffsetPercent;
+		var dayColor = rawData.dayColor == null ? "#FFFFFF" : rawData.dayColor;
+		var nightColor = rawData.nightColor == null ? "#333399" : rawData.nightColor;
+		var sunsetColor = rawData.sunsetColor == null ? "#CC9919" : rawData.sunsetColor;
+		var dawnColor = rawData.dawnColor == null ? "#808080" : rawData.dawnColor;
+
 		var pathFindingMap:Array<Array<WorldEntity>> = rawData.pathFindingMap;
 
 		var staticObjects:Array<StaticObjectConfig> = [for (o in cast(rawData.staticObjects, Array<Dynamic>)) {
@@ -90,6 +97,12 @@ class AdventureParser
 			name: rawData.name,
 			size: rawData.size,
 			baseTerrainId: rawData.baseTerrainId,
+			startingTime: startingTime,
+			sunAndMoonOffsetPercent: sunAndMoonOffsetPercent,
+			dayColor: dayColor,
+			nightColor: nightColor,
+			sunsetColor: sunsetColor,
+			dawnColor: dawnColor,
 			pathFindingMap: pathFindingMap,
 			regions: regions,
 			triggers: triggers,

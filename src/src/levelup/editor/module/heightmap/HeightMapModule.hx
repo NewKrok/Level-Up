@@ -64,11 +64,11 @@ import levelup.util.GeomUtil3D;
 		heightMapPreviewContainer = new Object(core.s2d);
 		var g = new Graphics(heightMapPreviewContainer);
 		g.beginFill(0, 1);
-		g.drawRect(0, 0, 240, 240);
+		g.drawRect(0, 0, 280, 280);
 		g.endFill();
 		var mask = new Mask(200, 200, heightMapPreviewContainer);
-		mask.x = 20;
-		mask.y = 20;
+		mask.x = 40;
+		mask.y = 40;
 		heightMapPreview = new Bitmap(Tile.fromBitmap(core.world.heightMap), mask);
 		heightMapPreview.scale(2);
 		heightMapPreview.rotation = -Math.PI / 2;
@@ -301,14 +301,9 @@ import levelup.util.GeomUtil3D;
 		}
 	}
 
-	public function onWorldWheel(e:Event):Void
-	{
-
-	}
-
 	public function update(d:Float):Void
 	{
-		heightMapPreviewContainer.x = HppG.stage2d.width - 240;
-		heightMapPreviewContainer.y = HppG.stage2d.height - 240;
+		heightMapPreviewContainer.x = HppG.stage2d.width - 280;
+		heightMapPreviewContainer.y = HppG.stage2d.height - 280;
 	}
 }

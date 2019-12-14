@@ -8,6 +8,7 @@ html,body{margin:0;padding:0;background-color:#111111;width:100%;height:100%;fon
 .lu_col{display:flex;flex-direction:column;}
 .lu_col--reverse{display:flex;flex-direction:column-reverse;}
 .lu_fill{width:100%;height:100%;}
+.lu_fill_width{width:100%;}
 .lu_fill_height{height:100%;}
 .lu_offset{margin:10px;}
 .lu_vertical_offset{margin:10px 0;}

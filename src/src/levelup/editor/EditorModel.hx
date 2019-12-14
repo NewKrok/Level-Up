@@ -19,6 +19,12 @@ class EditorModel implements Model
 {
 	@:editable var name:String;
 	@:editable var baseTerrainId:String;
+	@:editable var startingTime:Float;
+	@:editable var sunAndMoonOffsetPercent:Float;
+	@:editable var dayColor:String;
+	@:editable var nightColor:String;
+	@:editable var sunsetColor:String;
+	@:editable var dawnColor:String;
 
 	@:skipCheck @:editable var size:SimplePoint;
 	@:skipCheck @:editable var pathFindingMap:Array<Array<WorldEntity>>;
@@ -43,4 +49,11 @@ enum ToolState
 	Library;
 	TerrainEditor;
 	HeightMapEditor;
+	DayAndNightEditor;
+	RegionEditor;
+	CameraEditor;
+	WeatherEditor;
+	ScriptEditor;
+	UnitEditor;
+	TeamEditor;
 }

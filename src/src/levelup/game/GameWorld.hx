@@ -7,6 +7,7 @@ import h3d.mat.BlendMode;
 import h3d.mat.Data.Wrap;
 import h3d.mat.Material;
 import h3d.mat.Texture;
+import h3d.pass.DefaultShadowMap;
 import h3d.prim.Grid;
 import h3d.prim.ModelCache;
 import h3d.prim.Sphere;
@@ -42,6 +43,8 @@ class GameWorld extends World
 
 	public static var instance:GameWorld;
 
+	public var s3d:Scene;
+
 	public var graph:Graph;
 	public var heightMap:BitmapData;
 	public var heightGrid:Array<Point>;
@@ -71,20 +74,24 @@ class GameWorld extends World
 	var isWorldGraphDirty:Bool = false;
 	var lastRerouteTime:Float = 0;
 
+	var shadow:DefaultShadowMap;
+	var shadowColor:Vector = new Vector(0.4, 0.4, 0.4);
 	var sunAndMoon:DirLight;
 	var sunObj:Mesh;
 	var moonObj:Mesh;
 	var sunAngle = Math.PI;
-	var sunAndMoonOffset = -50;
-	var dayColor:Vector = new Vector(1, 1, 1, 1);
-	var NightColor:Vector = new Vector(0.2, 0.2, 0.6, 1);
-	var DawnColor:Vector = new Vector(0.5, 0.5, 0.5, 1);
-	var SunsetColor:Vector = new Vector(1, 0.8, 0.2, 1);
-	var dayTimeSpeed:Float = Math.PI / 1000;
+	var sunAndMoonOffset:Float = 0.0;
+	var dayColor:Vector = new Vector();
+	var nightColor:Vector = new Vector();
+	var sunsetColor:Vector = new Vector();
+	var dawnColor:Vector = new Vector();
+	var dayTimeSpeed:Float = Math.PI / 200;
+	var isDayTimeEnabled:Bool = true;
 
-	public function new(parent, worldConfig:WorldConfig, blockSize:Float, chunkSize:Int, worldSize:Int, ?parent, ?autoCollect = true)
+	public function new(s3d:Scene, worldConfig:WorldConfig, blockSize:Float, chunkSize:Int, worldSize:Int, ?autoCollect = true)
 	{
-		super(chunkSize, worldSize, parent, autoCollect);
+		this.s3d = s3d;
+		super(chunkSize, worldSize, s3d, autoCollect);
 		this.worldConfig = worldConfig;
 		this.blockSize = blockSize;
 
@@ -110,7 +117,7 @@ class GameWorld extends World
 
 		generateMap();
 
-		interact = new Interactive(terrainLayers[0].getCollider(), parent);
+		interact = new Interactive(terrainLayers[0].getCollider(), s3d);
 		interact.enableRightButton = true;
 		interact.onClick = function (e) { onWorldClick(e); };
 		interact.onPush = function (e) { onWorldMouseDown(e); };
@@ -128,22 +135,38 @@ class GameWorld extends World
 			regionDatas.push(rData);
 		}
 
-		sunAndMoon = new DirLight(null, parent);
-		sunAndMoon.color = new Vector(0.9, 0.9, 0.9);
+		shadow = s3d.renderer.getPass(h3d.pass.DefaultShadowMap);
+		shadow.size = 2048;
+		shadow.bias *= 0.1;
+		shadow.color = shadowColor;
+
+		sunAndMoon = new DirLight(null, s3d);
 		var s = new Sphere();
 		s.addNormals();
 		s.addUVs();
-		sunObj = new Mesh(s, Material.create(Texture.fromColor(0xFFFF00)), parent);
+		sunObj = new Mesh(s, Material.create(Texture.fromColor(0xFFFF00)), s3d);
 		sunObj.material.castShadows = false;
 		sunObj.material.receiveShadows = false;
 
 		var s = new Sphere();
 		s.addNormals();
 		s.addUVs();
-		moonObj = new Mesh(s, Material.create(Texture.fromColor(0x0000FF)), parent);
+		moonObj = new Mesh(s, Material.create(Texture.fromColor(0x0000FF)), s3d);
 		moonObj.material.castShadows = false;
 		moonObj.material.receiveShadows = false;
+
+		setDayColor(worldConfig.dayColor);
+		setNightColor(worldConfig.dayColor);
+		setSunsetColor(worldConfig.dayColor);
+		setDawnColor(worldConfig.dayColor);
+		setTime(worldConfig.startingTime);
+		setSunAndMoonOffsetPercent(worldConfig.sunAndMoonOffsetPercent);
 	}
+
+	public function setDayColor(c:String) dayColor.setColor(Std.parseInt("0x" + c.substr(1)));
+	public function setNightColor(c:String) nightColor.setColor(Std.parseInt("0x" + c.substr(1)));
+	public function setSunsetColor(c:String) sunsetColor.setColor(Std.parseInt("0x" + c.substr(1)));
+	public function setDawnColor(c:String) dawnColor.setColor(Std.parseInt("0x" + c.substr(1)));
 
 	private function addStaticTerrainLayer(terrainConfig:TerrainConfig)
 	{
@@ -155,7 +178,7 @@ class GameWorld extends World
 		heightGrid = layer.points;
 		setGridByHeightMap(layer);
 
-		var mesh = new Mesh(layer, Material.create(terrainConfig.texture), parent);
+		var mesh = new Mesh(layer, Material.create(terrainConfig.texture), s3d);
 		mesh.material.texture.wrap = Wrap.Repeat;
 
 		terrainLayers.push(mesh);
@@ -179,7 +202,7 @@ class GameWorld extends World
 		var alphaMask = new AlphaMask(Texture.fromBitmap(bmp));
 		alphaMask.uvScale.set(0.03333, 0.03333);
 
-		var mesh = new Mesh(layer, Material.create(terrainConfig.texture), parent);
+		var mesh = new Mesh(layer, Material.create(terrainConfig.texture), s3d);
 		mesh.material.mainPass.addShader(alphaMask);
 		mesh.material.texture.wrap = Wrap.Repeat;
 		mesh.material.blendMode = BlendMode.Alpha;
@@ -214,7 +237,7 @@ class GameWorld extends World
 		if (!hasCache) heightMap.unlock();
 	}
 
-	public function updateHeightMap()
+	public function updateHeightMap():Void
 	{
 		heightGridCache = null;
 
@@ -227,7 +250,7 @@ class GameWorld extends World
 		heightGrid = cast(terrainLayers[0].primitive, Grid).points;
 	}
 
-	public function changeBaseTerrain(terrainId:String)
+	public function changeBaseTerrain(terrainId:String):Void
 	{
 		var terrainConfig = TerrainAssets.getTerrain(terrainId);
 
@@ -235,6 +258,16 @@ class GameWorld extends World
 		baseLayer.material.texture = terrainConfig.texture;
 		baseLayer.material.texture.wrap = Wrap.Repeat;
 	}
+
+	public function setTime(time:Float):Void
+	{
+		sunAngle = Math.PI * 2 * (time / 24) - Math.PI / 2;
+		if (sunAngle < 0) sunAngle = Math.PI * 2 + sunAngle;
+	}
+
+	public function disableDayTime():Void isDayTimeEnabled = false;
+
+	public function setSunAndMoonOffsetPercent(offsetPercent:Float):Void sunAndMoonOffset = -100 + (worldConfig.size.x + 200) * (offsetPercent / 100);
 
 	public function generateMap():Void
 	{
@@ -299,7 +332,7 @@ class GameWorld extends World
 	{
 		var now = Date.now().getTime();
 
-		updateDayTime();
+		updateDayTime(d);
 
 		var isRerouteNeeded = isWorldGraphDirty && now - lastRerouteTime >= 3000;
 		if (isRerouteNeeded) lastRerouteTime = now;
@@ -318,9 +351,11 @@ class GameWorld extends World
 		checkRegionDatas();
 	}
 
-	function updateDayTime()
+	function updateDayTime(d:Float)
 	{
 		var isDayTime = sunAngle > 0 && sunAngle < Math.PI;
+		var isInTransitionStartState:Bool = false;
+		var isInTransitionFinishState:Bool = false;
 
 		var sunAndMoonAngle = isDayTime ? sunAngle + Math.PI : sunAngle;
 		var sunAndMoonX = -sunAndMoonOffset;
@@ -329,45 +364,49 @@ class GameWorld extends World
 		sunAndMoon.setDirection(new Vector(sunAndMoonX, sunAndMoonY, sunAndMoonZ));
 
 		var dayTimeColorPercent = 1.0;
-		var ambientRed = isDayTime ? dayColor.x : NightColor.x;
-		var ambientGreen = isDayTime ? dayColor.y : NightColor.y;
-		var ambientBlue = isDayTime ? dayColor.z : NightColor.z;
+		var ambientRed = isDayTime ? dayColor.x : nightColor.x;
+		var ambientGreen = isDayTime ? dayColor.y : nightColor.y;
+		var ambientBlue = isDayTime ? dayColor.z : nightColor.z;
 		var transitionAngle = Math.PI / 6;
 
-		if (sunAngle < transitionAngle)
+		if (sunAngle <= transitionAngle)
 		{
+			isInTransitionFinishState = true;
 			dayTimeColorPercent = Math.min(sunAngle / transitionAngle, 1);
-			ambientRed = DawnColor.x + dayTimeColorPercent * (dayColor.x - DawnColor.x);
-			ambientGreen = DawnColor.y + dayTimeColorPercent * (dayColor.y - DawnColor.y);
-			ambientBlue = DawnColor.z + dayTimeColorPercent * (dayColor.z - DawnColor.z);
+			ambientRed = dawnColor.x + dayTimeColorPercent * (dayColor.x - dawnColor.x);
+			ambientGreen = dawnColor.y + dayTimeColorPercent * (dayColor.y - dawnColor.y);
+			ambientBlue = dawnColor.z + dayTimeColorPercent * (dayColor.z - dawnColor.z);
 		}
-		else if (sunAngle > Math.PI - transitionAngle && sunAngle < Math.PI)
+		else if (sunAngle > Math.PI - transitionAngle && sunAngle <= Math.PI)
 		{
+			isInTransitionStartState = true;
 			dayTimeColorPercent = Math.min((sunAngle - (Math.PI - transitionAngle)) / transitionAngle, 1);
-			ambientRed = dayColor.x + dayTimeColorPercent * (SunsetColor.x - dayColor.x);
-			ambientGreen = dayColor.y + dayTimeColorPercent * (SunsetColor.y - dayColor.y);
-			ambientBlue = dayColor.z + dayTimeColorPercent * (SunsetColor.z - dayColor.z);
+			ambientRed = dayColor.x + dayTimeColorPercent * (sunsetColor.x - dayColor.x);
+			ambientGreen = dayColor.y + dayTimeColorPercent * (sunsetColor.y - dayColor.y);
+			ambientBlue = dayColor.z + dayTimeColorPercent * (sunsetColor.z - dayColor.z);
 		}
-		else if (sunAngle > Math.PI && sunAngle < Math.PI + transitionAngle)
+		else if (sunAngle > Math.PI && sunAngle <= Math.PI + transitionAngle)
 		{
+			isInTransitionFinishState = true;
 			dayTimeColorPercent = Math.min((sunAngle - Math.PI) / transitionAngle, 1);
-			ambientRed = SunsetColor.x + dayTimeColorPercent * (NightColor.x - SunsetColor.x);
-			ambientGreen = SunsetColor.y + dayTimeColorPercent * (NightColor.y - SunsetColor.y);
-			ambientBlue = SunsetColor.z + dayTimeColorPercent * (NightColor.z - SunsetColor.z);
+			ambientRed = sunsetColor.x + dayTimeColorPercent * (nightColor.x - sunsetColor.x);
+			ambientGreen = sunsetColor.y + dayTimeColorPercent * (nightColor.y - sunsetColor.y);
+			ambientBlue = sunsetColor.z + dayTimeColorPercent * (nightColor.z - sunsetColor.z);
 		}
-		else if (sunAngle > Math.PI * 2 - transitionAngle)
+		else if (sunAngle >= Math.PI * 2 - transitionAngle)
 		{
+			isInTransitionStartState = true;
 			dayTimeColorPercent = Math.min((sunAngle - (Math.PI * 2 - transitionAngle)) / transitionAngle, 1);
-			ambientRed = NightColor.x + dayTimeColorPercent * (DawnColor.x - NightColor.x);
-			ambientGreen = NightColor.y + dayTimeColorPercent * (DawnColor.y - NightColor.y);
-			ambientBlue = NightColor.z + dayTimeColorPercent * (DawnColor.z - NightColor.z);
+			ambientRed = nightColor.x + dayTimeColorPercent * (dawnColor.x - nightColor.x);
+			ambientGreen = nightColor.y + dayTimeColorPercent * (dawnColor.y - nightColor.y);
+			ambientBlue = nightColor.z + dayTimeColorPercent * (dawnColor.z - nightColor.z);
 		}
 
-		cast(parent, Scene).lightSystem.ambientLight.set(ambientRed, ambientGreen, ambientBlue, 1);
+		s3d.lightSystem.ambientLight.set(ambientRed, ambientGreen, ambientBlue, 1);
 		sunAndMoon.color.set(ambientRed, ambientGreen, ambientBlue, 1);
 
 		var sunObjAngle = sunAngle;
-		sunObj.x = worldConfig.size.x / 2 + sunAndMoonOffset;
+		sunObj.x = sunAndMoonOffset;
 		sunObj.y = worldConfig.size.x / 2 + worldConfig.size.y * 0.6 * Math.cos(sunObjAngle);
 		sunObj.z = worldConfig.size.y * 0.6 * Math.sin(sunObjAngle);
 
@@ -376,9 +415,20 @@ class GameWorld extends World
 		moonObj.y = worldConfig.size.x / 2 + worldConfig.size.y * 0.6 * Math.cos(moonObjAngle);
 		moonObj.z = worldConfig.size.y * 0.6 * Math.sin(moonObjAngle);
 
-		sunAngle += dayTimeSpeed;
+		if (isDayTimeEnabled)
+		{
+			sunAngle += d * dayTimeSpeed;
+			if (sunAngle > Math.PI * 2) sunAngle -= Math.PI * 2;
+		}
 
-		if (sunAngle > Math.PI * 2) sunAngle -= Math.PI * 2;
+		shadow.power = 25 * (
+			isInTransitionStartState
+				? 1 - dayTimeColorPercent
+				: isInTransitionFinishState
+					? dayTimeColorPercent
+					: 1
+		);
+		shadow.blur.radius = isDayTime ? 5 : 25;
 	}
 
 	function checkRegionDatas()

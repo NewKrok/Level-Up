@@ -23,7 +23,7 @@ class Ranger extends BaseUnit
 			attackModel: Res.model.character.elf.ranger.Attack01StartAnim,
 			deathModel: Res.model.character.elf.ranger.DeathAnim,
 			modelScale: 0.008,
-			speed: 1,
+			speed: 2,
 			speedMultiplier: 1,
 			attackRange: 10,
 			attackSpeed: 1800,

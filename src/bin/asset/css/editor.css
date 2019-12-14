@@ -17,36 +17,41 @@
 	width: 100%;
 	display: flex;
 	background-color: #31302e;
-	border-bottom: 1px solid #4a4947;
 	z-index: 1;
 }
 
-.lu_editor_right {
+.lu_editor_main_menu {
+	color: #FFF;
 	width: 100%;
-	height: calc(100% - 40px);
+	background-color: #5E6161;
+	border-bottom: 1px solid #4a4947;
+}
+
+.lu_editor_right {
+	height: calc(100% - 70px);
 	position: absolute;
 	pointer-events: visible;
 	display: flex;
 	flex-direction: column;
-	width: 15em;
+	width: 280px;
 	right: 0;
-	top: 40px;
+	top: 70px;
 	align-items: center;
 }
 
 .lu_editor__base_panel {
-	width: 15em;
+	width: 280px;
 	background-color: #5E6161DD;
 	color: #FFF;
-	height: calc(100% - 30px);
+	height: 100%;
 }
 
 .lu_editor__base_panel--height_map {
-	height: calc(100% - 270px);
+	height: calc(100% - 280px);
 }
 
 .lu_editor__preview {
-	width: 15em;
+	width: 280px;
 	background-color: #5E6161DD;
 	color: #FFF;
 }
@@ -71,12 +76,6 @@
 	background-color: #5E6161DD;
 	color: #FFF;
 	pointer-events: visible;
-}
-
-.lu_tab_menu {
-	color: #FFF;
-	width: 100%;
-	background-color: #5E6161;
 }
 
 .lu_library_list_container {
@@ -194,11 +193,11 @@
 .lu_editor_footer {
 	pointer-events: visible;
 	position: absolute;
-	right: 15em;
+	right: 280px;
 	bottom: 0;
 	padding: 5px;
 	display: flex;
-	width: calc(100% - 15em);
+	width: calc(100% - 280px);
 	flex-direction: row-reverse;
 }
 

@@ -104,5 +104,13 @@ ul {
 	height: 15px;
 	background-color: #69fd75;
 	position: relative;
-	transition: left 0.3s;
+	transition: left 0.2s;
+}
+
+.lu_color_picker {
+	padding: 0;
+	margin: 0;
+	border: 1px solid #000;
+	background: none;
+	height: 20px;
 }

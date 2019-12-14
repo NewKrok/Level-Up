@@ -322,11 +322,4 @@ import tink.state.Observable;
 			alphaMap.endFill();
 		}
 	}
-
-	public function onWorldWheel(e:Event):Void
-	{
-
-	}
-
-	public function update(d:Float):Void {}
 }

@@ -120,15 +120,8 @@ class GameState extends Base2dState
 		debugUnitPath = new Graphics(s3d);
 		debugUnitPath.z = 0.2;
 
-		world = new GameWorld(s3d, mapConfig, 1, 64, 64, s3d);
+		world = new GameWorld(s3d, mapConfig, 1, 64, 64);
 		world.done();
-
-		var shadow:h3d.pass.DefaultShadowMap = s3d.renderer.getPass(h3d.pass.DefaultShadowMap);
-		shadow.size = 2048;
-		shadow.power = 20;
-		shadow.blur.radius = 5;
-		shadow.bias *= 0.1;
-		shadow.color.set(0.4, 0.4, 0.4);
 
 		var c = new Cube(1, 1, 1);
 		c.addNormals();
@@ -458,6 +451,12 @@ typedef WorldConfig =
 	@:optional var terrainLayers(default, never):Array<TerrainLayerInfo>;
 	@:optional var heightMap(default, never):String;
 	@:optional var editorLastCamPosition(default, never):Vector;
+	@:optional var startingTime(default, never):Float;
+	@:optional var sunAndMoonOffsetPercent(default, never):Float;
+	@:optional var dayColor(default, never):String;
+	@:optional var nightColor(default, never):String;
+	@:optional var sunsetColor(default, never):String;
+	@:optional var dawnColor(default, never):String;
 }
 
 typedef StaticObjectConfig =

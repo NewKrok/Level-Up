@@ -48,6 +48,10 @@ html, body {
 	height: 100%;
 }
 
+.lu_fill_width {
+	width: 100%;
+}
+
 .lu_fill_height {
 	height: 100%;
 }

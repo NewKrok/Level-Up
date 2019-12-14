@@ -45,6 +45,10 @@ class EditorUi extends View
 				save=$save
 				testRun=$testRun
 			/>
+			<EditorMainMenu
+				toolState={model.toolState}
+				changeToolState=${s -> model.toolState = s}
+			/>
 			<div class="lu_row">
 				<div class="lu_editor_left">
 					<if {selectedWorldAsset != null}>
@@ -58,26 +62,6 @@ class EditorUi extends View
 					</if>
 				</div>
 				<div class="lu_editor_right">
-					<div class="lu_row lu_tab_menu">
-						<div
-							class={"lu_title lu_button lu_button--secondary" + (model.toolState == ToolState.Library ? " lu_button--selected" : "")}
-							onclick={e -> model.toolState = ToolState.Library}
-						>
-							<i class="fas fa-folder-open"></i>
-						</div>
-						<div
-							class={"lu_title lu_button lu_button--secondary" + (model.toolState == ToolState.TerrainEditor ? " lu_button--selected" : "")}
-							onclick = {e -> model.toolState = ToolState.TerrainEditor}
-						>
-							<i class="fas fa-paint-brush"></i>
-						</div>
-						<div
-							class={"lu_title lu_button lu_button--secondary" + (model.toolState == ToolState.HeightMapEditor ? " lu_button--selected" : "")}
-							onclick = {e -> model.toolState = ToolState.HeightMapEditor}
-						>
-							<i class="fas fa-map"></i>
-						</div>
-					</div>
 					<switch {model.toolState}>
 						<case {ToolState.Library}>
 							<EditorLibrary
@@ -100,6 +84,20 @@ class EditorUi extends View
 
 						<case {ToolState.HeightMapEditor}>
 							{getModuleView(EditorViewId.VHeightMapModule)}
+
+						<case {ToolState.DayAndNightEditor}>
+							{getModuleView(EditorViewId.VDayAndNightModule)}
+
+						<case {ToolState.RegionEditor}>
+							{getModuleView(EditorViewId.VRegionModule)}
+
+						<case {ToolState.CameraEditor}>
+							{getModuleView(EditorViewId.VCameraModule)}
+
+						<case {ToolState.WeatherEditor}>
+							{getModuleView(EditorViewId.VWeatherModule)}
+
+						<case {_}>
 					</switch>
 				</div>
 				<div class="lu_editor_footer">
