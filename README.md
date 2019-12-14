@@ -33,15 +33,21 @@ Editor
 - etc...
 
 ## TODO - Adventure editor
-- Add missing preview images
+- Add missing preview images (Is it possible to generate it like the heightmap?)
 - Region editor
-- Trigger editor
+- Script editor
+- Weather editor
+- Camera editor
+- Unit editor
+- Team editor
 - Pathfinding editor
 - Define map sizes
-- Team editor
 - Possibility to change the cam view angle
 - Fix asset selection - there is a problem with colliders
 - etc...
+
+## TODO - Day and Night settings
+- Possibility to set the exact duration of a day
 
 ## TODO - Terrain editor
 - Possibility to change the layer order
