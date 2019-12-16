@@ -28,6 +28,8 @@ class SaveUtil
 		gameData = Save.load(defaultGameData, savedGameDataName);
 
 		var defaultEditorData:SavedEditorData = {
+			showGrid: true,
+			currentSnap: 0.5,
 			customMaps: []
 		};
 		editorData = Save.load(defaultEditorData, savedEditorDataName);
@@ -52,5 +54,7 @@ typedef GameInfo = {
 }
 
 typedef SavedEditorData = {
+	var showGrid:Bool;
+	var currentSnap:Float;
 	var customMaps:Array<String>;
 }

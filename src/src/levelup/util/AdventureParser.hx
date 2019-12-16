@@ -54,6 +54,7 @@ class AdventureParser
 
 		var regions:Array<Region> = [for (r in cast(rawData.regions, Array<Dynamic>)) {
 			id: r.id,
+			name: r.name,
 			x: r.x,
 			y: r.y,
 			width: r.width,

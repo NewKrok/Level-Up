@@ -53,7 +53,7 @@ import levelup.util.GeomUtil3D;
 		}));
 
 		preview = new h3d.scene.Graphics(core.s3d);
-		preview.material.mainPass.addShader(new ForcedZIndex());
+		preview.material.mainPass.addShader(new ForcedZIndex(10));
 		preview.visible = false;
 
 		core.model.observables.toolState.bind(v -> {

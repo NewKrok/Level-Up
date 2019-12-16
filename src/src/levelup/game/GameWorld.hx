@@ -2,11 +2,14 @@ package levelup.game;
 
 import h3d.Quat;
 import h3d.Vector;
+import h3d.col.Bounds;
 import h3d.col.Point;
 import h3d.mat.BlendMode;
+import h3d.mat.Data.TextureFormat;
 import h3d.mat.Data.Wrap;
 import h3d.mat.Material;
 import h3d.mat.Texture;
+import h3d.parts.GpuParticles;
 import h3d.pass.DefaultShadowMap;
 import h3d.prim.Grid;
 import h3d.prim.ModelCache;
@@ -24,8 +27,7 @@ import hxd.BitmapData;
 import hxd.Event;
 import hxd.PixelFormat;
 import hxd.Pixels;
-import hxd.res.Model;
-import levelup.Asset.AssetConfig;
+import hxd.Res;
 import levelup.TerrainAssets.TerrainConfig;
 import levelup.game.GameState.WorldConfig;
 import levelup.game.js.Graph;
@@ -161,6 +163,8 @@ class GameWorld extends World
 		setDawnColor(worldConfig.dayColor);
 		setTime(worldConfig.startingTime);
 		setSunAndMoonOffsetPercent(worldConfig.sunAndMoonOffsetPercent);
+
+		addWeatherEffect();
 	}
 
 	public function setDayColor(c:String) dayColor.setColor(Std.parseInt("0x" + c.substr(1)));
@@ -257,6 +261,39 @@ class GameWorld extends World
 		var baseLayer = terrainLayers[0];
 		baseLayer.material.texture = terrainConfig.texture;
 		baseLayer.material.texture.wrap = Wrap.Repeat;
+	}
+
+	public function addWeatherEffect()
+	{
+		//addSnow();
+		//addRain();
+	}
+
+	function addSnow()
+	{
+		var parts = new GpuParticles(s3d);
+		var g = parts.addGroup();
+		g.size = 0.2;
+		g.gravity = 1;
+		g.life = 10;
+		g.nparts = 10000;
+		g.emitMode = CameraBounds;
+		parts.volumeBounds = Bounds.fromValues( -20, -20, 15, 40, 40, 40);
+	}
+
+	function addRain()
+	{
+		var t = Res.texture.weather.rain.toTexture();
+
+		var parts = new GpuParticles(s3d);
+		var g = parts.addGroup();
+		g.texture = t;
+		g.gravity = 50;
+		g.speed = 0;
+		g.life = 2;
+		g.nparts = 10000;
+		g.emitMode = CameraBounds;
+		parts.volumeBounds = Bounds.fromValues( -20, -20, 15, 40, 40, 40);
 	}
 
 	public function setTime(time:Float):Void
@@ -571,6 +608,7 @@ class GameWorld extends World
 typedef Region =
 {
 	var id:String;
+	var name:String;
 	var x:Int;
 	var y:Int;
 	var width:Int;

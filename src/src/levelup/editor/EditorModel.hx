@@ -25,6 +25,8 @@ class EditorModel implements Model
 	@:editable var nightColor:String;
 	@:editable var sunsetColor:String;
 	@:editable var dawnColor:String;
+	@:editable var currentSnap:Float;
+	@:editable var showGrid:Bool;
 
 	@:skipCheck @:editable var size:SimplePoint;
 	@:skipCheck @:editable var pathFindingMap:Array<Array<WorldEntity>>;
@@ -35,8 +37,6 @@ class EditorModel implements Model
 
 	@:editable var isXDragLocked:Bool = false;
 	@:editable var isYDragLocked:Bool = false;
-	@:editable var currentSnap:Float = 0.5;
-	@:editable var showGrid:Bool = true;
 	@:editable var selectedPlayer:PlayerId = PlayerId.Player1;
 	@:editable var toolState:ToolState = Library;
 

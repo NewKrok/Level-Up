@@ -1,162 +1,154 @@
-package levelup.editor.module.terrain;
+package levelup.editor.module.region;
 
-import coconut.ui.RenderResult;
-import h2d.Graphics;
-import h3d.col.Point;
 import h3d.mat.BlendMode;
-import h3d.mat.Data.Face;
-import h3d.mat.Data.Wrap;
 import h3d.mat.Material;
 import h3d.mat.Texture;
-import h3d.prim.Cube;
-import h3d.prim.Cylinder;
-import h3d.prim.Polygon;
+import h3d.prim.Grid;
 import h3d.scene.Mesh;
-import h3d.scene.Scene;
+import h3d.scene.Object;
 import hpp.util.GeomUtil.SimplePoint;
-import hxd.BitmapData;
 import hxd.Event;
-import hxd.Res;
-import levelup.editor.EditorModel;
-import levelup.editor.EditorState.EditorActionType;
+import levelup.editor.EditorModel.ToolState;
 import levelup.editor.EditorState.EditorCore;
 import levelup.editor.EditorState.EditorViewId;
-import levelup.editor.module.terrain.TerrainEditorView;
-import levelup.shader.AlphaMask;
-import levelup.shader.Opacity;
 import levelup.shader.ForcedZIndex;
-import levelup.util.GeomUtil3D;
-import tink.pure.List;
-import tink.state.Observable;
+import levelup.util.SaveUtil;
 
 /**
  * ...
  * @author Krisztian Somoracz
  */
-@:tink class TerrainModule
+@:tink class RegionModule
 {
 	var core:EditorCore = _;
+	var regionViews:Array<Mesh> = [];
 
-	public var model:TerrainModel;
-
-	var preview:h3d.scene.Graphics;
-	var previewPos:SimplePoint = { x: 0, y: 0 };
-	var isDrawActive:Bool;
-	var lastDrawedPoint:SimplePoint = { x: 0, y: 0 };
+	var regionContainer:Object;
 	var dragStartPoint:SimplePoint = null;
-
-	var alphaMap:Graphics = new Graphics();
+	var activeRegion:Mesh = null;
 
 	public function new()
 	{
-		model = new TerrainModel();
-		model.addLayer(core.model.observables.baseTerrainId.value);
-
-		if (core.world.worldConfig.terrainLayers != null)
-		{
-			for (l in core.world.worldConfig.terrainLayers) model.addLayer(l.textureId);
-		}
-
-		var terrainChooser = new TerrainChooser({
-			terrainList: List.fromArray(TerrainAssets.terrains),
-			selectTerrain: id -> {
-				core.dialogManager.closeCurrentDialog();
-				model.selectedLayer.terrainId.set(id);
-
-				var newTerrain = TerrainAssets.getTerrain(model.selectedLayer.terrainId);
-				var activeMesh = core.world.terrainLayers[model.selectedLayerIndex];
-				activeMesh.material.texture = newTerrain.texture;
-				activeMesh.material.texture.wrap = Wrap.Repeat;
-			},
-			close: core.dialogManager.closeCurrentDialog
-		});
-		var terrainChooserView = terrainChooser.reactify();
-
-		core.registerView(EditorViewId.VTerrainModule, TerrainEditorView.fromHxx({
-			baseTerrainId: core.model.observables.baseTerrainId,
-			changeBaseTerrainIdRequest: t ->
-			{
-				core.logAction({
-					actionType: EditorActionType.ChangeBaseTerrain,
-					oldValueString: core.model.baseTerrainId,
-					newValueString: t.id
-				});
-				core.model.baseTerrainId = t.id;
-			},
-			selectedBrushId: model.observables.selectedBrushId,
-			changeSelectedBrushRequest: id -> model.selectedBrushId = id,
-			layers: model.observables.layers,
-			selectedLayer: model.observables.selectedLayer,
-			selectLayer: e ->
-			{
-				if (model.selectedLayer == e)
-				{
-					terrainChooser.setSelectedTerrainId(e.terrainId);
-					core.dialogManager.openDialog({ view: terrainChooserView });
-				}
-				else model.selectLayer(e);
-			},
-			addLayer: () ->
-			{
-				model.addLayer();
-				core.world.addTerrainLayer(TerrainAssets.getTerrain(model.layers.toArray()[model.layers.length - 1].terrainId));
-			},
-			changeBrushSize: e -> model.brushSize = e,
-			changeBrushOpacity: e -> model.brushOpacity = e,
-			changeBrushGradient: e -> model.brushGradient = e,
-			changeBrushNoise: e -> model.brushNoise = e
+		core.registerView(EditorViewId.VRegionModule, RegionEditorView.fromHxx({
+			regions: core.model.observables.regions,
+			addRegion: type -> createRegion.bind(10, 10)
 		}));
 
-		preview = new h3d.scene.Graphics(core.s3d);
-		preview.material.mainPass.addShader(new ForcedZIndex(10));
-		preview.visible = false;
+		regionContainer = new Object(core.s3d);
 
-		Observable.auto(() ->
-			core.model.observables.toolState.value == ToolState.TerrainEditor
-			&& model.observables.layers.value.length > 0
-			&& model.observables.selectedLayerIndex.value > 0
-		).bind(isActive -> {
-			preview.visible = isActive;
-			if (!isActive) isDrawActive = false;
+		core.model.observables.toolState.bind(v ->
+		{
+			regionContainer.visible = v == ToolState.RegionEditor;
 		});
+
+		for (r in core.model.regions) createRegion(r.x, r.y, r.width, r.height);
 	}
 
 	public function onWorldClick(e:Event):Void
 	{
-		if (preview.visible && e.button == 0)
+		/*if (core.model.toolState == ToolState.RegionEditor && e.button == 0)
 		{
-			lastDrawedPoint.x = -1;
-			lastDrawedPoint.y = -1;
-			draw(e);
-			dragStartPoint = null;
+			createRegion(core.snapPosition(e.relX), core.snapPosition(e.relY));
+		}*/
+	}
+
+	function createRegion(x:Float, y:Float, width:Int, height:Int)
+	{
+		var region = new Grid(width, height);
+		region.addNormals();
+		region.addUVs();
+
+		var mesh = new Mesh(region, Material.create(Texture.fromColor(0x0000FF)), regionContainer);
+		mesh.material.blendMode = BlendMode.SoftAdd;
+		mesh.material.mainPass.addShader(new ForcedZIndex(10));
+		mesh.material.castShadows = false;
+		mesh.x = x;
+		mesh.y = y;
+
+		regionViews.push(mesh);
+		updateRegionZPositions();
+
+		return mesh;
+	}
+
+	function updateRegionZPositions()
+	{
+		var mapGrid = core.world.heightGrid;
+		var getZPositionFromGrid = function(x, y)
+		{
+			for (p in mapGrid)
+			{
+				if (p.x == x && p.y == y) return p.z;
+			}
+
+			return 0;
+		}
+
+		for (r in regionViews)
+		{
+			var grid:Grid = cast r.primitive;
+
+			for (p in grid.points)
+			{
+				p.z = getZPositionFromGrid(Math.floor(r.x + p.x), Math.floor(r.y + p.y));
+			}
 		}
 	}
 
 	public function onWorldMouseDown(e:Event):Void
 	{
-		if (preview.visible && e.button == 0) isDrawActive = true;
+		if (core.model.toolState == ToolState.RegionEditor && e.button == 0) dragStartPoint = { x: e.relX, y: e.relY };
 	}
 
 	public function onWorldMouseUp(e:Event):Void
 	{
-		if (preview.visible && e.button == 0)
+		if (activeRegion != null)
 		{
-			isDrawActive = false;
+			var grid:Grid = cast activeRegion.primitive;
+
+			core.model.regions.push({
+				id: Std.string(Date.now().getTime() + Math.random()),
+				name: getGridName(),
+				x: cast activeRegion.x,
+				y: cast activeRegion.y,
+				width: grid.width,
+				height: grid.height
+			});
+
 			dragStartPoint = null;
+			activeRegion = null;
 		}
 	}
+
+	function getGridName() return "Region " + core.model.regions.length;
 
 	public function onWorldMouseMove(e:Event):Void
 	{
-		if (preview.visible)
+		if (dragStartPoint != null)
 		{
-			drawPreview(core.snapPosition(e.relX), core.snapPosition(e.relY));
+			var newWidth:Int = Math.ceil(Math.abs(e.relX - dragStartPoint.x));
+			var newHeight:Int = Math.ceil(Math.abs(e.relY - dragStartPoint.y));
+			if (newWidth == 0 || newHeight == 0) return;
 
-			if (isDrawActive) draw(e);
+			if (activeRegion != null)
+			{
+				var grid:Grid = cast activeRegion.primitive;
+				if (newWidth == grid.width && newHeight == grid.height) return;
+
+				regionViews.remove(activeRegion);
+				activeRegion.primitive.dispose();
+				activeRegion.remove();
+			}
+
+			activeRegion = createRegion(
+				e.relX > dragStartPoint.x ? Math.floor(dragStartPoint.x) : Math.floor(dragStartPoint.x - newWidth) + 1,
+				e.relY > dragStartPoint.y ? Math.floor(dragStartPoint.y) : Math.floor(dragStartPoint.y - newHeight) + 1,
+				newWidth, newHeight
+			);
 		}
 	}
 
-	function drawPreview(x, y)
+	/*function drawPreview(x, y)
 	{
 		previewPos.x = x;
 		previewPos.y = y;
@@ -321,5 +313,5 @@ import tink.state.Observable;
 			alphaMap.drawTo(tex);
 			alphaMap.endFill();
 		}
-	}
+	}*/
 }

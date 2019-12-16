@@ -31,6 +31,7 @@ import levelup.editor.dialog.EditorDialogManager;
 import levelup.editor.html.EditorUi;
 import levelup.editor.module.dayandnight.DayAndNightModule;
 import levelup.editor.module.heightmap.HeightMapModule;
+import levelup.editor.module.region.RegionModule;
 import levelup.editor.module.terrain.TerrainModule;
 import levelup.game.GameState;
 import levelup.game.GameState.StaticObjectConfig;
@@ -139,6 +140,8 @@ class EditorState extends Base2dState
 			triggers: mapConfig.triggers,
 			units: [],
 			staticObjects: [],
+			currentSnap: SaveUtil.editorData.currentSnap,
+			showGrid: SaveUtil.editorData.showGrid
 		});
 
 		model.observables.baseTerrainId.bind(id -> world.changeBaseTerrain(id));
@@ -299,7 +302,11 @@ class EditorState extends Base2dState
 		{
 			for (m in modules) if (m.onWorldWheel != null) m.onWorldWheel(e);
 
-			camDistance += e.wheelDelta * 8;
+			if (previewInstance != null && Key.isDown(Key.CTRL))
+			{
+				previewInstance.scale(e.wheelDelta < 0 ? 1.1 : 0.9);
+			}
+			else camDistance += e.wheelDelta * 8;
 		}
 
 		for (o in mapConfig.staticObjects.concat([]))
@@ -345,6 +352,7 @@ class EditorState extends Base2dState
 		modules.push(cast new TerrainModule(cast this));
 		modules.push(cast new HeightMapModule(cast this));
 		modules.push(cast new DayAndNightModule(cast this));
+		modules.push(cast new RegionModule(cast this));
 
 		selectionCircle = new Graphics(world);
 
@@ -991,6 +999,9 @@ class EditorState extends Base2dState
 		}
 
 		if (isNewMap) SaveUtil.editorData.customMaps.push(result);
+
+		SaveUtil.editorData.showGrid = model.showGrid;
+		SaveUtil.editorData.currentSnap = model.currentSnap;
 
 		SaveUtil.save();
 		return result;
