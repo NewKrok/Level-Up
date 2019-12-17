@@ -300,13 +300,29 @@ class EditorState extends Base2dState
 		}
 		world.onWorldWheel = e ->
 		{
-			for (m in modules) if (m.onWorldWheel != null) m.onWorldWheel(e);
-
-			if (previewInstance != null && Key.isDown(Key.CTRL))
+			if (Key.isDown(Key.CTRL) || Key.isDown(Key.SHIFT))
 			{
-				previewInstance.scale(e.wheelDelta < 0 ? 1.1 : 0.9);
+				if (previewInstance != null || selectedWorldAsset.value != null)
+				{
+					var activeInstance = previewInstance != null ? previewInstance : selectedWorldAsset.value.instance;
+
+					if (Key.isDown(Key.CTRL)) activeInstance.scale(e.wheelDelta < 0 ? 0.9 : 1.1);
+					else if (Key.isDown(Key.SHIFT))  activeInstance.rotate(0, 0, e.wheelDelta < 0 ? -Math.PI / 8 : Math.PI / 8);
+				}
+				else
+				{
+					var camStep = Math.PI / 30;
+					camAngle += e.wheelDelta < 0 ? camStep : -camStep;
+					camAngle = Math.max(camAngle, camStep * 16);
+					camAngle = Math.min(camAngle, camStep * 29);
+				}
 			}
-			else camDistance += e.wheelDelta * 8;
+			else
+			{
+				for (m in modules) if (m.onWorldWheel != null) m.onWorldWheel(e);
+
+				camDistance += e.wheelDelta * 8;
+			}
 		}
 
 		for (o in mapConfig.staticObjects.concat([]))
@@ -521,12 +537,6 @@ class EditorState extends Base2dState
 						hadActiveCommandWithCtrl = false;
 						return;
 					}
-					model.isXDragLocked = !model.isXDragLocked;
-					if (draggedInstance != null) dragInstanceWorldStartPoint = null;
-
-				case Key.SHIFT:
-					model.isYDragLocked = !model.isYDragLocked;
-					if (draggedInstance != null) dragInstanceWorldStartPoint = null;
 
 				case Key.UP | Key.W if (previewInstance != null):
 					previewInstance.scale(1.1);
@@ -596,6 +606,17 @@ class EditorState extends Base2dState
 
 					previewInstance.setScale(selectedAssetConfig.scale);
 					previewInstance.setRotation(0, 0, 0);
+
+				case Key.ESCAPE if (previewInstance == null):
+					var now = Date.now().getTime();
+					if (now - lastEscPressTime < 500)
+					{
+						camDistance = 30;
+						camAngle = Math.PI - Math.PI / 4;
+						return;
+					}
+					lastEscPressTime = now;
+
 
 				case Key.ESCAPE if (selectedWorldAsset.value != null): selectedWorldAsset.set(null);
 

@@ -252,6 +252,8 @@ class GameWorld extends World
 			setGridByHeightMap(g);
 		}
 		heightGrid = cast(terrainLayers[0].primitive, Grid).points;
+
+		interact.shape = terrainLayers[0].getCollider();
 	}
 
 	public function changeBaseTerrain(terrainId:String):Void
@@ -607,12 +609,12 @@ class GameWorld extends World
 
 typedef Region =
 {
-	var id:String;
-	var name:String;
-	var x:Int;
-	var y:Int;
-	var width:Int;
-	var height:Int;
+	var id(default, never):String;
+	var name(default, never):String;
+	var x(default, never):Int;
+	var y(default, never):Int;
+	var width(default, never):Int;
+	var height(default, never):Int;
 }
 
 typedef StaticObject =
