@@ -13,6 +13,7 @@ import h3d.prim.Cylinder;
 import h3d.prim.Polygon;
 import h3d.scene.Mesh;
 import h3d.scene.Scene;
+import h3d.shader.NormalMap;
 import hpp.util.GeomUtil.SimplePoint;
 import hxd.BitmapData;
 import hxd.Event;
@@ -67,6 +68,15 @@ import tink.state.Observable;
 				var activeMesh = core.world.terrainLayers[model.selectedLayerIndex];
 				activeMesh.material.texture = newTerrain.texture;
 				activeMesh.material.texture.wrap = Wrap.Repeat;
+
+				var prevNormalMap = activeMesh.material.mainPass.getShader(NormalMap);
+				if (prevNormalMap != null) activeMesh.material.mainPass.removeShader(prevNormalMap);
+
+				if (newTerrain.normalMap != null)
+				{
+					newTerrain.normalMap.wrap = Wrap.Repeat;
+					activeMesh.material.mainPass.addShader(new NormalMap(newTerrain.normalMap));
+				}
 			},
 			close: core.dialogManager.closeCurrentDialog
 		});

@@ -20,6 +20,7 @@ import h3d.scene.Object;
 import h3d.scene.Scene;
 import h3d.scene.World;
 import h3d.scene.fwd.DirLight;
+import h3d.shader.NormalMap;
 import haxe.crypto.Base64;
 import hpp.util.GeomUtil;
 import hpp.util.GeomUtil.SimplePoint;
@@ -175,8 +176,7 @@ class GameWorld extends World
 	private function addStaticTerrainLayer(terrainConfig:TerrainConfig)
 	{
 		var layer = new Grid(cast worldConfig.size.y, cast worldConfig.size.x);
-		layer.addNormals();
-		layer.addUVs();
+		layer.addTangents();
 		layer.uvScale(30, 30);
 
 		heightGrid = layer.points;
@@ -185,14 +185,19 @@ class GameWorld extends World
 		var mesh = new Mesh(layer, Material.create(terrainConfig.texture), s3d);
 		mesh.material.texture.wrap = Wrap.Repeat;
 
+		if (terrainConfig.normalMap != null)
+		{
+			terrainConfig.normalMap.wrap = Wrap.Repeat;
+			mesh.material.mainPass.addShader(new NormalMap(terrainConfig.normalMap));
+		}
+
 		terrainLayers.push(mesh);
 	}
 
 	public function addTerrainLayer(terrainConfig:TerrainConfig, alphaMap:String = null)
 	{
 		var layer = new Grid(cast worldConfig.size.y, cast worldConfig.size.x);
-		layer.addNormals();
-		layer.addUVs();
+		layer.addTangents();
 		layer.uvScale(30, 30);
 
 		setGridByHeightMap(layer);
@@ -213,6 +218,12 @@ class GameWorld extends World
 		mesh.material.castShadows = false;
 		//mesh.z = terrainLayers.length * 0.000001;
 		mesh.z = terrainLayers.length * 0.05;
+
+		if (terrainConfig.normalMap != null)
+		{
+			mesh.material.mainPass.addShader(new NormalMap(terrainConfig.normalMap));
+		}
+
 		terrainLayers.push(mesh);
 	}
 

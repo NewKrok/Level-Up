@@ -23,7 +23,7 @@ class TerrainChooser extends View
 		TerrainType.Cliff,
 		TerrainType.Desert,
 		TerrainType.Dirt,
-		TerrainType.Field,
+		TerrainType.Grass,
 		TerrainType.Forest,
 		TerrainType.Ice,
 		TerrainType.Lava,

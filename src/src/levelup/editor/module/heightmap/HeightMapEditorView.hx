@@ -74,10 +74,10 @@ class HeightMapEditorView extends View
 							<i class="fas fa-caret-up lu_right_offset"></i>Height
 						</div>
 						<Slider
-							min={0.01}
+							min={0.001}
 							max = {0.5}
-							startValue={0.01}
-							step={0.01}
+							startValue={0.001}
+							step={0.001}
 							onChange=$changeBrushOpacity
 						/>
 					</div>
