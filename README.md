@@ -35,7 +35,6 @@ Editor
 
 ## TODO - Adventure editor
 - Add missing preview images (Is it possible to generate it like the heightmap?)
-- Region editor
 - Script editor
 - Weather editor
 - Camera editor
@@ -47,9 +46,6 @@ Editor
 - Fix asset selection - there is a problem with colliders
 - etc...
 
-## TODO - Day and Night settings
-- Possibility to set the exact duration of a day
-
 ## TODO - Terrain editor
 - Possibility to change the layer order
 - Undo / Redo functionality
@@ -59,6 +55,21 @@ Editor
 ## TODO - HeightMap editor
 - Add eraser brush
 - Add flat brush
+- Undo / Redo functionality
+
+## TODO - Day and Night settings
+- Possibility to set the exact duration of a day like 1 day is 5 mins
+- Add ambient color which multiply the current color with the selected one
+- Undo / Redo functionality
+
+## TODO - Region editor
+- Possibility to delete region with button in the list + with delete key
+- Fix jumping dragging
+- Add resize logic
+- Add possibility to rename the region
+- Add possibility to change the region order
+- Add mouse over effect
+- Camera focus to the region after selecting it on the list
 - Undo / Redo functionality
 
 
