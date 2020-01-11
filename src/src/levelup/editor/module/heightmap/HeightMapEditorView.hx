@@ -5,6 +5,7 @@ import js.html.SelectElement;
 import levelup.Asset.AssetConfig;
 import levelup.TerrainAssets.TerrainConfig;
 import levelup.editor.EditorState.AssetItem;
+import levelup.editor.module.heightmap.HeightMapModel.BrushType;
 import levelup.editor.module.terrain.TerrainModel.TerrainLayer;
 import levelup.game.GameState.PlayerId;
 import levelup.game.GameState.RaceId;
@@ -20,12 +21,19 @@ using StringTools;
 class HeightMapEditorView extends View
 {
 	@:attr var selectedBrushId:Int;
+	@:attr var drawSpeed:Float;
+	@:attr var brushSize:Float;
+	@:attr var brushOpacity:Float;
+	@:attr var brushGradient:Float;
+	@:attr var brushNoise:Float;
 	@:attr var changeSelectedBrushRequest:Int->Void;
 	@:attr var changeDrawSpeed:Float->Void;
 	@:attr var changeBrushSize:Float->Void;
 	@:attr var changeBrushOpacity:Float->Void;
 	@:attr var changeBrushGradient:Float->Void;
 	@:attr var changeBrushNoise:Float->Void;
+	@:attr var brushType:BrushType;
+	@:attr var changeBrushType:BrushType->Void;
 
 	function render() '
 		<div class="lu_editor__base_panel lu_editor__base_panel--height_map">
@@ -47,12 +55,23 @@ class HeightMapEditorView extends View
 				<div>
 					<div class="lu_offset">
 						<div class="lu_vertical_offset--s">
+							<i class="fas fa-wave-square lu_right_offset"></i>Brush Type
+						</div>
+						<div class="lu_row lu_row--space_evenly lu_text--l">
+							<i class={"fas fa-chevron-circle-up" + (brushType == BrushType.Up ? " lu_highlight" : "")} onclick=${changeBrushType(BrushType.Up)}></i>
+							<i class={"fas fa-chevron-circle-down" + (brushType == BrushType.Down ? " lu_highlight" : "")}  onclick=${changeBrushType(BrushType.Down)}></i>
+							<i class={"fas fa-minus-circle" + (brushType == BrushType.Flat ? " lu_highlight" : "")}  onclick=${changeBrushType(BrushType.Flat)}></i>
+							<i class={"fas fa-dot-circle" + (brushType == BrushType.Smooth ? " lu_highlight" : "")}  onclick=${changeBrushType(BrushType.Smooth)}></i>
+						</div>
+					</div>
+					<div class="lu_offset">
+						<div class="lu_vertical_offset--s">
 							<i class="fas fa-ellipsis-h lu_right_offset"></i>Draw Speed
 						</div>
 						<Slider
 							min={0}
 							max={99}
-							startValue={90}
+							startValue={drawSpeed}
 							step={1}
 							onChange=$changeDrawSpeed
 						/>
@@ -64,47 +83,49 @@ class HeightMapEditorView extends View
 						<Slider
 							min={1}
 							max={19}
-							startValue={3}
-							step={2}
+							startValue={brushSize}
+							step={1}
 							onChange=$changeBrushSize
 						/>
 					</div>
-					<div class="lu_offset">
-						<div class="lu_vertical_offset--s">
-							<i class="fas fa-caret-up lu_right_offset"></i>Height
+					<if {brushType != BrushType.Smooth && brushType != BrushType.Flat}>
+						<div class="lu_offset">
+							<div class="lu_vertical_offset--s">
+								<i class="fas fa-caret-up lu_right_offset"></i>Height
+							</div>
+							<Slider
+								min={0.039}
+								max = {0.9945}
+								startValue={brushOpacity}
+								step={0.039}
+								onChange=$changeBrushOpacity
+							/>
 						</div>
-						<Slider
-							min={0.001}
-							max = {0.5}
-							startValue={0.001}
-							step={0.001}
-							onChange=$changeBrushOpacity
-						/>
-					</div>
-					<div class="lu_offset">
-						<div class="lu_vertical_offset--s">
-							<i class="fas fa-dot-circle lu_right_offset"></i>Gradient
+						<div class="lu_offset">
+							<div class="lu_vertical_offset--s">
+								<i class="fas fa-dot-circle lu_right_offset"></i>Gradient
+							</div>
+							<Slider
+								min={0}
+								max={1}
+								startValue={brushGradient}
+								step={0.1}
+								onChange=$changeBrushGradient
+							/>
 						</div>
-						<Slider
-							min={0}
-							max={1}
-							startValue={0}
-							step={0.1}
-							onChange=$changeBrushGradient
-						/>
-					</div>
-					<div class="lu_offset">
-						<div class="lu_vertical_offset--s">
-							<i class="fas fa-chess-board lu_right_offset"></i>Noise
+						<div class="lu_offset">
+							<div class="lu_vertical_offset--s">
+								<i class="fas fa-chess-board lu_right_offset"></i>Noise
+							</div>
+							<Slider
+								min={0}
+								max={0.9}
+								startValue={brushNoise}
+								step={0.05}
+								onChange=$changeBrushNoise
+							/>
 						</div>
-						<Slider
-							min={0}
-							max={0.9}
-							startValue={0}
-							step={0.05}
-							onChange=$changeBrushNoise
-						/>
-					</div>
+					</if>
 				</div>
 				<div class="lu_title lu_height_map__title"><i class="fas fa-map lu_right_offset"></i>Height Map</div>
 			</div>

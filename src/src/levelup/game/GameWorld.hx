@@ -100,7 +100,7 @@ class GameWorld extends World
 
 		instance = this;
 
-		heightMap = new BitmapData(cast worldConfig.size.y * 2, cast worldConfig.size.x * 2);
+		heightMap = new BitmapData(cast worldConfig.size.y, cast worldConfig.size.x);
 		heightMap.fill(0, 0, heightMap.width, heightMap.height, 0x333333);
 
 		if (worldConfig.heightMap != null)
@@ -243,7 +243,7 @@ class GameWorld extends World
 			else
 			{
 				var pixelIntensity = (heightMap.getPixel(cast point.x, cast point.y) >> 16) & 0xFF;
-				var calculatedZ = pixelIntensity / 255 * 10;
+				var calculatedZ = pixelIntensity / 255 * 5;
 				heightGridCache.push(calculatedZ);
 				point.z = calculatedZ;
 			}

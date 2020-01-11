@@ -9,10 +9,12 @@ import h3d.mat.Texture;
 import hpp.heaps.HppG;
 import hpp.util.GeomUtil.SimplePoint;
 import hxd.Event;
+import hxd.Res;
 import hxd.clipper.Rect;
 import levelup.editor.EditorModel.ToolState;
 import levelup.editor.EditorState.EditorCore;
 import levelup.editor.EditorState.EditorViewId;
+import levelup.editor.module.heightmap.HeightMapModel.BrushType;
 import levelup.shader.ForcedZIndex;
 import levelup.util.GeomUtil3D;
 
@@ -32,11 +34,12 @@ import levelup.util.GeomUtil3D;
 	var lastDrawedPoint:SimplePoint = { x: 0, y: 0 };
 	var dragStartPoint:SimplePoint = null;
 
-	var alphaMap:Graphics = new Graphics();
 	var heightMapPreview:Bitmap;
 	var heightMapPreviewContainer:Object;
+	var alphaMap:Graphics = new Graphics();
 
 	var drawSpeedState = 0;
+	var flatBrushColor = 0xFFFFFF;
 
 	public function new()
 	{
@@ -44,12 +47,19 @@ import levelup.util.GeomUtil3D;
 
 		core.registerView(EditorViewId.VHeightMapModule, HeightMapEditorView.fromHxx({
 			selectedBrushId: model.observables.selectedBrushId,
+			drawSpeed: model.observables.drawSpeed,
+			brushSize: model.observables.brushSize,
+			brushOpacity: model.observables.brushOpacity,
+			brushGradient: model.observables.brushGradient,
+			brushNoise: model.observables.brushNoise,
 			changeSelectedBrushRequest: id -> model.selectedBrushId = id,
 			changeDrawSpeed: e -> model.drawSpeed = e,
 			changeBrushSize: e -> model.brushSize = e,
 			changeBrushOpacity: e -> model.brushOpacity = e,
 			changeBrushGradient: e -> model.brushGradient = e,
-			changeBrushNoise: e -> model.brushNoise = e
+			changeBrushNoise: e -> model.brushNoise = e,
+			brushType: model.observables.brushType,
+			changeBrushType: v -> model.brushType = v
 		}));
 
 		preview = new h3d.scene.Graphics(core.s3d);
@@ -90,7 +100,11 @@ import levelup.util.GeomUtil3D;
 
 	public function onWorldMouseDown(e:Event):Void
 	{
-		if (preview.visible && e.button == 0) isDrawActive = true;
+		if (preview.visible && e.button == 0)
+		{
+			isDrawActive = true;
+			flatBrushColor = core.world.heightMap.getPixel(Math.floor(e.relX), Math.floor(e.relY));
+		}
 	}
 
 	public function onWorldMouseUp(e:Event):Void
@@ -190,12 +204,17 @@ import levelup.util.GeomUtil3D;
 
 			lastDrawedPoint.x = previewPos.x;
 			lastDrawedPoint.y = previewPos.y;
-			var calculatedX = (core.model.isYDragLocked ? dragStartPoint.x : previewPos.x) * 2;
-			var calculatedY = (core.model.isXDragLocked ? dragStartPoint.y : previewPos.y) * 2;
+			var calculatedX:Int = cast (core.model.isYDragLocked ? dragStartPoint.x : previewPos.x) * 2;
+			var calculatedY:Int = cast (core.model.isXDragLocked ? dragStartPoint.y : previewPos.y) * 2;
 
 			var boundingRect:Rect = new Rect();
+			var drawColor = model.brushType == BrushType.Flat
+				? flatBrushColor
+				: model.brushType == BrushType.Smooth
+					? core.world.heightMap.getPixel(calculatedX, calculatedY)
+					: model.brushType == BrushType.Up ? 0xFFFFFF : 0x000000;
 
-			alphaMap.beginFill(0xFFFFFF, model.brushOpacity);
+			alphaMap.beginFill(drawColor, model.brushType == BrushType.Flat ? 1 : model.brushOpacity);
 
 			if (model.selectedBrushId == 0)
 			{
@@ -204,7 +223,7 @@ import levelup.util.GeomUtil3D;
 				boundingRect.top = Std.int(calculatedY - model.brushSize / 2);
 				boundingRect.bottom = Std.int(calculatedY + model.brushSize / 2);
 
-				if (model.brushNoise == 0 && model.brushGradient == 0)
+				if (model.brushType == BrushType.Flat || (model.brushNoise == 0 && model.brushGradient == 0))
 				{
 					alphaMap.drawCircle(
 						calculatedX,
@@ -222,14 +241,20 @@ import levelup.util.GeomUtil3D;
 							var absI = Math.abs(i - model.brushSize / 2);
 							var absJ = Math.abs(j - model.brushSize / 2);
 							var middleDistance = Math.sqrt(absI * absI + absJ * absJ);
-							var ratio = middleDistance > model.brushSize / 2 ? 0 : 1 - (middleDistance / (model.brushSize / 2) * model.brushGradient);
 
-							var alphaByGradient = model.brushGradient == 0 ? 1 : Math.sin(ratio * Math.PI / 2);
-							var alphaByNoise = model.brushNoise == 0 ? 1 : Math.random();
+							var ratio = model.brushType == BrushType.Smooth
+								? middleDistance > model.brushSize / 2 ? 0 : 1 - (middleDistance / (model.brushSize / 2) * 0.5)
+								: middleDistance > model.brushSize / 2 ? 0 : 1 - (middleDistance / (model.brushSize / 2) * model.brushGradient);
 
-							if (model.brushNoise == 0 || Math.random() > model.brushNoise)
+							var alphaByGradient = model.brushType == BrushType.Smooth
+								? Math.sin(ratio * Math.PI / 2)
+								: model.brushGradient == 0 ? 1 : Math.sin(ratio * Math.PI / 2);
+
+							var alphaByNoise = model.brushNoise == 0 || model.brushType == BrushType.Flat ? 1 : Math.random();
+
+							if (model.brushType == BrushType.Smooth || model.brushNoise == 0 || Math.random() > model.brushNoise)
 							{
-								alphaMap.beginFill(0xFFFFFF, model.brushOpacity * alphaByGradient * alphaByNoise);
+								alphaMap.beginFill(drawColor, model.brushOpacity * alphaByGradient * alphaByNoise);
 								alphaMap.drawRect(
 									calculatedX - model.brushSize / 2 + i,
 									calculatedY - model.brushSize / 2 + j,
@@ -248,7 +273,7 @@ import levelup.util.GeomUtil3D;
 				boundingRect.top = Std.int(calculatedY - model.brushSize);
 				boundingRect.bottom = Std.int(calculatedY + model.brushSize);
 
-				if (model.brushNoise == 0 && model.brushGradient == 0)
+				if (model.brushType == BrushType.Flat || (model.brushNoise == 0 && model.brushGradient == 0))
 				{
 					alphaMap.drawRect(
 						calculatedX - model.brushSize / 2,
@@ -273,7 +298,7 @@ import levelup.util.GeomUtil3D;
 
 							if (model.brushNoise == 0 || Math.random() > model.brushNoise)
 							{
-								alphaMap.beginFill(0xFFFFFF, model.brushOpacity * alphaByGradient * alphaByNoise);
+								alphaMap.beginFill(drawColor, model.brushOpacity * alphaByGradient * alphaByNoise);
 								alphaMap.drawRect(
 									calculatedX - model.brushSize / 2 + i,
 									calculatedY - model.brushSize / 2 + j,
@@ -292,6 +317,7 @@ import levelup.util.GeomUtil3D;
 			tex.flags.set(Target);
 			alphaMap.drawTo(tex);
 			alphaMap.endFill();
+			alphaMap.clear();
 
 			bmp.setPixels(tex.capturePixels());
 			heightMapPreview.tile = Tile.fromBitmap(bmp);
