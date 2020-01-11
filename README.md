@@ -53,8 +53,6 @@ Editor
 - Add eraser brush
 
 ## TODO - HeightMap editor
-- Add eraser brush
-- Add flat brush
 - Undo / Redo functionality
 
 ## TODO - Day and Night settings
