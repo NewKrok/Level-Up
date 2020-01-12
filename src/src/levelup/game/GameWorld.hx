@@ -108,13 +108,14 @@ class GameWorld extends World
 			heightMap.setPixels(new Pixels(heightMap.width, heightMap.height, Base64.decode(worldConfig.heightMap), PixelFormat.RGBA));
 		}
 
-		addStaticTerrainLayer(TerrainAssets.getTerrain(worldConfig.baseTerrainId));
-
 		if (worldConfig.terrainLayers != null)
 		{
+			var index = 0;
 			for (l in worldConfig.terrainLayers)
 			{
-				addTerrainLayer(TerrainAssets.getTerrain(l.textureId), l.texture);
+				if (index == 0) addStaticTerrainLayer(TerrainAssets.getTerrain(l.textureId), l.uvScale);
+				else addTerrainLayer(TerrainAssets.getTerrain(l.textureId), l.uvScale, l.texture);
+				index++;
 			}
 		}
 
@@ -173,11 +174,13 @@ class GameWorld extends World
 	public function setSunsetColor(c:String) sunsetColor.setColor(Std.parseInt("0x" + c.substr(1)));
 	public function setDawnColor(c:String) dawnColor.setColor(Std.parseInt("0x" + c.substr(1)));
 
-	private function addStaticTerrainLayer(terrainConfig:TerrainConfig)
+	private function addStaticTerrainLayer(terrainConfig:TerrainConfig, uvScale:Float)
 	{
+		if (uvScale == null) uvScale = 1;
+
 		var layer = new Grid(cast worldConfig.size.y, cast worldConfig.size.x);
 		layer.addTangents();
-		layer.uvScale(30, 30);
+		layer.uvScale(30 / uvScale, 30 / uvScale);
 
 		heightGrid = layer.points;
 		setGridByHeightMap(layer);
@@ -194,11 +197,13 @@ class GameWorld extends World
 		terrainLayers.push(mesh);
 	}
 
-	public function addTerrainLayer(terrainConfig:TerrainConfig, alphaMap:String = null)
+	public function addTerrainLayer(terrainConfig:TerrainConfig, uvScale:Float, alphaMap:String = null)
 	{
+		if (uvScale == null) uvScale = 1;
+
 		var layer = new Grid(cast worldConfig.size.y, cast worldConfig.size.x);
 		layer.addTangents();
-		layer.uvScale(30, 30);
+		layer.uvScale(30 / uvScale, 30 / uvScale);
 
 		setGridByHeightMap(layer);
 
@@ -209,7 +214,7 @@ class GameWorld extends World
 			bmp.setPixels(new Pixels(bmp.width, bmp.height, Base64.decode(alphaMap), PixelFormat.RGBA));
 
 		var alphaMask = new AlphaMask(Texture.fromBitmap(bmp));
-		alphaMask.uvScale.set(0.03333, 0.03333);
+		alphaMask.uvScale.set(0.03333 * uvScale, 0.03333 * uvScale);
 
 		var mesh = new Mesh(layer, Material.create(terrainConfig.texture), s3d);
 		mesh.material.mainPass.addShader(alphaMask);

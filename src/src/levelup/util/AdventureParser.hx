@@ -97,7 +97,6 @@ class AdventureParser
 		return {
 			name: rawData.name,
 			size: rawData.size,
-			baseTerrainId: rawData.baseTerrainId,
 			startingTime: startingTime,
 			sunAndMoonOffsetPercent: sunAndMoonOffsetPercent,
 			dayColor: dayColor,

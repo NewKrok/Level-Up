@@ -256,8 +256,7 @@ class TerrainAssets
 				id: "stylizedroadstone01_basecolor",
 				type: TerrainType.Road,
 				previewUrl: "asset/img/preview/terrain/road/stylizedroadstone01_basecolor.jpg",
-				texture: Res.texture.terrain.road.stylizedroadstone01_basecolor.toTexture(),
-				normalMap: Res.texture.terrain.road.stylizedroadstone01_normal.toTexture()
+				texture: Res.texture.terrain.road.stylizedroadstone01_basecolor.toTexture()
 			},
 			{
 				id: "t_ground_brick_basecolor",

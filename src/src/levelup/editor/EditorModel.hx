@@ -18,7 +18,6 @@ import levelup.game.GameWorld.Region;
 class EditorModel implements Model
 {
 	@:editable var name:String;
-	@:editable var baseTerrainId:String;
 	@:editable var startingTime:Float;
 	@:editable var sunAndMoonOffsetPercent:Float;
 	@:editable var dayColor:String;

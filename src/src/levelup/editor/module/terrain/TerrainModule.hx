@@ -1,30 +1,20 @@
 package levelup.editor.module.terrain;
 
-import coconut.ui.RenderResult;
 import h2d.Graphics;
-import h3d.col.Point;
-import h3d.mat.BlendMode;
-import h3d.mat.Data.Face;
 import h3d.mat.Data.Wrap;
-import h3d.mat.Material;
-import h3d.mat.Texture;
-import h3d.prim.Cube;
-import h3d.prim.Cylinder;
-import h3d.prim.Polygon;
+import h3d.prim.Grid;
 import h3d.scene.Mesh;
-import h3d.scene.Scene;
 import h3d.shader.NormalMap;
 import hpp.util.GeomUtil.SimplePoint;
-import hxd.BitmapData;
 import hxd.Event;
-import hxd.Res;
-import levelup.editor.EditorModel;
+import levelup.editor.EditorModel.ToolState;
 import levelup.editor.EditorState.EditorActionType;
 import levelup.editor.EditorState.EditorCore;
 import levelup.editor.EditorState.EditorViewId;
+import levelup.editor.module.heightmap.HeightMapModel.BrushType;
 import levelup.editor.module.terrain.TerrainEditorView;
+import levelup.editor.module.terrain.TerrainModel.TerrainLayer;
 import levelup.shader.AlphaMask;
-import levelup.shader.Opacity;
 import levelup.shader.ForcedZIndex;
 import levelup.util.GeomUtil3D;
 import tink.pure.List;
@@ -51,11 +41,21 @@ import tink.state.Observable;
 	public function new()
 	{
 		model = new TerrainModel();
-		model.addLayer(core.model.observables.baseTerrainId.value);
 
 		if (core.world.worldConfig.terrainLayers != null)
 		{
-			for (l in core.world.worldConfig.terrainLayers) model.addLayer(l.textureId);
+			var index = 0;
+			for (l in core.world.worldConfig.terrainLayers)
+			{
+				var layerInstance:Mesh = core.world.terrainLayers[index];
+				var grid:Grid = cast layerInstance.primitive;
+				model.addLayer(l.textureId, l.uvScale);
+				model.layers.toArray()[model.layers.length - 1].uvScale.observe().bind(v ->
+				{
+					scaleTerrainTexture(layerInstance, v);
+				});
+				index++;
+			}
 		}
 
 		var terrainChooser = new TerrainChooser({
@@ -83,16 +83,6 @@ import tink.state.Observable;
 		var terrainChooserView = terrainChooser.reactify();
 
 		core.registerView(EditorViewId.VTerrainModule, TerrainEditorView.fromHxx({
-			baseTerrainId: core.model.observables.baseTerrainId,
-			changeBaseTerrainIdRequest: t ->
-			{
-				core.logAction({
-					actionType: EditorActionType.ChangeBaseTerrain,
-					oldValueString: core.model.baseTerrainId,
-					newValueString: t.id
-				});
-				core.model.baseTerrainId = t.id;
-			},
 			selectedBrushId: model.observables.selectedBrushId,
 			changeSelectedBrushRequest: id -> model.selectedBrushId = id,
 			layers: model.observables.layers,
@@ -109,12 +99,21 @@ import tink.state.Observable;
 			addLayer: () ->
 			{
 				model.addLayer();
-				core.world.addTerrainLayer(TerrainAssets.getTerrain(model.layers.toArray()[model.layers.length - 1].terrainId));
+				core.world.addTerrainLayer(TerrainAssets.getTerrain(model.layers.toArray()[model.layers.length - 1].terrainId), 1);
+				var layerInstance:Mesh = core.world.terrainLayers[core.world.terrainLayers.length - 1];
+				var grid:Grid = cast layerInstance.primitive;
+				model.layers.toArray()[model.layers.length - 1].uvScale.observe().bind(v ->
+				{
+					scaleTerrainTexture(layerInstance, v);
+				});
 			},
 			changeBrushSize: e -> model.brushSize = e,
 			changeBrushOpacity: e -> model.brushOpacity = e,
 			changeBrushGradient: e -> model.brushGradient = e,
-			changeBrushNoise: e -> model.brushNoise = e
+			changeBrushNoise: e -> model.brushNoise = e,
+			changeLayerUVScale: function (l:TerrainLayer, s:Float) l.uvScale.set(s),
+			brushType: model.observables.brushType,
+			changeBrushType: v -> model.brushType = v
 		}));
 
 		preview = new h3d.scene.Graphics(core.s3d);
@@ -129,6 +128,18 @@ import tink.state.Observable;
 			preview.visible = isActive;
 			if (!isActive) isDrawActive = false;
 		});
+	}
+
+	function scaleTerrainTexture(layer:Mesh, scale:Float)
+	{
+		var grid:Grid = cast layer.primitive;
+
+		grid.addUVs();
+		grid.uvScale(30 / scale, 30 / scale);
+		grid.buffer = null;
+
+		var s = layer.material.mainPass.getShader(AlphaMask);
+		if (s != null) s.uvScale.set(0.03333 * scale, 0.03333 * scale);
 	}
 
 	public function onWorldClick(e:Event):Void
@@ -248,7 +259,10 @@ import tink.state.Observable;
 
 			var tex = core.world.terrainLayers[model.selectedLayerIndex].material.mainPass.getShader(AlphaMask).texture;
 			tex.flags.set(Target);
-			alphaMap.beginFill(0xFFFFFF, model.brushOpacity);
+
+			var drawColor = model.brushType == BrushType.Up ? 0xFFFFFF : 0x000000;
+
+			alphaMap.beginFill(drawColor, model.brushOpacity);
 
 			if (model.selectedBrushId == 0)
 			{
@@ -277,7 +291,7 @@ import tink.state.Observable;
 
 							if (model.brushNoise == 0 || Math.random() > model.brushNoise)
 							{
-								alphaMap.beginFill(0xFFFFFF, model.brushOpacity * alphaByGradient * alphaByNoise);
+								alphaMap.beginFill(drawColor, model.brushOpacity * alphaByGradient * alphaByNoise);
 								alphaMap.drawRect(
 									calculatedX - model.brushSize + i,
 									calculatedY - model.brushSize + j,
@@ -316,7 +330,7 @@ import tink.state.Observable;
 
 							if (model.brushNoise == 0 || Math.random() > model.brushNoise)
 							{
-								alphaMap.beginFill(0xFFFFFF, model.brushOpacity * alphaByGradient * alphaByNoise);
+								alphaMap.beginFill(drawColor, model.brushOpacity * alphaByGradient * alphaByNoise);
 								alphaMap.drawRect(
 									calculatedX - model.brushSize + i,
 									calculatedY - model.brushSize + j,

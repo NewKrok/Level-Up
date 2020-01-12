@@ -13,6 +13,7 @@ class Slider extends View
 	@:attr var step:Float = 1.0;
 	@:attr var startValue:Float = 0.0;
 	@:attr var onChange:Float->Void = null;
+	@:attr var className:String = "";
 
 	@:state var value:Float = 0;
 
@@ -23,14 +24,18 @@ class Slider extends View
 	}
 
 	function render() '
-		<div class="lu_slider">
+	<div class={"lu_slider" + (className != "" ? " " + className : "")}>
 			<input
 				type="range"
 				min={Std.string(min)}
 				max={Std.string(max)}
 				step={Std.string(step)}
 				class="lu_native_slider lu_non_visible lu_fill"
-				onchange={e -> {value = Std.parseFloat(e.currentTarget.value); onChange(value); }}
+				onchange={e -> {
+					e.preventDefault();
+					value = Std.parseFloat(e.currentTarget.value);
+					onChange(value);
+				}}
 			/>
 			<div class="lu_slider__thumb_container">
 				<div class="lu_slider__thumb" style=${getStyle()}>

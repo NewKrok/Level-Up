@@ -128,7 +128,6 @@ class EditorState extends Base2dState
 		{
 			name: mapConfig.name,
 			size: mapConfig.size,
-			baseTerrainId: mapConfig.baseTerrainId,
 			startingTime: mapConfig.startingTime,
 			sunAndMoonOffsetPercent: mapConfig.sunAndMoonOffsetPercent,
 			dayColor: mapConfig.dayColor,
@@ -144,7 +143,6 @@ class EditorState extends Base2dState
 			showGrid: SaveUtil.editorData.showGrid
 		});
 
-		model.observables.baseTerrainId.bind(id -> world.changeBaseTerrain(id));
 		model.observables.startingTime.bind(v -> world.setTime(v));
 		model.observables.sunAndMoonOffsetPercent.bind(v -> world.setSunAndMoonOffsetPercent(v));
 		model.observables.dayColor.bind(v -> world.setDayColor(v));
@@ -724,9 +722,6 @@ class EditorState extends Base2dState
 					a.target.z
 				);
 
-			case EditorActionType.ChangeBaseTerrain:
-				model.baseTerrainId = useNewValue ? a.newValueString : a.oldValueString;
-
 			case _:
 		}
 	}
@@ -737,6 +732,8 @@ class EditorState extends Base2dState
 		var h = Math.floor(mapConfig.size.x / gridBlockCount);
 		var x = Math.floor(r.left / h);
 		var y = Math.floor(r.bottom / w);
+
+		trace(w,h,x,y);
 
 		if (Math.floor(y * gridBlockCount + x) >= gridParts.length) x--;
 
@@ -963,14 +960,15 @@ class EditorState extends Base2dState
 	{
 		var terrainLayers = [];
 		var terrainModule = cast(getModule(TerrainModule), TerrainModule);
-		for (i in 1...world.terrainLayers.length)
+		for (i in 0...world.terrainLayers.length)
 		{
 			var l = world.terrainLayers[i];
 			var shader = l.material.mainPass.getShader(AlphaMask);
 
-			if (shader != null) terrainLayers.push({
+			terrainLayers.push({
 				textureId: terrainModule.model.layers.toArray()[i].terrainId.value,
-				texture: Base64.encode(shader.texture.capturePixels().bytes)
+				texture: shader != null ? Base64.encode(shader.texture.capturePixels().bytes) : null,
+				uvScale: terrainModule.model.layers.toArray()[i].uvScale.value
 			});
 		}
 
@@ -989,7 +987,6 @@ class EditorState extends Base2dState
 		var worldConfig:WorldConfig = {
 			name: model.name,
 			size: model.size,
-			baseTerrainId: model.baseTerrainId,
 			startingTime: model.startingTime,
 			sunAndMoonOffsetPercent: model.sunAndMoonOffsetPercent,
 			dayColor: model.dayColor,
@@ -1093,7 +1090,6 @@ enum EditorActionType {
 	Move;
 	Rotate;
 	Scale;
-	ChangeBaseTerrain;
 }
 
 enum EditorViewId {

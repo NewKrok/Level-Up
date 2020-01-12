@@ -8,7 +8,6 @@
 	display: flex;
 	justify-content: center;
 	align-items: center;
-	position: relative;
 }
 
 .lu_edialog__content {
@@ -16,6 +15,7 @@
 	color: #FFF;
 	border: 1px solid #4a4947;
 	width: 60%;
+	height: 50%;
 	min-width: min-content;
 	position: relative;
 }

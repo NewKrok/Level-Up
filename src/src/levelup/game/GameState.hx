@@ -442,7 +442,6 @@ typedef WorldConfig =
 {
 	var name(default, never):String;
 	var size(default, never):SimplePoint;
-	var baseTerrainId(default, never):String;
 	var pathFindingMap(default, never):Array<Array<WorldEntity>>;
 	@:optional var regions(default, never):Array<Region>;
 	@:optional var triggers(default, never):Array<Trigger>;
@@ -510,6 +509,7 @@ typedef TerrainLayerInfo =
 {
 	var textureId:String;
 	var texture:String;
+	var uvScale:Float;
 }
 
 @:enum abstract PlayerId(Int) from Int to Int {

@@ -7,6 +7,7 @@ import js.html.SelectElement;
 import levelup.Asset.AssetConfig;
 import levelup.TerrainAssets.TerrainConfig;
 import levelup.editor.EditorState.AssetItem;
+import levelup.editor.module.heightmap.HeightMapModel.BrushType;
 import levelup.editor.module.terrain.TerrainModel.TerrainLayer;
 import levelup.game.GameState.PlayerId;
 import levelup.game.GameState.RaceId;
@@ -21,8 +22,6 @@ using StringTools;
  */
 class TerrainEditorView extends View
 {
-	@:attr var baseTerrainId:String;
-	@:attr var changeBaseTerrainIdRequest:TerrainConfig->Void;
 	@:attr var selectedBrushId:Int;
 	@:attr var changeSelectedBrushRequest:Int->Void;
 	@:attr var layers:List<TerrainLayer>;
@@ -33,6 +32,9 @@ class TerrainEditorView extends View
 	@:attr var changeBrushOpacity:Float->Void;
 	@:attr var changeBrushGradient:Float->Void;
 	@:attr var changeBrushNoise:Float->Void;
+	@:attr var changeLayerUVScale:TerrainLayer->Float->Void;
+	@:attr var brushType:BrushType;
+	@:attr var changeBrushType:BrushType->Void;
 
 	var isMouseDragActive:Bool = false;
 	var dragStartPoint:SimplePoint = { x: 0, y: 0 };
@@ -59,6 +61,15 @@ class TerrainEditorView extends View
 						</div>
 					</div>
 					<div class="lu_title"><i class="fas fa-sliders-h lu_right_offset"></i>Brush Settings</div>
+					<div class="lu_offset">
+						<div class="lu_vertical_offset--s">
+							<i class="fas fa-wave-square lu_right_offset"></i>Brush Type
+						</div>
+						<div class="lu_row lu_row--space_evenly lu_text--l">
+							<i class={"fas fa-pen" + (brushType == BrushType.Up ? " lu_highlight" : "")} onclick=${changeBrushType(BrushType.Up)}></i>
+							<i class={"fas fa-eraser" + (brushType == BrushType.Down ? " lu_highlight" : "")}  onclick=${changeBrushType(BrushType.Down)}></i>
+						</div>
+					</div>
 					<div>
 						<div class="lu_offset">
 							<div class="lu_vertical_offset--s">
@@ -89,7 +100,7 @@ class TerrainEditorView extends View
 							</div>
 							<Slider
 								min={0}
-								max={0.9}
+								max={1}
 								startValue={0}
 								step={0.05}
 								onChange=$changeBrushGradient
@@ -120,10 +131,20 @@ class TerrainEditorView extends View
 								<div
 									class={"lu_terrain_layer" + (selectedLayer == layersArr[i] ? " lu_terrain_layer--selected" : "")}
 									style={"background-image: url(" + TerrainAssets.getTerrain(layersArr[i].terrainId).previewUrl + ")"}
-									onclick={() -> selectLayer(layersArr[i])}
+									onclick={() -> {
+										if (selectedLayer != layersArr[i]) selectLayer(layersArr[i]);
+									}}
 								>
 									<if {selectedLayer == layersArr[i]}>
-										<i class="fas fa-palette lu_terrain_layer__selected_icon"></i>
+										<i class="fas fa-palette lu_terrain_layer__selected_icon" onclick={() -> selectLayer(layersArr[i])}></i>
+										<Slider
+											className="lu_terrain_slider"
+											min={0.3}
+											max={3}
+											startValue={layersArr[i].uvScale}
+											step={0.1}
+											onChange={v -> changeLayerUVScale(layersArr[i], v)}
+										/>
 									</if>
 									<if {i == layersArr.length - 1}>
 										<i class="fas fa-lock lu_terrain_layer__locked_icon"></i>
