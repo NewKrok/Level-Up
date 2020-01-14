@@ -4,6 +4,7 @@ import h2d.Graphics;
 import h3d.mat.Data.Wrap;
 import h3d.prim.Grid;
 import h3d.scene.Mesh;
+import h3d.shader.AlphaMap;
 import h3d.shader.NormalMap;
 import hpp.util.GeomUtil.SimplePoint;
 import hxd.Event;
@@ -14,7 +15,6 @@ import levelup.editor.EditorState.EditorViewId;
 import levelup.editor.module.heightmap.HeightMapModel.BrushType;
 import levelup.editor.module.terrain.TerrainEditorView;
 import levelup.editor.module.terrain.TerrainModel.TerrainLayer;
-import levelup.shader.AlphaMask;
 import levelup.shader.ForcedZIndex;
 import levelup.util.GeomUtil3D;
 import tink.pure.List;
@@ -138,7 +138,7 @@ import tink.state.Observable;
 		grid.uvScale(30 / scale, 30 / scale);
 		grid.buffer = null;
 
-		var s = layer.material.mainPass.getShader(AlphaMask);
+		var s = layer.material.mainPass.getShader(AlphaMap);
 		if (s != null) s.uvScale.set(0.03333 * scale, 0.03333 * scale);
 	}
 
@@ -257,7 +257,7 @@ import tink.state.Observable;
 			var calculatedX = (core.model.isYDragLocked ? dragStartPoint.x : previewPos.x) * 2;
 			var calculatedY = (core.model.isXDragLocked ? dragStartPoint.y : previewPos.y) * 2;
 
-			var tex = core.world.terrainLayers[model.selectedLayerIndex].material.mainPass.getShader(AlphaMask).texture;
+			var tex = core.world.terrainLayers[model.selectedLayerIndex].material.mainPass.getShader(AlphaMap).texture;
 			tex.flags.set(Target);
 
 			var drawColor = model.brushType == BrushType.Up ? 0xFFFFFF : 0x000000;

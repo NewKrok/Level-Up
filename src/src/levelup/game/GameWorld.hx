@@ -20,6 +20,7 @@ import h3d.scene.Object;
 import h3d.scene.Scene;
 import h3d.scene.World;
 import h3d.scene.fwd.DirLight;
+import h3d.shader.AlphaMap;
 import h3d.shader.NormalMap;
 import haxe.crypto.Base64;
 import hpp.util.GeomUtil;
@@ -33,7 +34,6 @@ import levelup.TerrainAssets.TerrainConfig;
 import levelup.game.GameState.WorldConfig;
 import levelup.game.js.Graph;
 import levelup.game.unit.BaseUnit;
-import levelup.shader.AlphaMask;
 import levelup.util.GeomUtil3D;
 
 /**
@@ -213,7 +213,7 @@ class GameWorld extends World
 		if (alphaMap != null)
 			bmp.setPixels(new Pixels(bmp.width, bmp.height, Base64.decode(alphaMap), PixelFormat.RGBA));
 
-		var alphaMask = new AlphaMask(Texture.fromBitmap(bmp));
+		var alphaMask = new AlphaMap(Texture.fromBitmap(bmp));
 		alphaMask.uvScale.set(0.03333 * uvScale, 0.03333 * uvScale);
 
 		var mesh = new Mesh(layer, Material.create(terrainConfig.texture), s3d);
