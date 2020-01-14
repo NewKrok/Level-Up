@@ -50,7 +50,6 @@ Editor
 - Possibility to change the layer order
 - Undo / Redo functionality
 - Fix paint bug when the position is locked - after mouse up
-- Add eraser brush
 
 ## TODO - HeightMap editor
 - Undo / Redo functionality
