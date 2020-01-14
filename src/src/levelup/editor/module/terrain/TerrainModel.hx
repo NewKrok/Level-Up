@@ -40,6 +40,13 @@ class TerrainModel implements Model
 			uvScale: new State<Float>(uvScale)
 		})
 	};
+
+	@:transition function removeLayer(l:TerrainLayer)
+	{
+		var arr = layers.toArray();
+		arr.remove(l);
+		return { layers: List.fromArray(arr) };
+	}
 }
 
 typedef TerrainLayer =

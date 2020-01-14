@@ -197,6 +197,14 @@ class GameWorld extends World
 		terrainLayers.push(mesh);
 	}
 
+	public function removeTerrainLayer(index:Int)
+	{
+		var l = terrainLayers[index];
+		l.remove();
+
+		terrainLayers.remove(l);
+	}
+
 	public function addTerrainLayer(terrainConfig:TerrainConfig, uvScale:Float, alphaMap:String = null)
 	{
 		if (uvScale == null) uvScale = 1;

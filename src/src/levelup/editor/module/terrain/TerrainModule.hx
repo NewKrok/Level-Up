@@ -87,14 +87,11 @@ import tink.state.Observable;
 			changeSelectedBrushRequest: id -> model.selectedBrushId = id,
 			layers: model.observables.layers,
 			selectedLayer: model.observables.selectedLayer,
-			selectLayer: e ->
+			selectLayer: model.selectLayer,
+			openTerrainSelector: (e:TerrainLayer) ->
 			{
-				if (model.selectedLayer == e)
-				{
-					terrainChooser.setSelectedTerrainId(e.terrainId);
-					core.dialogManager.openDialog({ view: terrainChooserView });
-				}
-				else model.selectLayer(e);
+				terrainChooser.setSelectedTerrainId(e.terrainId.value);
+				core.dialogManager.openDialog({ view: terrainChooserView });
 			},
 			addLayer: () ->
 			{
@@ -112,6 +109,11 @@ import tink.state.Observable;
 			changeBrushGradient: e -> model.brushGradient = e,
 			changeBrushNoise: e -> model.brushNoise = e,
 			changeLayerUVScale: function (l:TerrainLayer, s:Float) l.uvScale.set(s),
+			deleteLayer: (l, i) ->
+			{
+				core.world.removeTerrainLayer(i);
+				model.removeLayer(l);
+			},
 			brushType: model.observables.brushType,
 			changeBrushType: v -> model.brushType = v
 		}));

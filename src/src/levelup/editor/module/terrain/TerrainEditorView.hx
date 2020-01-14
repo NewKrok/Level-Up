@@ -27,12 +27,14 @@ class TerrainEditorView extends View
 	@:attr var layers:List<TerrainLayer>;
 	@:attr var selectedLayer:TerrainLayer;
 	@:attr var selectLayer:TerrainLayer->Void;
+	@:attr var openTerrainSelector:TerrainLayer->Void;
 	@:attr var addLayer:Void->Void;
 	@:attr var changeBrushSize:Float->Void;
 	@:attr var changeBrushOpacity:Float->Void;
 	@:attr var changeBrushGradient:Float->Void;
 	@:attr var changeBrushNoise:Float->Void;
 	@:attr var changeLayerUVScale:TerrainLayer->Float->Void;
+	@:attr var deleteLayer:TerrainLayer->Int->Void;
 	@:attr var brushType:BrushType;
 	@:attr var changeBrushType:BrushType->Void;
 
@@ -130,30 +132,37 @@ class TerrainEditorView extends View
 							<for {i in 0...layersArr.length}>
 								<div
 									class={"lu_terrain_layer" + (selectedLayer == layersArr[i] ? " lu_terrain_layer--selected" : "")}
-									style={"background-image: url(" + TerrainAssets.getTerrain(layersArr[i].terrainId).previewUrl + ")"}
-									onclick={() -> {
-										if (selectedLayer != layersArr[i]) selectLayer(layersArr[i]);
-									}}
+									onclick={() -> {selectLayer(layersArr[i]);}}
 								>
-									<if {selectedLayer == layersArr[i]}>
-										<i class="fas fa-palette lu_terrain_layer__selected_icon" onclick={() -> selectLayer(layersArr[i])}></i>
-										<Slider
-											className="lu_terrain_slider"
-											min={0.3}
-											max={3}
-											startValue={layersArr[i].uvScale}
-											step={0.1}
-											onChange={v -> changeLayerUVScale(layersArr[i], v)}
-										/>
-									</if>
+									<div
+										class={"lu_terrain_layer__preview"}
+										style={"background-image: url(" + TerrainAssets.getTerrain(layersArr[i].terrainId).previewUrl + ")"}
+									></div>
 									<if {i == layersArr.length - 1}>
 										<i class="fas fa-lock lu_terrain_layer__locked_icon"></i>
-									<else>
-										<i class="fas fa-bars lu_terrain_layer__drag_icon"
-											onmousedown=$startDrag
-											onmousemove=$checkDrag
-										></i>
 									</if>
+									<div class="lu_terrain_layer__control_bar">
+										<i class="fas fa-palette lu_terrain_layer__control_button"
+											onclick={() -> openTerrainSelector(layersArr[i])}
+										></i>
+										<if {i != layersArr.length - 1}>
+											<i class="fas fa-trash lu_warning lu_terrain_layer__control_button"
+												onclick={e -> deleteLayer(layersArr[i], layersArr.length - 1 - i)}
+											></i>
+											<i class="fas fa-bars lu_terrain_layer__control_button"
+												onmousedown=$startDrag
+												onmousemove=$checkDrag
+											></i>
+										</if>
+									</div>
+									<Slider
+										className="lu_terrain_slider"
+										min={0.3}
+										max={3}
+										startValue={layersArr[i].uvScale}
+										step={0.1}
+										onChange={v -> changeLayerUVScale(layersArr[i], v)}
+									/>
 								</div>
 							</for>
 						</div>
@@ -176,8 +185,8 @@ class TerrainEditorView extends View
 	{
 		if (isMouseDragActive)
 		{
-			if (e.clientY - dragStartPoint.y > 10) trace("up");
-			else if (e.clientY - dragStartPoint.y < 10) trace("down");
+			if (e.clientY - dragStartPoint.y > 10) trace("down");
+			else if (e.clientY - dragStartPoint.y < 10) trace("up");
 		}
 	}
 }

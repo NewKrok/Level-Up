@@ -124,11 +124,12 @@
 .lu_terrain_layer {
 	cursor: pointer;
 	width: calc(100% - 4px);
-	height: 40px;
+	min-height: 40px;
 	border: 2px solid #FFFFFF00;
 	margin: 1px 0;
-	background-size: 100%;
 	position: relative;
+	display: flex;
+	flex-direction: column;
 }
 
 .lu_terrain_layer:hover {
@@ -140,33 +141,36 @@
 	cursor: default;
 }
 
-.lu_terrain_layer__selected_icon {
-	position: absolute;
-	left: 10px;
-	top: 50%;
-	transform: translateY(-50%);
-	filter: drop-shadow(0px 0px 2px black);
-	cursor: pointer;
-}
-
-.lu_terrain_layer__selected_icon:hoverz {
-	color: #6afd75;
-}
-
 .lu_terrain_layer__locked_icon {
 	position: absolute;
-	right: 10px;
-	top: 50%;
+	left: 10px;
+	top: 20px;
 	transform: translateY(-50%);
 	filter: drop-shadow(0px 0px 2px black);
 }
 
-.lu_terrain_layer__drag_icon {
+.lu_terrain_layer__preview {
+	background-size: 100%;
+	height: 40px;
+}
+
+.lu_terrain_layer__control_bar {
 	position: absolute;
-	right: 10px;
-	top: 50%;
-	transform: translateY(-50%);
-	filter: drop-shadow(0px 0px 2px black);
+	right: 0;
+	height: 100%;
+	cursor: pointer;
+	color: #555555;
+}
+
+.lu_terrain_layer__control_button {
+	background-color: #CCCCCC;
+	height: 100%;
+	padding: 10px;
+	box-sizing: border-box;
+}
+
+.lu_terrain_layer__control_button:hover {
+	background-color: #BBBBBB;
 }
 
 .lu_terrain_list {
@@ -198,11 +202,7 @@
 }
 
 .lu_terrain_slider {
-	top: 50%;
-	position: absolute;
-	width: 50%;
-	left: 50%;
-	transform: translate(-50%, -50%);
+	background-color: #000;
 }
 
 .lu_editor_footer {
