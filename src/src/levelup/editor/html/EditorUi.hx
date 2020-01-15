@@ -18,6 +18,7 @@ class EditorUi extends View
 {
 	@:attr var backToLobby:Void->Void;
 	@:attr var save:Void->Void;
+	@:attr var createNewMap:Void->Void;
 	@:attr var testRun:Void->Void;
 	@:attr var previewRequest:AssetConfig->Void;
 	@:attr var model:EditorModel;
@@ -42,6 +43,7 @@ class EditorUi extends View
 			{getModuleView(EditorViewId.VDialogManager)}
 			<EditorHeader
 				backToLobby=$backToLobby
+				createNewMap=$createNewMap
 				save=$save
 				testRun=$testRun
 			/>

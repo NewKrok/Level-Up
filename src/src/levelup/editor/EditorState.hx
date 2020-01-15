@@ -12,6 +12,7 @@ import h3d.prim.ModelCache;
 import h3d.scene.Graphics;
 import h3d.scene.Interactive;
 import h3d.scene.Object;
+import h3d.shader.AlphaMap;
 import h3d.shader.ColorMult;
 import haxe.Json;
 import haxe.crypto.Base64;
@@ -20,6 +21,7 @@ import hpp.heaps.Base2dState;
 import hpp.heaps.HppG;
 import hpp.util.GeomUtil;
 import hpp.util.GeomUtil.SimplePoint;
+import hxd.BitmapData;
 import hxd.Event;
 import hxd.Key;
 import hxd.Window;
@@ -40,7 +42,6 @@ import levelup.game.GameState.WorldEntity;
 import levelup.game.GameWorld;
 import levelup.game.GameWorld.Region;
 import levelup.game.unit.BaseUnit;
-import levelup.shader.AlphaMask;
 import levelup.shader.Opacity;
 import levelup.shader.ForcedZIndex;
 import levelup.util.AdventureParser;
@@ -122,6 +123,7 @@ class EditorState extends Base2dState
 
 		this.s3d = s3d;
 		this.s2d = s2d;
+
 		mapConfig = AdventureParser.loadLevel(rawMap);
 
 		model = new EditorModel(
@@ -350,7 +352,8 @@ class EditorState extends Base2dState
 
 		editorUi = new EditorUi({
 			backToLobby: () -> HppG.changeState(GameState, [stage, s3d, MapData.getRawMap("lobby")]),
-			save: () -> save(),
+			createNewMap: createNewMap,
+			save: save,
 			testRun: () -> HppG.changeState(GameState, [stage, s3d, save(), { isTestRun: true }]),
 			previewRequest: createPreview,
 			environmentsList: List.fromArray(Asset.environment),
@@ -728,7 +731,7 @@ class EditorState extends Base2dState
 
 	function updateGrid(r:Rect)
 	{
-		var w = Math.floor(mapConfig.size.y / gridBlockCount);
+		/*var w = Math.floor(mapConfig.size.y / gridBlockCount);
 		var h = Math.floor(mapConfig.size.x / gridBlockCount);
 		var x = Math.floor(r.left / h);
 		var y = Math.floor(r.bottom / w);
@@ -768,12 +771,12 @@ class EditorState extends Base2dState
 					g.lineTo(i + 1, j, getZFromPoint(g.x + i + 1, g.y + j));
 				}
 			}
-		}
+		}*/
 	}
 
 	function createGrid()
 	{
-		for (i in 0...gridBlockCount * gridBlockCount)
+		/*for (i in 0...gridBlockCount * gridBlockCount)
 		{
 			var grid = new Graphics(s3d);
 			grid.material.mainPass.addShader(new ForcedZIndex(10));
@@ -809,7 +812,7 @@ class EditorState extends Base2dState
 				y++;
 				x = 0;
 			}
-		}
+		}*/
 	}
 
 	function getZFromPoint(targetX, targetY)
@@ -956,6 +959,36 @@ class EditorState extends Base2dState
 		return Math.max(1, pos);
 	}
 
+	public function createNewMap()
+	{
+		var rawHeightMap = new BitmapData(200, 200);
+		rawHeightMap.fill(0, 0, 200, 200, 0x888888);
+
+		var worldConfig:WorldConfig = {
+			name: "A Great New Adventure",
+			size: { x:200, y:200 },
+			pathFindingMap: [for (i in 0...200) [for (j in 0...200) WorldEntity.Nothing]],
+			regions: [],
+			triggers: [],
+			units: [],
+			staticObjects: [],
+			terrainLayers: [{ textureId: "dirtground", texture: null, uvScale: 1 }],
+			heightMap: Base64.encode(rawHeightMap.getPixels().bytes),
+			editorLastCamPosition: new Vector(100, 100, 100)
+		};
+		var result = Json.stringify(worldConfig);
+
+		var savedMaps = SaveUtil.editorData.customMaps;
+		if (savedMaps.length > 0) SaveUtil.editorData.customMaps[0] = result;
+		else SaveUtil.editorData.customMaps.push(result);
+
+		SaveUtil.editorData.showGrid = model.showGrid;
+		SaveUtil.editorData.currentSnap = model.currentSnap;
+		SaveUtil.save();
+
+		HppG.changeState(EditorState, [stage, s3d, result]);
+	}
+
 	public function save()
 	{
 		var terrainLayers = [];
@@ -963,7 +996,7 @@ class EditorState extends Base2dState
 		for (i in 0...world.terrainLayers.length)
 		{
 			var l = world.terrainLayers[i];
-			var shader = l.material.mainPass.getShader(AlphaMask);
+			var shader = l.material.mainPass.getShader(AlphaMap);
 
 			terrainLayers.push({
 				textureId: terrainModule.model.layers.toArray()[i].terrainId.value,
@@ -1020,8 +1053,9 @@ class EditorState extends Base2dState
 
 		SaveUtil.editorData.showGrid = model.showGrid;
 		SaveUtil.editorData.currentSnap = model.currentSnap;
-
 		SaveUtil.save();
+
+		trace(result);
 		return result;
 	}
 
