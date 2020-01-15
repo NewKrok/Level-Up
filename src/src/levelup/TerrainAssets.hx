@@ -31,55 +31,64 @@ class TerrainAssets
 				id: "autumn_leaves",
 				type: TerrainType.Forest,
 				previewUrl: "asset/img/preview/terrain/forest/autumn_leaves.jpg",
-				texture: Res.texture.terrain.forest.autumn_leaves.toTexture()
+				texture: Res.texture.terrain.forest.autumn_leaves.toTexture(),
+				normalMap: Res.texture.terrain.forest.autumn_leaves_n.toTexture()
 			},
 			{
 				id: "t_soil_grass_basecolor",
 				type: TerrainType.Forest,
 				previewUrl: "asset/img/preview/terrain/forest/t_soil_grass_basecolor.jpg",
-				texture: Res.texture.terrain.forest.t_soil_grass_basecolor.toTexture()
+				texture: Res.texture.terrain.forest.t_soil_grass_basecolor.toTexture(),
+				normalMap: Res.texture.terrain.forest.t_soil_grass_normal.toTexture()
 			},
 			{
 				id: "t_soil_grass_roots_a_basecolor",
 				type: TerrainType.Forest,
 				previewUrl: "asset/img/preview/terrain/forest/t_soil_grass_roots_a_basecolor.jpg",
-				texture: Res.texture.terrain.forest.t_soil_grass_roots_a_basecolor.toTexture()
+				texture: Res.texture.terrain.forest.t_soil_grass_roots_a_basecolor.toTexture(),
+				normalMap: Res.texture.terrain.forest.t_soil_grass_roots_a_normal.toTexture()
 			},
 			{
 				id: "t_soil_grass_roots_b_basecolor",
 				type: TerrainType.Forest,
 				previewUrl: "asset/img/preview/terrain/forest/t_soil_grass_roots_b_basecolor.jpg",
-				texture: Res.texture.terrain.forest.t_soil_grass_roots_b_basecolor.toTexture()
+				texture: Res.texture.terrain.forest.t_soil_grass_roots_b_basecolor.toTexture(),
+				normalMap: Res.texture.terrain.forest.t_soil_grass_roots_b_normal.toTexture()
 			},
 			{
 				id: "t_water_grass_basecolor",
 				type: TerrainType.Forest,
 				previewUrl: "asset/img/preview/terrain/forest/t_water_grass_basecolor.jpg",
-				texture: Res.texture.terrain.forest.t_water_grass_basecolor.toTexture()
+				texture: Res.texture.terrain.forest.t_water_grass_basecolor.toTexture(),
+				normalMap: Res.texture.terrain.forest.t_water_grass_normal.toTexture()
 			},
 			{
 				id: "bricks",
 				type: TerrainType.Road,
 				previewUrl: "asset/img/preview/terrain/road/bricks.jpg",
-				texture: Res.texture.terrain.road.bricks.toTexture()
+				texture: Res.texture.terrain.road.bricks.toTexture(),
+				normalMap: Res.texture.terrain.road.bricks_n.toTexture()
 			},
 			{
 				id: "cracked_stone_2",
 				type: TerrainType.Stone,
 				previewUrl: "asset/img/preview/terrain/stone/cracked_stone_2.jpg",
-				texture: Res.texture.terrain.stone.cracked_stone_2.toTexture()
+				texture: Res.texture.terrain.stone.cracked_stone_2.toTexture(),
+				normalMap: Res.texture.terrain.stone.cracked_stone_2_n.toTexture()
 			},
 			{
 				id: "desert",
 				type: TerrainType.Desert,
 				previewUrl: "asset/img/preview/terrain/desert/desert.jpg",
-				texture: Res.texture.terrain.desert.desert.toTexture()
+				texture: Res.texture.terrain.desert.desert.toTexture(),
+				normalMap: Res.texture.terrain.desert.desert_n.toTexture()
 			},
 			{
 				id: "dirtground",
 				type: TerrainType.Dirt,
 				previewUrl: "asset/img/preview/terrain/dirt/dirt_ground.jpg",
-				texture: Res.texture.terrain.dirt.dirt_ground.toTexture()
+				texture: Res.texture.terrain.dirt.dirt_ground.toTexture(),
+				normalMap: Res.texture.terrain.dirt.dirt_ground_n.toTexture()
 			},
 			{
 				id: "ground_stone_basecolor",
@@ -106,31 +115,36 @@ class TerrainAssets
 				id: "t_mud_basecolor",
 				type: TerrainType.Dirt,
 				previewUrl: "asset/img/preview/terrain/dirt/t_mud_basecolor.jpg",
-				texture: Res.texture.terrain.dirt.t_mud_basecolor.toTexture()
+				texture: Res.texture.terrain.dirt.t_mud_basecolor.toTexture(),
+				normalMap: Res.texture.terrain.dirt.t_mud_normal.toTexture()
 			},
 			{
 				id: "t_soil_basecolor",
 				type: TerrainType.Dirt,
 				previewUrl: "asset/img/preview/terrain/dirt/t_soil_basecolor.jpg",
-				texture: Res.texture.terrain.dirt.t_soil_basecolor.toTexture()
+				texture: Res.texture.terrain.dirt.t_soil_basecolor.toTexture(),
+				normalMap: Res.texture.terrain.dirt.t_soil_normal.toTexture()
 			},
 			{
 				id: "t_ground_a_basecolor",
 				type: TerrainType.Dirt,
 				previewUrl: "asset/img/preview/terrain/dirt/t_ground_a_basecolor.jpg",
-				texture: Res.texture.terrain.dirt.t_ground_a_basecolor.toTexture()
+				texture: Res.texture.terrain.dirt.t_ground_a_basecolor.toTexture(),
+				normalMap: Res.texture.terrain.dirt.t_ground_a_normal.toTexture()
 			},
 			{
 				id: "t_ground_b_basecolor",
 				type: TerrainType.Dirt,
 				previewUrl: "asset/img/preview/terrain/dirt/t_ground_b_basecolor.jpg",
-				texture: Res.texture.terrain.dirt.t_ground_b_basecolor.toTexture()
+				texture: Res.texture.terrain.dirt.t_ground_b_basecolor.toTexture(),
+				normalMap: Res.texture.terrain.dirt.t_ground_b_normal.toTexture()
 			},
 			{
 				id: "dry_ground",
 				type: TerrainType.Desert,
 				previewUrl: "asset/img/preview/terrain/desert/dry_ground.jpg",
-				texture: Res.texture.terrain.desert.dry_ground.toTexture()
+				texture: Res.texture.terrain.desert.dry_ground.toTexture(),
+				normalMap: Res.texture.terrain.desert.dry_ground_n.toTexture()
 			},
 			{
 				id: "sand_basecolor",
@@ -150,37 +164,43 @@ class TerrainAssets
 				id: "flower_field",
 				type: TerrainType.Grass,
 				previewUrl: "asset/img/preview/terrain/grass/flower_field.jpg",
-				texture: Res.texture.terrain.grass.flower_field.toTexture()
+				texture: Res.texture.terrain.grass.flower_field.toTexture(),
+				normalMap: Res.texture.terrain.grass.flower_field_n.toTexture()
 			},
 			{
 				id: "forest_floor_green",
 				type: TerrainType.Forest,
 				previewUrl: "asset/img/preview/terrain/forest/forest_floor_green.jpg",
-				texture: Res.texture.terrain.forest.forest_floor_green.toTexture()
+				texture: Res.texture.terrain.forest.forest_floor_green.toTexture(),
+				normalMap: Res.texture.terrain.forest.forest_floor_green_n.toTexture()
 			},
 			{
 				id: "grass",
 				type: TerrainType.Grass,
 				previewUrl: "asset/img/preview/terrain/grass/grass.jpg",
-				texture: Res.texture.terrain.grass.grass.toTexture()
+				texture: Res.texture.terrain.grass.grass.toTexture(),
+				normalMap: Res.texture.terrain.grass.grass_n.toTexture()
 			},
 			{
 				id: "ice",
 				type: TerrainType.Ice,
 				previewUrl: "asset/img/preview/terrain/ice/ice.jpg",
-				texture: Res.texture.terrain.ice.ice.toTexture()
+				texture: Res.texture.terrain.ice.ice.toTexture(),
+				normalMap: Res.texture.terrain.ice.ice_n.toTexture()
 			},
 			{
 				id: "lavaground",
 				type: TerrainType.Lava,
 				previewUrl: "asset/img/preview/terrain/lava/lavaground.jpg",
-				texture: Res.texture.terrain.lava.lavaground.toTexture()
+				texture: Res.texture.terrain.lava.lavaground.toTexture(),
+				normalMap: Res.texture.terrain.lava.lava_ground_n.toTexture()
 			},
 			{
 				id: "rock",
 				type: TerrainType.Stone,
 				previewUrl: "asset/img/preview/terrain/stone/rock.jpg",
-				texture: Res.texture.terrain.stone.rock.toTexture()
+				texture: Res.texture.terrain.stone.rock.toTexture(),
+				normalMap: Res.texture.terrain.stone.rock_n.toTexture()
 			},
 			{
 				id: "sand",
@@ -198,19 +218,22 @@ class TerrainAssets
 				id: "snow",
 				type: TerrainType.Ice,
 				previewUrl: "asset/img/preview/terrain/ice/snow.jpg",
-				texture: Res.texture.terrain.ice.snow.toTexture()
+				texture: Res.texture.terrain.ice.snow.toTexture(),
+				normalMap: Res.texture.terrain.ice.snow_n.toTexture()
 			},
 			{
 				id: "sticks_leaves",
 				type: TerrainType.Forest,
 				previewUrl: "asset/img/preview/terrain/forest/sticks_leaves.jpg",
-				texture: Res.texture.terrain.forest.sticks_leaves.toTexture()
+				texture: Res.texture.terrain.forest.sticks_leaves.toTexture(),
+				normalMap: Res.texture.terrain.forest.sticks_leaves_n.toTexture()
 			},
 			{
 				id: "stones",
 				type: TerrainType.Road,
 				previewUrl: "asset/img/preview/terrain/road/stones.jpg",
-				texture: Res.texture.terrain.road.stones.toTexture()
+				texture: Res.texture.terrain.road.stones.toTexture(),
+				normalMap: Res.texture.terrain.road.stones_n.toTexture()
 			},
 			{
 				id: "stylizedcliff02_basecolor",
@@ -232,6 +255,19 @@ class TerrainAssets
 				previewUrl: "asset/img/preview/terrain/cliff/t_cliff_basecolor.jpg",
 				texture: Res.texture.terrain.cliff.t_cliff_basecolor.toTexture(),
 				normalMap: Res.texture.terrain.cliff.t_cliff_normal.toTexture()
+			},
+			{
+				id: "t_cliff_basecolor_vol1",
+				type: TerrainType.Cliff,
+				previewUrl: "asset/img/preview/terrain/cliff/t_cliff_basecolor_vol1.jpg",
+				texture: Res.texture.terrain.cliff.t_cliff_basecolor_vol1.toTexture(),
+				normalMap: Res.texture.terrain.cliff.t_cliff_normal_vol1.toTexture()
+			},
+			{
+				id: "t_cliff_surface_basecolor",
+				type: TerrainType.Cliff,
+				previewUrl: "asset/img/preview/terrain/cliff/t_cliff_surface_basecolor.jpg",
+				texture: Res.texture.terrain.cliff.t_cliff_surface_basecolor.toTexture()
 			},
 			{
 				id: "stylizedgrass02_basecolor",
@@ -290,7 +326,8 @@ class TerrainAssets
 				id: "t_sand_soil_basecolor",
 				type: TerrainType.Desert,
 				previewUrl: "asset/img/preview/terrain/desert/t_sand_soil_basecolor.jpg",
-				texture: Res.texture.terrain.desert.t_sand_soil_basecolor.toTexture()
+				texture: Res.texture.terrain.desert.t_sand_soil_basecolor.toTexture(),
+				normalMap: Res.texture.terrain.desert.t_sand_soil_normal.toTexture()
 			},
 			{
 				id: "stylizedstone02snow_basecolor",
@@ -302,7 +339,8 @@ class TerrainAssets
 				id: "tiles",
 				type: TerrainType.Road,
 				previewUrl: "asset/img/preview/terrain/road/tiles.jpg",
-				texture: Res.texture.terrain.road.tiles.toTexture()
+				texture: Res.texture.terrain.road.tiles.toTexture(),
+				normalMap: Res.texture.terrain.road.tiles_n.toTexture()
 			},
 			{
 				id: "stylizedwater01_basecolor",
@@ -315,7 +353,8 @@ class TerrainAssets
 				id: "water",
 				type: TerrainType.Water,
 				previewUrl: "asset/img/preview/terrain/water/water.jpg",
-				texture: Res.texture.terrain.water.water.toTexture()
+				texture: Res.texture.terrain.water.water.toTexture(),
+				normalMap: Res.texture.terrain.water.water_n.toTexture()
 			},
 			{
 				id: "wood_floor",
@@ -552,25 +591,36 @@ class TerrainAssets
 				id: "t_rock_grass_basecolor",
 				type: TerrainType.Stone,
 				previewUrl: "asset/img/preview/terrain/stone/t_rock_grass_basecolor.jpg",
-				texture: Res.texture.terrain.stone.t_rock_grass_basecolor.toTexture()
+				texture: Res.texture.terrain.stone.t_rock_grass_basecolor.toTexture(),
+				normalMap: Res.texture.terrain.stone.t_rock_grass_normal.toTexture()
+			},
+			{
+				id: "t_rock_basecolor_2",
+				type: TerrainType.Stone,
+				previewUrl: "asset/img/preview/terrain/stone/t_rock_basecolor_2.jpg",
+				texture: Res.texture.terrain.stone.t_rock_basecolor_2.toTexture(),
+				normalMap: Res.texture.terrain.stone.t_rock_normal_2.toTexture()
 			},
 			{
 				id: "t_stone_ground_basecolor",
 				type: TerrainType.Stone,
 				previewUrl: "asset/img/preview/terrain/stone/t_stone_ground_basecolor.jpg",
-				texture: Res.texture.terrain.stone.t_stone_ground_basecolor.toTexture()
+				texture: Res.texture.terrain.stone.t_stone_ground_basecolor.toTexture(),
+				normalMap: Res.texture.terrain.stone.t_stone_ground_normal.toTexture()
 			},
 			{
 				id: "t_stone_mud_a_basecolor",
 				type: TerrainType.Stone,
 				previewUrl: "asset/img/preview/terrain/stone/t_stone_mud_a_basecolor.jpg",
-				texture: Res.texture.terrain.stone.t_stone_mud_a_basecolor.toTexture()
+				texture: Res.texture.terrain.stone.t_stone_mud_a_basecolor.toTexture(),
+				normalMap: Res.texture.terrain.stone.t_stone_mud_a_normal.toTexture()
 			},
 			{
 				id: "t_stone_mud_b_basecolor",
 				type: TerrainType.Stone,
 				previewUrl: "asset/img/preview/terrain/stone/t_stone_mud_b_basecolor.jpg",
-				texture: Res.texture.terrain.stone.t_stone_mud_b_basecolor.toTexture()
+				texture: Res.texture.terrain.stone.t_stone_mud_b_basecolor.toTexture(),
+				normalMap: Res.texture.terrain.stone.t_stone_mud_b_normal.toTexture()
 			},
 			{
 				id: "t_ground_cracks_basecolor",
@@ -604,13 +654,15 @@ class TerrainAssets
 				id: "t_stone_surface_basecolor",
 				type: TerrainType.Stone,
 				previewUrl: "asset/img/preview/terrain/stone/t_stone_surface_basecolor.jpg",
-				texture: Res.texture.terrain.stone.t_stone_surface_basecolor.toTexture()
+				texture: Res.texture.terrain.stone.t_stone_surface_basecolor.toTexture(),
+				normalMap: Res.texture.terrain.stone.t_stone_surface_normal.toTexture()
 			},
 			{
 				id: "t_stones_basecolor",
 				type: TerrainType.Stone,
 				previewUrl: "asset/img/preview/terrain/stone/t_stones_basecolor.jpg",
-				texture: Res.texture.terrain.stone.t_stones_basecolor.toTexture()
+				texture: Res.texture.terrain.stone.t_stones_basecolor.toTexture(),
+				normalMap: Res.texture.terrain.stone.t_stones_normal.toTexture()
 			},
 			{
 				id: "landscapedirt01diffuse",
@@ -667,19 +719,22 @@ class TerrainAssets
 				id: "t_grass_c_basecolor",
 				type: TerrainType.Grass,
 				previewUrl: "asset/img/preview/terrain/grass/t_grass_c_basecolor.jpg",
-				texture: Res.texture.terrain.grass.t_grass_c_basecolor.toTexture()
+				texture: Res.texture.terrain.grass.t_grass_c_basecolor.toTexture(),
+				normalMap: Res.texture.terrain.grass.t_grass_c_normal.toTexture()
 			},
 			{
 				id: "t_grass_flowers_basecolor",
 				type: TerrainType.Grass,
 				previewUrl: "asset/img/preview/terrain/grass/t_grass_flowers_basecolor.jpg",
-				texture: Res.texture.terrain.grass.t_grass_flowers_basecolor.toTexture()
+				texture: Res.texture.terrain.grass.t_grass_flowers_basecolor.toTexture(),
+				normalMap: Res.texture.terrain.grass.t_grass_flowers_normal.toTexture()
 			},
 			{
 				id: "t_stone_grass_basecolor",
 				type: TerrainType.Grass,
 				previewUrl: "asset/img/preview/terrain/grass/t_stone_grass_basecolor.jpg",
-				texture: Res.texture.terrain.grass.t_stone_grass_basecolor.toTexture()
+				texture: Res.texture.terrain.grass.t_stone_grass_basecolor.toTexture(),
+				normalMap: Res.texture.terrain.grass.t_stone_grass_normal.toTexture()
 			},
 			{
 				id: "grass_basecolor",
