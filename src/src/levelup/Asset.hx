@@ -43,7 +43,8 @@ class Asset
 				environmentId: EnvironmentId.Bridge,
 				model: Res.model.environment.bridge.Bridge01,
 				previewUrl: "./asset/img/preview/environment/bridge/bridge_01.jpg",
-				zOffset: 1
+				zOffset: 1,
+				isPathBlocker: false
 			},
 			{
 				id: "Plant01",
@@ -52,7 +53,8 @@ class Asset
 				hasTransparentTexture: true,
 				environmentId: EnvironmentId.Plant,
 				model: Res.model.environment.plant.Plant01,
-				previewUrl: "./asset/img/preview/environment/plant/plant_01.jpg"
+				previewUrl: "./asset/img/preview/environment/plant/plant_01.jpg",
+				isPathBlocker: false
 			},
 			{
 				id: "Plant02",
@@ -61,7 +63,8 @@ class Asset
 				hasTransparentTexture: true,
 				environmentId: EnvironmentId.Plant,
 				model: Res.model.environment.plant.Plant02,
-				previewUrl: "./asset/img/preview/environment/plant/plant_02.jpg"
+				previewUrl: "./asset/img/preview/environment/plant/plant_02.jpg",
+				isPathBlocker: false
 			},
 			{
 				id: "Plant03",
@@ -70,7 +73,8 @@ class Asset
 				hasTransparentTexture: true,
 				environmentId: EnvironmentId.Plant,
 				model: Res.model.environment.plant.Plant03,
-				previewUrl: "./asset/img/preview/environment/plant/plant_03.jpg"
+				previewUrl: "./asset/img/preview/environment/plant/plant_03.jpg",
+				isPathBlocker: false
 			},
 			{
 				id: "Plant04",
@@ -79,7 +83,8 @@ class Asset
 				hasTransparentTexture: true,
 				environmentId: EnvironmentId.Plant,
 				model: Res.model.environment.plant.Plant04,
-				previewUrl: "./asset/img/preview/environment/plant/plant_04.jpg"
+				previewUrl: "./asset/img/preview/environment/plant/plant_04.jpg",
+				isPathBlocker: false
 			},
 			{
 				id: "Plant05",
@@ -88,7 +93,8 @@ class Asset
 				hasTransparentTexture: true,
 				environmentId: EnvironmentId.Plant,
 				model: Res.model.environment.plant.Plant05,
-				previewUrl: "./asset/img/preview/environment/plant/plant_05.jpg"
+				previewUrl: "./asset/img/preview/environment/plant/plant_05.jpg",
+				isPathBlocker: false
 			},
 			{
 				id: "Plant06",
@@ -97,7 +103,8 @@ class Asset
 				hasTransparentTexture: true,
 				environmentId: EnvironmentId.Plant,
 				model: Res.model.environment.plant.Plant06,
-				previewUrl: "./asset/img/preview/environment/plant/plant_06.jpg"
+				previewUrl: "./asset/img/preview/environment/plant/plant_06.jpg",
+				isPathBlocker: false
 			},
 			{
 				id: "Plant07",
@@ -106,7 +113,8 @@ class Asset
 				hasTransparentTexture: true,
 				environmentId: EnvironmentId.Plant,
 				model: Res.model.environment.plant.Plant07,
-				previewUrl: "./asset/img/preview/environment/plant/plant_07.jpg"
+				previewUrl: "./asset/img/preview/environment/plant/plant_07.jpg",
+				isPathBlocker: false
 			},
 			{
 				id: "Plant08",
@@ -115,7 +123,8 @@ class Asset
 				hasTransparentTexture: true,
 				environmentId: EnvironmentId.Plant,
 				model: Res.model.environment.plant.Plant08,
-				previewUrl: "./asset/img/preview/environment/plant/plant_08.jpg"
+				previewUrl: "./asset/img/preview/environment/plant/plant_08.jpg",
+				isPathBlocker: false
 			},
 			{
 				id: "Plant09",
@@ -124,7 +133,8 @@ class Asset
 				hasTransparentTexture: true,
 				environmentId: EnvironmentId.Plant,
 				model: Res.model.environment.plant.Plant09,
-				previewUrl: "./asset/img/preview/environment/plant/plant_09.jpg"
+				previewUrl: "./asset/img/preview/environment/plant/plant_09.jpg",
+				isPathBlocker: false
 			},
 			{
 				id: "Plant10",
@@ -133,7 +143,8 @@ class Asset
 				hasTransparentTexture: true,
 				environmentId: EnvironmentId.Plant,
 				model: Res.model.environment.plant.Plant10,
-				previewUrl: "./asset/img/preview/environment/plant/plant_10.jpg"
+				previewUrl: "./asset/img/preview/environment/plant/plant_10.jpg",
+				isPathBlocker: false
 			},
 			{
 				id: "Plant11",
@@ -142,7 +153,8 @@ class Asset
 				hasTransparentTexture: true,
 				environmentId: EnvironmentId.Plant,
 				model: Res.model.environment.plant.Plant11,
-				previewUrl: "./asset/img/preview/environment/plant/plant_11.jpg"
+				previewUrl: "./asset/img/preview/environment/plant/plant_11.jpg",
+				isPathBlocker: false
 			},
 			{
 				id: "Plant12",
@@ -151,7 +163,8 @@ class Asset
 				hasTransparentTexture: true,
 				environmentId: EnvironmentId.Plant,
 				model: Res.model.environment.plant.Plant12,
-				previewUrl: "./asset/img/preview/environment/plant/plant_12.jpg"
+				previewUrl: "./asset/img/preview/environment/plant/plant_12.jpg",
+				isPathBlocker: false
 			},
 			{
 				id: "Plant13",
@@ -160,7 +173,8 @@ class Asset
 				hasTransparentTexture: true,
 				environmentId: EnvironmentId.Plant,
 				model: Res.model.environment.plant.Plant13,
-				previewUrl: "./asset/img/preview/environment/plant/plant_13.jpg"
+				previewUrl: "./asset/img/preview/environment/plant/plant_13.jpg",
+				isPathBlocker: false
 			},
 			{
 				id: "Plant14",
@@ -169,7 +183,8 @@ class Asset
 				hasTransparentTexture: true,
 				environmentId: EnvironmentId.Plant,
 				model: Res.model.environment.plant.Plant14,
-				previewUrl: "./asset/img/preview/environment/plant/plant_14.jpg"
+				previewUrl: "./asset/img/preview/environment/plant/plant_14.jpg",
+				isPathBlocker: false
 			},
 			{
 				id: "Plant15",
@@ -178,7 +193,8 @@ class Asset
 				hasTransparentTexture: true,
 				environmentId: EnvironmentId.Plant,
 				model: Res.model.environment.plant.Plant15,
-				previewUrl: "./asset/img/preview/environment/plant/plant_15.jpg"
+				previewUrl: "./asset/img/preview/environment/plant/plant_15.jpg",
+				isPathBlocker: false
 			},
 			{
 				id: "Plant16",
@@ -187,7 +203,8 @@ class Asset
 				hasTransparentTexture: true,
 				environmentId: EnvironmentId.Plant,
 				model: Res.model.environment.plant.Plant16,
-				previewUrl: "./asset/img/preview/environment/plant/plant_16.jpg"
+				previewUrl: "./asset/img/preview/environment/plant/plant_16.jpg",
+				isPathBlocker: false
 			},
 			{
 				id: "Plant17",
@@ -196,7 +213,8 @@ class Asset
 				hasTransparentTexture: true,
 				environmentId: EnvironmentId.Plant,
 				model: Res.model.environment.plant.Plant17,
-				previewUrl: "./asset/img/preview/environment/plant/plant_17.jpg"
+				previewUrl: "./asset/img/preview/environment/plant/plant_17.jpg",
+				isPathBlocker: false
 			},
 			{
 				id: "Plant18",
@@ -205,7 +223,8 @@ class Asset
 				hasTransparentTexture: true,
 				environmentId: EnvironmentId.Plant,
 				model: Res.model.environment.plant.Plant18,
-				previewUrl: "./asset/img/preview/environment/plant/plant_18.jpg"
+				previewUrl: "./asset/img/preview/environment/plant/plant_18.jpg",
+				isPathBlocker: false
 			},
 			{
 				id: "Plant19",
@@ -214,7 +233,8 @@ class Asset
 				hasTransparentTexture: true,
 				environmentId: EnvironmentId.Plant,
 				model: Res.model.environment.plant.Plant19,
-				previewUrl: "./asset/img/preview/environment/plant/plant_19.jpg"
+				previewUrl: "./asset/img/preview/environment/plant/plant_19.jpg",
+				isPathBlocker: false
 			},
 			{
 				id: "Plant20",
@@ -223,7 +243,8 @@ class Asset
 				hasTransparentTexture: true,
 				environmentId: EnvironmentId.Plant,
 				model: Res.model.environment.plant.Plant20,
-				previewUrl: "./asset/img/preview/environment/plant/plant_20.jpg"
+				previewUrl: "./asset/img/preview/environment/plant/plant_20.jpg",
+				isPathBlocker: false
 			},
 			{
 				id: "Plant21",
@@ -232,7 +253,8 @@ class Asset
 				hasTransparentTexture: true,
 				environmentId: EnvironmentId.Plant,
 				model: Res.model.environment.plant.Plant21,
-				previewUrl: "./asset/img/preview/environment/plant/plant_21.jpg"
+				previewUrl: "./asset/img/preview/environment/plant/plant_21.jpg",
+				isPathBlocker: false
 			},
 			{
 				id: "Plant22",
@@ -241,7 +263,8 @@ class Asset
 				hasTransparentTexture: true,
 				environmentId: EnvironmentId.Plant,
 				model: Res.model.environment.plant.Plant22,
-				previewUrl: "./asset/img/preview/environment/plant/plant_22.jpg"
+				previewUrl: "./asset/img/preview/environment/plant/plant_22.jpg",
+				isPathBlocker: false
 			},
 			{
 				id: "Plant23",
@@ -250,7 +273,8 @@ class Asset
 				hasTransparentTexture: true,
 				environmentId: EnvironmentId.Plant,
 				model: Res.model.environment.plant.Plant23,
-				previewUrl: "./asset/img/preview/environment/plant/plant_23.jpg"
+				previewUrl: "./asset/img/preview/environment/plant/plant_23.jpg",
+				isPathBlocker: false
 			},
 			{
 				id: "Plant24",
@@ -259,7 +283,8 @@ class Asset
 				hasTransparentTexture: true,
 				environmentId: EnvironmentId.Plant,
 				model: Res.model.environment.plant.Plant24,
-				previewUrl: "./asset/img/preview/environment/plant/plant_24.jpg"
+				previewUrl: "./asset/img/preview/environment/plant/plant_24.jpg",
+				isPathBlocker: false
 			},
 			{
 				id: "Plant25",
@@ -268,7 +293,8 @@ class Asset
 				hasTransparentTexture: true,
 				environmentId: EnvironmentId.Plant,
 				model: Res.model.environment.plant.Plant25,
-				previewUrl: "./asset/img/preview/environment/plant/plant_25.jpg"
+				previewUrl: "./asset/img/preview/environment/plant/plant_25.jpg",
+				isPathBlocker: false
 			},
 			{
 				id: "Plant26",
@@ -277,7 +303,8 @@ class Asset
 				hasTransparentTexture: true,
 				environmentId: EnvironmentId.Plant,
 				model: Res.model.environment.plant.Plant26,
-				previewUrl: "./asset/img/preview/environment/plant/plant_26.jpg"
+				previewUrl: "./asset/img/preview/environment/plant/plant_26.jpg",
+				isPathBlocker: false
 			},
 			{
 				id: "Plant27",
@@ -286,7 +313,8 @@ class Asset
 				hasTransparentTexture: true,
 				environmentId: EnvironmentId.Plant,
 				model: Res.model.environment.plant.Plant27,
-				previewUrl: "./asset/img/preview/environment/plant/plant_27.jpg"
+				previewUrl: "./asset/img/preview/environment/plant/plant_27.jpg",
+				isPathBlocker: false
 			},
 			{
 				id: "Plant28",
@@ -295,7 +323,8 @@ class Asset
 				hasTransparentTexture: true,
 				environmentId: EnvironmentId.Plant,
 				model: Res.model.environment.plant.Plant28,
-				previewUrl: "./asset/img/preview/environment/plant/plant_28.jpg"
+				previewUrl: "./asset/img/preview/environment/plant/plant_28.jpg",
+				isPathBlocker: false
 			},
 			{
 				id: "Plant29",
@@ -304,7 +333,8 @@ class Asset
 				hasTransparentTexture: true,
 				environmentId: EnvironmentId.Plant,
 				model: Res.model.environment.plant.Plant29,
-				previewUrl: "./asset/img/preview/environment/plant/plant_29.jpg"
+				previewUrl: "./asset/img/preview/environment/plant/plant_29.jpg",
+				isPathBlocker: false
 			},
 			{
 				id: "Plant30",
@@ -313,7 +343,8 @@ class Asset
 				hasTransparentTexture: true,
 				environmentId: EnvironmentId.Plant,
 				model: Res.model.environment.plant.Plant30,
-				previewUrl: "./asset/img/preview/environment/plant/plant_30.jpg"
+				previewUrl: "./asset/img/preview/environment/plant/plant_30.jpg",
+				isPathBlocker: false
 			},
 			{
 				id: "Plant31",
@@ -322,7 +353,8 @@ class Asset
 				hasTransparentTexture: true,
 				environmentId: EnvironmentId.Plant,
 				model: Res.model.environment.plant.Plant31,
-				previewUrl: "./asset/img/preview/environment/plant/plant_31.jpg"
+				previewUrl: "./asset/img/preview/environment/plant/plant_31.jpg",
+				isPathBlocker: false
 			},
 			{
 				id: "Plant32",
@@ -331,7 +363,8 @@ class Asset
 				hasTransparentTexture: true,
 				environmentId: EnvironmentId.Plant,
 				model: Res.model.environment.plant.Plant32,
-				previewUrl: "./asset/img/preview/environment/plant/plant_32.jpg"
+				previewUrl: "./asset/img/preview/environment/plant/plant_32.jpg",
+				isPathBlocker: false
 			},
 			{
 				id: "Plant33",
@@ -340,7 +373,8 @@ class Asset
 				hasTransparentTexture: true,
 				environmentId: EnvironmentId.Plant,
 				model: Res.model.environment.plant.Plant33,
-				previewUrl: "./asset/img/preview/environment/plant/plant_33.jpg"
+				previewUrl: "./asset/img/preview/environment/plant/plant_33.jpg",
+				isPathBlocker: false
 			},
 			{
 				id: "Plant34",
@@ -349,7 +383,8 @@ class Asset
 				hasTransparentTexture: true,
 				environmentId: EnvironmentId.Plant,
 				model: Res.model.environment.plant.Plant34,
-				previewUrl: "./asset/img/preview/environment/plant/plant_34.jpg"
+				previewUrl: "./asset/img/preview/environment/plant/plant_34.jpg",
+				isPathBlocker: false
 			},
 			{
 				id: "Plant35",
@@ -358,7 +393,8 @@ class Asset
 				hasTransparentTexture: true,
 				environmentId: EnvironmentId.Plant,
 				model: Res.model.environment.plant.Plant35,
-				previewUrl: "./asset/img/preview/environment/plant/plant_35.jpg"
+				previewUrl: "./asset/img/preview/environment/plant/plant_35.jpg",
+				isPathBlocker: false
 			},
 			{
 				id: "Plant36",
@@ -367,7 +403,8 @@ class Asset
 				hasTransparentTexture: true,
 				environmentId: EnvironmentId.Plant,
 				model: Res.model.environment.plant.Plant36,
-				previewUrl: "./asset/img/preview/environment/plant/plant_36.jpg"
+				previewUrl: "./asset/img/preview/environment/plant/plant_36.jpg",
+				isPathBlocker: false
 			},
 			{
 				id: "Plant37",
@@ -376,7 +413,8 @@ class Asset
 				hasTransparentTexture: true,
 				environmentId: EnvironmentId.Plant,
 				model: Res.model.environment.plant.Plant37,
-				previewUrl: "./asset/img/preview/environment/plant/plant_37.jpg"
+				previewUrl: "./asset/img/preview/environment/plant/plant_37.jpg",
+				isPathBlocker: false
 			},
 			{
 				id: "Plant38",
@@ -385,7 +423,8 @@ class Asset
 				hasTransparentTexture: true,
 				environmentId: EnvironmentId.Plant,
 				model: Res.model.environment.plant.Plant38,
-				previewUrl: "./asset/img/preview/environment/plant/plant_38.jpg"
+				previewUrl: "./asset/img/preview/environment/plant/plant_38.jpg",
+				isPathBlocker: false
 			},
 			{
 				id: "Plant39",
@@ -394,7 +433,8 @@ class Asset
 				hasTransparentTexture: true,
 				environmentId: EnvironmentId.Plant,
 				model: Res.model.environment.plant.Plant39,
-				previewUrl: "./asset/img/preview/environment/plant/plant_39.jpg"
+				previewUrl: "./asset/img/preview/environment/plant/plant_39.jpg",
+				isPathBlocker: false
 			},
 			{
 				id: "Plant40",
@@ -403,7 +443,8 @@ class Asset
 				hasTransparentTexture: true,
 				environmentId: EnvironmentId.Plant,
 				model: Res.model.environment.plant.Plant40,
-				previewUrl: "./asset/img/preview/environment/plant/plant_40.jpg"
+				previewUrl: "./asset/img/preview/environment/plant/plant_40.jpg",
+				isPathBlocker: false
 			},
 			{
 				id: "Plant41",
@@ -412,7 +453,8 @@ class Asset
 				hasTransparentTexture: true,
 				environmentId: EnvironmentId.Plant,
 				model: Res.model.environment.plant.Plant41,
-				previewUrl: "./asset/img/preview/environment/plant/plant_41.jpg"
+				previewUrl: "./asset/img/preview/environment/plant/plant_41.jpg",
+				isPathBlocker: false
 			},
 			{
 				id: "Rock01",
@@ -420,7 +462,8 @@ class Asset
 				scale: 0.005,
 				environmentId: EnvironmentId.Rock,
 				model: Res.model.environment.rock.Rock01,
-				previewUrl: "./asset/img/preview/environment/rock/rock_01.jpg"
+				previewUrl: "./asset/img/preview/environment/rock/rock_01.jpg",
+				isPathBlocker: true
 			},
 			{
 				id: "Rock02",
@@ -428,7 +471,8 @@ class Asset
 				scale: 0.005,
 				environmentId: EnvironmentId.Rock,
 				model: Res.model.environment.rock.Rock02,
-				previewUrl: "./asset/img/preview/environment/rock/rock_02.jpg"
+				previewUrl: "./asset/img/preview/environment/rock/rock_02.jpg",
+				isPathBlocker: true
 			},
 			{
 				id: "Rock03",
@@ -436,7 +480,8 @@ class Asset
 				scale: 0.005,
 				environmentId: EnvironmentId.Rock,
 				model: Res.model.environment.rock.Rock03,
-				previewUrl: "./asset/img/preview/environment/rock/rock_03.jpg"
+				previewUrl: "./asset/img/preview/environment/rock/rock_03.jpg",
+				isPathBlocker: true
 			},
 			{
 				id: "Rock04",
@@ -444,7 +489,8 @@ class Asset
 				scale: 0.005,
 				environmentId: EnvironmentId.Rock,
 				model: Res.model.environment.rock.Rock04,
-				previewUrl: "./asset/img/preview/environment/rock/rock_04.jpg"
+				previewUrl: "./asset/img/preview/environment/rock/rock_04.jpg",
+				isPathBlocker: true
 			},
 			{
 				id: "Rock05",
@@ -452,7 +498,8 @@ class Asset
 				scale: 0.005,
 				environmentId: EnvironmentId.Rock,
 				model: Res.model.environment.rock.Rock05,
-				previewUrl: "./asset/img/preview/environment/rock/rock_05.jpg"
+				previewUrl: "./asset/img/preview/environment/rock/rock_05.jpg",
+				isPathBlocker: true
 			},
 			{
 				id: "Rock06",
@@ -460,7 +507,8 @@ class Asset
 				scale: 0.005,
 				environmentId: EnvironmentId.Rock,
 				model: Res.model.environment.rock.Rock06,
-				previewUrl: "./asset/img/preview/environment/rock/rock_06.jpg"
+				previewUrl: "./asset/img/preview/environment/rock/rock_06.jpg",
+				isPathBlocker: true
 			},
 			{
 				id: "Rock07",
@@ -468,7 +516,8 @@ class Asset
 				scale: 0.005,
 				environmentId: EnvironmentId.Rock,
 				model: Res.model.environment.rock.Rock07,
-				previewUrl: "./asset/img/preview/environment/rock/rock_07.jpg"
+				previewUrl: "./asset/img/preview/environment/rock/rock_07.jpg",
+				isPathBlocker: true
 			},
 			{
 				id: "Rock08",
@@ -476,7 +525,8 @@ class Asset
 				scale: 0.005,
 				environmentId: EnvironmentId.Rock,
 				model: Res.model.environment.rock.Rock08,
-				previewUrl: "./asset/img/preview/environment/rock/rock_08.jpg"
+				previewUrl: "./asset/img/preview/environment/rock/rock_08.jpg",
+				isPathBlocker: true
 			},
 			{
 				id: "Rock09",
@@ -484,7 +534,8 @@ class Asset
 				scale: 0.005,
 				environmentId: EnvironmentId.Rock,
 				model: Res.model.environment.rock.Rock09,
-				previewUrl: "./asset/img/preview/environment/rock/rock_09.jpg"
+				previewUrl: "./asset/img/preview/environment/rock/rock_09.jpg",
+				isPathBlocker: true
 			},
 			{
 				id: "Rock10",
@@ -492,7 +543,8 @@ class Asset
 				scale: 0.005,
 				environmentId: EnvironmentId.Rock,
 				model: Res.model.environment.rock.Rock10,
-				previewUrl: "./asset/img/preview/environment/rock/rock_10.jpg"
+				previewUrl: "./asset/img/preview/environment/rock/rock_10.jpg",
+				isPathBlocker: true
 			},
 			{
 				id: "Rock11",
@@ -500,7 +552,8 @@ class Asset
 				scale: 0.005,
 				environmentId: EnvironmentId.Rock,
 				model: Res.model.environment.rock.Rock11,
-				previewUrl: "./asset/img/preview/environment/rock/rock_11.jpg"
+				previewUrl: "./asset/img/preview/environment/rock/rock_11.jpg",
+				isPathBlocker: true
 			},
 			{
 				id: "Rock12",
@@ -508,7 +561,8 @@ class Asset
 				scale: 0.005,
 				environmentId: EnvironmentId.Rock,
 				model: Res.model.environment.rock.Rock12,
-				previewUrl: "./asset/img/preview/environment/rock/rock_12.jpg"
+				previewUrl: "./asset/img/preview/environment/rock/rock_12.jpg",
+				isPathBlocker: true
 			},
 			{
 				id: "Rock13",
@@ -516,7 +570,8 @@ class Asset
 				scale: 0.005,
 				environmentId: EnvironmentId.Rock,
 				model: Res.model.environment.rock.Rock13,
-				previewUrl: "./asset/img/preview/environment/rock/rock_13.jpg"
+				previewUrl: "./asset/img/preview/environment/rock/rock_13.jpg",
+				isPathBlocker: true
 			},
 			{
 				id: "Rock14",
@@ -524,7 +579,8 @@ class Asset
 				scale: 0.005,
 				environmentId: EnvironmentId.Rock,
 				model: Res.model.environment.rock.Rock14,
-				previewUrl: "./asset/img/preview/environment/rock/rock_14.jpg"
+				previewUrl: "./asset/img/preview/environment/rock/rock_14.jpg",
+				isPathBlocker: true
 			},
 			{
 				id: "Rock15",
@@ -532,7 +588,8 @@ class Asset
 				scale: 0.005,
 				environmentId: EnvironmentId.Rock,
 				model: Res.model.environment.rock.Rock15,
-				previewUrl: "./asset/img/preview/environment/rock/rock_15.jpg"
+				previewUrl: "./asset/img/preview/environment/rock/rock_15.jpg",
+				isPathBlocker: true
 			},
 			{
 				id: "Rock16",
@@ -540,7 +597,8 @@ class Asset
 				scale: 0.005,
 				environmentId: EnvironmentId.Rock,
 				model: Res.model.environment.rock.Rock16,
-				previewUrl: "./asset/img/preview/environment/rock/rock_16.jpg"
+				previewUrl: "./asset/img/preview/environment/rock/rock_16.jpg",
+				isPathBlocker: true
 			},
 			{
 				id: "Rock17",
@@ -548,7 +606,8 @@ class Asset
 				scale: 0.005,
 				environmentId: EnvironmentId.Rock,
 				model: Res.model.environment.rock.Rock17,
-				previewUrl: "./asset/img/preview/environment/rock/rock_17.jpg"
+				previewUrl: "./asset/img/preview/environment/rock/rock_17.jpg",
+				isPathBlocker: true
 			},
 			{
 				id: "Rock18",
@@ -556,7 +615,8 @@ class Asset
 				scale: 0.005,
 				environmentId: EnvironmentId.Rock,
 				model: Res.model.environment.rock.Rock18,
-				previewUrl: "./asset/img/preview/environment/rock/rock_18.jpg"
+				previewUrl: "./asset/img/preview/environment/rock/rock_18.jpg",
+				isPathBlocker: true
 			},
 			{
 				id: "Rock19",
@@ -564,7 +624,8 @@ class Asset
 				scale: 0.005,
 				environmentId: EnvironmentId.Rock,
 				model: Res.model.environment.rock.Rock19,
-				previewUrl: "./asset/img/preview/environment/rock/rock_19.jpg"
+				previewUrl: "./asset/img/preview/environment/rock/rock_19.jpg",
+				isPathBlocker: true
 			},
 			{
 				id: "Rock20",
@@ -572,7 +633,8 @@ class Asset
 				scale: 0.005,
 				environmentId: EnvironmentId.Rock,
 				model: Res.model.environment.rock.Rock20,
-				previewUrl: "./asset/img/preview/environment/rock/rock_20.jpg"
+				previewUrl: "./asset/img/preview/environment/rock/rock_20.jpg",
+				isPathBlocker: true
 			},
 			{
 				id: "Rock21",
@@ -580,7 +642,8 @@ class Asset
 				scale: 0.005,
 				environmentId: EnvironmentId.Rock,
 				model: Res.model.environment.rock.Rock21,
-				previewUrl: "./asset/img/preview/environment/rock/rock_21.jpg"
+				previewUrl: "./asset/img/preview/environment/rock/rock_21.jpg",
+				isPathBlocker: true
 			},
 			{
 				id: "Rock22",
@@ -588,7 +651,8 @@ class Asset
 				scale: 0.005,
 				environmentId: EnvironmentId.Rock,
 				model: Res.model.environment.rock.Rock22,
-				previewUrl: "./asset/img/preview/environment/rock/rock_22.jpg"
+				previewUrl: "./asset/img/preview/environment/rock/rock_22.jpg",
+				isPathBlocker: true
 			},
 			{
 				id: "Rock23",
@@ -596,7 +660,8 @@ class Asset
 				scale: 0.005,
 				environmentId: EnvironmentId.Rock,
 				model: Res.model.environment.rock.Rock23,
-				previewUrl: "./asset/img/preview/environment/rock/rock_23.jpg"
+				previewUrl: "./asset/img/preview/environment/rock/rock_23.jpg",
+				isPathBlocker: true
 			},
 			{
 				id: "Rock24",
@@ -604,7 +669,8 @@ class Asset
 				scale: 0.005,
 				environmentId: EnvironmentId.Rock,
 				model: Res.model.environment.rock.Rock24,
-				previewUrl: "./asset/img/preview/environment/rock/rock_24.jpg"
+				previewUrl: "./asset/img/preview/environment/rock/rock_24.jpg",
+				isPathBlocker: true
 			},
 			{
 				id: "Rock25",
@@ -612,7 +678,8 @@ class Asset
 				scale: 0.005,
 				environmentId: EnvironmentId.Rock,
 				model: Res.model.environment.rock.Rock25,
-				previewUrl: "./asset/img/preview/environment/rock/rock_25.jpg"
+				previewUrl: "./asset/img/preview/environment/rock/rock_25.jpg",
+				isPathBlocker: true
 			},
 			{
 				id: "Rock26",
@@ -620,7 +687,8 @@ class Asset
 				scale: 0.005,
 				environmentId: EnvironmentId.Rock,
 				model: Res.model.environment.rock.Rock26,
-				previewUrl: "./asset/img/preview/environment/rock/rock_26.jpg"
+				previewUrl: "./asset/img/preview/environment/rock/rock_26.jpg",
+				isPathBlocker: true
 			},
 			{
 				id: "Rock27",
@@ -628,7 +696,8 @@ class Asset
 				scale: 0.005,
 				environmentId: EnvironmentId.Rock,
 				model: Res.model.environment.rock.Rock27,
-				previewUrl: "./asset/img/preview/environment/rock/rock_27.jpg"
+				previewUrl: "./asset/img/preview/environment/rock/rock_27.jpg",
+				isPathBlocker: true
 			},
 			{
 				id: "Rock28",
@@ -636,7 +705,8 @@ class Asset
 				scale: 0.005,
 				environmentId: EnvironmentId.Rock,
 				model: Res.model.environment.rock.Rock28,
-				previewUrl: "./asset/img/preview/environment/rock/rock_28.jpg"
+				previewUrl: "./asset/img/preview/environment/rock/rock_28.jpg",
+				isPathBlocker: true
 			},
 			{
 				id: "Tree01",
@@ -645,7 +715,8 @@ class Asset
 				hasTransparentTexture: true,
 				environmentId: EnvironmentId.Tree,
 				model: Res.model.environment.tree.Tree01,
-				previewUrl: "./asset/img/preview/environment/tree/tree_01.jpg"
+				previewUrl: "./asset/img/preview/environment/tree/tree_01.jpg",
+				isPathBlocker: true
 			},
 			{
 				id: "Tree02",
@@ -654,7 +725,8 @@ class Asset
 				hasTransparentTexture: true,
 				environmentId: EnvironmentId.Tree,
 				model: Res.model.environment.tree.Tree02,
-				previewUrl: "./asset/img/preview/environment/tree/tree_02.jpg"
+				previewUrl: "./asset/img/preview/environment/tree/tree_02.jpg",
+				isPathBlocker: true
 			},
 			{
 				id: "Tree03",
@@ -663,7 +735,8 @@ class Asset
 				hasTransparentTexture: true,
 				environmentId: EnvironmentId.Tree,
 				model: Res.model.environment.tree.Tree03,
-				previewUrl: "./asset/img/preview/environment/tree/tree_03.jpg"
+				previewUrl: "./asset/img/preview/environment/tree/tree_03.jpg",
+				isPathBlocker: true
 			},
 			{
 				id: "Tree04",
@@ -672,7 +745,8 @@ class Asset
 				hasTransparentTexture: true,
 				environmentId: EnvironmentId.Tree,
 				model: Res.model.environment.tree.Tree04,
-				previewUrl: "./asset/img/preview/environment/tree/tree_04.jpg"
+				previewUrl: "./asset/img/preview/environment/tree/tree_04.jpg",
+				isPathBlocker: true
 			},
 			{
 				id: "Tree05",
@@ -681,7 +755,8 @@ class Asset
 				hasTransparentTexture: true,
 				environmentId: EnvironmentId.Tree,
 				model: Res.model.environment.tree.Tree05,
-				previewUrl: "./asset/img/preview/environment/tree/tree_05.jpg"
+				previewUrl: "./asset/img/preview/environment/tree/tree_05.jpg",
+				isPathBlocker: true
 			},
 			{
 				id: "Tree06",
@@ -690,7 +765,8 @@ class Asset
 				hasTransparentTexture: true,
 				environmentId: EnvironmentId.Tree,
 				model: Res.model.environment.tree.Tree06,
-				previewUrl: "./asset/img/preview/environment/tree/tree_06.jpg"
+				previewUrl: "./asset/img/preview/environment/tree/tree_06.jpg",
+				isPathBlocker: true
 			},
 			{
 				id: "Tree07",
@@ -699,7 +775,8 @@ class Asset
 				hasTransparentTexture: true,
 				environmentId: EnvironmentId.Tree,
 				model: Res.model.environment.tree.Tree07,
-				previewUrl: "./asset/img/preview/environment/tree/tree_07.jpg"
+				previewUrl: "./asset/img/preview/environment/tree/tree_07.jpg",
+				isPathBlocker: true
 			},
 			{
 				id: "Tree08",
@@ -708,7 +785,8 @@ class Asset
 				hasTransparentTexture: true,
 				environmentId: EnvironmentId.Tree,
 				model: Res.model.environment.tree.Tree08,
-				previewUrl: "./asset/img/preview/environment/tree/tree_08.jpg"
+				previewUrl: "./asset/img/preview/environment/tree/tree_08.jpg",
+				isPathBlocker: true
 			},
 			{
 				id: "Tree09",
@@ -717,7 +795,8 @@ class Asset
 				hasTransparentTexture: true,
 				environmentId: EnvironmentId.Tree,
 				model: Res.model.environment.tree.Tree09,
-				previewUrl: "./asset/img/preview/environment/tree/tree_09.jpg"
+				previewUrl: "./asset/img/preview/environment/tree/tree_09.jpg",
+				isPathBlocker: true
 			},
 			{
 				id: "Tree10",
@@ -726,7 +805,8 @@ class Asset
 				hasTransparentTexture: true,
 				environmentId: EnvironmentId.Tree,
 				model: Res.model.environment.tree.Tree10,
-				previewUrl: "./asset/img/preview/environment/tree/tree_10.jpg"
+				previewUrl: "./asset/img/preview/environment/tree/tree_10.jpg",
+				isPathBlocker: true
 			},
 			{
 				id: "Tree11",
@@ -735,7 +815,8 @@ class Asset
 				hasTransparentTexture: true,
 				environmentId: EnvironmentId.Tree,
 				model: Res.model.environment.tree.Tree11,
-				previewUrl: "./asset/img/preview/environment/tree/tree_11.jpg"
+				previewUrl: "./asset/img/preview/environment/tree/tree_11.jpg",
+				isPathBlocker: true
 			},
 			{
 				id: "Tree12",
@@ -744,7 +825,8 @@ class Asset
 				hasTransparentTexture: true,
 				environmentId: EnvironmentId.Tree,
 				model: Res.model.environment.tree.Tree12,
-				previewUrl: "./asset/img/preview/environment/tree/tree_12.jpg"
+				previewUrl: "./asset/img/preview/environment/tree/tree_12.jpg",
+				isPathBlocker: true
 			},
 			{
 				id: "Tree13",
@@ -753,7 +835,8 @@ class Asset
 				hasTransparentTexture: true,
 				environmentId: EnvironmentId.Tree,
 				model: Res.model.environment.tree.Tree13,
-				previewUrl: "./asset/img/preview/environment/tree/tree_13.jpg"
+				previewUrl: "./asset/img/preview/environment/tree/tree_13.jpg",
+				isPathBlocker: true
 			},
 			{
 				id: "Tree14",
@@ -762,7 +845,8 @@ class Asset
 				hasTransparentTexture: true,
 				environmentId: EnvironmentId.Tree,
 				model: Res.model.environment.tree.Tree14,
-				previewUrl: "./asset/img/preview/environment/tree/tree_14.jpg"
+				previewUrl: "./asset/img/preview/environment/tree/tree_14.jpg",
+				isPathBlocker: true
 			},
 			{
 				id: "Tree15",
@@ -771,7 +855,8 @@ class Asset
 				hasTransparentTexture: true,
 				environmentId: EnvironmentId.Tree,
 				model: Res.model.environment.tree.Tree15,
-				previewUrl: "./asset/img/preview/environment/tree/tree_15.jpg"
+				previewUrl: "./asset/img/preview/environment/tree/tree_15.jpg",
+				isPathBlocker: true
 			},
 			{
 				id: "Tree16",
@@ -780,7 +865,8 @@ class Asset
 				hasTransparentTexture: true,
 				environmentId: EnvironmentId.Tree,
 				model: Res.model.environment.tree.Tree16,
-				previewUrl: "./asset/img/preview/environment/tree/tree_16.jpg"
+				previewUrl: "./asset/img/preview/environment/tree/tree_16.jpg",
+				isPathBlocker: true
 			},
 			{
 				id: "Tree17",
@@ -789,7 +875,8 @@ class Asset
 				hasTransparentTexture: true,
 				environmentId: EnvironmentId.Tree,
 				model: Res.model.environment.tree.Tree17,
-				previewUrl: "./asset/img/preview/environment/tree/tree_17.jpg"
+				previewUrl: "./asset/img/preview/environment/tree/tree_17.jpg",
+				isPathBlocker: true
 			},
 			{
 				id: "Tree18",
@@ -798,7 +885,8 @@ class Asset
 				hasTransparentTexture: true,
 				environmentId: EnvironmentId.Tree,
 				model: Res.model.environment.tree.Tree18,
-				previewUrl: "./asset/img/preview/environment/tree/tree_18.jpg"
+				previewUrl: "./asset/img/preview/environment/tree/tree_18.jpg",
+				isPathBlocker: true
 			},
 			{
 				id: "Tree19",
@@ -807,7 +895,8 @@ class Asset
 				hasTransparentTexture: true,
 				environmentId: EnvironmentId.Tree,
 				model: Res.model.environment.tree.Tree19,
-				previewUrl: "./asset/img/preview/environment/tree/tree_19.jpg"
+				previewUrl: "./asset/img/preview/environment/tree/tree_19.jpg",
+				isPathBlocker: true
 			},
 			{
 				id: "Tree20",
@@ -816,7 +905,8 @@ class Asset
 				hasTransparentTexture: true,
 				environmentId: EnvironmentId.Tree,
 				model: Res.model.environment.tree.Tree20,
-				previewUrl: "./asset/img/preview/environment/tree/tree_20.jpg"
+				previewUrl: "./asset/img/preview/environment/tree/tree_20.jpg",
+				isPathBlocker: true
 			},
 			{
 				id: "Tree21",
@@ -825,7 +915,8 @@ class Asset
 				hasTransparentTexture: true,
 				environmentId: EnvironmentId.Tree,
 				model: Res.model.environment.tree.Tree21,
-				previewUrl: "./asset/img/preview/environment/tree/tree_21.jpg"
+				previewUrl: "./asset/img/preview/environment/tree/tree_21.jpg",
+				isPathBlocker: true
 			},
 			{
 				id: "Tree22",
@@ -834,7 +925,8 @@ class Asset
 				hasTransparentTexture: true,
 				environmentId: EnvironmentId.Tree,
 				model: Res.model.environment.tree.Tree22,
-				previewUrl: "./asset/img/preview/environment/tree/tree_22.jpg"
+				previewUrl: "./asset/img/preview/environment/tree/tree_22.jpg",
+				isPathBlocker: true
 			},
 			{
 				id: "Tree23",
@@ -843,7 +935,8 @@ class Asset
 				hasTransparentTexture: true,
 				environmentId: EnvironmentId.Tree,
 				model: Res.model.environment.tree.Tree23,
-				previewUrl: "./asset/img/preview/environment/tree/tree_23.jpg"
+				previewUrl: "./asset/img/preview/environment/tree/tree_23.jpg",
+				isPathBlocker: true
 			},
 			{
 				id: "Tree24",
@@ -852,7 +945,8 @@ class Asset
 				hasTransparentTexture: true,
 				environmentId: EnvironmentId.Tree,
 				model: Res.model.environment.tree.Tree24,
-				previewUrl: "./asset/img/preview/environment/tree/tree_24.jpg"
+				previewUrl: "./asset/img/preview/environment/tree/tree_24.jpg",
+				isPathBlocker: true
 			},
 			{
 				id: "Tree25",
@@ -861,7 +955,8 @@ class Asset
 				hasTransparentTexture: true,
 				environmentId: EnvironmentId.Tree,
 				model: Res.model.environment.tree.Tree25,
-				previewUrl: "./asset/img/preview/environment/tree/tree_25.jpg"
+				previewUrl: "./asset/img/preview/environment/tree/tree_25.jpg",
+				isPathBlocker: true
 			},
 			{
 				id: "Tree26",
@@ -870,7 +965,8 @@ class Asset
 				hasTransparentTexture: true,
 				environmentId: EnvironmentId.Tree,
 				model: Res.model.environment.tree.Tree26,
-				previewUrl: "./asset/img/preview/environment/tree/tree_26.jpg"
+				previewUrl: "./asset/img/preview/environment/tree/tree_26.jpg",
+				isPathBlocker: true
 			},
 			{
 				id: "Tree27",
@@ -879,7 +975,8 @@ class Asset
 				hasTransparentTexture: true,
 				environmentId: EnvironmentId.Tree,
 				model: Res.model.environment.tree.Tree27,
-				previewUrl: "./asset/img/preview/environment/tree/tree_27.jpg"
+				previewUrl: "./asset/img/preview/environment/tree/tree_27.jpg",
+				isPathBlocker: true
 			},
 			{
 				id: "Tree28",
@@ -888,7 +985,8 @@ class Asset
 				hasTransparentTexture: true,
 				environmentId: EnvironmentId.Tree,
 				model: Res.model.environment.tree.Tree28,
-				previewUrl: "./asset/img/preview/environment/tree/tree_28.jpg"
+				previewUrl: "./asset/img/preview/environment/tree/tree_28.jpg",
+				isPathBlocker: true
 			},
 			{
 				id: "Tree29",
@@ -897,7 +995,8 @@ class Asset
 				hasTransparentTexture: true,
 				environmentId: EnvironmentId.Tree,
 				model: Res.model.environment.tree.Tree29,
-				previewUrl: "./asset/img/preview/environment/tree/tree_29.jpg"
+				previewUrl: "./asset/img/preview/environment/tree/tree_29.jpg",
+				isPathBlocker: true
 			},
 			{
 				id: "Tree30",
@@ -906,7 +1005,8 @@ class Asset
 				hasTransparentTexture: true,
 				environmentId: EnvironmentId.Tree,
 				model: Res.model.environment.tree.Tree30,
-				previewUrl: "./asset/img/preview/environment/tree/tree_30.jpg"
+				previewUrl: "./asset/img/preview/environment/tree/tree_30.jpg",
+				isPathBlocker: true
 			},
 			{
 				id: "Tree31",
@@ -915,7 +1015,8 @@ class Asset
 				hasTransparentTexture: true,
 				environmentId: EnvironmentId.Tree,
 				model: Res.model.environment.tree.Tree31,
-				previewUrl: "./asset/img/preview/environment/tree/tree_31.jpg"
+				previewUrl: "./asset/img/preview/environment/tree/tree_31.jpg",
+				isPathBlocker: true
 			},
 			{
 				id: "Tree32",
@@ -924,7 +1025,8 @@ class Asset
 				hasTransparentTexture: true,
 				environmentId: EnvironmentId.Tree,
 				model: Res.model.environment.tree.Tree32,
-				previewUrl: "./asset/img/preview/environment/tree/tree_32.jpg"
+				previewUrl: "./asset/img/preview/environment/tree/tree_32.jpg",
+				isPathBlocker: true
 			},
 			{
 				id: "Tree33",
@@ -933,7 +1035,8 @@ class Asset
 				hasTransparentTexture: true,
 				environmentId: EnvironmentId.Tree,
 				model: Res.model.environment.tree.Tree33,
-				previewUrl: "./asset/img/preview/environment/tree/tree_33.jpg"
+				previewUrl: "./asset/img/preview/environment/tree/tree_33.jpg",
+				isPathBlocker: true
 			},
 			{
 				id: "Tree34",
@@ -942,7 +1045,8 @@ class Asset
 				hasTransparentTexture: true,
 				environmentId: EnvironmentId.Tree,
 				model: Res.model.environment.tree.Tree34,
-				previewUrl: "./asset/img/preview/environment/tree/tree_34.jpg"
+				previewUrl: "./asset/img/preview/environment/tree/tree_34.jpg",
+				isPathBlocker: true
 			},
 			{
 				id: "Tree35",
@@ -951,7 +1055,8 @@ class Asset
 				hasTransparentTexture: true,
 				environmentId: EnvironmentId.Tree,
 				model: Res.model.environment.tree.Tree35,
-				previewUrl: "./asset/img/preview/environment/tree/tree_35.jpg"
+				previewUrl: "./asset/img/preview/environment/tree/tree_35.jpg",
+				isPathBlocker: true
 			},
 			{
 				id: "Tree36",
@@ -960,7 +1065,8 @@ class Asset
 				hasTransparentTexture: true,
 				environmentId: EnvironmentId.Tree,
 				model: Res.model.environment.tree.Tree36,
-				previewUrl: "./asset/img/preview/environment/tree/tree_36.jpg"
+				previewUrl: "./asset/img/preview/environment/tree/tree_36.jpg",
+				isPathBlocker: true
 			},
 			{
 				id: "Tree37",
@@ -969,7 +1075,8 @@ class Asset
 				hasTransparentTexture: true,
 				environmentId: EnvironmentId.Tree,
 				model: Res.model.environment.tree.Tree37,
-				previewUrl: "./asset/img/preview/environment/tree/tree_37.jpg"
+				previewUrl: "./asset/img/preview/environment/tree/tree_37.jpg",
+				isPathBlocker: true
 			},
 			{
 				id: "Tree38",
@@ -978,7 +1085,8 @@ class Asset
 				hasTransparentTexture: true,
 				environmentId: EnvironmentId.Tree,
 				model: Res.model.environment.tree.Tree38,
-				previewUrl: "./asset/img/preview/environment/tree/tree_38.jpg"
+				previewUrl: "./asset/img/preview/environment/tree/tree_38.jpg",
+				isPathBlocker: true
 			},
 			{
 				id: "Tree39",
@@ -987,7 +1095,8 @@ class Asset
 				hasTransparentTexture: true,
 				environmentId: EnvironmentId.Tree,
 				model: Res.model.environment.tree.Tree39,
-				previewUrl: "./asset/img/preview/environment/tree/tree_39.jpg"
+				previewUrl: "./asset/img/preview/environment/tree/tree_39.jpg",
+				isPathBlocker: true
 			},
 			{
 				id: "Tree40",
@@ -996,7 +1105,8 @@ class Asset
 				hasTransparentTexture: true,
 				environmentId: EnvironmentId.Tree,
 				model: Res.model.environment.tree.Tree40,
-				previewUrl: "./asset/img/preview/environment/tree/tree_40.jpg"
+				previewUrl: "./asset/img/preview/environment/tree/tree_40.jpg",
+				isPathBlocker: true
 			},
 			{
 				id: "Tree41",
@@ -1005,7 +1115,8 @@ class Asset
 				hasTransparentTexture: true,
 				environmentId: EnvironmentId.Tree,
 				model: Res.model.environment.tree.Tree41,
-				previewUrl: "./asset/img/preview/environment/tree/tree_41.jpg"
+				previewUrl: "./asset/img/preview/environment/tree/tree_41.jpg",
+				isPathBlocker: true
 			},
 			{
 				id: "Trunk01",
@@ -1013,14 +1124,16 @@ class Asset
 				scale: 0.005,
 				environmentId: EnvironmentId.Trunk,
 				model: Res.model.environment.trunk.Trunk01,
-				previewUrl: "./asset/img/preview/environment/tree/tree_08.jpg"
+				previewUrl: "./asset/img/preview/environment/tree/tree_08.jpg",
+				isPathBlocker: true
 			},
 			{
 				id: "SM_Altar",
 				name: "SM_Altar",
 				scale: 0.05,
 				model: Res.model.environment.SM_Altar,
-				previewUrl: "./asset/img/preview/environment/sm_altar.jpg"
+				previewUrl: "./asset/img/preview/environment/sm_altar.jpg",
+				isPathBlocker: true
 			},
 			{
 				id: "SM_Banner",
@@ -1028,7 +1141,8 @@ class Asset
 				scale: 0.05,
 				zOffset: 4,
 				model: Res.model.environment.SM_Banner,
-				previewUrl: "./asset/img/preview/environment/sm_banner.jpg"
+				previewUrl: "./asset/img/preview/environment/sm_banner.jpg",
+				isPathBlocker: true
 			},
 			{
 				id: "SM_Banner_Large",
@@ -1036,7 +1150,8 @@ class Asset
 				scale: 0.05,
 				zOffset: 5,
 				model: Res.model.environment.SM_Banner_Large,
-				previewUrl: "./asset/img/preview/environment/sm_banner_large.jpg"
+				previewUrl: "./asset/img/preview/environment/sm_banner_large.jpg",
+				isPathBlocker: true
 			},
 			{
 				id: "SM_Banner_Wide",
@@ -1044,70 +1159,73 @@ class Asset
 				scale: 0.05,
 				zOffset: 5,
 				model: Res.model.environment.SM_Banner_Wide,
-				previewUrl: "./asset/img/preview/environment/sm_banner_wide.jpg"
+				previewUrl: "./asset/img/preview/environment/sm_banner_wide.jpg",
+				isPathBlocker: true
 			},
 			{
 				id: "SM_Cobweb",
 				name: "SM_Cobweb",
 				scale: 0.05,
 				model: Res.model.environment.SM_Cobweb,
-				previewUrl: "./asset/img/preview/environment/sm_cobweb.jpg"
+				previewUrl: "./asset/img/preview/environment/sm_cobweb.jpg",
+				isPathBlocker: true
 			},
 			{
 				id: "SM_Door",
 				name: "SM_Door",
 				scale: 0.05,
 				model: Res.model.environment.SM_Door,
-				previewUrl: "./asset/img/preview/environment/sm_door.jpg"
+				previewUrl: "./asset/img/preview/environment/sm_door.jpg",
+				isPathBlocker: true
 			},
-			{ id: "SM_Fence", name: "SM_Fence", scale: 0.05, model: Res.model.environment.SM_Fence },
-			{ id: "SM_Fence_Pillar", name: "SM_Fence_Pillar", scale: 0.05, model: Res.model.environment.SM_Fence_Pillar },
-			{ id: "SM_Floor_Grate", name: "SM_Floor_Grate", scale: 0.05, model: Res.model.environment.SM_Floor_Grate },
-			{ id: "SM_Forge_Furnace", name: "SM_Forge_Furnace", scale: 0.05, model: Res.model.environment.SM_Forge_Furnace },
-			{ id: "SM_Ground_Large", name: "SM_Ground_Large", scale: 0.05, model: Res.model.environment.SM_Ground_Large },
-			{ id: "SM_Ground_Small", name: "SM_Ground_Small", scale: 0.05, model: Res.model.environment.SM_Ground_Small },
-			{ id: "SM_Ground_Tiles", name: "SM_Ground_Tiles", scale: 0.05, model: Res.model.environment.SM_Ground_Tiles },
-			{ id: "SM_Ground_Tiles_Damaged", name: "SM_Ground_Tiles_Damaged", scale: 0.05, model: Res.model.environment.SM_Ground_Tiles_Damaged },
-			{ id: "SM_Ground_Tiles_Large", name: "SM_Ground_Tiles_Large", scale: 0.05, model: Res.model.environment.SM_Ground_Tiles_Large },
-			{ id: "SM_Pillar", name: "SM_Pillar", scale: 0.05, model: Res.model.environment.SM_Pillar },
-			{ id: "SM_Pillar_Center", name: "SM_Pillar_Center", scale: 0.05, model: Res.model.environment.SM_Pillar_Center },
-			{ id: "SM_Pillar_Center_Round", name: "SM_Pillar_Center_Round", scale: 0.05, model: Res.model.environment.SM_Pillar_Center_Round },
-			{ id: "SM_Pillar_Center_Ruined", name: "SM_Pillar_Center_Ruined", scale: 0.05, model: Res.model.environment.SM_Pillar_Center_Ruined },
-			{ id: "SM_Pillar_Corner", name: "SM_Pillar_Corner", scale: 0.05, model: Res.model.environment.SM_Pillar_Corner },
-			{ id: "SM_Prison_Corner", name: "SM_Prison_Corner", scale: 0.05, model: Res.model.environment.SM_Prison_Corner },
-			{ id: "SM_Prison_Door", name: "SM_Prison_Door", scale: 0.05, model: Res.model.environment.SM_Prison_Door },
-			{ id: "SM_Prison_Half_Wall", name: "SM_Prison_Half_Wall", scale: 0.05, model: Res.model.environment.SM_Prison_Half_Wall },
-			{ id: "SM_Prison_Wall", name: "SM_Prison_Wall", scale: 0.05, model: Res.model.environment.SM_Prison_Wall },
-			{ id: "SM_Prison_Wall_Door", name: "SM_Prison_Wall_Door", scale: 0.05, model: Res.model.environment.SM_Prison_Wall_Door },
-			{ id: "SM_Rug_1_Way", name: "SM_Rug_1_Way", scale: 0.05, model: Res.model.environment.SM_Rug_1_Way },
-			{ id: "SM_Rug_1_Way_Half", name: "SM_Rug_1_Way_Half", scale: 0.05, model: Res.model.environment.SM_Rug_1_Way_Half },
-			{ id: "SM_Rug_1_Way_Ruined", name: "SM_Rug_1_Way_Ruined", scale: 0.05, model: Res.model.environment.SM_Rug_1_Way_Ruined },
-			{ id: "SM_Rug_2_Way", name: "SM_Rug_2_Way", scale: 0.05, model: Res.model.environment.SM_Rug_2_Way },
-			{ id: "SM_Rug_3_Way", name: "SM_Rug_3_Way", scale: 0.05, model: Res.model.environment.SM_Rug_3_Way },
-			{ id: "SM_Rug_4_Way", name: "SM_Rug_4_Way", scale: 0.05, model: Res.model.environment.SM_Rug_4_Way },
-			{ id: "SM_Rug_End", name: "SM_Rug_End", scale: 0.05, model: Res.model.environment.SM_Rug_End },
-			{ id: "SM_Stairs", name: "SM_Stairs", scale: 0.05, model: Res.model.environment.SM_Stairs },
-			{ id: "SM_Stone_Statue", name: "SM_Stone_Statue", scale: 0.05, model: Res.model.environment.SM_Stone_Statue },
-			{ id: "SM_Throne", name: "SM_Throne", scale: 0.05, model: Res.model.environment.SM_Throne },
-			{ id: "SM_Torch_Holder", name: "SM_Torch_Holder", scale: 0.05, model: Res.model.environment.SM_Torch_Holder },
-			{ id: "SM_Torch_Holder_Off", name: "SM_Torch_Holder_Off", scale: 0.05, model: Res.model.environment.SM_Torch_Holder_Off },
-			{ id: "SM_Wall", name: "SM_Wall", scale: 0.05, model: Res.model.environment.SM_Wall },
-			{ id: "SM_Wall_Angle", name: "SM_Wall_Angle", scale: 0.05, model: Res.model.environment.SM_Wall_Angle },
-			{ id: "SM_Wall_Door", name: "SM_Wall_Door", scale: 0.05, model: Res.model.environment.SM_Wall_Door },
-			{ id: "SM_Wall_Prison_Window", name: "SM_Wall_Prison_Window", scale: 0.05, model: Res.model.environment.SM_Wall_Prison_Window },
-			{ id: "SM_Wall_Stairs_Fence", name: "SM_Wall_Stairs_Fence", scale: 0.05, model: Res.model.environment.SM_Wall_Stairs_Fence },
-			{ id: "SM_Wall_Window", name: "SM_Wall_Window", scale: 0.05, model: Res.model.environment.SM_Wall_Window }
+			{ id: "SM_Fence", name: "SM_Fence", scale: 0.05, model: Res.model.environment.SM_Fence, isPathBlocker: true },
+			{ id: "SM_Fence_Pillar", name: "SM_Fence_Pillar", scale: 0.05, model: Res.model.environment.SM_Fence_Pillar, isPathBlocker: true },
+			{ id: "SM_Floor_Grate", name: "SM_Floor_Grate", scale: 0.05, model: Res.model.environment.SM_Floor_Grate, isPathBlocker: true },
+			{ id: "SM_Forge_Furnace", name: "SM_Forge_Furnace", scale: 0.05, model: Res.model.environment.SM_Forge_Furnace, isPathBlocker: true },
+			{ id: "SM_Ground_Large", name: "SM_Ground_Large", scale: 0.05, model: Res.model.environment.SM_Ground_Large, isPathBlocker: true },
+			{ id: "SM_Ground_Small", name: "SM_Ground_Small", scale: 0.05, model: Res.model.environment.SM_Ground_Small, isPathBlocker: true },
+			{ id: "SM_Ground_Tiles", name: "SM_Ground_Tiles", scale: 0.05, model: Res.model.environment.SM_Ground_Tiles, isPathBlocker: true },
+			{ id: "SM_Ground_Tiles_Damaged", name: "SM_Ground_Tiles_Damaged", scale: 0.05, model: Res.model.environment.SM_Ground_Tiles_Damaged, isPathBlocker: true },
+			{ id: "SM_Ground_Tiles_Large", name: "SM_Ground_Tiles_Large", scale: 0.05, model: Res.model.environment.SM_Ground_Tiles_Large, isPathBlocker: true },
+			{ id: "SM_Pillar", name: "SM_Pillar", scale: 0.05, model: Res.model.environment.SM_Pillar, isPathBlocker: true },
+			{ id: "SM_Pillar_Center", name: "SM_Pillar_Center", scale: 0.05, model: Res.model.environment.SM_Pillar_Center, isPathBlocker: true },
+			{ id: "SM_Pillar_Center_Round", name: "SM_Pillar_Center_Round", scale: 0.05, model: Res.model.environment.SM_Pillar_Center_Round, isPathBlocker: true },
+			{ id: "SM_Pillar_Center_Ruined", name: "SM_Pillar_Center_Ruined", scale: 0.05, model: Res.model.environment.SM_Pillar_Center_Ruined, isPathBlocker: true },
+			{ id: "SM_Pillar_Corner", name: "SM_Pillar_Corner", scale: 0.05, model: Res.model.environment.SM_Pillar_Corner, isPathBlocker: true },
+			{ id: "SM_Prison_Corner", name: "SM_Prison_Corner", scale: 0.05, model: Res.model.environment.SM_Prison_Corner, isPathBlocker: true },
+			{ id: "SM_Prison_Door", name: "SM_Prison_Door", scale: 0.05, model: Res.model.environment.SM_Prison_Door, isPathBlocker: true },
+			{ id: "SM_Prison_Half_Wall", name: "SM_Prison_Half_Wall", scale: 0.05, model: Res.model.environment.SM_Prison_Half_Wall, isPathBlocker: true },
+			{ id: "SM_Prison_Wall", name: "SM_Prison_Wall", scale: 0.05, model: Res.model.environment.SM_Prison_Wall, isPathBlocker: true },
+			{ id: "SM_Prison_Wall_Door", name: "SM_Prison_Wall_Door", scale: 0.05, model: Res.model.environment.SM_Prison_Wall_Door, isPathBlocker: true },
+			{ id: "SM_Rug_1_Way", name: "SM_Rug_1_Way", scale: 0.05, model: Res.model.environment.SM_Rug_1_Way, isPathBlocker: true },
+			{ id: "SM_Rug_1_Way_Half", name: "SM_Rug_1_Way_Half", scale: 0.05, model: Res.model.environment.SM_Rug_1_Way_Half, isPathBlocker: true },
+			{ id: "SM_Rug_1_Way_Ruined", name: "SM_Rug_1_Way_Ruined", scale: 0.05, model: Res.model.environment.SM_Rug_1_Way_Ruined, isPathBlocker: true },
+			{ id: "SM_Rug_2_Way", name: "SM_Rug_2_Way", scale: 0.05, model: Res.model.environment.SM_Rug_2_Way, isPathBlocker: true },
+			{ id: "SM_Rug_3_Way", name: "SM_Rug_3_Way", scale: 0.05, model: Res.model.environment.SM_Rug_3_Way, isPathBlocker: true },
+			{ id: "SM_Rug_4_Way", name: "SM_Rug_4_Way", scale: 0.05, model: Res.model.environment.SM_Rug_4_Way, isPathBlocker: true },
+			{ id: "SM_Rug_End", name: "SM_Rug_End", scale: 0.05, model: Res.model.environment.SM_Rug_End, isPathBlocker: true },
+			{ id: "SM_Stairs", name: "SM_Stairs", scale: 0.05, model: Res.model.environment.SM_Stairs, isPathBlocker: true },
+			{ id: "SM_Stone_Statue", name: "SM_Stone_Statue", scale: 0.05, model: Res.model.environment.SM_Stone_Statue, isPathBlocker: true },
+			{ id: "SM_Throne", name: "SM_Throne", scale: 0.05, model: Res.model.environment.SM_Throne, isPathBlocker: true },
+			{ id: "SM_Torch_Holder", name: "SM_Torch_Holder", scale: 0.05, model: Res.model.environment.SM_Torch_Holder, isPathBlocker: true },
+			{ id: "SM_Torch_Holder_Off", name: "SM_Torch_Holder_Off", scale: 0.05, model: Res.model.environment.SM_Torch_Holder_Off, isPathBlocker: true },
+			{ id: "SM_Wall", name: "SM_Wall", scale: 0.05, model: Res.model.environment.SM_Wall, isPathBlocker: true },
+			{ id: "SM_Wall_Angle", name: "SM_Wall_Angle", scale: 0.05, model: Res.model.environment.SM_Wall_Angle, isPathBlocker: true },
+			{ id: "SM_Wall_Door", name: "SM_Wall_Door", scale: 0.05, model: Res.model.environment.SM_Wall_Door, isPathBlocker: true },
+			{ id: "SM_Wall_Prison_Window", name: "SM_Wall_Prison_Window", scale: 0.05, model: Res.model.environment.SM_Wall_Prison_Window, isPathBlocker: true },
+			{ id: "SM_Wall_Stairs_Fence", name: "SM_Wall_Stairs_Fence", scale: 0.05, model: Res.model.environment.SM_Wall_Stairs_Fence, isPathBlocker: true },
+			{ id: "SM_Wall_Window", name: "SM_Wall_Window", scale: 0.05, model: Res.model.environment.SM_Wall_Window, isPathBlocker: true }
 		];
 
 		props = [
-			{ id: "SM_Armor_Stand", name: "SM_Armor_Stand", scale: 0.05, model: Res.model.props.SM_Armor_Stand },
-			{ id: "SM_Book_Pile_Large", name: "SM_Book_Pile_Large", scale: 0.05, model: Res.model.props.SM_Book_Pile_Large },
-			{ id: "SM_Bookshelf_1", name: "SM_Bookshelf_1", scale: 0.05, model: Res.model.props.SM_Bookshelf_1 },
-			{ id: "SM_Chandelier", name: "SM_Chandelier", scale: 0.05, model: Res.model.props.SM_Chandelier },
-			{ id: "SM_Swords_And_Shield", name: "SM_Swords_And_Shield", scale: 0.05, model: Res.model.props.SM_Swords_And_Shield },
-			{ id: "SM_Wooden_Barrel", name: "SM_Wooden_Barrel", scale: 0.05, model: Res.model.props.SM_Wooden_Barrel },
-			{ id: "SM_Wooden_Shelf", name: "SM_Wooden_Shelf", scale: 0.05, model: Res.model.props.SM_Wooden_Shelf },
-			{ id: "SM_Wooden_Table", name: "SM_Wooden_Table", scale: 0.05, model: Res.model.props.SM_Wooden_Table }
+			{ id: "SM_Armor_Stand", name: "SM_Armor_Stand", scale: 0.05, model: Res.model.props.SM_Armor_Stand, isPathBlocker: true },
+			{ id: "SM_Book_Pile_Large", name: "SM_Book_Pile_Large", scale: 0.05, model: Res.model.props.SM_Book_Pile_Large, isPathBlocker: true },
+			{ id: "SM_Bookshelf_1", name: "SM_Bookshelf_1", scale: 0.05, model: Res.model.props.SM_Bookshelf_1, isPathBlocker: true },
+			{ id: "SM_Chandelier", name: "SM_Chandelier", scale: 0.05, model: Res.model.props.SM_Chandelier, isPathBlocker: true },
+			{ id: "SM_Swords_And_Shield", name: "SM_Swords_And_Shield", scale: 0.05, model: Res.model.props.SM_Swords_And_Shield, isPathBlocker: true },
+			{ id: "SM_Wooden_Barrel", name: "SM_Wooden_Barrel", scale: 0.05, model: Res.model.props.SM_Wooden_Barrel, isPathBlocker: true },
+			{ id: "SM_Wooden_Shelf", name: "SM_Wooden_Shelf", scale: 0.05, model: Res.model.props.SM_Wooden_Shelf, isPathBlocker: true },
+			{ id: "SM_Wooden_Table", name: "SM_Wooden_Table", scale: 0.05, model: Res.model.props.SM_Wooden_Table, isPathBlocker: true }
 		];
 
 		buildings = [
@@ -1116,7 +1234,8 @@ class Asset
 				name: "House 01",
 				scale: 0.005,
 				model: Res.model.building.House01,
-				previewUrl: "./asset/img/preview/building/House01.jpg"
+				previewUrl: "./asset/img/preview/building/House01.jpg",
+				isPathBlocker: true
 			}
 		];
 
@@ -1272,6 +1391,7 @@ typedef AssetConfig = {
 	@:optional var hasAnimation(default, never):Bool;
 	@:optional var previewUrl(default, never):String;
 	@:optional var hasTransparentTexture(default, never):Bool;
+	@:optional var isPathBlocker(default, never):Bool;
 }
 
 enum abstract EnvironmentId(Int) from Int to Int

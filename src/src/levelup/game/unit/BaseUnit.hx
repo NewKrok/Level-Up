@@ -228,7 +228,7 @@ import tink.state.State;
 				closest: true
 			}
 		);
-		if (path != null)
+		if (path != null && path.length != 0)
 		{
 			path.pop();
 			moveToPath = [];

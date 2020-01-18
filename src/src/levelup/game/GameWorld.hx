@@ -119,7 +119,8 @@ class GameWorld extends World
 			}
 		}
 
-		generateMap();
+		var graphArray = [for (i in 0...cast worldConfig.size.x) [for (j in 0...cast worldConfig.size.y) 1]];
+		graph = new Graph(graphArray, { diagonal: true });
 
 		interact = new Interactive(terrainLayers[0].getCollider(), s3d);
 		interact.enableRightButton = true;
@@ -228,8 +229,6 @@ class GameWorld extends World
 		mesh.material.mainPass.addShader(alphaMask);
 		mesh.material.texture.wrap = Wrap.Repeat;
 		mesh.material.blendMode = BlendMode.Alpha;
-		mesh.material.castShadows = false;
-		//mesh.z = terrainLayers.length * 0.000001;
 		mesh.z = terrainLayers.length * 0.05;
 
 		if (terrainConfig.normalMap != null)
@@ -332,35 +331,9 @@ class GameWorld extends World
 
 	public function setSunAndMoonOffsetPercent(offsetPercent:Float):Void sunAndMoonOffset = -100 + (worldConfig.size.x + 200) * (offsetPercent / 100);
 
-	public function generateMap():Void
-	{
-		var graphArray = [];
-
-		var cache:ModelCache = new ModelCache();
-
-		for (i in 0...cast worldConfig.size.y)
-		{
-			graphArray.push([]);
-			for (j in 0...cast worldConfig.size.x)
-			{
-				graphArray[i].push(worldConfig.pathFindingMap[i][j] == 1 || worldConfig.pathFindingMap[i][j] == 2 ? 0 : 1);
-			}
-		}
-
-		/*for (o in worldConfig.staticObjects)
-		{
-			staticObjects.push({
-				instance: instance,
-				zOffset: o.zOffset
-			});
-		}*/
-
-		graph = new Graph(graphArray, { diagonal: true });
-	}
-
 	public function resetWorldWeight()
 	{
-		var indexI = worldConfig.pathFindingMap.length - 1;
+		/*var indexI = worldConfig.pathFindingMap.length - 1;
 		for (i in 0...worldConfig.pathFindingMap.length)
 		{
 			var indexJ = worldConfig.pathFindingMap[0].length - 1;
@@ -370,7 +343,7 @@ class GameWorld extends World
 				indexJ--;
 			}
 			indexI--;
-		}
+		}*/
 	}
 
 	public function addToWorldPoint(model:Object, x:Float, y:Float, z:Float = 1, scale = 1., rotation:Quat = null):Void

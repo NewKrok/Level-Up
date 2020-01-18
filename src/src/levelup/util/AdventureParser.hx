@@ -7,7 +7,6 @@ import levelup.game.GameState.InitialUnitData;
 import levelup.game.GameState.StaticObjectConfig;
 import levelup.game.GameState.Trigger;
 import levelup.game.GameState.WorldConfig;
-import levelup.game.GameState.WorldEntity;
 import levelup.game.GameWorld.Region;
 
 /**
@@ -27,8 +26,6 @@ class AdventureParser
 		var sunsetColor = rawData.sunsetColor == null ? "#CC9919" : rawData.sunsetColor;
 		var dawnColor = rawData.dawnColor == null ? "#808080" : rawData.dawnColor;
 
-		var pathFindingMap:Array<Array<WorldEntity>> = rawData.pathFindingMap;
-
 		var staticObjects:Array<StaticObjectConfig> = [for (o in cast(rawData.staticObjects, Array<Dynamic>)) {
 			id: o.id,
 			name: o.name,
@@ -37,7 +34,8 @@ class AdventureParser
 			z: o.z,
 			zOffset: o.zOffset,
 			scale: o.scale,
-			rotation: new Quat(o.rotation.x, o.rotation.y, o.rotation.z, o.rotation.w)
+			rotation: new Quat(o.rotation.x, o.rotation.y, o.rotation.z, o.rotation.w),
+			isPathBlocker: o.isPathBlocker
 		}];
 
 		var units:Array<InitialUnitData> = [for (o in cast(rawData.units, Array<Dynamic>)) {
@@ -103,7 +101,6 @@ class AdventureParser
 			nightColor: nightColor,
 			sunsetColor: sunsetColor,
 			dawnColor: dawnColor,
-			pathFindingMap: pathFindingMap,
 			regions: regions,
 			triggers: triggers,
 			units: units,

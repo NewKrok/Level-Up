@@ -169,6 +169,26 @@ class GameState extends Base2dState
 			var instance:Object = cache.loadModel(config.model);
 			if (config.hasTransparentTexture != null && config.hasTransparentTexture) for (m in instance.getMaterials()) m.textureShader.killAlpha = true;
 			world.addToWorldPoint(instance, o.x, o.y, o.z, o.scale, o.rotation);
+
+			if (o.isPathBlocker)
+			{
+				var b = instance.getBounds().getSize();
+				var xMin = Math.round(instance.x - b.x / 2);
+				var xMax = xMin + Math.round(b.x);
+				var yMin = Math.round(instance.y - b.y / 2);
+				var yMax = yMin + Math.round(b.y);
+
+				// TODO Why is it incorrect in the first time?
+				if (xMin < 0 || yMin < 0) continue;
+
+				for (x in xMin...xMax)
+				{
+					for (y in yMin...yMax)
+					{
+						world.graph.grid[x][y].weight = 0;
+					}
+				}
+			}
 		}
 
 		model.initGame();
@@ -442,7 +462,6 @@ typedef WorldConfig =
 {
 	var name(default, never):String;
 	var size(default, never):SimplePoint;
-	var pathFindingMap(default, never):Array<Array<WorldEntity>>;
 	@:optional var regions(default, never):Array<Region>;
 	@:optional var triggers(default, never):Array<Trigger>;
 	@:optional var units(default, never):Array<InitialUnitData>;
@@ -468,6 +487,7 @@ typedef StaticObjectConfig =
 	var zOffset(default, never):Float;
 	var scale(default, never):Float;
 	var rotation(default, never):Quat;
+	@:optional var isPathBlocker(default, never):Bool;
 	@:optional var instance(default, never):Object;
 }
 
@@ -537,10 +557,4 @@ enum TriggerAction {
 	LoadLevel(levelName:String);
 	EnableTrigger(id:String);
 	CreateUnit(unitId:String, owner:PlayerId);
-}
-
-@:enum abstract WorldEntity(Int) from Int to Int {
-	var Nothing = 0;
-	var SimpleUnwalkable = 1;
-	var Tree = 2;
 }

@@ -38,7 +38,6 @@ import levelup.editor.module.terrain.TerrainModule;
 import levelup.game.GameState;
 import levelup.game.GameState.StaticObjectConfig;
 import levelup.game.GameState.WorldConfig;
-import levelup.game.GameState.WorldEntity;
 import levelup.game.GameWorld;
 import levelup.game.GameWorld.Region;
 import levelup.game.unit.BaseUnit;
@@ -136,12 +135,10 @@ class EditorState extends Base2dState
 			nightColor: mapConfig.nightColor,
 			sunsetColor: mapConfig.sunsetColor,
 			dawnColor: mapConfig.dawnColor,
-			pathFindingMap: mapConfig.pathFindingMap,
 			regions: mapConfig.regions,
 			triggers: mapConfig.triggers,
 			units: [],
 			staticObjects: [],
-			currentSnap: SaveUtil.editorData.currentSnap,
 			showGrid: SaveUtil.editorData.showGrid
 		});
 
@@ -165,7 +162,7 @@ class EditorState extends Base2dState
 		dialogManager = new EditorDialogManager(cast this);
 
 		pathFindingLayer = new Graphics(s3d);
-		pathFindingLayer.z = 0.11;
+		pathFindingLayer.material.mainPass.addShader(new ForcedZIndex(10));
 
 		debugRegions = new Graphics(s3d);
 		debugRegions.z = 0.2;
@@ -174,7 +171,7 @@ class EditorState extends Base2dState
 		debugDetectionRadius = new Graphics(s3d);
 		debugDetectionRadius.z = 0.2;
 
-		world = new GameWorld(s3d, mapConfig, 1, 64, 64);
+		world = new GameWorld(s3d, mapConfig, 1, 64, 128);
 		world.disableDayTime();
 		world.done();
 
@@ -391,11 +388,10 @@ class EditorState extends Base2dState
 			selectionCircle.clear();
 			selectionCircle.lineStyle(4, 0xFFFFFF);
 			var angle = 0.0;
-			var b = selectedWorldAsset.value.instance.getMeshes()[0].getBounds();
-			var size = (b.xMax > b.yMax ? b.xMax : b.yMax) / 25;
-			var piece = Std.int(12 + size / 10 * 10);
 
-			trace("TODO: WHAT IS THE PROBLEM WITH THE SIZE?!");
+			var b = selectedWorldAsset.value.instance.getMeshes()[0].getBounds().getSize();
+			var size = b.x < b.y ? b.y : b.x;
+			var piece = Std.int(12 + size / 10 * 10);
 
 			for (i in 0...piece)
 			{
@@ -439,7 +435,9 @@ class EditorState extends Base2dState
 				z: z,
 				zOffset: config.zOffset,
 				scale: scale,
-				rotation: rotation
+				rotation: rotation,
+				instance: instance,
+				isPathBlocker: config.isPathBlocker
 			});
 
 			world.graph.grid[Math.floor(x)][Math.floor(y)].weight = 0;
@@ -829,6 +827,8 @@ class EditorState extends Base2dState
 
 	function drawPathFindingLayer():Void
 	{
+		calculatePathMap();
+
 		pathFindingLayer.clear();
 		pathFindingLayer.lineStyle(4, 0x000000, 0.1);
 
@@ -838,11 +838,39 @@ class EditorState extends Base2dState
 			{
 				if (world.graph.grid[i][j].weight == 0)
 				{
-					pathFindingLayer.moveTo(i, j, 0);
-					pathFindingLayer.lineTo(i + 1, j, 0);
-					pathFindingLayer.lineTo(i + 1, j + 1, 0);
-					pathFindingLayer.lineTo(i, j + 1, 0);
-					pathFindingLayer.lineTo(i, j, 0);
+					pathFindingLayer.moveTo(i, j, getZFromPoint(i, j));
+					pathFindingLayer.lineTo(i + 1, j, getZFromPoint(i + 1, j));
+					pathFindingLayer.lineTo(i + 1, j + 1, getZFromPoint(i + 1, j + 1));
+					pathFindingLayer.lineTo(i, j + 1, getZFromPoint(i, j + 1));
+					pathFindingLayer.lineTo(i, j, getZFromPoint(i, j));
+				}
+			}
+		}
+	}
+
+	function calculatePathMap()
+	{
+		for (row in world.graph.grid) for (col in row) col.weight = 1;
+
+		for (o in model.staticObjects)
+		{
+			if (o.isPathBlocker)
+			{
+				var b = o.instance.getBounds().getSize();
+				var xMin = Math.round(o.instance.x - b.x / 2);
+				var xMax = xMin + Math.round(b.x);
+				var yMin = Math.round(o.instance.y - b.y / 2);
+				var yMax = yMin + Math.round(b.y);
+
+				// TODO Why is it incorrect in the first time?
+				if (xMin < 0 || yMin < 0) continue;
+
+				for (x in xMin...xMax)
+				{
+					for (y in yMin...yMax)
+					{
+						world.graph.grid[x][y].weight = 0;
+					}
 				}
 			}
 		}
@@ -967,7 +995,6 @@ class EditorState extends Base2dState
 		var worldConfig:WorldConfig = {
 			name: "A Great New Adventure",
 			size: { x:200, y:200 },
-			pathFindingMap: [for (i in 0...200) [for (j in 0...200) WorldEntity.Nothing]],
 			regions: [],
 			triggers: [],
 			units: [],
@@ -983,7 +1010,6 @@ class EditorState extends Base2dState
 		else SaveUtil.editorData.customMaps.push(result);
 
 		SaveUtil.editorData.showGrid = model.showGrid;
-		SaveUtil.editorData.currentSnap = model.currentSnap;
 		SaveUtil.save();
 
 		HppG.changeState(EditorState, [stage, s3d, result]);
@@ -1012,9 +1038,21 @@ class EditorState extends Base2dState
 			x: u.instance.x,
 			y: u.instance.y,
 			z: u.instance.z,
-			zOffset: u.zOffset,
 			scale: u.instance.scaleX,
 			rotation: u.instance.getRotationQuat().clone(),
+			zOffset: u.zOffset,
+		}];
+
+		var staticObjects = [for (o in model.staticObjects) {
+			id: o.id,
+			name: o.name,
+			x: o.instance.x,
+			y: o.instance.y,
+			z: o.instance.z,
+			scale: o.instance.scaleX,
+			rotation: o.instance.getRotationQuat().clone(),
+			zOffset: o.zOffset,
+			isPathBlocker: o.isPathBlocker
 		}];
 
 		var worldConfig:WorldConfig = {
@@ -1026,11 +1064,10 @@ class EditorState extends Base2dState
 			nightColor: model.nightColor,
 			sunsetColor: model.sunsetColor,
 			dawnColor: model.dawnColor,
-			pathFindingMap: model.pathFindingMap,
 			regions: model.regions,
 			triggers: model.triggers,
 			units: units,
-			staticObjects: model.staticObjects,
+			staticObjects: staticObjects,
 			terrainLayers: terrainLayers,
 			heightMap: Base64.encode(world.heightMap.getPixels().bytes),
 			editorLastCamPosition: new Vector(cameraObject.x, cameraObject.y, currentCamDistance)
@@ -1052,7 +1089,6 @@ class EditorState extends Base2dState
 		if (isNewMap) SaveUtil.editorData.customMaps.push(result);
 
 		SaveUtil.editorData.showGrid = model.showGrid;
-		SaveUtil.editorData.currentSnap = model.currentSnap;
 		SaveUtil.save();
 
 		trace(result);

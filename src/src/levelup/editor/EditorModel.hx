@@ -8,7 +8,6 @@ import levelup.game.GameState.InitialUnitData;
 import levelup.game.GameState.PlayerId;
 import levelup.game.GameState.StaticObjectConfig;
 import levelup.game.GameState.Trigger;
-import levelup.game.GameState.WorldEntity;
 import levelup.game.GameWorld.Region;
 
 /**
@@ -24,11 +23,11 @@ class EditorModel implements Model
 	@:editable var nightColor:String;
 	@:editable var sunsetColor:String;
 	@:editable var dawnColor:String;
-	@:editable var currentSnap:Float;
 	@:editable var showGrid:Bool;
 
+	@:editable var currentSnap:Float = 0.5;
+
 	@:skipCheck @:editable var size:SimplePoint;
-	@:skipCheck @:editable var pathFindingMap:Array<Array<WorldEntity>>;
 	@:skipCheck @:editable var regions:Array<Region>;
 	@:skipCheck @:editable var triggers:Array<Trigger>;
 	@:skipCheck @:editable var units:Array<InitialUnitData>;
