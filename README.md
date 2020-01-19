@@ -9,6 +9,7 @@ Ingame
 ![image](https://user-images.githubusercontent.com/13141660/70577922-89e48080-1bac-11ea-9b10-8f8183ee4ca3.png)
 
 Editor
+![image](https://user-images.githubusercontent.com/13141660/72680806-66232d00-3abe-11ea-8fc9-c322a524a330.png)
 ![image](https://user-images.githubusercontent.com/13141660/70577969-b00a2080-1bac-11ea-9702-de1203783941.png)
 ![image](https://user-images.githubusercontent.com/13141660/70577990-c1532d00-1bac-11ea-96a5-d91d6f23c0ce.png)
 
