@@ -310,6 +310,7 @@ import levelup.util.GeomUtil3D;
 
 			core.world.updateHeightMap();
 			core.updateGrid(boundingRect);
+			core.isPathFindingLayerDirty = true;
 		}
 	}
 }

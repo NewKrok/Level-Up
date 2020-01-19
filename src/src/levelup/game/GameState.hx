@@ -170,6 +170,24 @@ class GameState extends Base2dState
 			if (config.hasTransparentTexture != null && config.hasTransparentTexture) for (m in instance.getMaterials()) m.textureShader.killAlpha = true;
 			world.addToWorldPoint(instance, o.x, o.y, o.z, o.scale, o.rotation);
 
+			for (i in 0...world.graph.grid.length)
+			{
+				var row = world.graph.grid[i];
+				var rowDirection = i % 2 == 0 ? 1 : -1;
+
+				for (j in 0...row.length)
+				{
+					var gridIndex = j * (row.length + 1) + i;
+					var current = world.levellingHeightGridCache[gridIndex];
+					var up = world.levellingHeightGridCache[i > 0 ? gridIndex - (row.length + 1) : gridIndex];
+					var down = world.levellingHeightGridCache[i < world.graph.grid.length - 1 ? gridIndex + (row.length + 1) : gridIndex];
+					var left = world.levellingHeightGridCache[j > 0 ? gridIndex - 1 : gridIndex];
+					var right = world.levellingHeightGridCache[j < row.length - 2 ? gridIndex + 1 : gridIndex];
+
+					row[j].weight = (current - up != 0 || current - down != 0 || current - left != 0 || current - right != 0) ? 0 : 1;
+				}
+			}
+
 			if (o.isPathBlocker)
 			{
 				var b = instance.getBounds().getSize();

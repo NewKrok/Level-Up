@@ -55,6 +55,7 @@ class GameWorld extends World
 	public var levellingHeightMap:BitmapData;
 	public var heightGrid:Array<Point>;
 	public var heightGridCache:Array<Float> = null;
+	public var levellingHeightGridCache:Array<Float> = null;
 	public var terrainLayers:Array<Mesh> = [];
 
 	public var blockSize:Float;
@@ -267,6 +268,7 @@ class GameWorld extends World
 		if (!hasCache)
 		{
 			heightGridCache = [];
+			levellingHeightGridCache = [];
 			heightMap.lock();
 			levellingHeightMap.lock();
 		}
@@ -282,6 +284,7 @@ class GameWorld extends World
 
 				var calculatedZ = (-2 + Math.round(levellingSize / (255 / 5))) * 2 + pixelIntensity / 255 * 5;
 
+				levellingHeightGridCache.push(levellingSize);
 				heightGridCache.push(calculatedZ);
 				point.z = calculatedZ;
 			}
@@ -297,6 +300,7 @@ class GameWorld extends World
 	public function updateHeightMap():Void
 	{
 		heightGridCache = null;
+		levellingHeightGridCache = null;
 
 		for (l in terrainLayers)
 		{
@@ -521,7 +525,7 @@ class GameWorld extends World
 	{
 		for (uA in units)
 		{
-			var p = uA.getWorldPoint();
+			/*var p = uA.getWorldPoint();
 			if (graph.grid[cast p.y][cast p.x].weight != 0)
 			{
 				var indexesY = [0];
@@ -537,7 +541,7 @@ class GameWorld extends World
 					}
 				}
 				isWorldGraphDirty = true;
-			}
+			}*/
 
 			var bestDistance = 999999.;
 			var bestUnit = null;
@@ -588,7 +592,7 @@ class GameWorld extends World
 				}
 			}
 
-			if (bestUnit != null) uA.setNearestTarget(bestUnit);
+			if (bestUnit != null && uA.state != MoveTo) uA.setNearestTarget(bestUnit);
 		}
 	}
 

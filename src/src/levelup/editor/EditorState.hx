@@ -116,6 +116,9 @@ class EditorState extends Base2dState
 	var isLevelLoaded:Bool = false;
 	var hadActiveCommandWithCtrl:Bool = false;
 
+	public var isPathFindingLayerDirty:Bool = false;
+	var lastPathRenderTime:Float = 0;
+
 	public function new(stage:Base2dStage, s2d:h2d.Scene, s3d:h3d.scene.Scene, rawMap:String)
 	{
 		super(stage);
@@ -293,7 +296,7 @@ class EditorState extends Base2dState
 
 			}
 
-			if (previewInstance != null || draggedInstance != null) drawPathFindingLayer();
+			if (previewInstance != null || draggedInstance != null) isPathFindingLayerDirty = true;
 		}
 		world.onWorldWheel = e ->
 		{
@@ -440,8 +443,7 @@ class EditorState extends Base2dState
 				isPathBlocker: config.isPathBlocker
 			});
 
-			world.graph.grid[Math.floor(x)][Math.floor(y)].weight = 0;
-			drawPathFindingLayer();
+			isPathFindingLayerDirty = true;
 		}
 		else
 		{
@@ -850,7 +852,22 @@ class EditorState extends Base2dState
 
 	function calculatePathMap()
 	{
-		for (row in world.graph.grid) for (col in row) col.weight = 1;
+		for (i in 0...world.graph.grid.length)
+		{
+			var row = world.graph.grid[i];
+
+			for (j in 0...row.length)
+			{
+				var gridIndex = j * (row.length + 1) + i;
+				var current = world.levellingHeightGridCache[gridIndex];
+				var up = world.levellingHeightGridCache[i > 0 ? gridIndex - (row.length + 1) : gridIndex];
+				var down = world.levellingHeightGridCache[i < world.graph.grid.length - 1 ? gridIndex + (row.length + 1) : gridIndex];
+				var left = world.levellingHeightGridCache[j > 0 ? gridIndex - 1 : gridIndex];
+				var right = world.levellingHeightGridCache[j < row.length - 2 ? gridIndex + 1 : gridIndex];
+
+				row[j].weight = (current - up != 0 || current - down != 0 || current - left != 0 || current - right != 0) ? 0 : 1;
+			}
+		}
 
 		for (o in model.staticObjects)
 		{
@@ -928,6 +945,8 @@ class EditorState extends Base2dState
 	{
 		if (world == null) return;
 
+		var now = Date.now().getTime();
+
 		world.update(d);
 		if (isDisposed) return;
 
@@ -939,6 +958,13 @@ class EditorState extends Base2dState
 		for (m in modules) if (m.update != null) m.update(d);
 
 		updateCamera(d);
+
+		if (isPathFindingLayerDirty && now - lastPathRenderTime > 100)
+		{
+			lastPathRenderTime = now;
+			isPathFindingLayerDirty = false;
+			drawPathFindingLayer();
+		}
 
 		//grid.visible = model.showGrid && camDistance < 90;
 	}
@@ -1186,4 +1212,5 @@ typedef EditorCore =
 	public var registerView:EditorViewId->RenderResult->Void;
 	public var dialogManager:EditorDialogManager;
 	public var updateGrid:Rect->Void;
+	public var isPathFindingLayerDirty:Bool;
 }
