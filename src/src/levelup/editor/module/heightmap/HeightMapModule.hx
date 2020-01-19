@@ -34,8 +34,6 @@ import levelup.util.GeomUtil3D;
 	var lastDrawedPoint:SimplePoint = { x: 0, y: 0 };
 	var dragStartPoint:SimplePoint = null;
 
-	var heightMapPreview:Bitmap;
-	var heightMapPreviewContainer:Object;
 	var alphaMap:Graphics = new Graphics();
 
 	var drawSpeedState = 0;
@@ -70,21 +68,6 @@ import levelup.util.GeomUtil3D;
 			preview.visible = v == ToolState.HeightMapEditor;
 			if (!preview.visible) isDrawActive = false;
 		});
-
-		heightMapPreviewContainer = new Object(core.s2d);
-		var g = new Graphics(heightMapPreviewContainer);
-		g.beginFill(0, 1);
-		g.drawRect(0, 0, 280, 280);
-		g.endFill();
-		var mask = new Mask(200, 200, heightMapPreviewContainer);
-		mask.x = 40;
-		mask.y = 40;
-		heightMapPreview = new Bitmap(Tile.fromBitmap(core.world.heightMap), mask);
-		heightMapPreview.scale(2);
-		heightMapPreview.rotation = -Math.PI / 2;
-		heightMapPreview.y = 200;
-
-		core.model.observables.toolState.bind(v -> heightMapPreviewContainer.visible = v == ToolState.HeightMapEditor);
 	}
 
 	public function onWorldClick(e:Event):Void
@@ -212,9 +195,11 @@ import levelup.util.GeomUtil3D;
 				? flatBrushColor
 				: model.brushType == BrushType.Smooth
 					? core.world.heightMap.getPixel(calculatedX, calculatedY)
-					: model.brushType == BrushType.Up ? 0xFFFFFF : 0x000000;
+					: model.brushType == BrushType.Levelling
+						? Math.round(0xFFFFFF * (model.brushOpacity / 5))
+						: model.brushType == BrushType.Up ? 0xFFFFFF : 0x000000;
 
-			alphaMap.beginFill(drawColor, model.brushType == BrushType.Flat ? 1 : model.brushOpacity);
+			alphaMap.beginFill(drawColor, model.brushType == BrushType.Flat || model.brushType == BrushType.Levelling ? 1 : model.brushOpacity);
 
 			if (model.selectedBrushId == 0)
 			{
@@ -223,7 +208,7 @@ import levelup.util.GeomUtil3D;
 				boundingRect.top = Std.int(calculatedY - model.brushSize / 2);
 				boundingRect.bottom = Std.int(calculatedY + model.brushSize / 2);
 
-				if (model.brushType == BrushType.Flat || (model.brushNoise == 0 && model.brushGradient == 0))
+				if (model.brushType != BrushType.Levelling || model.brushType == BrushType.Flat || (model.brushNoise == 0 && model.brushGradient == 0))
 				{
 					alphaMap.drawCircle(
 						calculatedX,
@@ -254,7 +239,7 @@ import levelup.util.GeomUtil3D;
 
 							if (model.brushType == BrushType.Smooth || model.brushNoise == 0 || Math.random() > model.brushNoise)
 							{
-								alphaMap.beginFill(drawColor, model.brushOpacity * alphaByGradient * alphaByNoise);
+								alphaMap.beginFill(drawColor, (model.brushType == BrushType.Levelling ? 1 : model.brushOpacity * alphaByGradient) * alphaByNoise);
 								alphaMap.drawRect(
 									calculatedX - model.brushSize / 2 + i,
 									calculatedY - model.brushSize / 2 + j,
@@ -273,7 +258,7 @@ import levelup.util.GeomUtil3D;
 				boundingRect.top = Std.int(calculatedY - model.brushSize);
 				boundingRect.bottom = Std.int(calculatedY + model.brushSize);
 
-				if (model.brushType == BrushType.Flat || (model.brushNoise == 0 && model.brushGradient == 0))
+				if (model.brushType != BrushType.Levelling || model.brushType == BrushType.Flat || (model.brushNoise == 0 && model.brushGradient == 0))
 				{
 					alphaMap.drawRect(
 						calculatedX - model.brushSize / 2,
@@ -298,7 +283,7 @@ import levelup.util.GeomUtil3D;
 
 							if (model.brushNoise == 0 || Math.random() > model.brushNoise)
 							{
-								alphaMap.beginFill(drawColor, model.brushOpacity * alphaByGradient * alphaByNoise);
+								alphaMap.beginFill(drawColor, (model.brushType == BrushType.Levelling ? 1 : (model.brushOpacity * alphaByGradient) * alphaByNoise));
 								alphaMap.drawRect(
 									calculatedX - model.brushSize / 2 + i,
 									calculatedY - model.brushSize / 2 + j,
@@ -311,7 +296,9 @@ import levelup.util.GeomUtil3D;
 				}
 			}
 
-			var bmp = core.world.heightMap;
+			var bmp = model.brushType == BrushType.Levelling
+				? core.world.levellingHeightMap
+				: core.world.heightMap;
 
 			var tex = Texture.fromBitmap(bmp);
 			tex.flags.set(Target);
@@ -320,16 +307,9 @@ import levelup.util.GeomUtil3D;
 			alphaMap.clear();
 
 			bmp.setPixels(tex.capturePixels());
-			heightMapPreview.tile = Tile.fromBitmap(bmp);
 
 			core.world.updateHeightMap();
 			core.updateGrid(boundingRect);
 		}
-	}
-
-	public function update(d:Float):Void
-	{
-		heightMapPreviewContainer.x = HppG.stage2d.width - 280;
-		heightMapPreviewContainer.y = HppG.stage2d.height - 280;
 	}
 }

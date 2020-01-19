@@ -38,7 +38,7 @@ class HeightMapEditorView extends View
 	function render() '
 		<div class="lu_editor__base_panel lu_editor__base_panel--height_map">
 			<div class="lu_relative lu_fill_height">
-				<div class="lu_title"><i class="fas fa-paint-brush lu_right_offset"></i>Brushes</div>
+				<div class="lu_title">Brush Shapes</div>
 				<div>
 					<div class="lu_terrain_brush_selector">
 						<div
@@ -51,19 +51,20 @@ class HeightMapEditorView extends View
 						</div>
 					</div>
 				</div>
-				<div class="lu_title"><i class="fas fa-sliders-h lu_right_offset"></i>Brush Settings</div>
+				<div class="lu_title">Brush Modes</div>
 				<div>
 					<div class="lu_offset">
-						<div class="lu_vertical_offset--s">
-							<i class="fas fa-wave-square lu_right_offset"></i>Brush Type
-						</div>
 						<div class="lu_row lu_row--space_evenly lu_text--l">
-							<i class={"fas fa-chevron-circle-up" + (brushType == BrushType.Up ? " lu_highlight" : "")} onclick=${changeBrushType(BrushType.Up)}></i>
-							<i class={"fas fa-chevron-circle-down" + (brushType == BrushType.Down ? " lu_highlight" : "")}  onclick=${changeBrushType(BrushType.Down)}></i>
-							<i class={"fas fa-minus-circle" + (brushType == BrushType.Flat ? " lu_highlight" : "")}  onclick=${changeBrushType(BrushType.Flat)}></i>
-							<i class={"fas fa-dot-circle" + (brushType == BrushType.Smooth ? " lu_highlight" : "")}  onclick=${changeBrushType(BrushType.Smooth)}></i>
+							<i class={"lu_icon_button fas fa-chevron-circle-up" + (brushType == BrushType.Up ? " lu_icon_button--selected" : "")} onclick=${changeBrushType(BrushType.Up)}></i>
+							<i class={"lu_icon_button fas fa-chevron-circle-down" + (brushType == BrushType.Down ? " lu_icon_button--selected" : "")}  onclick=${changeBrushType(BrushType.Down)}></i>
+							<i class={"lu_icon_button fas fa-minus-circle" + (brushType == BrushType.Flat ? " lu_icon_button--selected" : "")}  onclick=${changeBrushType(BrushType.Flat)}></i>
+							<i class={"lu_icon_button fas fa-dot-circle" + (brushType == BrushType.Smooth ? " lu_icon_button--selected" : "")}  onclick=${changeBrushType(BrushType.Smooth)}></i>
+							<i class={"lu_icon_button fas fa-caret-square-up" + (brushType == BrushType.Levelling ? " lu_icon_button--selected" : "")}  onclick=${changeBrushType(BrushType.Levelling)}></i>
 						</div>
 					</div>
+				</div>
+					<div class="lu_title">Settings</div>
+				<div>
 					<div class="lu_offset">
 						<div class="lu_vertical_offset--s">
 							<i class="fas fa-ellipsis-h lu_right_offset"></i>Draw Speed
@@ -89,30 +90,47 @@ class HeightMapEditorView extends View
 						/>
 					</div>
 					<if {brushType != BrushType.Smooth && brushType != BrushType.Flat}>
-						<div class="lu_offset">
-							<div class="lu_vertical_offset--s">
-								<i class="fas fa-caret-up lu_right_offset"></i>Height
+						<if {brushType != BrushType.Levelling}>
+							<div class="lu_offset">
+								<div class="lu_vertical_offset--s">
+									<i class="fas fa-caret-up lu_right_offset"></i>Height
+								</div>
+								<Slider
+									min={0.039}
+									max = {0.9945}
+									startValue={brushOpacity}
+									step={0.039}
+									onChange=$changeBrushOpacity
+								/>
 							</div>
-							<Slider
-								min={0.039}
-								max = {0.9945}
-								startValue={brushOpacity}
-								step={0.039}
-								onChange=$changeBrushOpacity
-							/>
-						</div>
-						<div class="lu_offset">
-							<div class="lu_vertical_offset--s">
-								<i class="fas fa-dot-circle lu_right_offset"></i>Gradient
+						<else>
+							<div class="lu_offset">
+								<div class="lu_vertical_offset--s">
+									<i class="fas fa-caret-up lu_right_offset"></i>Height
+								</div>
+								<Slider
+									min={0}
+									max = {4}
+									startValue={2}
+									step={1}
+									onChange=$changeBrushOpacity
+								/>
 							</div>
-							<Slider
-								min={0}
-								max={1}
-								startValue={brushGradient}
-								step={0.1}
-								onChange=$changeBrushGradient
-							/>
-						</div>
+						</if>
+						<if {brushType != BrushType.Levelling}>
+							<div class="lu_offset">
+								<div class="lu_vertical_offset--s">
+									<i class="fas fa-dot-circle lu_right_offset"></i>Gradient
+								</div>
+								<Slider
+									min={0}
+									max={1}
+									startValue={brushGradient}
+									step={0.1}
+									onChange=$changeBrushGradient
+								/>
+							</div>
+						</if>
 						<div class="lu_offset">
 							<div class="lu_vertical_offset--s">
 								<i class="fas fa-chess-board lu_right_offset"></i>Noise
@@ -127,7 +145,6 @@ class HeightMapEditorView extends View
 						</div>
 					</if>
 				</div>
-				<div class="lu_title lu_height_map__title"><i class="fas fa-map lu_right_offset"></i>Height Map</div>
 			</div>
 		</div>
 	';

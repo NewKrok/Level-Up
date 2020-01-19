@@ -107,6 +107,7 @@ class AdventureParser
 			staticObjects: staticObjects,
 			terrainLayers: rawData.terrainLayers,
 			heightMap: rawData.heightMap,
+			levellingHeightMap: rawData.levellingHeightMap,
 			editorLastCamPosition: editorLastCamPosition
 		};
 	}

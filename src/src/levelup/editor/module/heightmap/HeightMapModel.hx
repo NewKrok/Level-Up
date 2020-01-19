@@ -23,4 +23,5 @@ enum BrushType
 	Down;
 	Flat;
 	Smooth;
+	Levelling;
 }

@@ -31,9 +31,11 @@ import hxd.PixelFormat;
 import hxd.Pixels;
 import hxd.Res;
 import levelup.TerrainAssets.TerrainConfig;
+import levelup.TerrainAssets.TerrainEffect;
 import levelup.game.GameState.WorldConfig;
 import levelup.game.js.Graph;
 import levelup.game.unit.BaseUnit;
+import levelup.shader.Wave;
 import levelup.util.GeomUtil3D;
 
 /**
@@ -50,6 +52,7 @@ class GameWorld extends World
 
 	public var graph:Graph;
 	public var heightMap:BitmapData;
+	public var levellingHeightMap:BitmapData;
 	public var heightGrid:Array<Point>;
 	public var heightGridCache:Array<Float> = null;
 	public var terrainLayers:Array<Mesh> = [];
@@ -103,9 +106,17 @@ class GameWorld extends World
 		heightMap = new BitmapData(cast worldConfig.size.y, cast worldConfig.size.x);
 		heightMap.fill(0, 0, heightMap.width, heightMap.height, 0x333333);
 
+		levellingHeightMap = new BitmapData(cast worldConfig.size.y, cast worldConfig.size.x);
+		levellingHeightMap.fill(0, 0, heightMap.width, heightMap.height, 0x333333);
+
 		if (worldConfig.heightMap != null)
 		{
 			heightMap.setPixels(new Pixels(heightMap.width, heightMap.height, Base64.decode(worldConfig.heightMap), PixelFormat.RGBA));
+		}
+
+		if (worldConfig.levellingHeightMap != null)
+		{
+			levellingHeightMap.setPixels(new Pixels(levellingHeightMap.width, levellingHeightMap.height, Base64.decode(worldConfig.levellingHeightMap), PixelFormat.RGBA));
 		}
 
 		if (worldConfig.terrainLayers != null)
@@ -236,6 +247,17 @@ class GameWorld extends World
 			mesh.material.mainPass.addShader(new NormalMap(terrainConfig.normalMap));
 		}
 
+		if (terrainConfig.effects != null)
+		{
+			for (e in terrainConfig.effects)
+			{
+				switch (e)
+				{
+					case TerrainEffect.Wave: mesh.material.mainPass.addShader(new Wave());
+				}
+			}
+		}
+
 		terrainLayers.push(mesh);
 	}
 
@@ -246,6 +268,7 @@ class GameWorld extends World
 		{
 			heightGridCache = [];
 			heightMap.lock();
+			levellingHeightMap.lock();
 		}
 
 		for (i in 0...g.points.length)
@@ -255,13 +278,20 @@ class GameWorld extends World
 			else
 			{
 				var pixelIntensity = (heightMap.getPixel(cast point.x, cast point.y) >> 16) & 0xFF;
-				var calculatedZ = pixelIntensity / 255 * 5;
+				var levellingSize = (levellingHeightMap.getPixel(cast point.x, cast point.y) >> 16) & 0xFF;
+
+				var calculatedZ = (-2 + Math.round(levellingSize / (255 / 5))) * 2 + pixelIntensity / 255 * 5;
+
 				heightGridCache.push(calculatedZ);
 				point.z = calculatedZ;
 			}
 		}
 
-		if (!hasCache) heightMap.unlock();
+		if (!hasCache)
+		{
+			heightMap.unlock();
+			levellingHeightMap.unlock();
+		}
 	}
 
 	public function updateHeightMap():Void

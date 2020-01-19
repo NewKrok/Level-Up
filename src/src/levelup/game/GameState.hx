@@ -173,13 +173,12 @@ class GameState extends Base2dState
 			if (o.isPathBlocker)
 			{
 				var b = instance.getBounds().getSize();
-				var xMin = Math.round(instance.x - b.x / 2);
-				var xMax = xMin + Math.round(b.x);
-				var yMin = Math.round(instance.y - b.y / 2);
-				var yMax = yMin + Math.round(b.y);
+				var xMin:Int = cast Math.max(Math.round(instance.x - b.x / 2), 0);
+				var xMax:Int = cast Math.min(xMin + Math.round(b.x), world.worldConfig.size.x);
+				var yMin:Int = cast Math.max(Math.round(instance.y - b.y / 2), 0);
+				var yMax:Int = cast Math.min(yMin + Math.round(b.y), world.worldConfig.size.x);
 
-				// TODO Why is it incorrect in the first time?
-				if (xMin < 0 || yMin < 0) continue;
+				if (xMax - xMin > 50) continue;
 
 				for (x in xMin...xMax)
 				{
@@ -468,6 +467,7 @@ typedef WorldConfig =
 	@:optional var staticObjects(default, never):Array<StaticObjectConfig>;
 	@:optional var terrainLayers(default, never):Array<TerrainLayerInfo>;
 	@:optional var heightMap(default, never):String;
+	@:optional var levellingHeightMap(default, never):String;
 	@:optional var editorLastCamPosition(default, never):Vector;
 	@:optional var startingTime(default, never):Float;
 	@:optional var sunAndMoonOffsetPercent(default, never):Float;

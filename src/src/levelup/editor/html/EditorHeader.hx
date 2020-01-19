@@ -26,7 +26,7 @@ class EditorHeader extends View
 				<i class="fas fa-file lu_right_offset"></i>Create New Map
 			</div>
 			<div class="lu_button" onclick=$testRun>
-				<i class="fas fa-play-file lu_right_offset"></i>Test Run
+				<i class="fas fa-play-circle lu_right_offset"></i>Test Run
 			</div>
 		</div>
 	';

@@ -79,6 +79,19 @@ ul {
 	background-color: #00000055;
 }
 
+.lu_icon_button {
+	cursor: pointer;
+}
+
+.lu_icon_button:hover {
+	background-color: #5E6161FF;
+}
+
+.lu_icon_button--selected {
+	color: #6afd75;
+	pointer-events: none;
+}
+
 .lu_slider {
 	background-color: #000000CC;
 	position: relative;

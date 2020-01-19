@@ -3,6 +3,7 @@ package levelup;
 import h3d.mat.Texture;
 import hxd.Res;
 import hxd.res.Model;
+import levelup.TerrainAssets.TerrainEffect;
 import levelup.game.GameState.RaceId;
 
 /**
@@ -347,14 +348,16 @@ class TerrainAssets
 				type: TerrainType.Water,
 				previewUrl: "asset/img/preview/terrain/water/stylizedwater01_basecolor.jpg",
 				texture: Res.texture.terrain.water.stylizedwater01_basecolor.toTexture(),
-				normalMap: Res.texture.terrain.water.stylizedwater01_normal.toTexture()
+				normalMap: Res.texture.terrain.water.stylizedwater01_normal.toTexture(),
+				effects: [TerrainEffect.Wave]
 			},
 			{
 				id: "water",
 				type: TerrainType.Water,
 				previewUrl: "asset/img/preview/terrain/water/water.jpg",
 				texture: Res.texture.terrain.water.water.toTexture(),
-				normalMap: Res.texture.terrain.water.water_n.toTexture()
+				normalMap: Res.texture.terrain.water.water_n.toTexture(),
+				effects: [TerrainEffect.Wave]
 			},
 			{
 				id: "wood_floor",
@@ -524,7 +527,8 @@ class TerrainAssets
 				type: TerrainType.Lava,
 				previewUrl: "asset/img/preview/terrain/lava/t_lava_color_b.jpg",
 				texture: Res.texture.terrain.lava.t_lava_color_b.toTexture(),
-				normalMap: Res.texture.terrain.lava.t_lava_normal.toTexture()
+				normalMap: Res.texture.terrain.lava.t_lava_normal.toTexture(),
+				effects: [TerrainEffect.Wave]
 			},
 			{
 				id: "t_lava_ground_cracks_basecolor",
@@ -552,7 +556,8 @@ class TerrainAssets
 				type: TerrainType.Water,
 				previewUrl: "asset/img/preview/terrain/water/vol_36_2_base_color.jpg",
 				texture: Res.texture.terrain.water.vol_36_2_base_color.toTexture(),
-				normalMap: Res.texture.terrain.water.vol_36_2_normal.toTexture()
+				normalMap: Res.texture.terrain.water.vol_36_2_normal.toTexture(),
+				effects: [TerrainEffect.Wave]
 			},
 			{
 				id: "vol_4_5_base_color",
@@ -753,6 +758,7 @@ typedef TerrainConfig = {
 	var type(default, never):TerrainType;
 	var previewUrl(default, never):String;
 	@:optional var normalMap(default, never):Texture;
+	@:optional var effects(default, never):Array<TerrainEffect>;
 }
 
 @:enum abstract TerrainType(String) from String to String
@@ -771,4 +777,9 @@ typedef TerrainConfig = {
 	var Other = "Other";
 	var Tile = "Tile";
 	var All = "All";
+}
+
+enum TerrainEffect
+{
+	Wave;
 }
