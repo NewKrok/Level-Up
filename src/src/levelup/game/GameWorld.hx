@@ -37,6 +37,7 @@ import levelup.game.js.Graph;
 import levelup.game.unit.BaseUnit;
 import levelup.shader.Wave;
 import levelup.util.GeomUtil3D;
+import lzstring.LZString;
 
 /**
  * ...
@@ -94,9 +95,12 @@ class GameWorld extends World
 	var dawnColor:Vector = new Vector();
 	var dayTimeSpeed:Float = Math.PI / 200;
 	var isDayTimeEnabled:Bool = true;
+	var compressor:LZString;
 
 	public function new(s3d:Scene, worldConfig:WorldConfig, blockSize:Float, chunkSize:Int, worldSize:Int, ?autoCollect = true)
 	{
+		compressor = new LZString();
+
 		this.s3d = s3d;
 		super(chunkSize, worldSize, s3d, autoCollect);
 		this.worldConfig = worldConfig;
@@ -112,12 +116,12 @@ class GameWorld extends World
 
 		if (worldConfig.heightMap != null)
 		{
-			heightMap.setPixels(new Pixels(heightMap.width, heightMap.height, Base64.decode(worldConfig.heightMap), PixelFormat.RGBA));
+			heightMap.setPixels(new Pixels(heightMap.width, heightMap.height, Base64.decode(compressor.decompress(worldConfig.heightMap)), PixelFormat.RGBA));
 		}
 
 		if (worldConfig.levellingHeightMap != null)
 		{
-			levellingHeightMap.setPixels(new Pixels(levellingHeightMap.width, levellingHeightMap.height, Base64.decode(worldConfig.levellingHeightMap), PixelFormat.RGBA));
+			levellingHeightMap.setPixels(new Pixels(levellingHeightMap.width, levellingHeightMap.height, Base64.decode(compressor.decompress(worldConfig.levellingHeightMap)), PixelFormat.RGBA));
 		}
 
 		if (worldConfig.terrainLayers != null)
@@ -232,7 +236,7 @@ class GameWorld extends World
 		bmp.fill(0, 0, bmp.width, bmp.height, 0x00000000);
 
 		if (alphaMap != null)
-			bmp.setPixels(new Pixels(bmp.width, bmp.height, Base64.decode(alphaMap), PixelFormat.RGBA));
+			bmp.setPixels(new Pixels(bmp.width, bmp.height, Base64.decode(compressor.decompress(alphaMap)), PixelFormat.RGBA));
 
 		var alphaMask = new AlphaMap(Texture.fromBitmap(bmp));
 		alphaMask.uvScale.set(0.03333 * uvScale, 0.03333 * uvScale);

@@ -37,6 +37,7 @@
     <library name="heaps" />
     <library name="actuate" />
     <library name="hpp" />
+    <library name="lzstring" />
     <library name="embed-js" />
   </haxelib>
   <!-- Class files to compile (other referenced classes will automatically be included) -->

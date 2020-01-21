@@ -1,6 +1,8 @@
 package levelup.editor;
 
 import coconut.ui.RenderResult;
+import format.jpg.Data;
+import format.jpg.Writer;
 import h2d.Scene;
 import h3d.Quat;
 import h3d.Vector;
@@ -16,6 +18,7 @@ import h3d.shader.AlphaMap;
 import h3d.shader.ColorMult;
 import haxe.Json;
 import haxe.crypto.Base64;
+import haxe.io.BytesOutput;
 import hpp.heaps.Base2dStage;
 import hpp.heaps.Base2dState;
 import hpp.heaps.HppG;
@@ -50,6 +53,7 @@ import motion.Actuate;
 import react.ReactDOM;
 import tink.pure.List;
 import tink.state.State;
+import lzstring.LZString;
 
 /**
  * ...
@@ -119,12 +123,16 @@ class EditorState extends Base2dState
 	public var isPathFindingLayerDirty:Bool = false;
 	var lastPathRenderTime:Float = 0;
 
+	var compressor:LZString;
+
 	public function new(stage:Base2dStage, s2d:h2d.Scene, s3d:h3d.scene.Scene, rawMap:String)
 	{
 		super(stage);
 
 		this.s3d = s3d;
 		this.s2d = s2d;
+
+		compressor = new LZString();
 
 		mapConfig = AdventureParser.loadLevel(rawMap);
 
@@ -1026,7 +1034,7 @@ class EditorState extends Base2dState
 			units: [],
 			staticObjects: [],
 			terrainLayers: [{ textureId: "dirtground", texture: null, uvScale: 1 }],
-			heightMap: Base64.encode(rawHeightMap.getPixels().bytes),
+			heightMap: compressor.compress(Base64.encode(rawHeightMap.getPixels().bytes)),
 			editorLastCamPosition: new Vector(100, 100, 100)
 		};
 		var result = Json.stringify(worldConfig);
@@ -1052,7 +1060,7 @@ class EditorState extends Base2dState
 
 			terrainLayers.push({
 				textureId: terrainModule.model.layers.toArray()[i].terrainId.value,
-				texture: shader != null ? Base64.encode(shader.texture.capturePixels().bytes) : null,
+				texture: shader != null ? compressor.compress(Base64.encode(shader.texture.capturePixels().bytes)) : null,
 				uvScale: terrainModule.model.layers.toArray()[i].uvScale.value
 			});
 		}
@@ -1095,8 +1103,8 @@ class EditorState extends Base2dState
 			units: units,
 			staticObjects: staticObjects,
 			terrainLayers: terrainLayers,
-			heightMap: Base64.encode(world.heightMap.getPixels().bytes),
-			levellingHeightMap: Base64.encode(world.levellingHeightMap.getPixels().bytes),
+			heightMap: compressor.compress(Base64.encode(world.heightMap.getPixels().bytes)),
+			levellingHeightMap: compressor.compress(Base64.encode(world.levellingHeightMap.getPixels().bytes)),
 			editorLastCamPosition: new Vector(cameraObject.x, cameraObject.y, currentCamDistance)
 		};
 		var result = Json.stringify(worldConfig);

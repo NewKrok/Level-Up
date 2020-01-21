@@ -8,6 +8,7 @@
 -lib heaps
 -lib actuate
 -lib hpp
+-lib lzstring
 -lib embed-js
 #-lib uglifyjs
 #-lib closure
