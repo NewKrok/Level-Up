@@ -75,6 +75,7 @@ Editor
 - **Haxe 4.0.0** Haxe is an open source toolkit based on a modern high level strictly typed programming language https://haxe.org/
 - **Heaps 1.7.0** A mature cross platform graphics engine designed for high performance games. https://heaps.io/
 - **javascript-astar 1.4.1** Pathfinder js lib. http://github.com/bgrins/javascript-astar
+- **LZString** Powerful String compressor https://pieroxy.net/blog/pages/lz-string/index.html https://github.com/markknol/hx-lzstring
 - **Tink libraries** Check build.hxml for details https://lib.haxe.org/t/tink/
 - **Coconut libraries** Check build.hxml for details https://lib.haxe.org/t/coconut/
 - **HPP Package** Some useful classes for haxe projects https://github.com/NewKrok/HPP-Package
