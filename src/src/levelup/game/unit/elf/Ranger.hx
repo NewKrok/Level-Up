@@ -24,7 +24,7 @@ class Ranger extends BaseUnit
 			deathModel: Res.model.character.elf.ranger.DeathAnim,
 			modelScale: 0.008,
 			speed: 2,
-			speedMultiplier: 1,
+			speedMultiplier: 100,
 			attackRange: 10,
 			attackSpeed: 1800,
 			damagePercentDelay: 0.5,

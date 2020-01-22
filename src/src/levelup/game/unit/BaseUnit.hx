@@ -105,14 +105,6 @@ import tink.state.State;
 		interact.onOver = _ -> view.getMaterials()[0].mainPass.addShader(colorShader);
 		interact.onOut = _ -> view.getMaterials()[0].mainPass.removeShader(colorShader);
 
-		/*for (m in view.getMaterials())
-		{
-			var t = m.mainPass.getShader(Texture);
-			if(t != null) t.killAlpha = true;
-			m.mainPass.culling = None;
-			m.getPass("shadow").culling = None;
-		}*/
-
 		life.set(config.maxLife);
 		life.observe().bind(function(v)
 		{
@@ -228,13 +220,13 @@ import tink.state.State;
 				closest: true
 			}
 		);
+
 		if (path != null && path.length != 0)
 		{
 			path.pop();
 			moveToPath = [];
 			for (entry in path) moveToPath.push({ x: entry.y, y: entry.x });
 			moveToPath.push({ x: point.x, y: point.y });
-
 			moveToNextPathPoint();
 		}
 		else

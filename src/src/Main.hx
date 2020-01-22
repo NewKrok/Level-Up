@@ -29,9 +29,9 @@ class Main extends Base2dApp
 		SaveUtil.load();
 
 		//changeState(EditorState, [stage, s3d, SaveUtil.editorData.customMaps[0]]);
-		//changeState(EditorState, [stage, s3d, MapData.getRawMap("lobby")]);
-		changeState(GameState, [stage, s3d, MapData.getRawMap("lobby")]);
-		//changeState(GameState, [s2d, s3d, MapData.getRawMap("hero_survival")]);
+		changeState(EditorState, [stage, s3d, MapData.getRawMap("lobby")]);
+		//changeState(GameState, [stage, s3d, MapData.getRawMap("lobby")]);
+		//changeState(GameState, [stage, s3d, SaveUtil.editorData.customMaps[0]]);
 	}
 
 	static function main()

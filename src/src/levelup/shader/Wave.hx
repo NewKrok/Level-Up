@@ -14,13 +14,22 @@ class Wave extends Shader
 	{
 		@:import h3d.shader.BaseMesh;
 
-		@param var speed:Float = 0.0001;
-		@param var amplitude:Float = 0.2;
-		@param var zOffset:Float = 0;
+		@param var speed:Float;
+		@param var amplitude:Float;
+		@param var zOffset:Float;
 
 		function vertex()
 		{
-			relativePosition.z += zOffset + amplitude * cos(global.time * speed * (relativePosition.x * relativePosition.y));
+			relativePosition.z += zOffset + amplitude * cos(global.time + relativePosition.x * relativePosition.y);
 		}
+	}
+
+	public function new(speed:Float = 0.0001, amplitude:Float = 0.2, zOffset:Float = 0.2)
+	{
+		super();
+
+		this.speed = speed;
+		this.amplitude = amplitude;
+		this.zOffset = zOffset;
 	}
 }

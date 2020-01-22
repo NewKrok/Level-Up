@@ -873,7 +873,7 @@ class EditorState extends Base2dState
 				var left = world.levellingHeightGridCache[j > 0 ? gridIndex - 1 : gridIndex];
 				var right = world.levellingHeightGridCache[j < row.length - 2 ? gridIndex + 1 : gridIndex];
 
-				row[j].weight = (current - up != 0 || current - down != 0 || current - left != 0 || current - right != 0) ? 0 : 1;
+				row[j].weight = (current - up != 0 || current - down != 0 || current - left != 0 || current - right != 0) ? 0 : row[j].weight;
 			}
 		}
 
