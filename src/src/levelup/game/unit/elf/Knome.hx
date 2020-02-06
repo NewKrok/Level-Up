@@ -30,7 +30,7 @@ class Knome extends BaseUnit
 			damagePercentDelay: 0.5,
 			damageMin: 1,
 			damageMax: 2,
-			maxLife: 15,
+			maxLife: 50,
 			maxMana: 1,
 			detectionRange: 4,
 			unitSize: 0.7,

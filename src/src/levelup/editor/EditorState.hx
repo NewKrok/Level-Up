@@ -722,9 +722,11 @@ class EditorState extends Base2dState
 		{
 			case EditorActionType.Scale:
 				a.target.setScale(useNewValue ? a.newValueFloat : a.oldValueFloat);
+				calculatePathMap();
 
 			case EditorActionType.Rotate:
 				a.target.setRotationQuat(useNewValue ? a.newValueQuat : a.oldValueQuat);
+				calculatePathMap();
 
 			case EditorActionType.Move:
 				a.target.setPosition(
@@ -732,6 +734,7 @@ class EditorState extends Base2dState
 					useNewValue ? a.newValueSimplePoint.y : a.oldValueSimplePoint.y,
 					a.target.z
 				);
+				calculatePathMap();
 
 			case _:
 		}
@@ -860,6 +863,8 @@ class EditorState extends Base2dState
 
 	function calculatePathMap()
 	{
+		for (g in world.graph.grid) for (e in g) e.weight = 1;
+
 		for (i in 0...world.graph.grid.length)
 		{
 			var row = world.graph.grid[i];

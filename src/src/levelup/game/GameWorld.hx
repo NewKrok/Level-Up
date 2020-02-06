@@ -561,6 +561,10 @@ class GameWorld extends World
 						bestDistance = distance;
 						bestUnit = uB;
 					}
+					else if (uA.target == null && uB.target != null && uA.owner == uB.owner && distance <= uA.config.detectionRange)
+					{
+						bestUnit = uB.target;
+					}
 
 					if (
 						distance < uA.config.unitSize + uB.config.unitSize
@@ -611,6 +615,14 @@ class GameWorld extends World
 		{
 			var u:BaseUnit = cast o;
 			u.onClick = onClickOnUnit;
+			u.state.bind(v ->
+			{
+				if (v == Rotten)
+				{
+					units.remove(u);
+					u.view.remove();
+				}
+			});
 			units.push(u);
 		}
 	}

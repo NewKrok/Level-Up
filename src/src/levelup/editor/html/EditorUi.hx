@@ -58,9 +58,6 @@ class EditorUi extends View
 							ref={selectedAsset}
 							asset=$selectedWorldAsset
 						/>
-						<EditorPreview
-							assetConfig={selectedWorldAsset.config}
-						/>
 					</if>
 				</div>
 				<div class="lu_editor_right">

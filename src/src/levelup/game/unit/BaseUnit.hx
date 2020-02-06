@@ -26,6 +26,7 @@ import hpp.util.GeomUtil.SimplePoint;
 import hxd.res.FontBuilder;
 import hxd.res.Model;
 import js.lib.Date;
+import levelup.shader.Opacity;
 import levelup.util.GeomUtil3D;
 import motion.Actuate;
 import motion.easing.Linear;
@@ -139,6 +140,13 @@ import tink.state.State;
 				case Dead:
 					view.playAnimation(cache.loadAnimation(config.deathModel)).loop = false;
 					view.currentAnimation.speed = 1;
+
+					var alphaShader = new Opacity(.5);
+					view.getMaterials()[0].mainPass.addShader(alphaShader);
+
+					Timer.delay(() -> state.set(Rotten), 2000);
+
+				case Rotten:
 			}
 		});
 	}
@@ -434,9 +442,15 @@ import tink.state.State;
 		moveToRequest(target.getWorldPoint());
 	}
 
-	public function damage(v:Float)
+	public function damage(v:Float, attacker:BaseUnit = null)
 	{
 		life.set(Math.max(life.value - v, 0));
+
+		if (attacker != null && target == null && state != Dead)
+		{
+			target = attacker;
+			attackRequest();
+		}
 	}
 
 	function attackRoutine():Bool
@@ -454,7 +468,7 @@ import tink.state.State;
 			{
 				if (canAttackTarget())
 				{
-					target.damage(calculateDamage());
+					target.damage(calculateDamage(), this);
 				}
 				else if (target != null && target.state != Dead) attackRequest();
 			}, Math.floor(config.damagePercentDelay * view.currentAnimation.getDuration()
@@ -479,11 +493,12 @@ import tink.state.State;
 	{
 		if (target != null && target.state == Dead)
 		{
+			target = null;
+			nearestTarget = null;
+
 			if (attackResultHandler != null)
 			{
 				Actuate.stop(view, null, false, true);
-				target = null;
-				nearestTarget = null;
 				onMoveEnd();
 				if (attackResultHandler != null) attackResultHandler();
 				attackResultHandler = null;
@@ -556,6 +571,7 @@ typedef UnitConfig =
 }
 
 enum UnitState {
+	Rotten;
 	Idle;
 	Dead;
 	MoveTo;
