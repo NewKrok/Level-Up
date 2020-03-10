@@ -18,6 +18,8 @@ import levelup.util.SaveUtil;
  */
 class Main extends Base2dApp
 {
+	public static var editorVersion:String = "0.0.1";
+
 	var gameState:EditorState;
 
 	override function init()

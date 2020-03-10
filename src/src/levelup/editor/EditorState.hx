@@ -69,7 +69,7 @@ class EditorState extends Base2dState
 	public var id(default, never):UInt = Math.floor(Math.random() * 1000);
 
 	var world:GameWorld;
-	var mapConfig:WorldConfig;
+	var adventureConfig:AdventureConfig;
 	var model:EditorModel;
 
 	var s2d:h2d.Scene;
@@ -139,20 +139,20 @@ class EditorState extends Base2dState
 
 		compressor = new LZString();
 
-		mapConfig = AdventureParser.loadLevel(rawMap);
+		adventureConfig = AdventureParser.loadLevel(rawMap);
 
 		model = new EditorModel(
 		{
-			name: mapConfig.name,
-			size: mapConfig.size,
-			startingTime: mapConfig.startingTime,
-			sunAndMoonOffsetPercent: mapConfig.sunAndMoonOffsetPercent,
-			dayColor: mapConfig.dayColor,
-			nightColor: mapConfig.nightColor,
-			sunsetColor: mapConfig.sunsetColor,
-			dawnColor: mapConfig.dawnColor,
-			regions: mapConfig.regions,
-			triggers: mapConfig.triggers,
+			name: adventureConfig.name,
+			size: adventureConfig.size,
+			startingTime: adventureConfig.worldConfig.startingTime,
+			sunAndMoonOffsetPercent: adventureConfig.worldConfig.sunAndMoonOffsetPercent,
+			dayColor: adventureConfig.worldConfig.dayColor,
+			nightColor: adventureConfig.worldConfig.nightColor,
+			sunsetColor: adventureConfig.worldConfig.sunsetColor,
+			dawnColor: adventureConfig.worldConfig.dawnColor,
+			regions: adventureConfig.worldConfig.regions,
+			triggers: adventureConfig.worldConfig.triggers,
 			units: [],
 			staticObjects: [],
 			showGrid: SaveUtil.editorData.showGrid,
@@ -188,7 +188,7 @@ class EditorState extends Base2dState
 		debugDetectionRadius = new Graphics(s3d);
 		debugDetectionRadius.z = 0.2;
 
-		world = new GameWorld(s3d, mapConfig, 1, 64, 128);
+		world = new GameWorld(s3d, adventureConfig.size, adventureConfig.worldConfig, 1, 64, 128);
 		world.disableDayTime();
 		world.done();
 
@@ -339,14 +339,14 @@ class EditorState extends Base2dState
 			}
 		}
 
-		for (o in mapConfig.staticObjects.concat([]))
+		for (o in adventureConfig.worldConfig.staticObjects.concat([]))
 		{
 			var config = Asset.getAsset(o.id);
 			if (config != null) createAsset(Asset.getAsset(o.id), o.x, o.y, o.z, o.scale == null ? config.scale : o.scale, o.rotation);
 			else trace("Couldn't create asset with id: " + o.id);
 		}
 
-		for (o in mapConfig.units.concat([]))
+		for (o in adventureConfig.worldConfig.units.concat([]))
 		{
 			var config = Asset.getAsset(o.id);
 			if (config != null) createUnit(Asset.getAsset(o.id), o.x, o.y, o.z, o.scale == null ? config.scale : o.scale, o.rotation, o.owner);
@@ -357,11 +357,11 @@ class EditorState extends Base2dState
 		s3d.camera.target.x = s3d.camera.pos.x;
 		s3d.camera.target.y = s3d.camera.pos.y;
 
-		if (mapConfig.editorLastCamPosition == null) jumpCamera(10, 10);
+		if (adventureConfig.worldConfig.editorLastCamPosition == null) jumpCamera(10, 10);
 		else
 		{
-			camDistance = mapConfig.editorLastCamPosition.z;
-			jumpCamera(mapConfig.editorLastCamPosition.x, mapConfig.editorLastCamPosition.y);
+			camDistance = adventureConfig.worldConfig.editorLastCamPosition.z;
+			jumpCamera(adventureConfig.worldConfig.editorLastCamPosition.x, adventureConfig.worldConfig.editorLastCamPosition.y);
 		}
 
 		editorUi = new EditorUi({
@@ -761,29 +761,35 @@ class EditorState extends Base2dState
 
 	function createGrid()
 	{
-		grid = new Grid(cast mapConfig.size.y, cast mapConfig.size.x);
+		grid = new Grid(cast adventureConfig.size.y, cast adventureConfig.size.x);
 		grid.addTangents();
 
 		gridMesh = new Mesh(grid, Material.create(Texture.fromColor(0x999900, 0.1)), s3d);
 		gridMesh.material.mainPass.wireframe = true;
 		gridMesh.material.castShadows = false;
 		gridMesh.material.receiveShadows = false;
-
-		updateGrid();
 	}
 
-	function updateGrid(r:Rect)
+	function updateGrid()
 	{
-		grid.buffer = null;
-
-		for (i in 0...grid.points.length)
+		if (gridMesh.visible)
 		{
-			grid.points[i].z = world.heightGridCache[i];
+			grid.buffer = null;
+
+			for (i in 0...grid.points.length)
+			{
+				grid.points[i].z = world.heightGridCache[i];
+			}
 		}
 	}
 
-	function showGrid() gridMesh.visible = true;
 	function hideGrid() gridMesh.visible = false;
+
+	function showGrid()
+	{
+		updateGrid();
+		gridMesh.visible = true;
+	}
 
 	function getZFromPoint(targetX, targetY)
 	{
@@ -844,9 +850,9 @@ class EditorState extends Base2dState
 			{
 				var b = o.instance.getBounds().getSize();
 				var xMin:Int = cast Math.max(Math.round(o.instance.x - b.x / 2), 0);
-				var xMax:Int = cast Math.min(xMin + Math.round(b.x), world.worldConfig.size.x);
+				var xMax:Int = cast Math.min(xMin + Math.round(b.x), world.size.x);
 				var yMin:Int = cast Math.max(Math.round(o.instance.y - b.y / 2), 0);
-				var yMax:Int = cast Math.min(yMin + Math.round(b.y), world.worldConfig.size.x);
+				var yMax:Int = cast Math.min(yMin + Math.round(b.y), world.size.x);
 
 				// TODO why is it wrong in the first time?
 				if (xMax - xMin > 50) continue;
@@ -866,7 +872,7 @@ class EditorState extends Base2dState
 	{
 		debugRegions.clear();
 
-		for (r in mapConfig.regions)
+		for (r in adventureConfig.worldConfig.regions)
 		{
 			debugRegions.lineStyle(5, 0x5555AA);
 
@@ -943,10 +949,10 @@ class EditorState extends Base2dState
 		camDistance = Math.max(10, camDistance);
 		camDistance = Math.min(300, camDistance);
 
-		cameraObject.x = Math.min(Math.max(cameraObject.x, 0), mapConfig.size.x);
+		cameraObject.x = Math.min(Math.max(cameraObject.x, 0), adventureConfig.size.x);
 		currentCameraPoint.x += (cameraObject.x - currentCameraPoint.x) / cameraSpeed.x * d * 30;
 
-		cameraObject.y = Math.min(Math.max(cameraObject.y, 0), mapConfig.size.y);
+		cameraObject.y = Math.min(Math.max(cameraObject.y, 0), adventureConfig.size.y);
 		currentCameraPoint.y += (cameraObject.y - currentCameraPoint.y) / cameraSpeed.y * d * 30;
 
 		var distanceOffset = (camDistance - currentCamDistance) / cameraSpeed.z * d * 30;
@@ -988,17 +994,20 @@ class EditorState extends Base2dState
 		rawHeightMap.fill(0, 0, Std.int(data.size.x), Std.int(data.size.y), 0x888888);
 
 		var worldConfig:WorldConfig = {
-			name: "A Great New Adventure",
-			size: data.size,
 			regions: [],
 			triggers: [],
 			units: [],
 			staticObjects: [],
 			terrainLayers: [{ textureId: data.defaultTerrainTextureId, texture: null, uvScale: 1 }],
-			heightMap: compressor.compress(Base64.encode(rawHeightMap.getPixels().bytes)),
-			editorLastCamPosition: new Vector(data.size.x / 2, data.size.y / 2, 100)
+			heightMap: Base64.encode(rawHeightMap.getPixels().bytes),
+			editorLastCamPosition: new Vector(data.size.x / 2, data.size.y / 2, data.size.y / 2)
 		};
-		var result = Json.stringify(worldConfig);
+		var result = Json.stringify({
+			name: "A Great New Adventure",
+			editorVersion: Main.editorVersion,
+			size: data.size,
+			worldConfig: compressor.compressToEncodedURIComponent(Json.stringify(worldConfig))
+		});
 
 		var savedMaps = SaveUtil.editorData.customMaps;
 		if (savedMaps.length > 0) SaveUtil.editorData.customMaps[0] = result;
@@ -1021,7 +1030,7 @@ class EditorState extends Base2dState
 
 			terrainLayers.push({
 				textureId: terrainModule.model.layers.toArray()[i].terrainId.value,
-				texture: shader != null ? compressor.compress(Base64.encode(shader.texture.capturePixels().bytes)) : null,
+				texture: shader != null ? Base64.encode(shader.texture.capturePixels().bytes) : null,
 				uvScale: terrainModule.model.layers.toArray()[i].uvScale.value
 			});
 		}
@@ -1051,8 +1060,6 @@ class EditorState extends Base2dState
 		}];
 
 		var worldConfig:WorldConfig = {
-			name: model.name,
-			size: model.size,
 			startingTime: model.startingTime,
 			sunAndMoonOffsetPercent: model.sunAndMoonOffsetPercent,
 			dayColor: model.dayColor,
@@ -1064,17 +1071,22 @@ class EditorState extends Base2dState
 			units: units,
 			staticObjects: staticObjects,
 			terrainLayers: terrainLayers,
-			heightMap: compressor.compress(Base64.encode(world.heightMap.getPixels().bytes)),
-			levellingHeightMap: compressor.compress(Base64.encode(world.levellingHeightMap.getPixels().bytes)),
+			heightMap: Base64.encode(world.heightMap.getPixels().bytes),
+			levellingHeightMap: Base64.encode(world.levellingHeightMap.getPixels().bytes),
 			editorLastCamPosition: new Vector(cameraObject.x, cameraObject.y, currentCamDistance)
 		};
-		var result = Json.stringify(worldConfig);
+		var result = Json.stringify({
+			name: model.name,
+			editorVersion: Main.editorVersion,
+			size: model.size,
+			worldConfig: compressor.compressToEncodedURIComponent(Json.stringify(worldConfig))
+		});
 
 		var savedMaps = SaveUtil.editorData.customMaps;
 		var isNewMap:Bool = true;
 		for (i in 0...savedMaps.length)
 		{
-			if (savedMaps[i].indexOf('"name":"' + worldConfig.name + '"') != -1)
+			if (savedMaps[i].indexOf('"name":"' + model.name + '"') != -1)
 			{
 				SaveUtil.editorData.customMaps[i] = result;
 				isNewMap = false;
@@ -1087,7 +1099,6 @@ class EditorState extends Base2dState
 		SaveUtil.editorData.showGrid = model.showGrid;
 		SaveUtil.save();
 
-		trace(result);
 		return result;
 	}
 
@@ -1180,7 +1191,7 @@ typedef EditorCore =
 	public var logAction:EditorAction->Void;
 	public var registerView:EditorViewId->RenderResult->Void;
 	public var dialogManager:EditorDialogManager;
-	public var updateGrid:Rect->Void;
+	public var updateGrid:Void->Void;
 	public var isPathFindingLayerDirty:Bool;
 }
 

@@ -76,6 +76,7 @@ class GameWorld extends World
 	public var onUnitEntersToRegion:Region->BaseUnit->Void = null;
 	public var onUnitLeavesFromRegion:Region->BaseUnit->Void = null;
 
+	public var size(default, null):SimplePoint;
 	public var worldConfig(default, null):WorldConfig;
 
 	var interact:Interactive;
@@ -95,33 +96,31 @@ class GameWorld extends World
 	var dawnColor:Vector = new Vector();
 	var dayTimeSpeed:Float = Math.PI / 200;
 	var isDayTimeEnabled:Bool = true;
-	var compressor:LZString;
 
-	public function new(s3d:Scene, worldConfig:WorldConfig, blockSize:Float, chunkSize:Int, worldSize:Int, ?autoCollect = true)
+	public function new(s3d:Scene, size:SimplePoint, worldConfig:WorldConfig, blockSize:Float, chunkSize:Int, worldSize:Int, ?autoCollect = true)
 	{
-		compressor = new LZString();
-
 		this.s3d = s3d;
 		super(chunkSize, worldSize, s3d, autoCollect);
+		this.size = size;
 		this.worldConfig = worldConfig;
 		this.blockSize = blockSize;
 
 		instance = this;
 
-		heightMap = new BitmapData(cast worldConfig.size.y, cast worldConfig.size.x);
+		heightMap = new BitmapData(cast size.y, cast size.x);
 		heightMap.fill(0, 0, heightMap.width, heightMap.height, 0x333333);
 
-		levellingHeightMap = new BitmapData(cast worldConfig.size.y, cast worldConfig.size.x);
+		levellingHeightMap = new BitmapData(cast size.y, cast size.x);
 		levellingHeightMap.fill(0, 0, heightMap.width, heightMap.height, 0x333333);
 
 		if (worldConfig.heightMap != null)
 		{
-			heightMap.setPixels(new Pixels(heightMap.width, heightMap.height, Base64.decode(compressor.decompress(worldConfig.heightMap)), PixelFormat.RGBA));
+			heightMap.setPixels(new Pixels(heightMap.width, heightMap.height, Base64.decode(worldConfig.heightMap), PixelFormat.RGBA));
 		}
 
 		if (worldConfig.levellingHeightMap != null)
 		{
-			levellingHeightMap.setPixels(new Pixels(levellingHeightMap.width, levellingHeightMap.height, Base64.decode(compressor.decompress(worldConfig.levellingHeightMap)), PixelFormat.RGBA));
+			levellingHeightMap.setPixels(new Pixels(levellingHeightMap.width, levellingHeightMap.height, Base64.decode(worldConfig.levellingHeightMap), PixelFormat.RGBA));
 		}
 
 		if (worldConfig.terrainLayers != null)
@@ -135,7 +134,7 @@ class GameWorld extends World
 			}
 		}
 
-		var graphArray = [for (i in 0...cast worldConfig.size.x) [for (j in 0...cast worldConfig.size.y) 1]];
+		var graphArray = [for (i in 0...cast size.x) [for (j in 0...cast size.y) 1]];
 		graph = new Graph(graphArray, { diagonal: true });
 
 		interact = new Interactive(terrainLayers[0].getCollider(), s3d);
@@ -195,7 +194,7 @@ class GameWorld extends World
 	{
 		if (uvScale == null) uvScale = 1;
 
-		var layer = new Grid(cast worldConfig.size.y, cast worldConfig.size.x);
+		var layer = new Grid(cast size.y, cast size.x);
 		layer.addTangents();
 		layer.uvScale(30 / uvScale, 30 / uvScale);
 
@@ -228,17 +227,17 @@ class GameWorld extends World
 	{
 		if (uvScale == null) uvScale = 1;
 
-		var layer = new Grid(cast worldConfig.size.y, cast worldConfig.size.x);
+		var layer = new Grid(cast size.y, cast size.x);
 		layer.addTangents();
 		layer.uvScale(30 / uvScale, 30 / uvScale);
 
 		setGridByHeightMap(layer);
 
-		var bmp = new BitmapData(cast worldConfig.size.y * 2, cast worldConfig.size.x * 2);
+		var bmp = new BitmapData(cast size.y * 2, cast size.x * 2);
 		bmp.fill(0, 0, bmp.width, bmp.height, 0x00000000);
 
 		if (alphaMap != null)
-			bmp.setPixels(new Pixels(bmp.width, bmp.height, Base64.decode(compressor.decompress(alphaMap)), PixelFormat.RGBA));
+			bmp.setPixels(new Pixels(bmp.width, bmp.height, Base64.decode(alphaMap), PixelFormat.RGBA));
 
 		var alphaMask = new AlphaMap(Texture.fromBitmap(bmp));
 		alphaMask.uvScale.set(0.03333 * uvScale, 0.03333 * uvScale);
@@ -371,7 +370,7 @@ class GameWorld extends World
 
 	public function disableDayTime():Void isDayTimeEnabled = false;
 
-	public function setSunAndMoonOffsetPercent(offsetPercent:Float):Void sunAndMoonOffset = -100 + (worldConfig.size.x + 200) * (offsetPercent / 100);
+	public function setSunAndMoonOffsetPercent(offsetPercent:Float):Void sunAndMoonOffset = -100 + (size.x + 200) * (offsetPercent / 100);
 
 	public function resetWorldWeight()
 	{
@@ -437,8 +436,8 @@ class GameWorld extends World
 
 		var sunAndMoonAngle = isDayTime ? sunAngle + Math.PI : sunAngle;
 		var sunAndMoonX = -sunAndMoonOffset;
-		var sunAndMoonY = worldConfig.size.y * 0.6 * Math.cos(sunAndMoonAngle);
-		var sunAndMoonZ = worldConfig.size.y * 0.6 * Math.sin(sunAndMoonAngle);
+		var sunAndMoonY = size.y * 0.6 * Math.cos(sunAndMoonAngle);
+		var sunAndMoonZ = size.y * 0.6 * Math.sin(sunAndMoonAngle);
 		sunAndMoon.setDirection(new Vector(sunAndMoonX, sunAndMoonY, sunAndMoonZ));
 
 		var dayTimeColorPercent = 1.0;
@@ -485,13 +484,13 @@ class GameWorld extends World
 
 		var sunObjAngle = sunAngle;
 		sunObj.x = sunAndMoonOffset;
-		sunObj.y = worldConfig.size.x / 2 + worldConfig.size.y * 0.6 * Math.cos(sunObjAngle);
-		sunObj.z = worldConfig.size.y * 0.6 * Math.sin(sunObjAngle);
+		sunObj.y = size.x / 2 + size.y * 0.6 * Math.cos(sunObjAngle);
+		sunObj.z = size.y * 0.6 * Math.sin(sunObjAngle);
 
 		var moonObjAngle = sunAngle + Math.PI;
 		moonObj.x = sunObj.x;
-		moonObj.y = worldConfig.size.x / 2 + worldConfig.size.y * 0.6 * Math.cos(moonObjAngle);
-		moonObj.z = worldConfig.size.y * 0.6 * Math.sin(moonObjAngle);
+		moonObj.y = size.x / 2 + size.y * 0.6 * Math.cos(moonObjAngle);
+		moonObj.z = size.y * 0.6 * Math.sin(moonObjAngle);
 
 		if (isDayTimeEnabled)
 		{

@@ -60,7 +60,7 @@ class GameState extends Base2dState
 
 	var stateConfig:GameStateConfig;
 	var world:GameWorld;
-	var mapConfig:WorldConfig;
+	var adventureConfig:AdventureConfig;
 	var model:GameModel;
 	var cache:ModelCache = new ModelCache();
 
@@ -96,7 +96,7 @@ class GameState extends Base2dState
 		this.s3d = s3d;
 		this.s2d = s2d;
 		this.stateConfig = stateConfigParam == null ? { isTestRun: false } : stateConfigParam;
-		mapConfig = AdventureParser.loadLevel(rawMap);
+		adventureConfig = AdventureParser.loadLevel(rawMap);
 
 		heroUiContainer = new Flow(s2d);
 		heroUiContainer.scale(0.5);
@@ -120,7 +120,7 @@ class GameState extends Base2dState
 		debugUnitPath = new Graphics(s3d);
 		debugUnitPath.z = 0.2;
 
-		world = new GameWorld(s3d, mapConfig, 1, 64, 64);
+		world = new GameWorld(s3d, adventureConfig.size, adventureConfig.worldConfig, 1, 64, 64);
 		world.done();
 
 		var c = new Cube(1, 1, 1);
@@ -149,7 +149,7 @@ class GameState extends Base2dState
 		}
 		world.onUnitEntersToRegion = function(r, u)
 		{
-			for (t in mapConfig.triggers)
+			for (t in adventureConfig.worldConfig.triggers)
 			{
 				switch(t.event)
 				{
@@ -161,7 +161,7 @@ class GameState extends Base2dState
 		world.onWorldWheel = e -> camDistance += e.wheelDelta * 8;
 		world.onClickOnUnit = u -> if (u.owner == PlayerId.Player1) selectUnit(u);
 
-		for (u in mapConfig.units) createUnit(u.id, u.owner, u.x, u.y, u.scale, u.rotation);
+		for (u in adventureConfig.worldConfig.units) createUnit(u.id, u.owner, u.x, u.y, u.scale, u.rotation);
 
 		for (i in 0...world.graph.grid.length)
 		{
@@ -180,7 +180,7 @@ class GameState extends Base2dState
 			}
 		}
 
-		for (o in mapConfig.staticObjects.concat([]))
+		for (o in adventureConfig.worldConfig.staticObjects.concat([]))
 		{
 			var config = Asset.getAsset(o.id);
 			var instance:Object = cache.loadModel(config.model);
@@ -191,9 +191,9 @@ class GameState extends Base2dState
 			{
 				var b = instance.getBounds().getSize();
 				var xMin:Int = cast Math.max(Math.round(instance.x - b.x / 2), 0);
-				var xMax:Int = cast Math.min(xMin + Math.round(b.x), world.worldConfig.size.x);
+				var xMax:Int = cast Math.min(xMin + Math.round(b.x), world.size.x);
 				var yMin:Int = cast Math.max(Math.round(instance.y - b.y / 2), 0);
-				var yMax:Int = cast Math.min(yMin + Math.round(b.y), world.worldConfig.size.y);
+				var yMax:Int = cast Math.min(yMin + Math.round(b.y), world.size.y);
 
 				if (xMax - xMin > 50) continue;
 
@@ -209,7 +209,7 @@ class GameState extends Base2dState
 
 		model.initGame();
 
-		for (t in mapConfig.triggers)
+		for (t in adventureConfig.worldConfig.triggers)
 		{
 			switch(t.event)
 			{
@@ -222,7 +222,7 @@ class GameState extends Base2dState
 		if (world.units.length > 2) selectUnit(world.units[3]);
 		model.startGame();
 
-		if (mapConfig.name == "Lobby" && !stateConfig.isTestRun)
+		if (adventureConfig.name == "Lobby" && !stateConfig.isTestRun)
 		{
 			var ui:RenderResult = LobbyUi.fromHxx({
 				isTestRun: stateConfig.isTestRun,
@@ -426,7 +426,7 @@ class GameState extends Base2dState
 				{
 					case Log(message): trace(message);
 					case LoadLevel(levelName): HppG.changeState(GameState, [s2d, s3d, MapData.getRawMap(levelName)]);
-					case EnableTrigger(id): for (t in mapConfig.triggers) if (t.id == id) enableTrigger(t);
+					case EnableTrigger(id): for (t in adventureConfig.worldConfig.triggers) if (t.id == id) enableTrigger(t);
 					case CreateUnit(unitId, owner): createUnit(unitId, owner, Math.floor(Math.random() * 5 + 5), Math.floor(Math.random() * 10 + 5), 1);
 
 					case _: trace("Unknown action in action list: " + actions);
@@ -474,10 +474,16 @@ typedef GameStateConfig =
 	var isTestRun:Bool;
 }
 
-typedef WorldConfig =
+typedef AdventureConfig =
 {
 	var name(default, never):String;
+	var editorVersion(default, never):String;
 	var size(default, never):SimplePoint;
+	var worldConfig:WorldConfig;
+}
+
+typedef WorldConfig =
+{
 	@:optional var regions(default, never):Array<Region>;
 	@:optional var triggers(default, never):Array<Trigger>;
 	@:optional var units(default, never):Array<InitialUnitData>;

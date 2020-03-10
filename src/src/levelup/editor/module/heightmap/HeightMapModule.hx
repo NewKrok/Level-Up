@@ -190,7 +190,6 @@ import levelup.util.GeomUtil3D;
 			var calculatedX:Int = cast (core.model.isYDragLocked ? dragStartPoint.x : previewPos.x) * 2;
 			var calculatedY:Int = cast (core.model.isXDragLocked ? dragStartPoint.y : previewPos.y) * 2;
 
-			var boundingRect:Rect = new Rect();
 			var drawColor = model.brushType == BrushType.Flat
 				? flatBrushColor
 				: model.brushType == BrushType.Smooth
@@ -203,11 +202,6 @@ import levelup.util.GeomUtil3D;
 
 			if (model.selectedBrushId == 0)
 			{
-				boundingRect.left = Std.int(calculatedX - model.brushSize / 2);
-				boundingRect.right = Std.int(calculatedX + model.brushSize / 2);
-				boundingRect.top = Std.int(calculatedY - model.brushSize / 2);
-				boundingRect.bottom = Std.int(calculatedY + model.brushSize / 2);
-
 				if (model.brushType != BrushType.Levelling || model.brushType == BrushType.Flat || (model.brushNoise == 0 && model.brushGradient == 0))
 				{
 					alphaMap.drawCircle(
@@ -253,11 +247,6 @@ import levelup.util.GeomUtil3D;
 			}
 			else
 			{
-				boundingRect.left = Std.int(calculatedX - model.brushSize);
-				boundingRect.right = Std.int(calculatedX + model.brushSize);
-				boundingRect.top = Std.int(calculatedY - model.brushSize);
-				boundingRect.bottom = Std.int(calculatedY + model.brushSize);
-
 				if (model.brushType != BrushType.Levelling || model.brushType == BrushType.Flat || (model.brushNoise == 0 && model.brushGradient == 0))
 				{
 					alphaMap.drawRect(
@@ -309,7 +298,7 @@ import levelup.util.GeomUtil3D;
 			bmp.setPixels(tex.capturePixels());
 
 			core.world.updateHeightMap();
-			core.updateGrid(boundingRect);
+			core.updateGrid();
 			core.isPathFindingLayerDirty = true;
 		}
 	}
