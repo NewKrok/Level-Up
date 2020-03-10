@@ -16,6 +16,12 @@ class EditorDialogManagerModel implements Model
 
 	public function openDialog(dialog)
 	{
+		if (dialog.forceOpen != null && dialog.forceOpen && currentDialog != null)
+		{
+			addToQueue(currentDialog, true);
+			setCurrentDialog(null);
+		}
+
 		if (currentDialog == null) setCurrentDialog(dialog);
 		else addToQueue(dialog);
 	}
@@ -27,7 +33,7 @@ class EditorDialogManagerModel implements Model
 		if (queue.length > 0)
 		{
 			var d = switch(queue.first()) { case Some(v): v; case _: null; };
-
+			removeFirstFromQueue();
 			setCurrentDialog(d);
 		}
 	}
@@ -39,11 +45,12 @@ class EditorDialogManagerModel implements Model
 		return { queue: List.fromArray(arr) };
 	}
 
-	@:transition private function addToQueue(dialog:EditorDialog) return { queue: queue.append(dialog) };
+	@:transition private function addToQueue(dialog:EditorDialog, addToTop:Bool = false) return { queue: addToTop ? queue.prepend(dialog) : queue.append(dialog) };
 	@:transition private function setCurrentDialog(dialog:EditorDialog) return { currentDialog: dialog };
 }
 
 typedef EditorDialog =
 {
 	var view(default, never):RenderResult;
+	@:optional var forceOpen(default, never):Bool;
 }

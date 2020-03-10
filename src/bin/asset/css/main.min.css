@@ -16,6 +16,9 @@ html,body{margin:0;padding:0;background-color:#111111;width:100%;height:100%;fon
 .lu_horizontal_offset{margin:0 10px;}
 .lu_left_offset{margin-left:10px;}
 .lu_right_offset{margin-right:10px;}
+.lu_bottom_offset{margin-bottom:10px;}
+.lu_bottom_offset--l{margin-bottom:20px;}
+.lu_width_30_p{width:30%;}
 .lu_info{color:#999;}
 .lu_highlight{color:#6afd75!important;}
 .lu_warning{color:#f93535!important;}
@@ -27,3 +30,6 @@ html,body{margin:0;padding:0;background-color:#111111;width:100%;height:100%;fon
 #native-ui{width:100%;height:100%;position:absolute;top:0;pointer-events:none;}
 .lu_title{font-size:1em;font-weight:bold;text-align:center;padding:5px;background:#00000077;user-select:none;}
 .lu_player_color_box{width:1em;height:1em;border:1px solid #FFF;}
+.lu_fps_view{position:absolute;font-size:1em;font-weight:bold;padding:5px 10px;background-color:rgba(0,0,0,0.3);color:#00FF00;}
+.lu_fps_view--bl{bottom:10px;left:10px;}
+.lu_fps_view--low{color:#FF0000;}

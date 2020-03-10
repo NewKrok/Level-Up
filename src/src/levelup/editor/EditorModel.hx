@@ -24,6 +24,7 @@ class EditorModel implements Model
 	@:editable var sunsetColor:String;
 	@:editable var dawnColor:String;
 	@:editable var showGrid:Bool;
+	@:editable var defaultTerrainIdForNewAdventure:String;
 
 	@:editable var currentSnap:Float = 0.5;
 

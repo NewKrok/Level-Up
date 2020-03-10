@@ -24,7 +24,7 @@ class Slider extends View
 	}
 
 	function render() '
-	<div class={"lu_slider" + (className != "" ? " " + className : "")}>
+		<div class={"lu_slider" + (className != "" ? " " + className : "")}>
 			<input
 				type="range"
 				min={Std.string(min)}

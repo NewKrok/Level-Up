@@ -8,11 +8,14 @@ import h3d.Quat;
 import h3d.Vector;
 import h3d.mat.BlendMode;
 import h3d.mat.Data.Face;
+import h3d.mat.Material;
+import h3d.mat.Texture;
 import h3d.pass.DefaultShadowMap;
 import h3d.prim.Grid;
 import h3d.prim.ModelCache;
 import h3d.scene.Graphics;
 import h3d.scene.Interactive;
+import h3d.scene.Mesh;
 import h3d.scene.Object;
 import h3d.shader.AlphaMap;
 import h3d.shader.ColorMult;
@@ -34,9 +37,11 @@ import levelup.Asset;
 import levelup.editor.EditorModel.ToolState;
 import levelup.editor.dialog.EditorDialogManager;
 import levelup.editor.html.EditorUi;
+import levelup.editor.html.NewAdventureDialog;
 import levelup.editor.module.dayandnight.DayAndNightModule;
 import levelup.editor.module.heightmap.HeightMapModule;
 import levelup.editor.module.region.RegionModule;
+import levelup.editor.module.terrain.TerrainChooser;
 import levelup.editor.module.terrain.TerrainModule;
 import levelup.game.GameState;
 import levelup.game.GameState.StaticObjectConfig;
@@ -75,8 +80,8 @@ class EditorState extends Base2dState
 	var views:Map<EditorViewId, RenderResult> = [];
 	var modules:Array<EditorModule> = [];
 
-	var gridParts:Array<Graphics> = [];
-	var gridBlockCount = 5;
+	var grid:Grid;
+	var gridMesh:Mesh;
 
 	var pathFindingLayer:Graphics;
 
@@ -150,7 +155,8 @@ class EditorState extends Base2dState
 			triggers: mapConfig.triggers,
 			units: [],
 			staticObjects: [],
-			showGrid: SaveUtil.editorData.showGrid
+			showGrid: SaveUtil.editorData.showGrid,
+			defaultTerrainIdForNewAdventure: TerrainAssets.terrains[0].id
 		});
 
 		model.observables.startingTime.bind(v -> world.setTime(v));
@@ -360,7 +366,20 @@ class EditorState extends Base2dState
 
 		editorUi = new EditorUi({
 			backToLobby: () -> HppG.changeState(GameState, [stage, s3d, MapData.getRawMap("lobby")]),
-			createNewMap: createNewMap,
+			createNewAdventure: dialogManager.openDialog.bind({ view: new NewAdventureDialog({
+				createNewAdventure: createNewAdventure,
+				close: dialogManager.closeCurrentDialog,
+				defaultTerrainIdForNewAdventure: model.defaultTerrainIdForNewAdventure,
+				openTerrainChooser: dialogManager.openDialog.bind({ forceOpen: true, view: new TerrainChooser({
+					close: dialogManager.closeCurrentDialog,
+					terrainList: TerrainAssets.terrains,
+					selectTerrain: id ->
+					{
+						model.defaultTerrainIdForNewAdventure = id;
+						dialogManager.closeCurrentDialog();
+					}
+				}).reactify() })
+			}).reactify() }),
 			save: save,
 			testRun: () -> HppG.changeState(GameState, [stage, s3d, save(), { isTestRun: true }]),
 			previewRequest: createPreview,
@@ -740,91 +759,31 @@ class EditorState extends Base2dState
 		}
 	}
 
-	function updateGrid(r:Rect)
-	{
-		/*var w = Math.floor(mapConfig.size.y / gridBlockCount);
-		var h = Math.floor(mapConfig.size.x / gridBlockCount);
-		var x = Math.floor(r.left / h);
-		var y = Math.floor(r.bottom / w);
-
-		trace(w,h,x,y);
-
-		if (Math.floor(y * gridBlockCount + x) >= gridParts.length) x--;
-
-		var indexes = [];
-
-		var indexLT = Math.floor(y * gridBlockCount + x);
-		if (indexLT > -1 && indexLT < gridParts.length) indexes.push(indexLT);
-
-		var indexRT = Math.floor(y * gridBlockCount + x + 1);
-		if (indexRT > -1 && indexRT < gridParts.length && indexRT != indexLT) indexes.push(indexRT);
-
-		var indexLB = Math.floor((y - 1) * gridBlockCount + x);
-		if (indexLB > -1 && indexLB != indexLT) indexes.push(indexLB);
-
-		var indexRB = Math.floor((y - 1) * gridBlockCount + x + 1);
-		if (indexRB > -1 && indexRB < gridParts.length && indexRB != indexLB && indexRB != indexLT) indexes.push(indexRB);
-
-		for (index in indexes)
-		{
-			var g = gridParts[index];
-			g.clear();
-			g.lineStyle(2, 0x999900, 1);
-
-			for (i in 0...w)
-			{
-				for (j in 0...h)
-				{
-					g.moveTo(i, j, getZFromPoint(g.x + i, g.y + j));
-					g.lineTo(i, j + 1, getZFromPoint(g.x + i, g.y + j + 1));
-
-					g.moveTo(i, j, getZFromPoint(g.x + i, g.y + j));
-					g.lineTo(i + 1, j, getZFromPoint(g.x + i + 1, g.y + j));
-				}
-			}
-		}*/
-	}
-
 	function createGrid()
 	{
-		/*for (i in 0...gridBlockCount * gridBlockCount)
-		{
-			var grid = new Graphics(s3d);
-			grid.material.mainPass.addShader(new ForcedZIndex(10));
-			gridParts.push(grid);
-		}
+		grid = new Grid(cast mapConfig.size.y, cast mapConfig.size.x);
+		grid.addTangents();
 
-		var w = Math.floor(mapConfig.size.x / gridBlockCount);
-		var h = Math.floor(mapConfig.size.y / gridBlockCount);
-		var x = 0;
-		var y = 0;
-		for (g in gridParts)
-		{
-			g.clear();
-			g.lineStyle(2, 0x999900, 1);
-			g.x = x * w;
-			g.y = y * h;
+		gridMesh = new Mesh(grid, Material.create(Texture.fromColor(0x999900, 0.1)), s3d);
+		gridMesh.material.mainPass.wireframe = true;
+		gridMesh.material.castShadows = false;
+		gridMesh.material.receiveShadows = false;
 
-			for (i in 0...w)
-			{
-				for (j in 0...h)
-				{
-					g.moveTo(i, j, getZFromPoint(g.x + i, g.y + j));
-					g.lineTo(i, j + 1, getZFromPoint(g.x + i, g.y + j + 1));
-
-					g.moveTo(i, j, getZFromPoint(g.x + i, g.y + j));
-					g.lineTo(i + 1, j, getZFromPoint(g.x + i + 1, g.y + j));
-				}
-			}
-
-			x++;
-			if (x == gridBlockCount)
-			{
-				y++;
-				x = 0;
-			}
-		}*/
+		updateGrid();
 	}
+
+	function updateGrid(r:Rect)
+	{
+		grid.buffer = null;
+
+		for (i in 0...grid.points.length)
+		{
+			grid.points[i].z = world.heightGridCache[i];
+		}
+	}
+
+	function showGrid() gridMesh.visible = true;
+	function hideGrid() gridMesh.visible = false;
 
 	function getZFromPoint(targetX, targetY)
 	{
@@ -835,14 +794,11 @@ class EditorState extends Base2dState
 		return 0;
 	}
 
-	function showGrid() for (g in gridParts) g.visible = true;
-	function hideGrid() for (g in gridParts) g.visible = false;
-
 	function drawPathFindingLayer():Void
 	{
 		calculatePathMap();
 
-		pathFindingLayer.clear();
+		/*pathFindingLayer.clear();
 		pathFindingLayer.lineStyle(4, 0x000000, 0.1);
 
 		for (i in 0...world.graph.grid.length)
@@ -858,7 +814,7 @@ class EditorState extends Base2dState
 					pathFindingLayer.lineTo(i, j, getZFromPoint(i, j));
 				}
 			}
-		}
+		}*/
 	}
 
 	function calculatePathMap()
@@ -1026,21 +982,21 @@ class EditorState extends Base2dState
 		return Math.max(1, pos);
 	}
 
-	public function createNewMap()
+	public function createNewAdventure(data:InitialAdventureData)
 	{
-		var rawHeightMap = new BitmapData(200, 200);
-		rawHeightMap.fill(0, 0, 200, 200, 0x888888);
+		var rawHeightMap = new BitmapData(Std.int(data.size.x), Std.int(data.size.y));
+		rawHeightMap.fill(0, 0, Std.int(data.size.x), Std.int(data.size.y), 0x888888);
 
 		var worldConfig:WorldConfig = {
 			name: "A Great New Adventure",
-			size: { x:200, y:200 },
+			size: data.size,
 			regions: [],
 			triggers: [],
 			units: [],
 			staticObjects: [],
-			terrainLayers: [{ textureId: "dirtground", texture: null, uvScale: 1 }],
+			terrainLayers: [{ textureId: data.defaultTerrainTextureId, texture: null, uvScale: 1 }],
 			heightMap: compressor.compress(Base64.encode(rawHeightMap.getPixels().bytes)),
-			editorLastCamPosition: new Vector(100, 100, 100)
+			editorLastCamPosition: new Vector(data.size.x / 2, data.size.y / 2, 100)
 		};
 		var result = Json.stringify(worldConfig);
 
@@ -1226,4 +1182,10 @@ typedef EditorCore =
 	public var dialogManager:EditorDialogManager;
 	public var updateGrid:Rect->Void;
 	public var isPathFindingLayerDirty:Bool;
+}
+
+typedef InitialAdventureData =
+{
+	var size:SimplePoint;
+	var defaultTerrainTextureId:String;
 }

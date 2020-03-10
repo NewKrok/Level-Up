@@ -4,6 +4,7 @@ import coconut.ui.RenderResult;
 import coconut.ui.View;
 import levelup.Asset.AssetConfig;
 import levelup.TerrainAssets.TerrainConfig;
+import levelup.component.FpsView;
 import levelup.editor.EditorModel;
 import levelup.editor.EditorState.AssetItem;
 import levelup.editor.EditorState.EditorViewId;
@@ -18,7 +19,7 @@ class EditorUi extends View
 {
 	@:attr var backToLobby:Void->Void;
 	@:attr var save:Void->Void;
-	@:attr var createNewMap:Void->Void;
+	@:attr var createNewAdventure:Void->Void;
 	@:attr var testRun:Void->Void;
 	@:attr var previewRequest:AssetConfig->Void;
 	@:attr var model:EditorModel;
@@ -40,10 +41,11 @@ class EditorUi extends View
 
 	function render() '
 		<div class="lu_editor">
+			<FpsView />
 			{getModuleView(EditorViewId.VDialogManager)}
 			<EditorHeader
 				backToLobby=$backToLobby
-				createNewMap=$createNewMap
+				createNewAdventure=$createNewAdventure
 				save=$save
 				testRun=$testRun
 			/>

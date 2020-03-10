@@ -176,7 +176,7 @@ class GameState extends Base2dState
 				var left = world.levellingHeightGridCache[j > 0 ? gridIndex - 1 : gridIndex];
 				var right = world.levellingHeightGridCache[j < row.length - 2 ? gridIndex + 1 : gridIndex];
 
-				if (current - up != 0 || current - down != 0 || current - left != 0 || current - right != 0) row[j].weight = 0;
+				if (current - up != 0 || current - down != 0 || current - left != 0 || current - right != 0) world.graph.grid[i][j].weight = 0;
 			}
 		}
 

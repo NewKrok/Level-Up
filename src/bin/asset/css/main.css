@@ -80,6 +80,18 @@ html, body {
 	margin-right: 10px;
 }
 
+.lu_bottom_offset {
+	margin-bottom: 10px;
+}
+
+.lu_bottom_offset--l {
+	margin-bottom: 20px;
+}
+
+.lu_width_30_p {
+	width: 30%;
+}
+
 .lu_info {
 	color: #999;
 }
@@ -153,4 +165,22 @@ html, body {
 	width: 1em;
 	height: 1em;
 	border: 1px solid #FFF;
+}
+
+.lu_fps_view {
+	position: absolute;
+	font-size: 1em;
+	font-weight: bold;
+	padding: 5px 10px;
+	background-color: rgba(0, 0, 0, 0.3);
+	color: #00FF00;
+}
+
+.lu_fps_view--bl {
+	bottom: 10px;
+	left: 10px;
+}
+
+.lu_fps_view--low {
+	color: #FF0000;
 }

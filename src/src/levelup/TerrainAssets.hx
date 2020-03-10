@@ -349,7 +349,7 @@ class TerrainAssets
 				previewUrl: "asset/img/preview/terrain/water/stylizedwater01_basecolor.jpg",
 				texture: Res.texture.terrain.water.stylizedwater01_basecolor.toTexture(),
 				normalMap: Res.texture.terrain.water.stylizedwater01_normal.toTexture(),
-				effects: [TerrainEffect.Wave]
+				effects: [TerrainEffect.Wave, TerrainEffect.Reflection]
 			},
 			{
 				id: "water",
@@ -357,7 +357,7 @@ class TerrainAssets
 				previewUrl: "asset/img/preview/terrain/water/water.jpg",
 				texture: Res.texture.terrain.water.water.toTexture(),
 				normalMap: Res.texture.terrain.water.water_n.toTexture(),
-				effects: [TerrainEffect.Wave]
+				effects: [TerrainEffect.Wave, TerrainEffect.Reflection]
 			},
 			{
 				id: "wood_floor",
@@ -528,7 +528,7 @@ class TerrainAssets
 				previewUrl: "asset/img/preview/terrain/lava/t_lava_color_b.jpg",
 				texture: Res.texture.terrain.lava.t_lava_color_b.toTexture(),
 				normalMap: Res.texture.terrain.lava.t_lava_normal.toTexture(),
-				effects: [TerrainEffect.Wave]
+				effects: [TerrainEffect.Wave, TerrainEffect.Reflection]
 			},
 			{
 				id: "t_lava_ground_cracks_basecolor",
@@ -557,7 +557,7 @@ class TerrainAssets
 				previewUrl: "asset/img/preview/terrain/water/vol_36_2_base_color.jpg",
 				texture: Res.texture.terrain.water.vol_36_2_base_color.toTexture(),
 				normalMap: Res.texture.terrain.water.vol_36_2_normal.toTexture(),
-				effects: [TerrainEffect.Wave]
+				effects: [TerrainEffect.Wave, TerrainEffect.Reflection]
 			},
 			{
 				id: "vol_4_5_base_color",
@@ -782,4 +782,5 @@ typedef TerrainConfig = {
 enum TerrainEffect
 {
 	Wave;
+	Reflection;
 }

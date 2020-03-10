@@ -15,9 +15,12 @@
 	color: #FFF;
 	border: 1px solid #4a4947;
 	width: 60%;
-	height: 50%;
 	min-width: min-content;
 	position: relative;
+}
+
+.lu_edialog__content--auto-size {
+	height: initial;
 }
 
 .lu_dialog_close {

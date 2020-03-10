@@ -203,6 +203,8 @@ class GameWorld extends World
 		setGridByHeightMap(layer);
 
 		var mesh = new Mesh(layer, Material.create(terrainConfig.texture), s3d);
+		mesh.material.mainPass.isStatic = true;
+
 		mesh.material.texture.wrap = Wrap.Repeat;
 
 		if (terrainConfig.normalMap != null)
@@ -243,6 +245,7 @@ class GameWorld extends World
 
 		var mesh = new Mesh(layer, Material.create(terrainConfig.texture), s3d);
 		mesh.material.mainPass.addShader(alphaMask);
+		mesh.material.mainPass.isStatic = true;
 		mesh.material.texture.wrap = Wrap.Repeat;
 		mesh.material.blendMode = BlendMode.Alpha;
 		mesh.z = terrainLayers.length * 0.05;
@@ -259,6 +262,7 @@ class GameWorld extends World
 				switch (e)
 				{
 					case TerrainEffect.Wave: mesh.material.mainPass.addShader(new Wave());
+					case TerrainEffect.Reflection:
 				}
 			}
 		}
@@ -476,8 +480,8 @@ class GameWorld extends World
 			ambientBlue = nightColor.z + dayTimeColorPercent * (dawnColor.z - nightColor.z);
 		}
 
-		s3d.lightSystem.ambientLight.set(ambientRed, ambientGreen, ambientBlue, 1);
-		sunAndMoon.color.set(ambientRed, ambientGreen, ambientBlue, 1);
+		s3d.lightSystem.ambientLight.set(ambientRed, ambientGreen, ambientBlue, 0.5);
+		sunAndMoon.color.set(ambientRed, ambientGreen, ambientBlue, 0.5);
 
 		var sunObjAngle = sunAngle;
 		sunObj.x = sunAndMoonOffset;
