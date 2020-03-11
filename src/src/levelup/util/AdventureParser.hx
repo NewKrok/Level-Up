@@ -63,32 +63,33 @@ class AdventureParser
 			height: r.height
 		}];
 
-		var triggers:Array<Trigger> = [];/*[for (t in cast(rawWorldConfig.triggers, Array<Dynamic>)) {
-			id: t.id != null ? t.id.toLowerCase() : Std.string(Math.random() * 9999999),
+		var triggers:Array<Trigger> = [for (t in cast(rawWorldConfig.triggers, Array<Dynamic>)) {
+			id: t.id != null ? t.id.toLowerCase() : Std.string(Math.random() * 999999999),
 			isEnabled: t.isEnabled != null ? t.isEnabled : true,
-			event: switch (t.event.toLowerCase().split(" ")) {
-				case [event, regionName] if (event.toLowerCase() == "enterregion"): EnterRegion(getRegion(regions, regionName));
-				case [event, time] if (event.toLowerCase() == "timeelapsed"): TimeElapsed(time);
-				case [event, time] if (event.toLowerCase() == "timeperiodic"): TimePeriodic(time);
+			event: switch (stringEnumToArray(t.event)) {
+				case [event, regionName] if (event == "enterregion"): EnterRegion(getRegion(regions, regionName));
+				case [event, time] if (event == "timeelapsed"): TimeElapsed(Std.parseFloat(time));
+				case [event, time] if (event == "timeperiodic"): TimePeriodic(Std.parseFloat(time));
 				case _: null;
 			},
-			condition: t.condition == null ? null : switch (t.condition.toLowerCase().split(" ")) {
-				case [condition, unitDefinition, expectedPlayer] if (condition.toLowerCase() == "ownerof"):
+			condition: t.condition == null ? null : switch (stringEnumToArray(t.condition)) {
+				case [condition, unitDefinition, expectedPlayer] if (condition == "ownerof"):
 					OwnerOf(switch(unitDefinition.toLowerCase())
 					{
 						case "triggeringunit": TriggeringUnit;
 						case _: null;
-					}, expectedPlayer);
+					}, cast expectedPlayer);
 				case _: null;
 			},
-			actions: [for(actionEntry in cast(t.actions, Array<Dynamic>)) switch (actionEntry.toLowerCase().split(" ")) {
-				case [action, message] if (action.toLowerCase() == "log"): Log(message);
-				case [action, levelName] if (action.toLowerCase() == "loadlevel"): LoadLevel(levelName);
-				case [action, triggerId] if (action.toLowerCase() == "enabletrigger"): EnableTrigger(triggerId);
-				case [action, unitId, owner] if (action.toLowerCase() == "createunit"): CreateUnit(unitId, owner);
+			actions: [for(actionEntry in cast(t.actions, Array<Dynamic>)) switch (stringEnumToArray(actionEntry)) {
+				case [action, message] if (action == "log"): Log(message);
+				case [action, levelName] if (action == "loadlevel"): LoadLevel(levelName);
+				case [action, triggerId] if (action == "enabletrigger"): EnableTrigger(triggerId);
+				case [action, unitId, owner, region] if (action == "createunit"): CreateUnit(unitId, cast owner, region);
+				case [action, unitId, region] if (action == "attackmovetoregion"): AttackMoveToRegion(cast unitId, region);
 				case _: null;
 			}],
-		}];*/
+		}];
 
 		var editorLastCamPosition = rawWorldConfig.editorLastCamPosition == null ? null : new Vector(
 			rawWorldConfig.editorLastCamPosition.x,
@@ -117,6 +118,14 @@ class AdventureParser
 				editorLastCamPosition: editorLastCamPosition
 			}
 		};
+	}
+
+	static function stringEnumToArray(e)
+	{
+		var mainData = Std.string(e).split("(");
+		var params = mainData[1].substr(0, mainData[1].length - 1).split(",");
+
+		return [mainData[0].toLowerCase()].concat(params);
 	}
 
 	static function getRegion(regions:Array<Region>, id:String) return regions.filter(function (r) { return r.id == id; })[0];

@@ -214,6 +214,7 @@ class GameState extends Base2dState
 			switch(t.event)
 			{
 				case TimeElapsed(time) if (t.isEnabled): Actuate.timer(time).onComplete(runTrigger.bind(t));
+				case TimePeriodic(time) if (t.isEnabled): Actuate.timer(time).repeat().onRepeat(runTrigger.bind(t));
 				case _:
 			}
 		}
@@ -245,7 +246,7 @@ class GameState extends Base2dState
 		}
 	}
 
-	function createUnit(id:String, owner:PlayerId, posX:Float, posY:Float, scale:Float, rotation:Quat = null)
+	function createUnit(id:String, owner:PlayerId, posX:Float, posY:Float, scale:Float = null, rotation:Quat = null)
 	{
 		var unit = switch (id) {
 			// orc
@@ -271,7 +272,7 @@ class GameState extends Base2dState
 		};
 		unit.view.x = posX * world.blockSize + world.blockSize / 2;
 		unit.view.y = posY * world.blockSize + world.blockSize / 2;
-		unit.view.setScale(scale);
+		if (scale != null) unit.view.setScale(scale);
 		if (rotation != null) unit.view.setRotationQuat(rotation);
 
 		world.addEntity(unit);
@@ -427,13 +428,31 @@ class GameState extends Base2dState
 					case Log(message): trace(message);
 					case LoadLevel(levelName): HppG.changeState(GameState, [s2d, s3d, MapData.getRawMap(levelName)]);
 					case EnableTrigger(id): for (t in adventureConfig.worldConfig.triggers) if (t.id == id) enableTrigger(t);
-					case CreateUnit(unitId, owner): createUnit(unitId, owner, Math.floor(Math.random() * 5 + 5), Math.floor(Math.random() * 10 + 5), 1);
+
+					case CreateUnit(unitId, owner, region):
+						var region = resolveRegionByName(region);
+						createUnit(unitId, owner, region.x, region.y);
+
+					case AttackMoveToRegion(unitDefinition, region):
+						var region = resolveRegionByName(region);
+						var unit:BaseUnit = unitDefinition == LastCreatedUnit ? world.units[world.units.length - 1] : null;
+						if (region != null && unit != null)
+						{
+							unit.moveTo({ y: region.x + region.width * Math.random(), x: region.y + region.height * Math.random() });
+						}
 
 					case _: trace("Unknown action in action list: " + actions);
 				}
 			}
 			else trace("Unknown action in action list: " + actions);
 		}
+	}
+
+	function resolveRegionByName(name)
+	{
+		var raw = adventureConfig.worldConfig.regions.filter(r -> return r.name == name);
+
+		return raw != null && raw.length > 0 ? raw[0] : null;
 	}
 
 	function enableTrigger(t:Trigger)
@@ -546,6 +565,7 @@ enum TriggerCondition {
 
 enum UnitDefinition {
 	TriggeringUnit;
+	LastCreatedUnit;
 }
 
 typedef TerrainLayerInfo =
@@ -579,5 +599,6 @@ enum TriggerAction {
 	Log(message:String);
 	LoadLevel(levelName:String);
 	EnableTrigger(id:String);
-	CreateUnit(unitId:String, owner:PlayerId);
+	CreateUnit(unitId:String, owner:PlayerId, region:String);
+	AttackMoveToRegion(unit:UnitDefinition, region:String);
 }

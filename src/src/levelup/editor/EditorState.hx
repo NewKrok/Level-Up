@@ -1067,7 +1067,49 @@ class EditorState extends Base2dState
 			sunsetColor: model.sunsetColor,
 			dawnColor: model.dawnColor,
 			regions: model.regions,
-			triggers: model.triggers,
+			//triggers: model.triggers,
+			triggers: [
+				{
+					id: "teamA-enemies-1",
+					isEnabled: true,
+					event: TriggerEvent.TimePeriodic(10),
+					condition: null,
+					actions: [
+						TriggerAction.CreateUnit("minion", PlayerId.Player2, "Region 0"),
+						TriggerAction.AttackMoveToRegion(UnitDefinition.LastCreatedUnit, "Region 3")
+					]
+				},
+				{
+					id: "teamA-enemies-2",
+					isEnabled: true,
+					event: TriggerEvent.TimePeriodic(35),
+					condition: null,
+					actions: [
+						TriggerAction.CreateUnit("bandwagon", PlayerId.Player2, "Region 0"),
+						TriggerAction.AttackMoveToRegion(UnitDefinition.LastCreatedUnit, "Region 3")
+					]
+				},
+				{
+					id: "teamB-enemies",
+					isEnabled: true,
+					event: TriggerEvent.TimePeriodic(10),
+					condition: null,
+					actions: [
+						TriggerAction.CreateUnit("knome", PlayerId.Player3, "Region 2"),
+						TriggerAction.AttackMoveToRegion(UnitDefinition.LastCreatedUnit, "Region 3")
+					]
+				},
+				{
+					id: "teamB-enemies-2",
+					isEnabled: true,
+					event: TriggerEvent.TimePeriodic(35),
+					condition: null,
+					actions: [
+						TriggerAction.CreateUnit("rockgolem", PlayerId.Player2, "Region 2"),
+						TriggerAction.AttackMoveToRegion(UnitDefinition.LastCreatedUnit, "Region 3")
+					]
+				}
+			],
 			units: units,
 			staticObjects: staticObjects,
 			terrainLayers: terrainLayers,
@@ -1093,7 +1135,7 @@ class EditorState extends Base2dState
 				break;
 			}
 		}
-
+		trace(result);
 		if (isNewMap) SaveUtil.editorData.customMaps.push(result);
 
 		SaveUtil.editorData.showGrid = model.showGrid;
