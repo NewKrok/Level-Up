@@ -12,7 +12,7 @@ using StringTools;
  */
 class RegionEditorView extends View
 {
-	@:attr var regions:List<Region>;
+	@:skipCheck @:attr var regions:List<Region>;
 	@:attr var addRegion:Int->Void;
 
 	function render()

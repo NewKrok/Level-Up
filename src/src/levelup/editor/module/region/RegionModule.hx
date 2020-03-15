@@ -51,7 +51,12 @@ import levelup.shader.ForcedZIndex;
 			regionContainer.visible = v == ToolState.RegionEditor;
 		});
 
-		for (r in core.model.regions) createControllerForRegion(createRegion(r.x, r.y, r.width, r.height));
+		for (r in core.model.regions)
+		{
+			var instance = createRegion(r.x, r.y, r.width, r.height);
+			createControllerForRegion(instance);
+			r.instance = instance;
+		}
 
 		model.addRegions(core.model.regions);
 	}

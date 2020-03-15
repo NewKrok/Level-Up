@@ -30,8 +30,8 @@ class Main extends Base2dApp
 		TerrainAssets.init();
 		SaveUtil.load();
 
-		//changeState(EditorState, [stage, s3d, SaveUtil.editorData.customMaps[0]]);
-		changeState(EditorState, [stage, s3d, MapData.getRawMap("lobby")]);
+		changeState(EditorState, [stage, s3d, SaveUtil.editorData.customMaps[0]]);
+		//changeState(EditorState, [stage, s3d, MapData.getRawMap("lobby")]);
 		//changeState(GameState, [stage, s3d, MapData.getRawMap("lobby")]);
 		//changeState(GameState, [stage, s3d, SaveUtil.editorData.customMaps[0]]);
 	}

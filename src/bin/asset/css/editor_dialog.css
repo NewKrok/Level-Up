@@ -23,6 +23,10 @@
 	height: initial;
 }
 
+.lu_edialog__content--half_screen {
+	height: 50%;
+}
+
 .lu_dialog_close {
 	position: absolute;
 	right: 7px;

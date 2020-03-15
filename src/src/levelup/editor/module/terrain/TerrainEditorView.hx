@@ -158,7 +158,7 @@ class TerrainEditorView extends View
 									<Slider
 										className="lu_terrain_slider"
 										min={0.3}
-										max={3}
+										max={5}
 										startValue={layersArr[i].uvScale}
 										step={0.1}
 										onChange={v -> changeLayerUVScale(layersArr[i], v)}

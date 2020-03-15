@@ -665,6 +665,8 @@ typedef Region =
 	var y(default, never):Int;
 	var width(default, never):Int;
 	var height(default, never):Int;
+
+	@:optional var instance:Mesh;
 }
 
 typedef StaticObject =

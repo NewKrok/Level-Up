@@ -37,7 +37,7 @@ class TerrainChooser extends View
 	];
 
 	function render() '
-		<div class="lu_edialog__content">
+		<div class="lu_edialog__content lu_edialog__content--half_screen">
 			<div class="lu_dialog_close" onclick=$close><i class="fas fa-window-close"></i></div>
 			<div class="lu_title"><i class="fas fa-palette lu_right_offset"></i>Select Terrain Texture</div>
 			<div class="lu_row lu_row--space_evenly">

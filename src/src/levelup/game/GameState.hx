@@ -12,6 +12,7 @@ import h3d.scene.Graphics;
 import h3d.scene.Mesh;
 import h3d.scene.Object;
 import haxe.Json;
+import haxe.ds.Map;
 import hpp.heaps.Base2dStage;
 import hpp.heaps.Base2dState;
 import hpp.heaps.HppG;
@@ -208,19 +209,10 @@ class GameState extends Base2dState
 		}
 
 		model.initGame();
+		jumpCamera(adventureConfig.size.x / 2, adventureConfig.size.y / 2);
 
-		for (t in adventureConfig.worldConfig.triggers)
-		{
-			switch(t.event)
-			{
-				case TimeElapsed(time) if (t.isEnabled): Actuate.timer(time).onComplete(runTrigger.bind(t));
-				case TimePeriodic(time) if (t.isEnabled): Actuate.timer(time).repeat().onRepeat(runTrigger.bind(t));
-				case _:
-			}
-		}
+		for (t in adventureConfig.worldConfig.triggers) initTrigger(t);
 
-		jumpCamera(35, 40, camDistance);
-		if (world.units.length > 2) selectUnit(world.units[3]);
 		model.startGame();
 
 		if (adventureConfig.name == "Lobby" && !stateConfig.isTestRun)
@@ -398,6 +390,7 @@ class GameState extends Base2dState
 
 	function setCameraTarget(target)
 	{
+		currentCamDistance = camDistance;
 		cameraTarget = target;
 	}
 
@@ -419,6 +412,8 @@ class GameState extends Base2dState
 
 	function runActions(actions:Array<TriggerAction>, p:TriggerParams)
 	{
+		var localVariables:Map<String, Dynamic> = [];
+
 		for (a in actions)
 		{
 			if (a != null)
@@ -428,6 +423,23 @@ class GameState extends Base2dState
 					case Log(message): trace(message);
 					case LoadLevel(levelName): HppG.changeState(GameState, [s2d, s3d, MapData.getRawMap(levelName)]);
 					case EnableTrigger(id): for (t in adventureConfig.worldConfig.triggers) if (t.id == id) enableTrigger(t);
+					case SetLocalVariable(name, value): localVariables.set(name, value);
+
+					case JumpCameraToUnit(playerId, unitDefinition):
+					{
+						// TODO Define own player id, it could be different during multiplayer games
+						if (playerId == PlayerId.Player1)
+						{
+							var unit:BaseUnit = resolveUnitByDefinition(unitDefinition, localVariables);
+							jumpCamera(unit.view.x, unit.view.y);
+						}
+					}
+
+					case SelectUnit(playerId, unitDefinition):
+					{
+						// TODO Define own player id, it could be different during multiplayer games
+						if (playerId == PlayerId.Player1) selectUnit(resolveUnitByDefinition(unitDefinition, localVariables));
+					}
 
 					case CreateUnit(unitId, owner, region):
 						var region = resolveRegionByName(region);
@@ -435,7 +447,7 @@ class GameState extends Base2dState
 
 					case AttackMoveToRegion(unitDefinition, region):
 						var region = resolveRegionByName(region);
-						var unit:BaseUnit = unitDefinition == LastCreatedUnit ? world.units[world.units.length - 1] : null;
+						var unit:BaseUnit = resolveUnitByDefinition(unitDefinition, localVariables);
 						if (region != null && unit != null)
 						{
 							unit.moveTo({ y: region.x + region.width * Math.random(), x: region.y + region.height * Math.random() });
@@ -448,6 +460,30 @@ class GameState extends Base2dState
 		}
 	}
 
+	function resolveUnitByDefinition(unitDefinition, localVariables:Map<String, Dynamic>) return switch(unitDefinition)
+	{
+		case LastCreatedUnit: world.units[world.units.length - 1];
+		case GetLocalVariable(name): resolveUnitByDefinition(localVariables.get(name), localVariables);
+
+		case GetUnit(definition): switch(definition)
+			{
+				case UnitOfPlayer(playerId, filter): getUnitsOfPlayer(playerId)[switch(filter)
+				{
+					case Index(value): value;
+					case _: 0;
+				}];
+
+				case _: null;
+			}
+
+		case _: null;
+	}
+
+	function getUnitsOfPlayer(playerId)
+	{
+		return world.units.filter(u -> return u.owner == playerId);
+	}
+
 	function resolveRegionByName(name)
 	{
 		var raw = adventureConfig.worldConfig.regions.filter(r -> return r.name == name);
@@ -458,11 +494,20 @@ class GameState extends Base2dState
 	function enableTrigger(t:Trigger)
 	{
 		t.isEnabled = true;
+		initTrigger(t);
+	}
 
-		switch(t.event)
+	function initTrigger(t:Trigger)
+	{
+		if (t.isEnabled)
 		{
-			case TimePeriodic(time): Actuate.timer(time).repeat().onRepeat(runTrigger.bind(t));
-			case _:
+			switch(t.event)
+			{
+				case OnInit: runTrigger(t);
+				case TimeElapsed(time): Actuate.timer(time).onComplete(runTrigger.bind(t));
+				case TimePeriodic(time): Actuate.timer(time).repeat().onRepeat(runTrigger.bind(t));
+				case _:
+			}
 		}
 	}
 
@@ -549,6 +594,7 @@ typedef Trigger =
 }
 
 enum TriggerEvent {
+	OnInit;
 	EnterRegion(region:Region);
 	TimeElapsed(time:Float);
 	TimePeriodic(time:Float);
@@ -566,6 +612,16 @@ enum TriggerCondition {
 enum UnitDefinition {
 	TriggeringUnit;
 	LastCreatedUnit;
+	GetUnit(definition:GetUnitDefinition);
+	GetLocalVariable(name:String);
+}
+
+enum GetUnitDefinition {
+	UnitOfPlayer(player:PlayerId, filter:Filter);
+}
+
+enum Filter {
+	Index(value:Int);
 }
 
 typedef TerrainLayerInfo =
@@ -599,6 +655,9 @@ enum TriggerAction {
 	Log(message:String);
 	LoadLevel(levelName:String);
 	EnableTrigger(id:String);
+	SetLocalVariable(name:String, value:Dynamic);
+	JumpCameraToUnit(player:PlayerId, unit:UnitDefinition);
+	SelectUnit(player:PlayerId, unit:UnitDefinition);
 	CreateUnit(unitId:String, owner:PlayerId, region:String);
 	AttackMoveToRegion(unit:UnitDefinition, region:String);
 }

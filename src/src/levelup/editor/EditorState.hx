@@ -1059,6 +1059,15 @@ class EditorState extends Base2dState
 			isPathBlocker: o.isPathBlocker
 		}];
 
+		var regions = [for (r in model.regions) {
+			id: r.id,
+			name: r.name,
+			x: Math.floor(r.instance.x),
+			y: Math.floor(r.instance.y),
+			width: cast(r.instance.primitive, Grid).width,
+			height: cast(r.instance.primitive, Grid).height
+		}];
+
 		var worldConfig:WorldConfig = {
 			startingTime: model.startingTime,
 			sunAndMoonOffsetPercent: model.sunAndMoonOffsetPercent,
@@ -1066,9 +1075,20 @@ class EditorState extends Base2dState
 			nightColor: model.nightColor,
 			sunsetColor: model.sunsetColor,
 			dawnColor: model.dawnColor,
-			regions: model.regions,
+			regions: regions,
 			//triggers: model.triggers,
 			triggers: [
+				{
+					id: "initial",
+					isEnabled: true,
+					event: TriggerEvent.OnInit,
+					condition: null,
+					actions: [
+						TriggerAction.SetLocalVariable("unit", UnitDefinition.GetUnit(UnitOfPlayer(PlayerId.Player1, Filter.Index(0)))),
+						TriggerAction.JumpCameraToUnit(PlayerId.Player1, UnitDefinition.GetLocalVariable("unit")),
+						TriggerAction.SelectUnit(PlayerId.Player1, UnitDefinition.GetLocalVariable("unit")),
+					]
+				},
 				{
 					id: "teamA-enemies-1",
 					isEnabled: true,

@@ -11,7 +11,7 @@ import tink.state.State;
  */
 class RegionModel implements Model
 {
-	@:observable var regions:List<Region> = List.fromArray([]);
+	@:skipCheck @:observable var regions:List<Region> = List.fromArray([]);
 
 	@:transition function addRegion(region:Region) return { regions: regions.append(region) };
 	@:transition function addRegions(regionArr:Array<Region>) return { regions: List.fromArray(regionArr) };
