@@ -11,7 +11,7 @@ import hxd.Res;
  */
 class RockGolem extends BaseUnit
 {
-	public function new(s2d:Object, parent, owner:PlayerId)
+	/*public function new(s2d:Object, parent, owner:PlayerId)
 	{
 		super(s2d, parent, owner, {
 			id: "rockgolem",
@@ -37,5 +37,5 @@ class RockGolem extends BaseUnit
 			isFlyingUnit: false,
 			zOffset: 0
 		});
-	}
+	}*/
 }

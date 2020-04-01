@@ -17,11 +17,11 @@ class TerrainAssets
 		return terrains.filter(function (e) { return e.id == id; })[0];
 	}
 
-	static public var terrains(default, null):Array<TerrainConfig>;
+	static public var terrains(default, null):Array<TerrainConfig> = [];
 
 	static public function init()
 	{
-		terrains = [
+		/*terrains = [
 			{
 				id: "landscapewoodchips01diffuse",
 				type: TerrainType.Forest,
@@ -748,7 +748,7 @@ class TerrainAssets
 				texture: Res.texture.terrain.grass.grass_basecolor.toTexture(),
 				normalMap: Res.texture.terrain.grass.grass_normal.toTexture()
 			}
-		];
+		];*/
 	}
 }
 

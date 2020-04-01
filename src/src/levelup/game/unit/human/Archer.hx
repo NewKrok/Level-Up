@@ -11,7 +11,7 @@ import hxd.Res;
  */
 class Archer extends BaseUnit
 {
-	public function new(s2d:Object, parent, owner:PlayerId)
+	/*public function new(s2d:Object, parent, owner:PlayerId)
 	{
 		super(s2d, parent, owner, {
 			id: "archer",
@@ -37,5 +37,5 @@ class Archer extends BaseUnit
 			isFlyingUnit: false,
 			zOffset: 0
 		});
-	}
+	}*/
 }

@@ -349,7 +349,7 @@ class GameWorld extends World
 
 	function addRain()
 	{
-		var t = Res.texture.weather.rain.toTexture();
+		/*var t = Res.texture.weather.rain.toTexture();
 
 		var parts = new GpuParticles(s3d);
 		var g = parts.addGroup();
@@ -359,7 +359,7 @@ class GameWorld extends World
 		g.life = 2;
 		g.nparts = 10000;
 		g.emitMode = CameraBounds;
-		parts.volumeBounds = Bounds.fromValues( -20, -20, 15, 40, 40, 40);
+		parts.volumeBounds = Bounds.fromValues( -20, -20, 15, 40, 40, 40);*/
 	}
 
 	public function setTime(time:Float):Void

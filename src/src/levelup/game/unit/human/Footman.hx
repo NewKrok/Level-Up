@@ -11,7 +11,7 @@ import levelup.game.unit.BaseUnit;
  */
 class Footman extends BaseUnit
 {
-	public function new(s2d:Object, parent, owner:PlayerId)
+	/*public function new(s2d:Object, parent, owner:PlayerId)
 	{
 		super(s2d, parent, owner, {
 			id: "footman",
@@ -37,5 +37,5 @@ class Footman extends BaseUnit
 			isFlyingUnit: false,
 			zOffset: 0
 		});
-	}
+	}*/
 }

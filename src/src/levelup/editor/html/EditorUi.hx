@@ -92,6 +92,9 @@ class EditorUi extends View
 						<case {ToolState.RegionEditor}>
 							{getModuleView(EditorViewId.VRegionModule)}
 
+						<case {ToolState.ScriptEditor}>
+							{getModuleView(EditorViewId.VScriptModule)}
+
 						<case {ToolState.CameraEditor}>
 							{getModuleView(EditorViewId.VCameraModule)}
 

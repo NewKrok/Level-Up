@@ -11,7 +11,7 @@ import levelup.game.unit.BaseUnit;
  */
 class Drake extends BaseUnit
 {
-	public function new(s2d:Object, parent, owner:PlayerId)
+	/*public function new(s2d:Object, parent, owner:PlayerId)
 	{
 		super(s2d, parent, owner, {
 			id: "drake",
@@ -37,5 +37,5 @@ class Drake extends BaseUnit
 			isFlyingUnit: true,
 			zOffset: 2.5
 		});
-	}
+	}*/
 }

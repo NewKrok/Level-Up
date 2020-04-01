@@ -5,6 +5,7 @@ import h3d.scene.Graphics;
 import h3d.shader.ColorMult;
 import levelup.AsyncUtil;
 import levelup.AsyncUtil.Result;
+import levelup.UnitData.UnitConfig;
 import levelup.game.GameState.PlayerId;
 import levelup.game.GameWorld;
 import levelup.game.js.AStar;
@@ -89,7 +90,7 @@ import tink.state.State;
 		moveResult = { handle: function(handler:Void->Void) { moveResultHandler = handler; } };
 		attackResult = { handle: function(handler:Void->Void) { attackResultHandler = handler; } };
 
-		view = cache.loadModel(config.idleModel);
+		view = AssetCache.getModel(config.idleModel);
 		view.z = config.zOffset;
 		parent.addChild(view);
 		view.scale(config.modelScale);
@@ -127,18 +128,18 @@ import tink.state.State;
 			switch(v)
 			{
 				case Idle:
-					view.playAnimation(cache.loadAnimation(config.idleModel));
+					view.playAnimation(AssetCache.getAnimation(config.idleModel));
 					view.currentAnimation.speed = config.idleAnimSpeedMultiplier * config.speedMultiplier;
 
 				case MoveTo | AttackMoveTo | AttackRequested:
-					view.playAnimation(cache.loadAnimation(config.runModel));
+					view.playAnimation(AssetCache.getAnimation(config.runModel));
 					view.currentAnimation.speed = config.runAnimSpeedMultiplier * config.speedMultiplier;
 
 				case AttackTriggered:
 					// Handled in a different way bewcause it's hybrid between idle and attack
 
 				case Dead:
-					view.playAnimation(cache.loadAnimation(config.deathModel)).loop = false;
+					view.playAnimation(AssetCache.getAnimation(config.deathModel)).loop = false;
 					view.currentAnimation.speed = 1;
 
 					var alphaShader = new Opacity(.5);
@@ -172,11 +173,11 @@ import tink.state.State;
 
 	function runAttackAnimation()
 	{
-		view.playAnimation(cache.loadAnimation(config.attackModel));
+		view.playAnimation(AssetCache.getAnimation(config.attackModel));
 		view.currentAnimation.loop = false;
 		view.currentAnimation.onAnimEnd = function()
 		{
-			view.playAnimation(cache.loadAnimation(config.idleModel));
+			view.playAnimation(AssetCache.getAnimation(config.idleModel));
 			view.currentAnimation.speed = 1;
 			checkTargetLife();
 		};
@@ -542,32 +543,6 @@ import tink.state.State;
 
 		cache.dispose();
 	}
-}
-
-typedef UnitConfig =
-{
-	var id:String;
-	var icon:Tile;
-	var idleModel:Model;
-	var idleAnimSpeedMultiplier:Float;
-	var runModel:Model;
-	var runAnimSpeedMultiplier:Float;
-	var attackModel:Model;
-	var deathModel:Model;
-	var modelScale:Float;
-	var speed:Float;
-	var speedMultiplier:Float;
-	var attackRange:Float;
-	var attackSpeed:Int;
-	var damagePercentDelay:Float;
-	var damageMin:Float;
-	var damageMax:Float;
-	var maxLife:Float;
-	var maxMana:Float;
-	var detectionRange:Float;
-	var unitSize:Float;
-	var isFlyingUnit:Bool;
-	var zOffset:Float;
 }
 
 enum UnitState {

@@ -11,7 +11,7 @@ import hxd.Res;
  */
 class DemonHunter extends BaseUnit
 {
-	public function new(s2d:Object, parent, owner:PlayerId)
+	/*public function new(s2d:Object, parent, owner:PlayerId)
 	{
 		super(s2d, parent, owner, {
 			id: "demonhunter",
@@ -37,5 +37,5 @@ class DemonHunter extends BaseUnit
 			isFlyingUnit: false,
 			zOffset: 0
 		});
-	}
+	}*/
 }

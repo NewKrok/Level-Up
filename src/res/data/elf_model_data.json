@@ -1,0 +1,166 @@
+{
+	"models":[
+		{
+			"modelGroup": "elf.unit.knome",
+			"id": "elf.unit.knome.death",
+			"url": "asset/model/elf/unit/knome/DeathAnim.hmd",
+			"textures": [
+				{"id": "model/character/elf/Albedo.jpg", "url": "asset/model/elf/unit/Albedo.jpg"},
+				{"id": "model/character/elf/ForPainting_lambert1_Normal.jpg", "url": "asset/model/elf/unit/ForPainting_lambert1_Normal.jpg"}
+			]
+		},
+		{
+			"modelGroup": "elf.unit.knome",
+			"id": "elf.unit.knome.idle",
+			"url": "asset/model/elf/unit/knome/IdleAnim.hmd",
+			"textures": [
+				{"id": "model/character/elf/Albedo.jpg", "url": "asset/model/elf/unit/Albedo.jpg"},
+				{"id": "model/character/elf/ForPainting_lambert1_Normal.jpg", "url": "asset/model/elf/unit/ForPainting_lambert1_Normal.jpg"}
+			]
+		},
+		{
+			"modelGroup": "elf.unit.knome",
+			"id": "elf.unit.knome.pick-up",
+			"url": "asset/model/elf/unit/knome/PickupAnim.hmd",
+			"textures": [
+				{"id": "model/character/elf/Albedo.jpg", "url": "asset/model/elf/unit/Albedo.jpg"},
+				{"id": "model/character/elf/ForPainting_lambert1_Normal.jpg", "url": "asset/model/elf/unit/ForPainting_lambert1_Normal.jpg"}
+			]
+		},
+		{
+			"modelGroup": "elf.unit.knome",
+			"id": "elf.unit.knome.victory",
+			"url": "asset/model/elf/unit/knome/VictoryAnim.hmd",
+			"textures": [
+				{"id": "model/character/elf/Albedo.jpg", "url": "asset/model/elf/unit/Albedo.jpg"},
+				{"id": "model/character/elf/ForPainting_lambert1_Normal.jpg", "url": "asset/model/elf/unit/ForPainting_lambert1_Normal.jpg"}
+			]
+		},
+		{
+			"modelGroup": "elf.unit.knome",
+			"id": "elf.unit.knome.walk",
+			"url": "asset/model/elf/unit/knome/WalkAnim.hmd",
+			"textures": [
+				{"id": "model/character/elf/Albedo.jpg", "url": "asset/model/elf/unit/Albedo.jpg"},
+				{"id": "model/character/elf/ForPainting_lambert1_Normal.jpg", "url": "asset/model/elf/unit/ForPainting_lambert1_Normal.jpg"}
+			]
+		},
+		{
+			"modelGroup": "elf.unit.knome",
+			"id": "elf.unit.knome.work-routine",
+			"url": "asset/model/elf/unit/knome/WorkRoutineAnim.hmd",
+			"textures": [
+				{"id": "model/character/elf/Albedo.jpg", "url": "asset/model/elf/unit/Albedo.jpg"},
+				{"id": "model/character/elf/ForPainting_lambert1_Normal.jpg", "url": "asset/model/elf/unit/ForPainting_lambert1_Normal.jpg"}
+			]
+		},
+		{
+			"modelGroup": "elf.unit.battleowl",
+			"id": "elf.unit.battleowl.attack-01",
+			"url": "asset/model/elf/unit/battleowl/Attack01Anim.hmd",
+			"textures": [
+				{"id": "model/character/elf/Albedo.jpg", "url": "asset/model/elf/unit/Albedo.jpg"},
+				{"id": "model/character/elf/ForPainting_lambert1_Normal.jpg", "url": "asset/model/elf/unit/ForPainting_lambert1_Normal.jpg"}
+			]
+		},
+		{
+			"modelGroup": "elf.unit.battleowl",
+			"id": "elf.unit.battleowl.attack-02",
+			"url": "asset/model/elf/unit/battleowl/Attack02Anim.hmd",
+			"textures": [
+				{"id": "model/character/elf/Albedo.jpg", "url": "asset/model/elf/unit/Albedo.jpg"},
+				{"id": "model/character/elf/ForPainting_lambert1_Normal.jpg", "url": "asset/model/elf/unit/ForPainting_lambert1_Normal.jpg"}
+			]
+		},
+		{
+			"modelGroup": "elf.unit.battleowl",
+			"id": "elf.unit.battleowl.death",
+			"url": "asset/model/elf/unit/battleowl/DeathAnim.hmd",
+			"textures": [
+				{"id": "model/character/elf/Albedo.jpg", "url": "asset/model/elf/unit/Albedo.jpg"},
+				{"id": "model/character/elf/ForPainting_lambert1_Normal.jpg", "url": "asset/model/elf/unit/ForPainting_lambert1_Normal.jpg"}
+			]
+		},
+		{
+			"modelGroup": "elf.unit.battleowl",
+			"id": "elf.unit.battleowl.fly",
+			"url": "asset/model/elf/unit/battleowl/FlyAnim.hmd",
+			"textures": [
+				{"id": "model/character/elf/Albedo.jpg", "url": "asset/model/elf/unit/Albedo.jpg"},
+				{"id": "model/character/elf/ForPainting_lambert1_Normal.jpg", "url": "asset/model/elf/unit/ForPainting_lambert1_Normal.jpg"}
+			]
+		},
+		{
+			"modelGroup": "elf.unit.battleowl",
+			"id": "elf.unit.battleowl.idle",
+			"url": "asset/model/elf/unit/battleowl/IdleAnim.hmd",
+			"textures": [
+				{"id": "model/character/elf/Albedo.jpg", "url": "asset/model/elf/unit/Albedo.jpg"},
+				{"id": "model/character/elf/ForPainting_lambert1_Normal.jpg", "url": "asset/model/elf/unit/ForPainting_lambert1_Normal.jpg"}
+			]
+		},
+		{
+			"modelGroup": "elf.unit.battleowl",
+			"id": "elf.unit.battleowl.victory",
+			"url": "asset/model/elf/unit/battleowl/VictoryAnim.hmd",
+			"textures": [
+				{"id": "model/character/elf/Albedo.jpg", "url": "asset/model/elf/unit/Albedo.jpg"},
+				{"id": "model/character/elf/ForPainting_lambert1_Normal.jpg", "url": "asset/model/elf/unit/ForPainting_lambert1_Normal.jpg"}
+			]
+		},
+		{
+			"modelGroup": "elf.unit.ranger",
+			"id": "elf.unit.ranger.attack-01",
+			"url": "asset/model/elf/unit/ranger/Attack01StartAnim.hmd",
+			"textures": [
+				{"id": "model/character/elf/Albedo.jpg", "url": "asset/model/elf/unit/Albedo.jpg"},
+				{"id": "model/character/elf/ForPainting_lambert1_Normal.jpg", "url": "asset/model/elf/unit/ForPainting_lambert1_Normal.jpg"}
+			]
+		},
+		{
+			"modelGroup": "elf.unit.ranger",
+			"id": "elf.unit.ranger.attack-02",
+			"url": "asset/model/elf/unit/ranger/Attack02StartAnim.hmd",
+			"textures": [
+				{"id": "model/character/elf/Albedo.jpg", "url": "asset/model/elf/unit/Albedo.jpg"},
+				{"id": "model/character/elf/ForPainting_lambert1_Normal.jpg", "url": "asset/model/elf/unit/ForPainting_lambert1_Normal.jpg"}
+			]
+		},
+		{
+			"modelGroup": "elf.unit.ranger",
+			"id": "elf.unit.ranger.death",
+			"url": "asset/model/elf/unit/ranger/DeathAnim.hmd",
+			"textures": [
+				{"id": "model/character/elf/Albedo.jpg", "url": "asset/model/elf/unit/Albedo.jpg"},
+				{"id": "model/character/elf/ForPainting_lambert1_Normal.jpg", "url": "asset/model/elf/unit/ForPainting_lambert1_Normal.jpg"}
+			]
+		},
+		{
+			"modelGroup": "elf.unit.ranger",
+			"id": "elf.unit.ranger.fly",
+			"url": "asset/model/elf/unit/ranger/RunAnim.hmd",
+			"textures": [
+				{"id": "model/character/elf/Albedo.jpg", "url": "asset/model/elf/unit/Albedo.jpg"},
+				{"id": "model/character/elf/ForPainting_lambert1_Normal.jpg", "url": "asset/model/elf/unit/ForPainting_lambert1_Normal.jpg"}
+			]
+		},
+		{
+			"modelGroup": "elf.unit.ranger",
+			"id": "elf.unit.ranger.idle",
+			"url": "asset/model/elf/unit/ranger/IdleAnim.hmd",
+			"textures": [
+				{"id": "model/character/elf/Albedo.jpg", "url": "asset/model/elf/unit/Albedo.jpg"},
+				{"id": "model/character/elf/ForPainting_lambert1_Normal.jpg", "url": "asset/model/elf/unit/ForPainting_lambert1_Normal.jpg"}
+			]
+		},
+		{
+			"modelGroup": "elf.unit.ranger",
+			"id": "elf.unit.ranger.victory",
+			"url": "asset/model/elf/unit/ranger/VictoryAnim.hmd",
+			"textures": [
+				{"id": "model/character/elf/Albedo.jpg", "url": "asset/model/elf/unit/Albedo.jpg"},
+				{"id": "model/character/elf/ForPainting_lambert1_Normal.jpg", "url": "asset/model/elf/unit/ForPainting_lambert1_Normal.jpg"}
+			]
+		}
+	]
+}

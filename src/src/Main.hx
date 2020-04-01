@@ -1,15 +1,17 @@
 package;
 
 import h3d.Engine;
+import haxe.Json;
 import haxe.Timer;
-import levelup.Asset;
-import levelup.MapData;
-import levelup.TerrainAssets;
-import levelup.editor.EditorState;
-import levelup.game.GameState;
 import hpp.heaps.Base2dApp;
 import hpp.heaps.Base2dStage.StageScaleMode;
 import hxd.Res;
+import levelup.AssetCache;
+import levelup.MapData;
+import levelup.TerrainAssets;
+import levelup.UnitData;
+import levelup.editor.EditorState;
+import levelup.game.GameState;
 import levelup.util.SaveUtil;
 
 /**
@@ -26,14 +28,17 @@ class Main extends Base2dApp
 	{
 		super.init();
 		stage.stageScaleMode = StageScaleMode.NO_SCALE;
-		Asset.init();
+		/*Asset.init();*/
 		TerrainAssets.init();
 		SaveUtil.load();
+		UnitData.init(Json.parse(Res.data.elf_unit_data.entry.getText()));
+		AssetCache.init(Json.parse(Res.data.elf_model_data.entry.getText()));
 
-		changeState(EditorState, [stage, s3d, SaveUtil.editorData.customMaps[0]]);
+		//changeState(EditorState, [stage, s3d, SaveUtil.editorData.customMaps[0]]);
 		//changeState(EditorState, [stage, s3d, MapData.getRawMap("lobby")]);
-		//changeState(GameState, [stage, s3d, MapData.getRawMap("lobby")]);
+		changeState(GameState, [stage, s3d, MapData.getRawMap("lobby")]);
 		//changeState(GameState, [stage, s3d, SaveUtil.editorData.customMaps[0]]);
+
 	}
 
 	static function main()

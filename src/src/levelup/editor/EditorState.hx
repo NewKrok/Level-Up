@@ -41,6 +41,7 @@ import levelup.editor.html.NewAdventureDialog;
 import levelup.editor.module.dayandnight.DayAndNightModule;
 import levelup.editor.module.heightmap.HeightMapModule;
 import levelup.editor.module.region.RegionModule;
+import levelup.editor.module.script.ScriptModule;
 import levelup.editor.module.terrain.TerrainChooser;
 import levelup.editor.module.terrain.TerrainModule;
 import levelup.game.GameState;
@@ -397,6 +398,7 @@ class EditorState extends Base2dState
 		modules.push(cast new HeightMapModule(cast this));
 		modules.push(cast new DayAndNightModule(cast this));
 		modules.push(cast new RegionModule(cast this));
+		modules.push(cast new ScriptModule(cast this));
 
 		selectionCircle = new Graphics(world);
 

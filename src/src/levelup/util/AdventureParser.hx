@@ -3,8 +3,10 @@ package levelup.util;
 import h3d.Quat;
 import h3d.Vector;
 import haxe.Json;
+import levelup.AssetCache.ModelGroup;
 import levelup.game.GameState.AdventureConfig;
 import levelup.game.GameState.InitialUnitData;
+import levelup.game.GameState.PlayerId;
 import levelup.game.GameState.StaticObjectConfig;
 import levelup.game.GameState.Trigger;
 import levelup.game.GameState.GetUnitDefinition;
@@ -71,6 +73,61 @@ class AdventureParser
 			height: r.height
 		}];
 
+		// TODO remove it
+		rawWorldConfig.triggers = [
+			{
+				id: "initial",
+				isEnabled: true,
+				event: TriggerEvent.OnInit,
+				condition: null,
+				actions: [
+					TriggerAction.SetLocalVariable("unit", UnitDefinition.GetUnit(UnitOfPlayer(PlayerId.Player1, Filter.Index(0)))),
+					TriggerAction.JumpCameraToUnit(PlayerId.Player1, UnitDefinition.GetLocalVariable("unit")),
+					TriggerAction.SelectUnit(PlayerId.Player1, UnitDefinition.GetLocalVariable("unit")),
+				]
+			},
+			{
+				id: "teamA-enemies-1",
+				isEnabled: true,
+				event: TriggerEvent.TimePeriodic(10),
+				condition: null,
+				actions: [
+					TriggerAction.CreateUnit("minion", PlayerId.Player2, "Region 0"),
+					TriggerAction.AttackMoveToRegion(UnitDefinition.LastCreatedUnit, "Region 3")
+				]
+			},
+			{
+				id: "teamA-enemies-2",
+				isEnabled: true,
+				event: TriggerEvent.TimePeriodic(35),
+				condition: null,
+				actions: [
+					TriggerAction.CreateUnit("bandwagon", PlayerId.Player2, "Region 0"),
+					TriggerAction.AttackMoveToRegion(UnitDefinition.LastCreatedUnit, "Region 3")
+				]
+			},
+			{
+				id: "teamB-enemies",
+				isEnabled: true,
+				event: TriggerEvent.TimePeriodic(10),
+				condition: null,
+				actions: [
+					TriggerAction.CreateUnit("knome", PlayerId.Player3, "Region 2"),
+					TriggerAction.AttackMoveToRegion(UnitDefinition.LastCreatedUnit, "Region 3")
+				]
+			},
+			{
+				id: "teamB-enemies-2",
+				isEnabled: true,
+				event: TriggerEvent.TimePeriodic(35),
+				condition: null,
+				actions: [
+					TriggerAction.CreateUnit("rockgolem", PlayerId.Player2, "Region 2"),
+					TriggerAction.AttackMoveToRegion(UnitDefinition.LastCreatedUnit, "Region 3")
+				]
+			}
+		];
+
 		var triggers:Array<Trigger> = [for (t in cast(rawWorldConfig.triggers, Array<Dynamic>)) {
 			id: t.id != null ? t.id.toLowerCase() : Std.string(Math.random() * 999999999),
 			isEnabled: t.isEnabled != null ? t.isEnabled : true,
@@ -89,6 +146,29 @@ class AdventureParser
 			rawWorldConfig.editorLastCamPosition.y,
 			rawWorldConfig.editorLastCamPosition.z
 		);
+
+		var neededModelGroups:Array<ModelGroup> = [];
+		for (u in units)
+		{
+			var unitConfig = UnitData.getUnitConfig(u.id);
+			if (neededModelGroups.indexOf(unitConfig.modelGroup) == -1) neededModelGroups.push(unitConfig.modelGroup);
+		}
+		for (trigger in triggers)
+		{
+			for (a in trigger.actions)
+			{
+				switch (a)
+				{
+					case TriggerAction.CreateUnit(unitId, _, _):
+						var unitConfig = UnitData.getUnitConfig(unitId);
+						// TODO remove null check
+						if (unitConfig != null && neededModelGroups.indexOf(unitConfig.modelGroup) == -1)
+							neededModelGroups.push(unitConfig.modelGroup);
+
+					case _:
+				};
+			}
+		}
 
 		return {
 			name: rawData.name,
@@ -109,7 +189,8 @@ class AdventureParser
 				heightMap: rawWorldConfig.heightMap,
 				levellingHeightMap: rawWorldConfig.levellingHeightMap,
 				editorLastCamPosition: editorLastCamPosition
-			}
+			},
+			neededModelGroups: neededModelGroups
 		};
 	}
 

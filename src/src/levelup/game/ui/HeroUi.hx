@@ -31,14 +31,16 @@ import tink.state.Observable;
 	{
 		super(p);
 
-		container = new Flow(this);
+		// TODO create an html view
+
+		/*container = new Flow(this);
 		container.layout = Vertical;
 		iconContainer = new Object(container);
 		icon = new Bitmap(unit.config.icon, iconContainer);
-		icon.smooth = true;
-		deadMarker = new Bitmap(Res.ui.icon_dead.toTile(), iconContainer);
-		deadMarker.smooth = true;
-		lifeBar = new LineBar(container, unit.life, unit.config.maxLife, 128, 24, 0xFF223E);
+		icon.smooth = true;*/
+		/*deadMarker = new Bitmap(Res.ui.icon_dead.toTile(), iconContainer);
+		deadMarker.smooth = true;*/
+		/*lifeBar = new LineBar(container, unit.life, unit.config.maxLife, 128, 24, 0xFF223E);
 		manaBar = new LineBar(container, unit.mana, unit.config.maxMana, 128, 24, 0x7F00FF);
 
 		var interactive = new Interactive(container.getSize().width, container.getSize().height, this);
@@ -49,6 +51,6 @@ import tink.state.Observable;
 		selectedUnit.bind(v ->
 		{
 			filter = v == unit ? new Glow(0xFFFFFF, 1, 2, 1, 1, false) : null;
-		});
+		});*/
 	}
 }

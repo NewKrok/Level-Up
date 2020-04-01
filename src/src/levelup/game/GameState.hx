@@ -18,6 +18,7 @@ import hpp.heaps.Base2dState;
 import hpp.heaps.HppG;
 import hpp.util.GeomUtil.SimplePoint;
 import js.Browser;
+import levelup.AssetCache.ModelGroup;
 import levelup.AsyncUtil.Result;
 import levelup.MapData;
 import levelup.editor.EditorState;
@@ -28,11 +29,9 @@ import levelup.game.html.GameUi;
 import levelup.game.html.LobbyUi;
 import levelup.game.ui.HeroUi;
 import levelup.game.unit.BaseUnit;
-import levelup.game.unit.elf.BattleOwl;
 import levelup.game.unit.elf.DemonHunter;
 import levelup.game.unit.elf.Druid;
 import levelup.game.unit.elf.Dryad;
-import levelup.game.unit.elf.Ranger;
 import levelup.game.unit.elf.RockGolem;
 import levelup.game.unit.elf.Treeant;
 import levelup.game.unit.human.Archer;
@@ -41,7 +40,6 @@ import levelup.game.unit.orc.BandWagon;
 import levelup.game.unit.orc.Berserker;
 import levelup.game.unit.orc.Drake;
 import levelup.game.unit.orc.Grunt;
-import levelup.game.unit.elf.Knome;
 import levelup.game.unit.orc.Minion;
 import levelup.util.AdventureParser;
 import levelup.util.SaveUtil;
@@ -98,6 +96,20 @@ class GameState extends Base2dState
 		this.s2d = s2d;
 		this.stateConfig = stateConfigParam == null ? { isTestRun: false } : stateConfigParam;
 		adventureConfig = AdventureParser.loadLevel(rawMap);
+
+		AssetCache.loadModelGroups(adventureConfig.neededModelGroups).handle(o -> switch(o)
+		{
+			case Success(_):
+				var view = AssetCache.getModel("elf.unit.knome.idle");
+				view.playAnimation(AssetCache.getAnimation("elf.unit.knome.idle"));
+				view.scale(0.008);
+				view.setRotation(0, 0, Math.PI / 1.5);
+				s3d.addChild(view);
+
+			case Failure(e): trace("FAILED:",e);
+		});
+
+		return;
 
 		heroUiContainer = new Flow(s2d);
 		heroUiContainer.scale(0.5);
@@ -240,7 +252,7 @@ class GameState extends Base2dState
 
 	function createUnit(id:String, owner:PlayerId, posX:Float, posY:Float, scale:Float = null, rotation:Quat = null)
 	{
-		var unit = switch (id) {
+		/*var unit = switch (id) {
 			// orc
 			case "bandwagon": new BandWagon(s2d, world, owner);
 			case "berserker": new Berserker(s2d, world, owner);
@@ -277,7 +289,7 @@ class GameState extends Base2dState
 				selectUnit,
 				selectedUnit.observe()
 			);
-		}
+		}*/
 	}
 
 	function selectUnit(u)
@@ -544,6 +556,7 @@ typedef AdventureConfig =
 	var editorVersion(default, never):String;
 	var size(default, never):SimplePoint;
 	var worldConfig:WorldConfig;
+	var neededModelGroups:Array<ModelGroup>;
 }
 
 typedef WorldConfig =

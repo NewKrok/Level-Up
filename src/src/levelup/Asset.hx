@@ -28,14 +28,14 @@ class Asset
 		return null;
 	}
 
-	static public var environment(default, null):Array<AssetConfig>;
-	static public var props(default, null):Array<AssetConfig>;
-	static public var buildings(default, null):Array<AssetConfig>;
-	static public var units(default, null):Array<AssetConfig>;
+	static public var environment(default, null):Array<AssetConfig> = [];
+	static public var props(default, null):Array<AssetConfig> = [];
+	static public var buildings(default, null):Array<AssetConfig> = [];
+	static public var units(default, null):Array<AssetConfig> = [];
 
 	static public function init()
 	{
-		environment = [
+		/*environment = [
 			{
 				id: "Bridge01",
 				name: "Bridge 01",
@@ -1376,7 +1376,7 @@ class Asset
 				hasAnimation: true,
 				previewUrl: "./asset/img/preview/unit/elf/battleowl.jpg"
 			}
-		];
+		];*/
 	}
 }
 

@@ -5,3 +5,9 @@ graphic/
 src/bin/level-up.js
 src/res/texture/
 src/bin/asset/img
+src/__res
+resource_helper/
+**/*.hmd
+**/*.fbx
+**/*.jpg
+**/*.png

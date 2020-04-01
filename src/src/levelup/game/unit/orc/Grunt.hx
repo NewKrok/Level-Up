@@ -11,7 +11,7 @@ import hxd.Res;
  */
 class Grunt extends BaseUnit
 {
-	public function new(s2d:Object, parent, owner:PlayerId)
+	/*public function new(s2d:Object, parent, owner:PlayerId)
 	{
 		super(s2d, parent, owner, {
 			id: "grunt",
@@ -37,5 +37,5 @@ class Grunt extends BaseUnit
 			isFlyingUnit: false,
 			zOffset: 0
 		});
-	}
+	}*/
 }
