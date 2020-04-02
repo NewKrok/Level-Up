@@ -4,7 +4,7 @@ class UnitData
 {
 	private static var config:Map<String, UnitConfig> = new Map<String, UnitConfig>();
 
-	public static function init(rawData:Dynamic)
+	public static function addData(rawData:Dynamic)
 	{
 		var unitConfig:Array<UnitConfig> = cast rawData.units;
 		for (u in unitConfig) config.set(u.id, u);
@@ -20,12 +20,8 @@ typedef UnitConfig =
 	var name:Array<String>;
 	var icon:String;
 	var modelGroup:String;
-	var idleModel:String;
 	var idleAnimSpeedMultiplier:Float;
-	var runModel:String;
 	var runAnimSpeedMultiplier:Float;
-	var attackModel:String;
-	var deathModel:String;
 	var modelScale:Float;
 	var speed:Float;
 	var speedMultiplier:Float;

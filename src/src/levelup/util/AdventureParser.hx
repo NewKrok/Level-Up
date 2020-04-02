@@ -3,11 +3,11 @@ package levelup.util;
 import h3d.Quat;
 import h3d.Vector;
 import haxe.Json;
-import levelup.AssetCache.ModelGroup;
 import levelup.game.GameState.AdventureConfig;
 import levelup.game.GameState.InitialUnitData;
 import levelup.game.GameState.PlayerId;
 import levelup.game.GameState.StaticObjectConfig;
+import levelup.game.GameState.TerrainLayerInfo;
 import levelup.game.GameState.Trigger;
 import levelup.game.GameState.GetUnitDefinition;
 import levelup.game.GameState.TriggerAction;
@@ -40,7 +40,7 @@ class AdventureParser
 		var sunsetColor = rawWorldConfig.sunsetColor == null ? "#CC9919" : rawWorldConfig.sunsetColor;
 		var dawnColor = rawWorldConfig.dawnColor == null ? "#808080" : rawWorldConfig.dawnColor;
 
-		var staticObjects:Array<StaticObjectConfig> = [for (o in cast(rawWorldConfig.staticObjects, Array<Dynamic>)) {
+		var staticObjects:Array<StaticObjectConfig> = [];/*[for (o in cast(rawWorldConfig.staticObjects, Array<Dynamic>)) {
 			id: o.id,
 			name: o.name,
 			x: o.x,
@@ -50,7 +50,7 @@ class AdventureParser
 			scale: o.scale,
 			rotation: new Quat(o.rotation.x, o.rotation.y, o.rotation.z, o.rotation.w),
 			isPathBlocker: o.isPathBlocker
-		}];
+		}];*/
 
 		var units:Array<InitialUnitData> = [for (o in cast(rawWorldConfig.units, Array<Dynamic>)) {
 			owner: o.owner,
@@ -147,7 +147,7 @@ class AdventureParser
 			rawWorldConfig.editorLastCamPosition.z
 		);
 
-		var neededModelGroups:Array<ModelGroup> = [];
+		var neededModelGroups:Array<String> = [];
 		for (u in units)
 		{
 			var unitConfig = UnitData.getUnitConfig(u.id);
@@ -161,13 +161,21 @@ class AdventureParser
 				{
 					case TriggerAction.CreateUnit(unitId, _, _):
 						var unitConfig = UnitData.getUnitConfig(unitId);
-						// TODO remove null check
-						if (unitConfig != null && neededModelGroups.indexOf(unitConfig.modelGroup) == -1)
+						if (neededModelGroups.indexOf(unitConfig.modelGroup) == -1)
 							neededModelGroups.push(unitConfig.modelGroup);
 
 					case _:
 				};
 			}
+		}
+
+		var terrainLayers:Array<TerrainLayerInfo> = rawWorldConfig.terrainLayers;
+		var neededTextures:Array<String> = [];
+		for (layer in terrainLayers)
+		{
+			var textureInfo = TerrainAssets.getTerrain(layer.textureId);
+			neededTextures.push(textureInfo.textureUrl);
+			if (textureInfo.normalMapUrl != null) neededTextures.push(textureInfo.normalMapUrl);
 		}
 
 		return {
@@ -185,12 +193,13 @@ class AdventureParser
 				triggers: triggers,
 				units: units,
 				staticObjects: staticObjects,
-				terrainLayers: rawWorldConfig.terrainLayers,
+				terrainLayers: terrainLayers,
 				heightMap: rawWorldConfig.heightMap,
 				levellingHeightMap: rawWorldConfig.levellingHeightMap,
 				editorLastCamPosition: editorLastCamPosition
 			},
-			neededModelGroups: neededModelGroups
+			neededModelGroups: neededModelGroups,
+			neededTextures: neededTextures
 		};
 	}
 

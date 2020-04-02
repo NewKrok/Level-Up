@@ -90,7 +90,7 @@ import tink.state.State;
 		moveResult = { handle: function(handler:Void->Void) { moveResultHandler = handler; } };
 		attackResult = { handle: function(handler:Void->Void) { attackResultHandler = handler; } };
 
-		view = AssetCache.getModel(config.idleModel);
+		view = AssetCache.getModel(config.modelGroup + ".idle");
 		view.z = config.zOffset;
 		parent.addChild(view);
 		view.scale(config.modelScale);
@@ -128,18 +128,18 @@ import tink.state.State;
 			switch(v)
 			{
 				case Idle:
-					view.playAnimation(AssetCache.getAnimation(config.idleModel));
+					view.playAnimation(AssetCache.getAnimation(config.modelGroup + ".idle"));
 					view.currentAnimation.speed = config.idleAnimSpeedMultiplier * config.speedMultiplier;
 
 				case MoveTo | AttackMoveTo | AttackRequested:
-					view.playAnimation(AssetCache.getAnimation(config.runModel));
+					view.playAnimation(AssetCache.getAnimation(config.modelGroup + ".walk"));
 					view.currentAnimation.speed = config.runAnimSpeedMultiplier * config.speedMultiplier;
 
 				case AttackTriggered:
 					// Handled in a different way bewcause it's hybrid between idle and attack
 
 				case Dead:
-					view.playAnimation(AssetCache.getAnimation(config.deathModel)).loop = false;
+					view.playAnimation(AssetCache.getAnimation(config.modelGroup + ".death")).loop = false;
 					view.currentAnimation.speed = 1;
 
 					var alphaShader = new Opacity(.5);
@@ -173,11 +173,11 @@ import tink.state.State;
 
 	function runAttackAnimation()
 	{
-		view.playAnimation(AssetCache.getAnimation(config.attackModel));
+		view.playAnimation(AssetCache.getAnimation(config.modelGroup + ".attack"));
 		view.currentAnimation.loop = false;
 		view.currentAnimation.onAnimEnd = function()
 		{
-			view.playAnimation(AssetCache.getAnimation(config.idleModel));
+			view.playAnimation(AssetCache.getAnimation(config.modelGroup + ".idle"));
 			view.currentAnimation.speed = 1;
 			checkTargetLife();
 		};

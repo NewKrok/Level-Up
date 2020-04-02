@@ -66,16 +66,17 @@ import tink.state.Observable;
 
 				var newTerrain = TerrainAssets.getTerrain(model.selectedLayer.terrainId);
 				var activeMesh = core.world.terrainLayers[model.selectedLayerIndex];
-				activeMesh.material.texture = newTerrain.texture;
+				activeMesh.material.texture = AssetCache.getTexture(newTerrain.textureUrl);
 				activeMesh.material.texture.wrap = Wrap.Repeat;
 
 				var prevNormalMap = activeMesh.material.mainPass.getShader(NormalMap);
 				if (prevNormalMap != null) activeMesh.material.mainPass.removeShader(prevNormalMap);
 
-				if (newTerrain.normalMap != null)
+				if (newTerrain.normalMapUrl != null)
 				{
-					newTerrain.normalMap.wrap = Wrap.Repeat;
-					activeMesh.material.mainPass.addShader(new NormalMap(newTerrain.normalMap));
+					var normalMap = AssetCache.getTexture(newTerrain.normalMapUrl);
+					normalMap.wrap = Wrap.Repeat;
+					activeMesh.material.mainPass.addShader(new NormalMap(normalMap));
 				}
 			},
 			close: core.dialogManager.closeCurrentDialog

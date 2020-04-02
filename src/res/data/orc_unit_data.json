@@ -1,0 +1,52 @@
+{
+	"units":[
+		{
+			"id": "minion",
+			"unitName": "Minion",
+			"name": [""],
+			"race": "orc",
+			"icon": "asset/icon/orc/unit/minion.jpg",
+			"modelGroup": "orc.unit.minion",
+			"idleAnimSpeedMultiplier": 0.5,
+			"runAnimSpeedMultiplier": 1.5,
+			"modelScale": 0.008,
+			"speed": 4,
+			"speedMultiplier": 1,
+			"attackRange": 2.1,
+			"attackSpeed": 1800,
+			"damagePercentDelay": 0.5,
+			"damageMin": 5,
+			"damageMax": 10,
+			"maxLife": 50,
+			"maxMana": 1,
+			"detectionRange": 10,
+			"unitSize": 0.7,
+			"isFlyingUnit": false,
+			"zOffset": 0
+		},
+		{
+			"id": "bandwagon",
+			"unitName": "Band Wagon",
+			"name": [""],
+			"race": "orc",
+			"icon": "asset/icon/orc/unit/bandwagon.jpg",
+			"modelGroup": "orc.unit.bandwagon",
+			"idleAnimSpeedMultiplier": 0.1,
+			"runAnimSpeedMultiplier": 1,
+			"modelScale": 0.007,
+			"speed": 6,
+			"speedMultiplier": 1,
+			"attackRange": 7,
+			"attackSpeed": 2000,
+			"damagePercentDelay": 0.5,
+			"damageMin": 10,
+			"damageMax": 20,
+			"maxLife": 100,
+			"maxMana": 1,
+			"detectionRange": 10,
+			"unitSize": 1.1,
+			"isFlyingUnit": false,
+			"zOffset": 0
+		}
+	]
+}

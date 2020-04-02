@@ -201,15 +201,16 @@ class GameWorld extends World
 		heightGrid = layer.points;
 		setGridByHeightMap(layer);
 
-		var mesh = new Mesh(layer, Material.create(terrainConfig.texture), s3d);
+		var mesh = new Mesh(layer, Material.create(AssetCache.getTexture(terrainConfig.textureUrl)), s3d);
 		mesh.material.mainPass.isStatic = true;
 
 		mesh.material.texture.wrap = Wrap.Repeat;
 
-		if (terrainConfig.normalMap != null)
+		if (terrainConfig.normalMapUrl != null)
 		{
-			terrainConfig.normalMap.wrap = Wrap.Repeat;
-			mesh.material.mainPass.addShader(new NormalMap(terrainConfig.normalMap));
+			var normalMap = AssetCache.getTexture(terrainConfig.normalMapUrl);
+			normalMap.wrap = Wrap.Repeat;
+			mesh.material.mainPass.addShader(new NormalMap(normalMap));
 		}
 
 		terrainLayers.push(mesh);
@@ -242,16 +243,18 @@ class GameWorld extends World
 		var alphaMask = new AlphaMap(Texture.fromBitmap(bmp));
 		alphaMask.uvScale.set(0.03333 * uvScale, 0.03333 * uvScale);
 
-		var mesh = new Mesh(layer, Material.create(terrainConfig.texture), s3d);
+		var mesh = new Mesh(layer, Material.create(AssetCache.getTexture(terrainConfig.textureUrl)), s3d);
 		mesh.material.mainPass.addShader(alphaMask);
 		mesh.material.mainPass.isStatic = true;
 		mesh.material.texture.wrap = Wrap.Repeat;
 		mesh.material.blendMode = BlendMode.Alpha;
 		mesh.z = terrainLayers.length * 0.05;
 
-		if (terrainConfig.normalMap != null)
+		if (terrainConfig.normalMapUrl != null)
 		{
-			mesh.material.mainPass.addShader(new NormalMap(terrainConfig.normalMap));
+			var normalMap = AssetCache.getTexture(terrainConfig.normalMapUrl);
+			normalMap.wrap = Wrap.Repeat;
+			mesh.material.mainPass.addShader(new NormalMap(normalMap));
 		}
 
 		if (terrainConfig.effects != null)
@@ -325,7 +328,7 @@ class GameWorld extends World
 		var terrainConfig = TerrainAssets.getTerrain(terrainId);
 
 		var baseLayer = terrainLayers[0];
-		baseLayer.material.texture = terrainConfig.texture;
+		baseLayer.material.texture = AssetCache.getTexture(terrainConfig.textureUrl);
 		baseLayer.material.texture.wrap = Wrap.Repeat;
 	}
 

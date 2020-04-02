@@ -15,17 +15,39 @@ import tink.CoreApi.Outcome;
  */
 class AssetCache
 {
-	private static var rawCache:RawCache;
-	private static var cache:ModelCache = new ModelCache();
+	private static var rawCache:RawModelCache = { groups: [] };
+	private static var modelCache:ModelCache = new ModelCache();
 	private static var modelDirectory:Map<String, Model> = new Map<String, Model>();
-
-	private static var isLoadingInProgress:Bool;
-	private static var loadedTextureCount:Int;
+	private static var loadedModelTextureCount:Int;
 	private static var loadedModelCount:Int;
 
-	public static function init(rawData:Dynamic) AssetCache.rawCache = rawData;
+	private static var textureDirectory:Map<String, Dynamic> = new Map<String, Dynamic>();
+	private static var loadedTextureCount:Int;
 
-	public static function loadModelGroups(modelGroupList:Array<ModelGroup>):Future<Outcome<Noise, String>>
+	private static var isLoadingInProgress:Bool;
+
+	public static function addData(rawData:Dynamic) AssetCache.rawCache.groups = AssetCache.rawCache.groups.concat(rawData.groups);
+
+	public static function load(modelGroupList:Array<String>, textureList:Array<String>):Future<Outcome<Noise, String>>
+	{
+		var result:FutureTrigger<Outcome<Noise, String>> = Future.trigger();
+
+		loadModelGroups(modelGroupList).handle(function (o):Void switch(o)
+		{
+			case Success(_):
+				loadTextures(textureList).handle(o -> switch(o)
+				{
+					case Success(_): result.trigger(Success(Noise));
+					case Failure(e): result.trigger(Failure(e));
+				});
+
+			case Failure(e): result.trigger(Failure(e));
+		});
+
+		return result;
+	}
+
+	public static function loadModelGroups(modelGroupList:Array<String>):Future<Outcome<Noise, String>>
 	{
 		var result:FutureTrigger<Outcome<Noise, String>> = Future.trigger();
 
@@ -36,21 +58,19 @@ class AssetCache
 
 		for (group in modelGroupList)
 		{
-			var selectedModels = rawCache.models.filter(data -> return data.modelGroup == group);
-			collectedModelDatas = collectedModelDatas.concat(selectedModels);
+			var selectedGroup:RawModelGroupData = rawCache.groups.filter(data -> return data.id == group)[0];
+			collectedModelDatas = collectedModelDatas.concat(selectedGroup.models);
 
-			for (model in selectedModels)
-				for (texture in model.textures)
-					if (collectedModelTextures.filter(t -> return t.data.id == texture.id).length == 0)
-						collectedModelTextures.push({data: texture, modelReferences: []});
+			for (texture in selectedGroup.textures)
+				if (collectedModelTextures.filter(t -> return t.data.id == texture.id).length == 0)
+					collectedModelTextures.push({data: texture, modelReferences: []});
 
 			for (texture in collectedModelTextures)
-				for (model in selectedModels)
-					if (model.textures.filter(t -> return t.id == texture.data.id).length > 0)
-						texture.modelReferences.push(model.url);
+				for (model in selectedGroup.models)
+					texture.modelReferences.push(model.url);
 		}
 
-		loadTextures(collectedModelTextures).handle(function (o):Void { switch(o)
+		loadModelTextures(collectedModelTextures).handle(function (o):Void { switch(o)
 		{
 			case Success(_):
 				loadModels(collectedModelDatas).handle(result.trigger);
@@ -61,19 +81,19 @@ class AssetCache
 		return result;
 	}
 
-	private static function loadTextures(list:Array<TextureDataWithModelReferences>):Future<Outcome<Noise, String>>
+	private static function loadModelTextures(list:Array<TextureDataWithModelReferences>):Future<Outcome<Noise, String>>
 	{
 		var result = Future.trigger();
-		loadedTextureCount = 0;
+		loadedModelTextureCount = 0;
 
 		var onLoaded = (data, t:TextureDataWithModelReferences) ->
 		{
 			var texture = hxd.res.Any.fromBytes(t.data.url, data).toTexture();
 			for (modelRef in t.modelReferences)
-				cache.textures.set(modelRef + "@" + t.data.id, texture);
+				modelCache.textures.set(modelRef + "@" + t.data.id, texture);
 
-			loadedTextureCount++;
-			if (loadedTextureCount == list.length) result.trigger(Success(Noise));
+			loadedModelTextureCount++;
+			if (loadedModelTextureCount == list.length) result.trigger(Success(Noise));
 		}
 
 		var loadRoutine = t ->
@@ -115,28 +135,56 @@ class AssetCache
 		return result;
 	}
 
-	public static function getModel(modelId:String) return cache.loadModel(modelDirectory.get(modelId));
+	public static function getModel(modelId:String) return modelCache.loadModel(modelDirectory.get(modelId));
 
-	public static function getAnimation(modelId:String) return cache.loadAnimation(modelDirectory.get(modelId));
+	public static function getAnimation(modelId:String) return modelCache.loadAnimation(modelDirectory.get(modelId));
+
+	public static function loadTextures(list:Array<String>):Future<Outcome<Noise, String>>
+	{
+		var result = Future.trigger();
+		loadedTextureCount = 0;
+
+		var onLoaded = (data, url) ->
+		{
+			var texture = hxd.res.Any.fromBytes(url, data).toTexture();
+			textureDirectory.set(url, texture);
+
+			loadedTextureCount++;
+			if (loadedTextureCount == list.length) result.trigger(Success(Noise));
+		}
+
+		var loadRoutine = t ->
+		{
+			var loader = new BinaryLoader(t);
+			loader.onError = e -> result.trigger(Failure(e));
+			loader.load();
+			loader.onLoaded = data -> onLoaded(data, t);
+		}
+
+		for (t in list) loadRoutine(t);
+
+		return result;
+	}
+
+	public static function getTexture(url:String) return textureDirectory.get(url);
 }
 
-typedef RawCache =
+typedef RawModelCache =
 {
+	var groups:Array<RawModelGroupData>;
+}
+
+typedef RawModelGroupData =
+{
+	var id:String;
 	var models:Array<RawModelData>;
+	var textures:Array<RawTextureData>;
 }
 
 typedef RawModelData =
 {
-	var modelGroup:ModelGroup;
 	var id:String;
 	var url:String;
-	var textures:Array<RawTextureData>;
-}
-
-@:enum abstract ModelGroup(String) from String to String
-{
-	var ElfUnitKnome = "elf.unit.knome";
-	var ElfUnitBattleOwl = "elf.unit.battleowl";
 }
 
 typedef RawTextureData =

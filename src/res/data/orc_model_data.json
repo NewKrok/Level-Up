@@ -1,0 +1,54 @@
+{
+	"groups":[
+		{
+			"id": "orc.unit.minion",
+			"models": [
+				{
+					"id": "orc.unit.minion.death",
+					"url": "asset/model/orc/unit/minion/DeathAnim.hmd"
+				},
+				{
+					"id": "orc.unit.minion.idle",
+					"url": "asset/model/orc/unit/minion/IdleAnim.hmd"
+				},
+				{
+					"id": "orc.unit.minion.walk",
+					"url": "asset/model/orc/unit/minion/WalkAnim.hmd"
+				},
+				{
+					"id": "orc.unit.minion.attack",
+					"url": "asset/model/orc/unit/minion/WorkRoutineAnim.hmd"
+				}
+			],
+			"textures": [
+				{"id": "model/character/orc/Albedo.jpg", "url": "asset/model/orc/unit/Albedo.jpg"},
+				{"id": "model/character/orc/ForPainting2_lambert1_Normal.jpg", "url": "asset/model/orc/unit/ForPainting2_lambert1_Normal.jpg"}
+			]
+		},
+		{
+			"id": "orc.unit.bandwagon",
+			"models": [
+				{
+					"id": "orc.unit.bandwagon.death",
+					"url": "asset/model/orc/unit/bandwagon/DeathAnim.hmd"
+				},
+				{
+					"id": "orc.unit.bandwagon.idle",
+					"url": "asset/model/orc/unit/bandwagon/IdleAnim.hmd"
+				},
+				{
+					"id": "orc.unit.bandwagon.walk",
+					"url": "asset/model/orc/unit/bandwagon/WalkAnim.hmd"
+				},
+				{
+					"id": "orc.unit.bandwagon.attack",
+					"url": "asset/model/orc/unit/bandwagon/Attack01Anim.hmd"
+				}
+			],
+			"textures": [
+				{"id": "model/character/orc/Albedo.jpg", "url": "asset/model/orc/unit/Albedo.jpg"},
+				{"id": "model/character/orc/ForPainting2_lambert1_Normal.jpg", "url": "asset/model/orc/unit/ForPainting2_lambert1_Normal.jpg"}
+			]
+		}
+	]
+}
