@@ -1,0 +1,103 @@
+{
+	"environments":[
+		{
+			"id": "Bridge01",
+			"name": "Bridge 01",
+			"scale": 0.005,
+			"environmentId": "bridge",
+			"modelGroup": "environment.bridge.Bridge01",
+			"previewUrl": "",
+			"zOffset": 1,
+			"isPathBlocker": false,
+			"hasTransparentTexture": false
+		},
+		{
+			"id": "Rock08",
+			"name": "Rock 08",
+			"scale": 0.005,
+			"environmentId": "rock",
+			"modelGroup": "environment.rock.Rock08",
+			"previewUrl": "",
+			"zOffset": 0,
+			"isPathBlocker": true,
+			"hasTransparentTexture": false
+		},
+		{
+			"id": "Rock09",
+			"name": "Rock 01",
+			"scale": 0.005,
+			"environmentId": "rock",
+			"modelGroup": "environment.rock.Rock09",
+			"previewUrl": "",
+			"zOffset": 0,
+			"isPathBlocker": true,
+			"hasTransparentTexture": false
+		},
+		{
+			"id": "Rock10",
+			"name": "Rock 10",
+			"scale": 0.005,
+			"environmentId": "rock",
+			"modelGroup": "environment.rock.Rock10",
+			"previewUrl": "",
+			"zOffset": 0,
+			"isPathBlocker": true,
+			"hasTransparentTexture": false
+		},
+		{
+			"id": "Rock20",
+			"name": "Rock 20",
+			"scale": 0.005,
+			"environmentId": "rock",
+			"modelGroup": "environment.rock.Rock20",
+			"previewUrl": "",
+			"zOffset": 0,
+			"isPathBlocker": true,
+			"hasTransparentTexture": false
+		},
+		{
+			"id": "Tree03",
+			"name": "Tree 03",
+			"scale": 0.005,
+			"environmentId": "tree",
+			"modelGroup": "environment.tree.Tree03",
+			"previewUrl": "",
+			"zOffset": 0,
+			"isPathBlocker": true,
+			"hasTransparentTexture": true
+		},
+		{
+			"id": "Tree04",
+			"name": "Tree 04",
+			"scale": 0.005,
+			"environmentId": "tree",
+			"modelGroup": "environment.tree.Tree04",
+			"previewUrl": "",
+			"zOffset": 0,
+			"isPathBlocker": true,
+			"hasTransparentTexture": true
+		},
+		{
+			"id": "Tree06",
+			"name": "Tree 06",
+			"scale": 0.005,
+			"environmentId": "tree",
+			"modelGroup": "environment.tree.Tree06",
+			"previewUrl": "",
+			"zOffset": 0,
+			"isPathBlocker": true,
+			"hasTransparentTexture": true
+		},
+		{
+			"id": "Tree07",
+			"name": "Tree 07",
+			"scale": 0.005,
+			"environmentId": "tree",
+			"modelGroup": "environment.tree.Tree07",
+			"previewUrl": "",
+			"zOffset": 0,
+			"isPathBlocker": true,
+			"hasTransparentTexture": true
+		}
+	]
+}

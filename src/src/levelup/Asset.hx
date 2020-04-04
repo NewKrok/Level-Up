@@ -4,6 +4,7 @@ import h3d.mat.BlendMode;
 import hxd.Res;
 import hxd.res.Model;
 import levelup.game.GameState.RaceId;
+import levelup.EnvironmentData;
 
 /**
  * ...
@@ -36,16 +37,7 @@ class Asset
 	static public function init()
 	{
 		/*environment = [
-			{
-				id: "Bridge01",
-				name: "Bridge 01",
-				scale: 0.005,
-				environmentId: EnvironmentId.Bridge,
-				model: Res.model.environment.bridge.Bridge01,
-				previewUrl: "./asset/img/preview/environment/bridge/bridge_01.jpg",
-				zOffset: 1,
-				isPathBlocker: false
-			},
+
 			{
 				id: "Plant01",
 				name: "Plant 01",
@@ -520,33 +512,6 @@ class Asset
 				isPathBlocker: true
 			},
 			{
-				id: "Rock08",
-				name: "Rock 08",
-				scale: 0.005,
-				environmentId: EnvironmentId.Rock,
-				model: Res.model.environment.rock.Rock08,
-				previewUrl: "./asset/img/preview/environment/rock/rock_08.jpg",
-				isPathBlocker: true
-			},
-			{
-				id: "Rock09",
-				name: "Rock 09",
-				scale: 0.005,
-				environmentId: EnvironmentId.Rock,
-				model: Res.model.environment.rock.Rock09,
-				previewUrl: "./asset/img/preview/environment/rock/rock_09.jpg",
-				isPathBlocker: true
-			},
-			{
-				id: "Rock10",
-				name: "Rock 10",
-				scale: 0.005,
-				environmentId: EnvironmentId.Rock,
-				model: Res.model.environment.rock.Rock10,
-				previewUrl: "./asset/img/preview/environment/rock/rock_10.jpg",
-				isPathBlocker: true
-			},
-			{
 				id: "Rock11",
 				name: "Rock 11",
 				scale: 0.005,
@@ -756,16 +721,6 @@ class Asset
 				environmentId: EnvironmentId.Tree,
 				model: Res.model.environment.tree.Tree05,
 				previewUrl: "./asset/img/preview/environment/tree/tree_05.jpg",
-				isPathBlocker: true
-			},
-			{
-				id: "Tree06",
-				name: "Tree 06",
-				scale: 0.005,
-				hasTransparentTexture: true,
-				environmentId: EnvironmentId.Tree,
-				model: Res.model.environment.tree.Tree06,
-				previewUrl: "./asset/img/preview/environment/tree/tree_06.jpg",
 				isPathBlocker: true
 			},
 			{
@@ -1392,13 +1347,4 @@ typedef AssetConfig = {
 	@:optional var previewUrl(default, never):String;
 	@:optional var hasTransparentTexture(default, never):Bool;
 	@:optional var isPathBlocker(default, never):Bool;
-}
-
-enum abstract EnvironmentId(Int) from Int to Int
-{
-	var Bridge = 0;
-	var Rock = 1;
-	var Tree = 2;
-	var Trunk = 3;
-	var Plant = 4;
 }

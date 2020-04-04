@@ -1,0 +1,128 @@
+{
+	"groups":[
+		{
+			"id": "environment.bridge.Bridge01",
+			"models": [
+				{
+					"id": "environment.bridge.Bridge01",
+					"url": "asset/model/environment/bridge/Bridge01.hmd"
+				}
+			],
+			"textures": [
+				{"id": "texture/Manmade01Diffuse.jpg", "url": "asset/model/environment/Manmade01Diffuse.jpg"}
+			]
+		},
+		{
+			"id": "environment.rock.Rock08",
+			"models": [
+				{
+					"id": "environment.rock.Rock08",
+					"url": "asset/model/environment/rock/Rock08.hmd"
+				}
+			],
+			"textures": [
+				{"id": "texture/Rocks01Diffuse.jpg", "url": "asset/model/environment/Rocks01Diffuse.jpg"},
+				{"id": "texture/Rocks01Normal.jpg", "url": "asset/model/environment/Rocks01Normal.jpg"}
+			]
+		},
+		{
+			"id": "environment.rock.Rock09",
+			"models": [
+				{
+					"id": "environment.rock.Rock09",
+					"url": "asset/model/environment/rock/Rock09.hmd"
+				}
+			],
+			"textures": [
+				{"id": "texture/Rocks01Diffuse.jpg", "url": "asset/model/environment/Rocks01Diffuse.jpg"},
+				{"id": "texture/Rocks01Normal.jpg", "url": "asset/model/environment/Rocks01Normal.jpg"}
+			]
+		},
+		{
+			"id": "environment.rock.Rock10",
+			"models": [
+				{
+					"id": "environment.rock.Rock10",
+					"url": "asset/model/environment/rock/Rock10.hmd"
+				}
+			],
+			"textures": [
+				{"id": "texture/Rocks01Diffuse.jpg", "url": "asset/model/environment/Rocks01Diffuse.jpg"},
+				{"id": "texture/Rocks01Normal.jpg", "url": "asset/model/environment/Rocks01Normal.jpg"}
+			]
+		},
+		{
+			"id": "environment.rock.Rock20",
+			"models": [
+				{
+					"id": "environment.rock.Rock20",
+					"url": "asset/model/environment/rock/Rock20.hmd"
+				}
+			],
+			"textures": [
+				{"id": "texture/Rocks01Diffuse.jpg", "url": "asset/model/environment/Rocks01Diffuse.jpg"},
+				{"id": "texture/Rocks01Normal.jpg", "url": "asset/model/environment/Rocks01Normal.jpg"}
+			]
+		},
+		{
+			"id": "environment.tree.Tree04",
+			"models": [
+				{
+					"id": "environment.tree.Tree04",
+					"url": "asset/model/environment/tree/Tree04.hmd"
+				}
+			],
+			"textures": [
+				{"id": "texture/Coniferous01Diffuse.png", "url": "asset/model/environment/Coniferous01Diffuse.png"},
+				{"id": "texture/Coniferous01Normal.jpg", "url": "asset/model/environment/Coniferous01Normal.jpg"},
+				{"id": "texture/Trunk01Diffuse.jpg", "url": "asset/model/environment/Trunk01Diffuse.jpg"},
+				{"id": "texture/Trunk01Normal.jpg", "url": "asset/model/environment/Trunk01Normal.jpg"}
+			]
+		},
+		{
+			"id": "environment.tree.Tree03",
+			"models": [
+				{
+					"id": "environment.tree.Tree03",
+					"url": "asset/model/environment/tree/Tree03.hmd"
+				}
+			],
+			"textures": [
+				{"id": "texture/Coniferous01Diffuse.png", "url": "asset/model/environment/Coniferous01Diffuse.png"},
+				{"id": "texture/Coniferous01Normal.jpg", "url": "asset/model/environment/Coniferous01Normal.jpg"},
+				{"id": "texture/Trunk01Diffuse.jpg", "url": "asset/model/environment/Trunk01Diffuse.jpg"},
+				{"id": "texture/Trunk01Normal.jpg", "url": "asset/model/environment/Trunk01Normal.jpg"}
+			]
+		},
+		{
+			"id": "environment.tree.Tree06",
+			"models": [
+				{
+					"id": "environment.tree.Tree06",
+					"url": "asset/model/environment/tree/Tree06.hmd"
+				}
+			],
+			"textures": [
+				{"id": "texture/Coniferous01Diffuse.png", "url": "asset/model/environment/Coniferous01Diffuse.png"},
+				{"id": "texture/Coniferous01Normal.jpg", "url": "asset/model/environment/Coniferous01Normal.jpg"},
+				{"id": "texture/Trunk01Diffuse.jpg", "url": "asset/model/environment/Trunk01Diffuse.jpg"},
+				{"id": "texture/Trunk01Normal.jpg", "url": "asset/model/environment/Trunk01Normal.jpg"}
+			]
+		},
+		{
+			"id": "environment.tree.Tree07",
+			"models": [
+				{
+					"id": "environment.tree.Tree07",
+					"url": "asset/model/environment/tree/Tree07.hmd"
+				}
+			],
+			"textures": [
+				{"id": "texture/Coniferous01Diffuse.png", "url": "asset/model/environment/Coniferous01Diffuse.png"},
+				{"id": "texture/Coniferous01Normal.jpg", "url": "asset/model/environment/Coniferous01Normal.jpg"},
+				{"id": "texture/Trunk01Diffuse.jpg", "url": "asset/model/environment/Trunk01Diffuse.jpg"},
+				{"id": "texture/Trunk01Normal.jpg", "url": "asset/model/environment/Trunk01Normal.jpg"}
+			]
+		}
+	]
+}

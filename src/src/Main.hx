@@ -7,6 +7,7 @@ import hpp.heaps.Base2dApp;
 import hpp.heaps.Base2dStage.StageScaleMode;
 import hxd.Res;
 import levelup.AssetCache;
+import levelup.EnvironmentData;
 import levelup.MapData;
 import levelup.TerrainAssets;
 import levelup.UnitData;
@@ -31,9 +32,14 @@ class Main extends Base2dApp
 		/*Asset.init();*/
 		TerrainAssets.init();
 		SaveUtil.load();
+
+		EnvironmentData.addData(Json.parse(Res.data.environment_data.entry.getText()));
+		AssetCache.addData(Json.parse(Res.data.environment_model_data.entry.getText()));
+
 		UnitData.addData(Json.parse(Res.data.elf_unit_data.entry.getText()));
-		UnitData.addData(Json.parse(Res.data.orc_unit_data.entry.getText()));
 		AssetCache.addData(Json.parse(Res.data.elf_model_data.entry.getText()));
+
+		UnitData.addData(Json.parse(Res.data.orc_unit_data.entry.getText()));
 		AssetCache.addData(Json.parse(Res.data.orc_model_data.entry.getText()));
 
 		//changeState(EditorState, [stage, s3d, SaveUtil.editorData.customMaps[0]]);

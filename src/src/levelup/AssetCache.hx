@@ -1,13 +1,19 @@
 package levelup;
 
+import h3d.prim.Cube;
 import h3d.prim.ModelCache;
 import haxe.ds.Map;
+import h3d.scene.Mesh;
+import hxd.BitmapData;
 import hxd.net.BinaryLoader;
 import hxd.res.Model;
 import tink.CoreApi.Future;
 import tink.CoreApi.FutureTrigger;
 import tink.CoreApi.Noise;
 import tink.CoreApi.Outcome;
+import h3d.mat.Material;
+import h3d.mat.Texture;
+import h3d.prim.Sphere;
 
 /**
  * ...
@@ -133,6 +139,33 @@ class AssetCache
 		for (m in list) loadRoutine(m);
 
 		return result;
+	}
+
+	public static function getUndefinedModel()
+	{
+		var primtive = new Cube(1, 1, 1);
+		primtive.addNormals();
+		primtive.addUVs();
+		primtive.addTangents();
+
+		if (textureDirectory.get("undefinedModel") == null)
+		{
+			var texBmp = new BitmapData(50, 50);
+			texBmp.fill(0, 0, 5, 5, 0xFF000000);
+			for (i in 0...5)
+				for (j in 0...5)
+					if ((j % 2 == 0 && i % 2 != 0) || (j % 2 != 0 && i % 2 == 0))
+						texBmp.fill(i * 10, j * 10, 10, 10, 0xFFFF0000);
+
+			textureDirectory.set("undefinedModel", Texture.fromBitmap(texBmp));
+		}
+
+		var undefinedModel = new Mesh(primtive, Material.create(textureDirectory.get("undefinedModel")));
+		undefinedModel.material.castShadows = false;
+		undefinedModel.material.receiveShadows = false;
+		undefinedModel.material.mainPass.isStatic = true;
+
+		return undefinedModel;
 	}
 
 	public static function getModel(modelId:String) return modelCache.loadModel(modelDirectory.get(modelId));

@@ -57,7 +57,6 @@ class GameState extends Base2dState
 	var world:GameWorld;
 	var adventureConfig:AdventureConfig;
 	var model:GameModel;
-	var cache:ModelCache = new ModelCache();
 
 	var s2d:h2d.Scene;
 	var s3d:h3d.scene.Scene;
@@ -186,10 +185,15 @@ class GameState extends Base2dState
 
 		for (o in adventureConfig.worldConfig.staticObjects.concat([]))
 		{
-			var config = Asset.getAsset(o.id);
-			var instance:Object = cache.loadModel(config.model);
-			if (config.hasTransparentTexture != null && config.hasTransparentTexture) for (m in instance.getMaterials()) m.textureShader.killAlpha = true;
-			world.addToWorldPoint(instance, o.x, o.y, o.z, o.scale, o.rotation);
+			var config = EnvironmentData.getEnvironmentConfig(o.id);
+			var instance:Object = config == null ? AssetCache.getUndefinedModel() : AssetCache.getModel(config.modelGroup);
+
+			if (config != null && config.hasTransparentTexture != null && config.hasTransparentTexture)
+				for (m in instance.getMaterials()) m.textureShader.killAlpha = true;
+			else if (config == null)
+				trace('Warning! There is a static object in the world without proper config with this id: ${o.id}');
+
+			world.addToWorldPoint(instance, o.x, o.y, o.z, config == null ? 1 : o.scale, o.rotation);
 
 			if (o.isPathBlocker)
 			{

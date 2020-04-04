@@ -33,6 +33,8 @@ class AdventureParser
 		var rawData = Json.parse(rawDataStr);
 		var rawWorldConfig = Json.parse(compressor.decompressFromEncodedURIComponent(rawData.worldConfig));
 
+		var neededModelGroups:Array<String> = [];
+
 		var startingTime = rawWorldConfig.startingTime == null ? 12 : rawWorldConfig.startingTime;
 		var sunAndMoonOffsetPercent = rawWorldConfig.sunAndMoonOffsetPercent == null ? 20 : rawWorldConfig.sunAndMoonOffsetPercent;
 		var dayColor = rawWorldConfig.dayColor == null ? "#FFFFFF" : rawWorldConfig.dayColor;
@@ -40,7 +42,7 @@ class AdventureParser
 		var sunsetColor = rawWorldConfig.sunsetColor == null ? "#CC9919" : rawWorldConfig.sunsetColor;
 		var dawnColor = rawWorldConfig.dawnColor == null ? "#808080" : rawWorldConfig.dawnColor;
 
-		var staticObjects:Array<StaticObjectConfig> = [];/*[for (o in cast(rawWorldConfig.staticObjects, Array<Dynamic>)) {
+		var staticObjects:Array<StaticObjectConfig> = [for (o in cast(rawWorldConfig.staticObjects, Array<Dynamic>)) {
 			id: o.id,
 			name: o.name,
 			x: o.x,
@@ -50,7 +52,15 @@ class AdventureParser
 			scale: o.scale,
 			rotation: new Quat(o.rotation.x, o.rotation.y, o.rotation.z, o.rotation.w),
 			isPathBlocker: o.isPathBlocker
-		}];*/
+		}];
+
+		for (o in staticObjects)
+		{
+			var environmentConfig = EnvironmentData.getEnvironmentConfig(o.id);
+
+			if (environmentConfig != null && neededModelGroups.indexOf(environmentConfig.modelGroup) == -1)
+				neededModelGroups.push(environmentConfig.modelGroup);
+		}
 
 		var units:Array<InitialUnitData> = [for (o in cast(rawWorldConfig.units, Array<Dynamic>)) {
 			owner: o.owner,
@@ -147,7 +157,6 @@ class AdventureParser
 			rawWorldConfig.editorLastCamPosition.z
 		);
 
-		var neededModelGroups:Array<String> = [];
 		for (u in units)
 		{
 			var unitConfig = UnitData.getUnitConfig(u.id);
