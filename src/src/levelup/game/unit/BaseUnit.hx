@@ -15,7 +15,6 @@ import h2d.Tile;
 import h3d.col.Capsule;
 import h3d.col.Point;
 import h3d.mat.BlendMode;
-import h3d.prim.ModelCache;
 import h3d.scene.Interactive;
 import h3d.scene.Object;
 import h3d.scene.Scene;
@@ -27,6 +26,7 @@ import hpp.util.GeomUtil.SimplePoint;
 import hxd.res.FontBuilder;
 import hxd.res.Model;
 import js.lib.Date;
+import levelup.game.ui.UnitInfo;
 import levelup.shader.Opacity;
 import levelup.util.GeomUtil3D;
 import motion.Actuate;
@@ -51,6 +51,8 @@ import tink.state.State;
 	public var onClick:BaseUnit->Void;
 
 	public var view:Object;
+	public var unitInfo:UnitInfo;
+
 	public var selectionCircle:Graphics;
 	public var rotationSpeed:Float = 5;
 	public var path(get, never):Array<SimplePoint>;
@@ -64,7 +66,6 @@ import tink.state.State;
 	var currentTargetPoint:SimplePoint = { x: 0, y: 0 };
 	var currentTargetAngle:Float = 0;
 	var viewRotation:Float = 0;
-	var cache:ModelCache = new ModelCache();
 
 	var interact:Interactive;
 	var collider:Capsule;
@@ -76,6 +77,7 @@ import tink.state.State;
 	var attackResultHandler:Void->Void;
 
 	public var state:State<UnitState> = new State<UnitState>(Idle);
+	public var activeCommand:State<UnitCommand> = new State<UnitCommand>(Nothing);
 	public var life:State<Float> = new State<Float>(0);
 	public var mana:State<Float> = new State<Float>(0);
 
@@ -92,8 +94,8 @@ import tink.state.State;
 
 		view = AssetCache.getModel(config.modelGroup + ".idle");
 		view.z = config.zOffset;
-		parent.addChild(view);
 		view.scale(config.modelScale);
+		parent.addChild(view);
 
 		createSelectionCircle();
 
@@ -121,7 +123,7 @@ import tink.state.State;
 		mana.set(config.maxMana);
 
 		// temporary
-		//t = new Text(FontBuilder.getFont("Arial", 12), s2d);
+		t = new Text(FontBuilder.getFont("Arial", 12), s2d);
 
 		state.observe().bind(function(v)
 		{
@@ -131,7 +133,7 @@ import tink.state.State;
 					view.playAnimation(AssetCache.getAnimation(config.modelGroup + ".idle"));
 					view.currentAnimation.speed = config.idleAnimSpeedMultiplier * config.speedMultiplier;
 
-				case MoveTo | AttackMoveTo | AttackRequested:
+				case MoveTo | AttackRequested:
 					view.playAnimation(AssetCache.getAnimation(config.modelGroup + ".walk"));
 					view.currentAnimation.speed = config.runAnimSpeedMultiplier * config.speedMultiplier;
 
@@ -150,6 +152,8 @@ import tink.state.State;
 				case Rotten:
 			}
 		});
+
+		unitInfo = new UnitInfo(s2d, this);
 	}
 
 	function createSelectionCircle()
@@ -186,10 +190,24 @@ import tink.state.State;
 		if (config.attackSpeed < animDuration) view.currentAnimation.speed = animDuration / config.attackSpeed;
 	}
 
+	public function attackMoveTo(point:SimplePoint):Result
+	{
+		if (state.value == Dead) return null;
+		activeCommand.set(AttackMoveTo(point));
+
+		return triggerMoveTo(point);
+	}
+
 	public function moveTo(point:SimplePoint):Result
 	{
 		if (state.value == Dead) return null;
+		activeCommand.set(MoveTo(point));
 
+		return triggerMoveTo(point);
+	}
+
+	function triggerMoveTo(point:SimplePoint)
+	{
 		if (moveToPath != null && moveToPath.length > 0 && point.x == moveToPath[moveToPath.length - 1].x && point.y == moveToPath[moveToPath.length - 1].y)
 		{
 			return moveResult;
@@ -283,6 +301,12 @@ import tink.state.State;
 		else
 		{
 			onMoveEnd();
+
+			switch (activeCommand.value)
+			{
+				case UnitCommand.MoveTo(_): activeCommand.set(UnitCommand.Nothing);
+				case _:
+			}
 		}
 	}
 
@@ -290,6 +314,7 @@ import tink.state.State;
 	{
 		moveToPath = null;
 		state.set(Idle);
+
 		if (moveResultHandler != null) moveResultHandler();
 	}
 
@@ -361,14 +386,22 @@ import tink.state.State;
 
 	public function update(d:Float)
 	{
-		if (target == null && nearestTarget != null && state.value != UnitState.AttackTriggered && state != MoveTo)
+		var isInMoveToCommand = switch (activeCommand.value)
+			{
+				case UnitCommand.MoveTo(_): true;
+				case _: false;
+			}
+
+		if (target == null && nearestTarget != null && state.value != UnitState.AttackTriggered && !isInMoveToCommand)
 		{
 			attack(nearestTarget);
 		}
 
-		/*t.text = "Id: " + id + "\nState: " + Std.string(state.value) + "\nLife: " + Math.floor(life.value) + "\nRotation: " + Math.floor(currentTargetAngle * 100) / 100;
-		var pos = cast(GameWorld.instance.parent, Scene).camera.project(view.x, view.y, view.z, HppG.stage2d.defaultWidth, HppG.stage2d.defaultHeight);
-		t.setPosition(pos.x, pos.y);*/
+		var pos2d = cast(GameWorld.instance.parent, Scene).camera.project(view.x, view.y, view.z, HppG.stage2d.width, HppG.stage2d.height);
+
+		/*t.text = "State: " + Std.string(state.value) + "\nCommand: " + Std.string(activeCommand.value) + "\nLife: " + Math.floor(life.value) + "\nRotation: " + Math.floor(currentTargetAngle * 100) / 100;
+		t.setPosition(pos2d.x, pos2d.y);*/
+		unitInfo.setPosition(pos2d.x - unitInfo.getSize().width / 2, pos2d.y + 10);
 
 		var now = Date.now();
 
@@ -416,7 +449,10 @@ import tink.state.State;
 		}
 	}
 
-	public function setNearestTarget(t:BaseUnit) nearestTarget = t;
+	public function setNearestTarget(t:BaseUnit)
+	{
+		nearestTarget = t;
+	}
 
 	public function attack(t:BaseUnit)
 	{
@@ -432,6 +468,8 @@ import tink.state.State;
 
 	function attackRequest()
 	{
+		Actuate.stop(view, null, false, false);
+
 		if (state.value == Dead) return;
 
 		var p = target.getWorldPoint();
@@ -492,7 +530,7 @@ import tink.state.State;
 
 	function checkTargetLife()
 	{
-		if (target != null && target.state == Dead)
+		if (target != null && (target.state == Dead || target.state == Rotten))
 		{
 			target = null;
 			nearestTarget = null;
@@ -503,6 +541,12 @@ import tink.state.State;
 				onMoveEnd();
 				if (attackResultHandler != null) attackResultHandler();
 				attackResultHandler = null;
+			}
+
+			switch (activeCommand.value)
+			{
+				case AttackMoveTo(p): attackMoveTo(p);
+				case _:
 			}
 		}
 	}
@@ -527,6 +571,8 @@ import tink.state.State;
 	{
 		Actuate.stop(view, null, false, false);
 
+		if (t != null) t.remove();
+
 		if (moveEndDelayTimer != null)
 		{
 			moveEndDelayTimer.stop();
@@ -538,10 +584,10 @@ import tink.state.State;
 			attackTimer = null;
 		}
 
+		unitInfo.dispose();
+
 		view.removeChildren();
 		view.remove();
-
-		cache.dispose();
 	}
 }
 
@@ -550,7 +596,12 @@ enum UnitState {
 	Idle;
 	Dead;
 	MoveTo;
-	AttackMoveTo;
 	AttackRequested;
 	AttackTriggered;
+}
+
+enum UnitCommand {
+	Nothing;
+	MoveTo(point:SimplePoint);
+	AttackMoveTo(point:SimplePoint);
 }

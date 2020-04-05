@@ -33,6 +33,7 @@ import hxd.Res;
 import levelup.TerrainAssets.TerrainConfig;
 import levelup.TerrainAssets.TerrainEffect;
 import levelup.game.GameState.WorldConfig;
+import levelup.game.js.AStar.GridNode;
 import levelup.game.js.Graph;
 import levelup.game.unit.BaseUnit;
 import levelup.shader.Wave;
@@ -82,6 +83,7 @@ class GameWorld extends World
 	var interact:Interactive;
 	var isWorldGraphDirty:Bool = false;
 	var lastRerouteTime:Float = 0;
+	var pathBlocksByUnits:Array<GridNode> = [];
 
 	var shadow:DefaultShadowMap;
 	var shadowColor:Vector = new Vector(0.4, 0.4, 0.4);
@@ -377,17 +379,7 @@ class GameWorld extends World
 
 	public function resetWorldWeight()
 	{
-		/*var indexI = worldConfig.pathFindingMap.length - 1;
-		for (i in 0...worldConfig.pathFindingMap.length)
-		{
-			var indexJ = worldConfig.pathFindingMap[0].length - 1;
-			for (j in 0...worldConfig.pathFindingMap[0].length)
-			{
-				graph.grid[i][j].weight = worldConfig.pathFindingMap[indexI][j] == 1 || worldConfig.pathFindingMap[indexI][j] == 2 ? 0 : 1;
-				indexJ--;
-			}
-			indexI--;
-		}*/
+		for (r in pathBlocksByUnits) r.weight = 1;
 	}
 
 	public function addToWorldPoint(model:Object, x:Float, y:Float, z:Float = 1, scale = 1., rotation:Quat = null):Void
@@ -533,9 +525,10 @@ class GameWorld extends World
 
 	function calculateUnitInteractions(d:Float)
 	{
+		pathBlocksByUnits = [];
 		for (uA in units)
 		{
-			/*var p = uA.getWorldPoint();
+			var p = uA.getWorldPoint();
 			if (graph.grid[cast p.y][cast p.x].weight != 0)
 			{
 				var indexesY = [0];
@@ -547,11 +540,12 @@ class GameWorld extends World
 						if (p.x + j > 0 && p.x + j < graph.grid[0].length && p.y + i > 0 && p.y + i < graph.grid.length)
 						{
 							graph.grid[cast p.y + i][cast p.x + j].weight = 0;
+							pathBlocksByUnits.push(graph.grid[cast p.y + i][cast p.x + j]);
 						}
 					}
 				}
 				isWorldGraphDirty = true;
-			}*/
+			}
 
 			var bestDistance = 999999.;
 			var bestUnit = null;
@@ -587,11 +581,11 @@ class GameWorld extends World
 
 						switch ([uA.state.value, uB.state.value])
 						{
-							case [UnitState.MoveTo | UnitState.AttackMoveTo | UnitState.AttackRequested, UnitState.Idle]: uAPower = 2; uBPower = 0;
-							case [UnitState.Idle, UnitState.MoveTo | UnitState.AttackMoveTo | UnitState.AttackRequested]: uAPower = 0; uBPower = 2;
+							case [UnitState.MoveTo | UnitState.AttackRequested, UnitState.Idle]: uAPower = 1; uBPower = 0;
+							case [UnitState.Idle, UnitState.MoveTo | UnitState.AttackRequested]: uAPower = 0; uBPower = 1;
 
-							case [UnitState.MoveTo | UnitState.AttackMoveTo | UnitState.AttackRequested, UnitState.AttackTriggered]: uAPower = 1; uBPower = 0;
-							case [UnitState.AttackTriggered, UnitState.MoveTo | UnitState.AttackMoveTo | UnitState.AttackRequested]: uAPower = 0; uBPower = 1;
+							case [UnitState.MoveTo | UnitState.AttackRequested, UnitState.AttackTriggered]: uAPower = 0.5; uBPower = 0;
+							case [UnitState.AttackTriggered, UnitState.MoveTo | UnitState.AttackRequested]: uAPower = 0; uBPower = 0.5;
 
 							case _:
 						}
@@ -606,7 +600,7 @@ class GameWorld extends World
 				}
 			}
 
-			if (bestUnit != null && uA.state != MoveTo) uA.setNearestTarget(bestUnit);
+			if (bestUnit != null) uA.setNearestTarget(bestUnit);
 		}
 	}
 
@@ -626,7 +620,7 @@ class GameWorld extends World
 				if (v == Rotten)
 				{
 					units.remove(u);
-					u.view.remove();
+					u.dispose();
 				}
 			});
 			units.push(u);

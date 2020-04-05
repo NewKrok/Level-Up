@@ -103,7 +103,7 @@ class AdventureParser
 				condition: null,
 				actions: [
 					TriggerAction.CreateUnit("minion", PlayerId.Player2, "Region 0"),
-					TriggerAction.AttackMoveToRegion(UnitDefinition.LastCreatedUnit, "Region 3")
+					TriggerAction.AttackMoveToRegion(UnitDefinition.LastCreatedUnit, "Region 2")
 				]
 			},
 			{
@@ -113,7 +113,7 @@ class AdventureParser
 				condition: null,
 				actions: [
 					TriggerAction.CreateUnit("bandwagon", PlayerId.Player2, "Region 0"),
-					TriggerAction.AttackMoveToRegion(UnitDefinition.LastCreatedUnit, "Region 3")
+					TriggerAction.AttackMoveToRegion(UnitDefinition.LastCreatedUnit, "Region 2")
 				]
 			},
 			{
@@ -123,7 +123,7 @@ class AdventureParser
 				condition: null,
 				actions: [
 					TriggerAction.CreateUnit("knome", PlayerId.Player3, "Region 2"),
-					TriggerAction.AttackMoveToRegion(UnitDefinition.LastCreatedUnit, "Region 3")
+					TriggerAction.AttackMoveToRegion(UnitDefinition.LastCreatedUnit, "Region 0")
 				]
 			},
 			{
@@ -132,8 +132,8 @@ class AdventureParser
 				event: TriggerEvent.TimePeriodic(35),
 				condition: null,
 				actions: [
-					TriggerAction.CreateUnit("rockgolem", PlayerId.Player2, "Region 2"),
-					TriggerAction.AttackMoveToRegion(UnitDefinition.LastCreatedUnit, "Region 3")
+					TriggerAction.CreateUnit("rockgolem", PlayerId.Player3, "Region 2"),
+					TriggerAction.AttackMoveToRegion(UnitDefinition.LastCreatedUnit, "Region 0")
 				]
 			}
 		];

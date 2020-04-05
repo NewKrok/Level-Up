@@ -2,6 +2,8 @@ package levelup.game.ui;
 
 import h2d.Graphics;
 import h2d.Object;
+import motion.Actuate;
+import tink.CoreApi.CallbackLink;
 import tink.state.Observable;
 
 /**
@@ -12,6 +14,7 @@ class LineBar extends Object
 {
 	var backGround:Graphics;
 	var line:Graphics;
+	var stateLink:CallbackLink;
 
 	public function new(parent:Object, value:Observable<Float>, maxValue:Float, width:Float = 200, height:Float = 20, color:UInt = 0xFFFFFF)
 	{
@@ -21,25 +24,25 @@ class LineBar extends Object
 		backGround.beginFill(0x000000);
 		backGround.drawRect(0, 0, width, height);
 		backGround.endFill();
-		backGround.beginFill(0x555555);
-		backGround.drawRect(2, 2, width - 4, height - 4);
-		backGround.endFill();
-		backGround.beginFill(0x2E221B);
-		backGround.drawRect(4, 4, width - 8, height - 8);
-		backGround.endFill();
 
 		line = new Graphics(this);
+		line.beginFill(color);
+		line.drawRect(0, 0, width, height);
+		line.endFill();
 
-		value.bind(function(v)
+		stateLink = value.bind(v ->
 		{
-			var width = (width - 12) * (v / maxValue);
-			line.clear();
-			line.beginFill(color);
-			line.drawRect(6, 6, width, height - 12);
-			line.endFill();
-			line.beginFill(0x000000, 0.4);
-			line.drawRect(6, 12, width, 6);
-			line.endFill();
+			Actuate.stop(line);
+			Actuate.tween(line, .3, { scaleX: v / maxValue });
 		});
+	}
+
+	public function dispose()
+	{
+		stateLink.dissolve();
+		stateLink = null;
+
+		line.clear();
+		backGround.clear();
 	}
 }

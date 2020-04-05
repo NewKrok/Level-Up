@@ -150,12 +150,12 @@ class AssetCache
 
 		if (textureDirectory.get("undefinedModel") == null)
 		{
-			var texBmp = new BitmapData(50, 50);
+			var texBmp = new BitmapData(20, 20);
 			texBmp.fill(0, 0, 5, 5, 0xFF000000);
 			for (i in 0...5)
 				for (j in 0...5)
 					if ((j % 2 == 0 && i % 2 != 0) || (j % 2 != 0 && i % 2 == 0))
-						texBmp.fill(i * 10, j * 10, 10, 10, 0xFFFF0000);
+						texBmp.fill(i * 4, j * 4, 4, 4, 0xFFFF0000);
 
 			textureDirectory.set("undefinedModel", Texture.fromBitmap(texBmp));
 		}

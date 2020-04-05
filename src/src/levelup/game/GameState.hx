@@ -461,7 +461,7 @@ class GameState extends Base2dState
 						var unit:BaseUnit = resolveUnitByDefinition(unitDefinition, localVariables);
 						if (region != null && unit != null)
 						{
-							unit.moveTo({ y: region.x + region.width * Math.random(), x: region.y + region.height * Math.random() });
+							unit.attackMoveTo({ y: region.x + region.width * Math.random(), x: region.y + region.height * Math.random() });
 						}
 
 					case _: trace("Unknown action in action list: " + actions);

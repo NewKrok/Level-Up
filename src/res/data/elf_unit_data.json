@@ -84,7 +84,7 @@
 			"modelScale": 0.008,
 			"speed": 6,
 			"speedMultiplier": 1,
-			"attackRange": 2.1,
+			"attackRange": 4,
 			"attackSpeed": 1800,
 			"damagePercentDelay": 0.5,
 			"damageMin": 10,
