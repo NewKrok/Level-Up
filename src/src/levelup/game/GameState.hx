@@ -247,31 +247,7 @@ class GameState extends Base2dState
 
 	function createUnit(id:String, owner:PlayerId, posX:Float, posY:Float, scale:Float = null, rotation:Quat = null)
 	{
-		var unit = new BaseUnit(s2d, world, owner, UnitData.getUnitConfig(id));
-
-		/*switch (id) {
-			// orc
-			case "bandwagon": new BandWagon(s2d, world, owner);
-			case "berserker": new Berserker(s2d, world, owner);
-			case "drake": new Drake(s2d, world, owner);
-			case "minion": new Minion(s2d, world, owner);
-			case "grunt": new Grunt(s2d, world, owner);
-			// human
-			case "archer": new Archer(s2d, world, owner);
-			case "footman": new Footman(s2d, world, owner);
-			// elf
-			case "demonhunter": new DemonHunter(s2d, world, owner);
-			case "druid": new Druid(s2d, world, owner);
-			case "dryad": new Dryad(s2d, world, owner);
-			case "ranger": new Ranger(s2d, world, owner);
-			case "rockgolem": new RockGolem(s2d, world, owner);
-			case "treeant": new Treeant(s2d, world, owner);
-
-			case "knome" | "ranger" | "battleowl":
-				return new BaseUnit(s2d, world, owner, UnitData.getUnitConfig(id));
-
-			case _: null;
-		};*/
+		var unit = new BaseUnit(s2d, world, owner, UnitData.getUnitConfig(id), createProjectile);
 
 		unit.view.x = posX * world.blockSize + world.blockSize / 2;
 		unit.view.y = posY * world.blockSize + world.blockSize / 2;
@@ -289,6 +265,11 @@ class GameState extends Base2dState
 				selectedUnit.observe()
 			);
 		}
+	}
+
+	function createProjectile(d:ProjectileData)
+	{
+		world.addEntity(new Projectile(s3d, d));
 	}
 
 	function selectUnit(u)

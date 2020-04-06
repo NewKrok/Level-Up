@@ -33,6 +33,7 @@ import hxd.Res;
 import levelup.TerrainAssets.TerrainConfig;
 import levelup.TerrainAssets.TerrainEffect;
 import levelup.game.GameState.WorldConfig;
+import levelup.game.Projectile.ProjectileState;
 import levelup.game.js.AStar.GridNode;
 import levelup.game.js.Graph;
 import levelup.game.unit.BaseUnit;
@@ -71,6 +72,7 @@ class GameWorld extends World
 	public var onWorldWheel:Event->Void;
 
 	public var units(default, null):Array<BaseUnit> = [];
+	public var projectiles(default, null):Array<Projectile> = [];
 	public var staticObjects(default, null):Array<StaticObject> = [];
 	public var regionDatas(default, null):Array<RegionData> = [];
 
@@ -416,6 +418,7 @@ class GameWorld extends World
 			u.update(d);
 		}
 
+		for (p in projectiles) p.update(d);
 		for (o in staticObjects) o.instance.z = GeomUtil3D.getHeightByPosition(heightGrid, o.instance.x, o.instance.y) + o.zOffset;
 
 		resetWorldWeight();
@@ -624,6 +627,20 @@ class GameWorld extends World
 				}
 			});
 			units.push(u);
+		}
+		else if (Std.is(o, Projectile))
+		{
+			var p:Projectile = cast o;
+			p.state.bind(v ->
+			{
+				if (v == ProjectileState.Finished)
+				{
+					projectiles.remove(p);
+					p.dispose();
+				}
+			});
+
+			projectiles.push(p);
 		}
 	}
 

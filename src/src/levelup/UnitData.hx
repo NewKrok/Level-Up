@@ -25,6 +25,7 @@ typedef UnitConfig =
 	var modelScale:Float;
 	var speed:Float;
 	var speedMultiplier:Float;
+	var projectileConfig:ProjectileConfig;
 	var attackRange:Float;
 	var attackSpeed:Int;
 	var damagePercentDelay:Float;
@@ -36,4 +37,17 @@ typedef UnitConfig =
 	var unitSize:Float;
 	var isFlyingUnit:Bool;
 	var zOffset:Float;
+}
+
+typedef ProjectileConfig =
+{
+	var type:ProjectileType;
+	var lifeTime:Int;
+	var speed:Float;
+}
+
+enum abstract ProjectileType(String) from String to String
+{
+	var Pointer = "pointer";
+	var Follower = "follower";
 }

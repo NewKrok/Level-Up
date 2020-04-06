@@ -47,6 +47,7 @@ import tink.state.State;
 	var parent:Object = _;
 	public var owner(default, null):PlayerId = _;
 	public var config(default, null):UnitConfig = _;
+	public var createProjectile(default, null):ProjectileData->Void = _;
 
 	public var onClick:BaseUnit->Void;
 
@@ -503,11 +504,16 @@ import tink.state.State;
 			currentTargetAngle = GeomUtil.getAngle(target.getPosition(), getPosition()) + Math.PI / 2;
 			if (currentTargetAngle < 0) currentTargetAngle += Math.PI * 2;
 
-			attackTimer = Timer.delay(function()
+			attackTimer = Timer.delay(() ->
 			{
 				if (canAttackTarget())
 				{
-					target.damage(calculateDamage(), this);
+					if (config.projectileConfig == null) target.damage(calculateDamage(), this);
+					else createProjectile({
+						owner: this,
+						target: target,
+						damage: calculateDamage()
+					});
 				}
 				else if (target != null && target.state != Dead) attackRequest();
 			}, Math.floor(config.damagePercentDelay * view.currentAnimation.getDuration()
@@ -589,6 +595,13 @@ import tink.state.State;
 		view.removeChildren();
 		view.remove();
 	}
+}
+
+typedef ProjectileData =
+{
+	var owner:BaseUnit;
+	var target:BaseUnit;
+	var damage:Float;
 }
 
 enum UnitState {
