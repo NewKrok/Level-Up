@@ -92,7 +92,13 @@ class GameState extends Base2dState
 		this.stateConfig = stateConfigParam == null ? { isTestRun: false } : stateConfigParam;
 		adventureConfig = AdventureParser.loadLevel(rawMap);
 
-		AssetCache.load(adventureConfig.neededModelGroups, adventureConfig.neededTextures).handle(o -> switch(o)
+		AssetCache.load(adventureConfig.neededModelGroups, adventureConfig.neededTextures.concat([
+			"asset/texture/effect/smoke.png",
+			"asset/texture/effect/T_ky_shockwave12_4x4_small.png",
+			"asset/texture/effect/test_eff_1.png",
+			"asset/texture/effect/test_eff_2.png",
+			"asset/texture/effect/test_eff_3.png"
+		])).handle(o -> switch(o)
 		{
 			case Success(_): onLoaded(rawMap);
 			case Failure(e):

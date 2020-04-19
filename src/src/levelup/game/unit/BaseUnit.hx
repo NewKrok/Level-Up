@@ -1,6 +1,10 @@
 package levelup.game.unit;
 
 import h3d.Vector;
+import h3d.anim.Animation;
+import h3d.anim.SmoothTarget;
+import h3d.anim.SmoothTransition;
+import h3d.anim.Transition;
 import h3d.scene.Graphics;
 import h3d.shader.ColorMult;
 import levelup.AsyncUtil;
@@ -52,6 +56,8 @@ import tink.state.State;
 	public var onClick:BaseUnit->Void;
 
 	public var view:Object;
+	public var animTransition:SmoothTarget;
+	public var currentAnimation:Animation;
 	public var unitInfo:UnitInfo;
 
 	public var selectionCircle:Graphics;
@@ -98,6 +104,12 @@ import tink.state.State;
 		view.scale(config.modelScale);
 		parent.addChild(view);
 
+		for( view in view.getMaterials() ) {
+			var p = view.allocPass("highlight");
+			p.culling = None;
+			p.depthWrite = false;
+		}
+
 		createSelectionCircle();
 
 		collider = new Capsule(new Point(0, 0, -1), new Point(0, 0, 1), config.unitSize);
@@ -131,12 +143,57 @@ import tink.state.State;
 			switch(v)
 			{
 				case Idle:
+					/*if (currentAnimation == null)
+					{
+						currentAnimation = AssetCache.getAnimation(config.modelGroup + ".idle").createInstance(view);
+					}
+
+					var newAnim = AssetCache.getAnimation(config.modelGroup + ".idle").createInstance(view);
+					newAnim.onAnimEnd = () -> {};
+					if (animTransition == null)
+					{
+						animTransition = new Transition("asd", currentAnimation, newAnim);
+						animTransition.onAnimEnd = () -> {};
+					}
+					else
+					{
+						animTransition.anim1 = currentAnimation;
+						animTransition.anim2 = newAnim;
+						animTransition.blendFactor = 0;
+					}
+					currentAnimation = newAnim;
+					view.playAnimation(animTransition);*/
+
 					view.playAnimation(AssetCache.getAnimation(config.modelGroup + ".idle"));
 					view.currentAnimation.speed = config.idleAnimSpeedMultiplier * config.speedMultiplier;
 
 				case MoveTo | AttackRequested:
 					view.playAnimation(AssetCache.getAnimation(config.modelGroup + ".walk"));
 					view.currentAnimation.speed = config.runAnimSpeedMultiplier * config.speedMultiplier;
+/*
+					if (currentAnimation == null)
+					{
+						currentAnimation = AssetCache.getAnimation(config.modelGroup + ".idle").createInstance(view);
+					}
+
+					var newAnim = AssetCache.getAnimation(config.modelGroup + ".walk").createInstance(view);
+					newAnim.onAnimEnd = () -> {};
+
+					if (animTransition == null)
+					{
+						animTransition = new Transition("asd", currentAnimation, newAnim);
+						animTransition.onAnimEnd = () -> {};
+					}
+					else
+					{
+						animTransition.anim1 = currentAnimation;
+						animTransition.anim2 = newAnim;
+						animTransition.blendFactor = 0;
+					}
+
+					//animTransition = new SmoothTransition(currentAnimation, newAnim, 200000);
+					currentAnimation = newAnim;
+					view.playAnimation(animTransition);*/
 
 				case AttackTriggered:
 					// Handled in a different way bewcause it's hybrid between idle and attack
@@ -398,11 +455,12 @@ import tink.state.State;
 			attack(nearestTarget);
 		}
 
-		var pos2d = cast(GameWorld.instance.parent, Scene).camera.project(view.x, view.y, view.z, HppG.stage2d.width, HppG.stage2d.height);
+		var camera = cast(GameWorld.instance.parent, Scene).camera;
+		var pos2d = camera.project(view.x, view.y, view.z, HppG.stage2d.width, HppG.stage2d.height);
 
 		/*t.text = "State: " + Std.string(state.value) + "\nCommand: " + Std.string(activeCommand.value) + "\nLife: " + Math.floor(life.value) + "\nRotation: " + Math.floor(currentTargetAngle * 100) / 100;
 		t.setPosition(pos2d.x, pos2d.y);*/
-		unitInfo.setPosition(pos2d.x - unitInfo.getSize().width / 2, pos2d.y + 10);
+		unitInfo.setPosition(pos2d.x - unitInfo.getSize().width / 2, pos2d.y - 50 * (40 / camera.pos.z));
 
 		var now = Date.now();
 
@@ -434,7 +492,12 @@ import tink.state.State;
 				{
 					if (currentTargetAngle == 0) currentTargetAngle = Math.PI * 2;
 					else currentTargetAngle += Math.PI * 2;
-					if (currentTargetAngle > Math.PI * 4) currentTargetAngle -= Math.PI * 4;
+
+					if (currentTargetAngle >= Math.PI * 4)
+					{
+						currentTargetAngle -= Math.PI * 4;
+						viewRotation -= Math.PI * 4;
+					}
 
 					diff = currentTargetAngle - viewRotation;
 				}

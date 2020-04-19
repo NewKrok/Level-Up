@@ -11,6 +11,7 @@ import levelup.EnvironmentData;
 import levelup.MapData;
 import levelup.TerrainAssets;
 import levelup.UnitData;
+import levelup.core.renderer.Renderer;
 import levelup.editor.EditorState;
 import levelup.game.GameState;
 import levelup.util.SaveUtil;
@@ -27,6 +28,8 @@ class Main extends Base2dApp
 
 	override function init()
 	{
+		s3d.renderer = new levelup.core.renderer.Renderer();
+
 		super.init();
 		stage.stageScaleMode = StageScaleMode.NO_SCALE;
 		/*Asset.init();*/

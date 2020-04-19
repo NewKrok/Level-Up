@@ -95,7 +95,7 @@ class AdventureParser
 					TriggerAction.JumpCameraToUnit(PlayerId.Player1, UnitDefinition.GetLocalVariable("unit")),
 					TriggerAction.SelectUnit(PlayerId.Player1, UnitDefinition.GetLocalVariable("unit")),
 				]
-			},
+			}/*,
 			{
 				id: "teamA-enemies-1",
 				isEnabled: true,
@@ -135,7 +135,7 @@ class AdventureParser
 					TriggerAction.CreateUnit("rockgolem", PlayerId.Player3, "Region 2"),
 					TriggerAction.AttackMoveToRegion(UnitDefinition.LastCreatedUnit, "Region 0")
 				]
-			}
+			}*/
 		];
 
 		var triggers:Array<Trigger> = [for (t in cast(rawWorldConfig.triggers, Array<Dynamic>)) {

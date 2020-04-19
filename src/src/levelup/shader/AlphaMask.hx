@@ -12,7 +12,9 @@ class AlphaMask extends hxsl.Shader
 
 		function fragment()
 		{
-			pixelColor.a = texture.get(calculatedUV * uvScale).a;
+			var newA = texture.get(calculatedUV * uvScale).a;
+			if (newA == 0) discard;
+			pixelColor.a = newA;
 		}
 	}
 
