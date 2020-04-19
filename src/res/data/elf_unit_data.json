@@ -22,6 +22,7 @@
 			"maxMana": 1,
 			"detectionRange": 10,
 			"unitSize": 0.7,
+			"height": 1,
 			"isFlyingUnit": false,
 			"zOffset": 0
 		},
@@ -47,6 +48,7 @@
 			"maxMana": 1,
 			"detectionRange": 5,
 			"unitSize": 1,
+			"height": 1,
 			"isFlyingUnit": true,
 			"zOffset": 3.5
 		},
@@ -65,17 +67,21 @@
 			"projectileConfig": {
 				"type": "pointer",
 				"lifeTime": -1,
-				"speed": 0.05
+				"speed": 0.05,
+				"model": "projectile.arrow",
+				"arc": 1,
+				"initialPoint": { "x": 0.8, "y": 0.1, "z": 0.6 }
 			},
-			"attackRange": 15,
-			"attackSpeed": 1800,
-			"damagePercentDelay": 0.5,
-			"damageMin": 15,
-			"damageMax": 23,
+			"attackRange": 20,
+			"attackSpeed": 2000,
+			"damagePercentDelay": 0.7,
+			"damageMin": 0.01,
+			"damageMax": 0.02,
 			"maxLife": 15,
 			"maxMana": 1,
 			"detectionRange": 10,
 			"unitSize": 0.7,
+			"height": 1,
 			"isFlyingUnit": false,
 			"zOffset": 0
 		},
@@ -101,6 +107,7 @@
 			"maxMana": 1,
 			"detectionRange": 10,
 			"unitSize": 0.7,
+			"height": 1,
 			"isFlyingUnit": false,
 			"zOffset": 0
 		}

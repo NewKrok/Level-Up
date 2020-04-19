@@ -94,6 +94,7 @@ class AdventureParser
 					TriggerAction.SetLocalVariable("unit", UnitDefinition.GetUnit(UnitOfPlayer(PlayerId.Player1, Filter.Index(0)))),
 					TriggerAction.JumpCameraToUnit(PlayerId.Player1, UnitDefinition.GetLocalVariable("unit")),
 					TriggerAction.SelectUnit(PlayerId.Player1, UnitDefinition.GetLocalVariable("unit")),
+					TriggerAction.CreateUnit("minion", PlayerId.Player2, "Region 3"),
 				]
 			}/*,
 			{

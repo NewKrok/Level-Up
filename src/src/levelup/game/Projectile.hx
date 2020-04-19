@@ -1,5 +1,6 @@
 package levelup.game;
 
+import h3d.Vector;
 import h3d.mat.Material;
 import h3d.mat.Texture;
 import h3d.prim.Sphere;
@@ -27,36 +28,72 @@ import tink.state.State;
 
 	public var state:State<ProjectileState> = new State<ProjectileState>(Idle);
 
-	var view:Mesh;
-	var targetObject:{ x:Float, y:Float, z:Float };
+	var view:Object;
+	var targetObject:TargetObject;
+	var lastPosition:{ x:Float, y:Float, z:Float };
+	var direction:Vector = new Vector();
+	var currentArc:Float;
 	var stateLink:CallbackLink;
 
 	public function new()
 	{
-		targetObject = { x: data.target.view.x, y: data.target.view.y, z: data.target.view.z }
+		var pConfig = data.owner.config.projectileConfig;
 
-		var s = new Sphere(0.2);
-		s.addNormals();
-		s.addUVs();
-		view = new Mesh(s, Material.create(Texture.fromColor(0xFFFFFF)), parent);
-		view.material.castShadows = false;
-		view.material.receiveShadows = false;
-		view.x = data.owner.view.x;
-		view.y = data.owner.view.y;
-		view.z = data.owner.view.z + 1;
+		if (pConfig.arc == 0)
+		{
+			targetObject = {
+				x: data.target.view.x,
+				y: data.target.view.y,
+				z: data.target.view.z + data.target.config.height / 2
+			};
+		}
+		else targetObject = { x: data.target.view.x, y: data.target.view.y };
+
+		view = AssetCache.getModel(pConfig.model);
+		view.scale(0.008);
+		parent.addChild(view);
+
+		view.getMeshes()[0].defaultTransform.initRotationX(Math.PI / 2);
+		view.getMeshes()[0].defaultTransform.initRotationY(Math.PI / 2);
+		view.getMeshes()[0].defaultTransform.initRotationZ(Math.PI / 2);
+		for (m in view.getMaterials()) m.receiveShadows = false;
+
+		view.x =
+			data.owner.view.x
+			+ pConfig.initialPoint.x * Math.cos(data.owner.viewRotation + Math.PI / 2)
+			+ pConfig.initialPoint.y * Math.cos(data.owner.viewRotation);
+
+		view.y =
+			data.owner.view.y
+			+ pConfig.initialPoint.x * Math.sin(data.owner.viewRotation + Math.PI / 2)
+			+ pConfig.initialPoint.y * Math.sin(data.owner.viewRotation);
+
+		view.z = data.owner.view.z + data.owner.config.projectileConfig.initialPoint.z;
+		lastPosition = { x: view.x, y: view.y, z: view.z };
+		calculateDirection();
 
 		var baseSpeed = data.owner.config.projectileConfig.speed;
 		var distance = GeomUtil.getDistance(targetObject, { x: view.x, y: view.y });
 		var tweenTime = distance * baseSpeed;
 
+		if (pConfig.arc != 0)
+		{
+			Actuate.tween(view, tweenTime / 2, { z: view.z + distance / 10 * pConfig.arc }).ease(motion.easing.Sine.easeOut).onComplete(() ->
+				Actuate.tween(view, tweenTime / 2, { z: data.target.view.z + data.target.config.height / 2 }).ease(motion.easing.Sine.easeIn)
+			);
+		}
+
 		Actuate.tween(view, tweenTime, targetObject).ease(Linear.easeNone).onComplete(() ->
 		{
 			if (data.target != null) damageTarget();
 			else state.set.bind(Finished);
-		}).onUpdate(() -> {
-			view.x = view.x;
-			view.y = view.y;
-			view.z = view.z;
+		}).onUpdate(() ->
+		{
+			calculateDirection();
+
+			lastPosition.x = view.x = view.x;
+			lastPosition.y = view.y = view.y;
+			lastPosition.z = view.z = view.z;
 		});
 
 		stateLink = data.target.state.bind(v -> if (v == Dead)
@@ -64,6 +101,24 @@ import tink.state.State;
 			Actuate.stop(view, null, false, false);
 			state.set(Finished);
 		});
+	}
+
+	function calculateDirection()
+	{
+		if (view.x != lastPosition.x || view.y != lastPosition.y || view.z != lastPosition.z)
+		{
+			direction.x = view.x - lastPosition.x;
+			direction.y = view.y - lastPosition.y;
+			direction.z = view.z - lastPosition.z;
+		}
+		else
+		{
+			direction.x = targetObject.x - lastPosition.x;
+			direction.y = targetObject.y - lastPosition.y;
+			direction.z = targetObject.z - lastPosition.z;
+		}
+
+		view.setDirection(direction);
 	}
 
 	public function update(d:Float)
@@ -102,4 +157,10 @@ enum ProjectileState
 {
 	Idle;
 	Finished;
+}
+typedef TargetObject =
+{
+	var x:Float;
+	var y:Float;
+	@:optional var z:Float;
 }

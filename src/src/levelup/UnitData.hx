@@ -35,6 +35,7 @@ typedef UnitConfig =
 	var maxMana:Float;
 	var detectionRange:Float;
 	var unitSize:Float;
+	var height:Float;
 	var isFlyingUnit:Bool;
 	var zOffset:Float;
 }
@@ -44,6 +45,9 @@ typedef ProjectileConfig =
 	var type:ProjectileType;
 	var lifeTime:Int;
 	var speed:Float;
+	var model:String;
+	var arc:Float;
+	var initialPoint:{x:Float, y:Float, z:Float};
 }
 
 enum abstract ProjectileType(String) from String to String

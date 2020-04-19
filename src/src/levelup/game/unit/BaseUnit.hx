@@ -7,6 +7,7 @@ import h3d.anim.SmoothTransition;
 import h3d.anim.Transition;
 import h3d.scene.Graphics;
 import h3d.shader.ColorMult;
+import h3d.shader.FixedColor;
 import levelup.AsyncUtil;
 import levelup.AsyncUtil.Result;
 import levelup.UnitData.UnitConfig;
@@ -72,7 +73,7 @@ import tink.state.State;
 	var currentPathIndex:Int;
 	var currentTargetPoint:SimplePoint = { x: 0, y: 0 };
 	var currentTargetAngle:Float = 0;
-	var viewRotation:Float = 0;
+	public var viewRotation(default, null):Float = 0;
 
 	var interact:Interactive;
 	var collider:Capsule;
@@ -104,10 +105,12 @@ import tink.state.State;
 		view.scale(config.modelScale);
 		parent.addChild(view);
 
+		var s = new FixedColor(0x000000);
 		for( view in view.getMaterials() ) {
 			var p = view.allocPass("highlight");
 			p.culling = None;
 			p.depthWrite = false;
+			p.addShader(s);
 		}
 
 		createSelectionCircle();
@@ -460,7 +463,7 @@ import tink.state.State;
 
 		/*t.text = "State: " + Std.string(state.value) + "\nCommand: " + Std.string(activeCommand.value) + "\nLife: " + Math.floor(life.value) + "\nRotation: " + Math.floor(currentTargetAngle * 100) / 100;
 		t.setPosition(pos2d.x, pos2d.y);*/
-		unitInfo.setPosition(pos2d.x - unitInfo.getSize().width / 2, pos2d.y - 50 * (40 / camera.pos.z));
+		unitInfo.setPosition(pos2d.x - unitInfo.getSize().width / 2, pos2d.y - config.height * 60 * (40 / camera.pos.z));
 
 		var now = Date.now();
 

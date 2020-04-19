@@ -68,6 +68,10 @@
 				{
 					"id": "elf.unit.ranger.attack",
 					"url": "asset/model/elf/unit/ranger/Attack01StartAnim.hmd"
+				},
+				{
+					"id": "projectile.arrow",
+					"url": "asset/model/projectile/ArrowSM.hmd"
 				}
 			],
 			"textures": [

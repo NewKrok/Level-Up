@@ -5,7 +5,6 @@ class DefaultForwardComposite extends h3d.shader.ScreenShader
 	static var SRC = {
 		@param var texture:Sampler2D;
 		@param var outline:Sampler2D;
-		@param var color:Vec4;
 
 		function fragment()
 		{
@@ -13,27 +12,23 @@ class DefaultForwardComposite extends h3d.shader.ScreenShader
 			var outval = outline.get(calculatedUV).rgba;
 			if (outval.a < 0.4 && outval.a > 0)
 			{
-				pixelColor.rgba = color;
+				pixelColor.r += (outval.r - pixelColor.r) * outval.a * 2;
+				pixelColor.g += (outval.g - pixelColor.g) * outval.a * 2;
+				pixelColor.b += (outval.b - pixelColor.b) * outval.a * 2;
 			}
 		}
-	}
-
-	public function new(v = 0)
-	{
-		super();
-		color.setColor(v);
 	}
 }
 
 class Renderer extends h3d.scene.fwd.Renderer {
 
 	var composite: h3d.pass.ScreenFx<DefaultForwardComposite>;
-	var outlineBlur = new h3d.pass.Blur(0.5);
+	var outlineBlur = new h3d.pass.Blur(2);
 
 	public function new()
 	{
 		super();
-		composite = new h3d.pass.ScreenFx(new DefaultForwardComposite(0x11111111));
+		composite = new h3d.pass.ScreenFx(new DefaultForwardComposite());
 	}
 
 	override function render() {

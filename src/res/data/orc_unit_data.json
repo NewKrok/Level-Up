@@ -10,7 +10,7 @@
 			"idleAnimSpeedMultiplier": 0.5,
 			"runAnimSpeedMultiplier": 1.5,
 			"modelScale": 0.008,
-			"speed": 4,
+			"speed": 40000,
 			"speedMultiplier": 1,
 			"projectileConfig": null,
 			"attackRange": 2.1,
@@ -22,6 +22,7 @@
 			"maxMana": 1,
 			"detectionRange": 10,
 			"unitSize": 0.7,
+			"height": 1,
 			"isFlyingUnit": false,
 			"zOffset": 0
 		},
@@ -47,6 +48,7 @@
 			"maxMana": 1,
 			"detectionRange": 10,
 			"unitSize": 1.1,
+			"height": 1,
 			"isFlyingUnit": false,
 			"zOffset": 0
 		}
