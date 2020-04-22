@@ -85,6 +85,7 @@ import tink.state.State;
 
 		Actuate.tween(view, tweenTime, targetObject).ease(Linear.easeNone).onComplete(() ->
 		{
+			trace(GeomUtil.getDistance(cast data.target.view, cast view));
 			if (data.target != null) damageTarget();
 			else state.set.bind(Finished);
 		}).onUpdate(() ->
