@@ -1,5 +1,6 @@
 package levelup.game.unit;
 
+import h2d.Flow;
 import h3d.Vector;
 import h3d.anim.Animation;
 import h3d.anim.SmoothTarget;
@@ -59,6 +60,7 @@ import tink.state.State;
 	public var view:Object;
 	public var animTransition:SmoothTarget;
 	public var currentAnimation:Animation;
+	public var currentAnimationType:UnitAnimationType;
 	public var unitInfo:UnitInfo;
 
 	public var selectionCircle:Graphics;
@@ -94,6 +96,7 @@ import tink.state.State;
 	var moveEndDelayTimer:Timer;
 
 	var t:Text;
+	var debugInfo:Flow;
 
 	public function new()
 	{
@@ -139,13 +142,20 @@ import tink.state.State;
 		mana.set(config.maxMana);
 
 		// temporary
-		t = new Text(FontBuilder.getFont("Arial", 12), s2d);
+		debugInfo = new Flow(s2d);
+		debugInfo.backgroundTile = Tile.fromColor(0x000000, 1, 1, 0.5);
+		debugInfo.paddingHorizontal = 10;
+		debugInfo.paddingVertical = 5;
+		debugInfo.borderHeight = 1;
+		debugInfo.borderWidth = 1;
+		t = new Text(FontBuilder.getFont("Arial", 10), debugInfo);
+		t.maxWidth = 300;
 
 		state.observe().bind(function(v)
 		{
 			switch(v)
 			{
-				case Idle:
+				case Idle if (currentAnimationType != UnitAnimationType.Idle):
 					/*if (currentAnimation == null)
 					{
 						currentAnimation = AssetCache.getAnimation(config.modelGroup + ".idle").createInstance(view);
@@ -167,11 +177,13 @@ import tink.state.State;
 					currentAnimation = newAnim;
 					view.playAnimation(animTransition);*/
 
-					view.playAnimation(AssetCache.getAnimation(config.modelGroup + ".idle"));
-					view.currentAnimation.speed = config.idleAnimSpeedMultiplier * config.speedMultiplier;
+					currentAnimationType = UnitAnimationType.Idle;
+					view.playAnimation(AssetCache.getAnimation(config.modelGroup + "." + currentAnimationType));
+					view.currentAnimation.speed = config.idleAnimSpeedMultiplier;
 
-				case MoveTo | AttackRequested:
-					view.playAnimation(AssetCache.getAnimation(config.modelGroup + ".walk"));
+				case MoveTo | AttackRequested if (!config.isBuilding):
+					currentAnimationType = UnitAnimationType.Walk;
+					view.playAnimation(AssetCache.getAnimation(config.modelGroup + "." + currentAnimationType));
 					view.currentAnimation.speed = config.runAnimSpeedMultiplier * config.speedMultiplier;
 /*
 					if (currentAnimation == null)
@@ -202,7 +214,8 @@ import tink.state.State;
 					// Handled in a different way bewcause it's hybrid between idle and attack
 
 				case Dead:
-					view.playAnimation(AssetCache.getAnimation(config.modelGroup + ".death")).loop = false;
+					currentAnimationType = UnitAnimationType.Death;
+					view.playAnimation(AssetCache.getAnimation(config.modelGroup + "." + currentAnimationType)).loop = false;
 					view.currentAnimation.speed = 1;
 
 					var alphaShader = new Opacity(.5);
@@ -211,6 +224,8 @@ import tink.state.State;
 					Timer.delay(() -> state.set(Rotten), 2000);
 
 				case Rotten:
+
+				case _:
 			}
 		});
 
@@ -238,17 +253,31 @@ import tink.state.State;
 
 	function runAttackAnimation()
 	{
-		view.playAnimation(AssetCache.getAnimation(config.modelGroup + ".attack"));
-		view.currentAnimation.loop = false;
-		view.currentAnimation.onAnimEnd = function()
+		if (config.hasContinuousAttackAnimation)
 		{
-			view.playAnimation(AssetCache.getAnimation(config.modelGroup + ".idle"));
-			view.currentAnimation.speed = 1;
-			checkTargetLife();
-		};
-
-		var animDuration = view.currentAnimation.getDuration() * 1000;
-		if (config.attackSpeed < animDuration) view.currentAnimation.speed = animDuration / config.attackSpeed;
+			if (currentAnimationType != UnitAnimationType.Attack)
+			{
+				currentAnimationType = UnitAnimationType.Attack;
+				view.playAnimation(AssetCache.getAnimation(config.modelGroup + "." + currentAnimationType));
+				view.currentAnimation.speed = config.attackAnimSpeedMultiplier;
+			}
+		}
+		else
+		{
+			currentAnimationType = UnitAnimationType.Attack;
+			view.playAnimation(AssetCache.getAnimation(config.modelGroup + "." + currentAnimationType));
+			view.currentAnimation.speed = config.attackAnimSpeedMultiplier;
+			view.currentAnimation.loop = false;
+			view.currentAnimation.onAnimEnd = function()
+			{
+				currentAnimationType = UnitAnimationType.Idle;
+				view.playAnimation(AssetCache.getAnimation(config.modelGroup + "." + currentAnimationType));
+				view.currentAnimation.speed = config.idleAnimSpeedMultiplier * config.speedMultiplier;
+				checkTargetLife();
+			};
+			var animDuration = view.currentAnimation.getDuration() * 1000;
+			if (config.attackSpeed < animDuration) view.currentAnimation.speed = animDuration / config.attackSpeed;
+		}
 	}
 
 	public function attackMoveTo(point:SimplePoint):Result
@@ -292,7 +321,7 @@ import tink.state.State;
 
 	function moveToRequest(point:SimplePoint)
 	{
-		if (state.value == Dead) return;
+		if (state.value == Dead || config.isBuilding) return;
 
 		var convertedTargetPoint = toWorldPoint(point);
 
@@ -461,8 +490,9 @@ import tink.state.State;
 		var camera = cast(GameWorld.instance.parent, Scene).camera;
 		var pos2d = camera.project(view.x, view.y, view.z, HppG.stage2d.width, HppG.stage2d.height);
 
-		/*t.text = "State: " + Std.string(state.value) + "\nCommand: " + Std.string(activeCommand.value) + "\nLife: " + Math.floor(life.value) + "\nRotation: " + Math.floor(currentTargetAngle * 100) / 100;
-		t.setPosition(pos2d.x, pos2d.y);*/
+		t.text = "State: " + Std.string(state.value) + "\nCommand: " + Std.string(activeCommand.value) + "\nLife: " + Math.floor(life.value) + "\nRotation: " + Math.floor(currentTargetAngle * 100) / 100;
+		debugInfo.setPosition(pos2d.x - debugInfo.getSize().width / 2, pos2d.y + 20);
+
 		unitInfo.setPosition(pos2d.x - unitInfo.getSize().width / 2, pos2d.y - config.height * 60 * (40 / camera.pos.z));
 
 		var now = Date.now();
@@ -477,15 +507,20 @@ import tink.state.State;
 
 		if (state.value == AttackRequested && target != null) checkTargetLife();
 
-		if (now - lastAttackTime >= config.attackSpeed && state == AttackTriggered)
-		{
+		if (
+			now - lastAttackTime >= config.attackSpeed
+			&& (
+				state == AttackTriggered
+				|| (state == AttackRequested && config.isBuilding)
+			)
+		) {
 			attackRoutine();
 		}
 	}
 
 	function setRotation()
 	{
-		if (state.value != Idle && (currentTargetPoint.y != view.y || currentTargetPoint.x != view.x || state.value == AttackTriggered))
+		if (config.canRotate && state.value != Idle && (currentTargetPoint.y != view.y || currentTargetPoint.x != view.x || state.value == AttackTriggered))
 		{
 			if (viewRotation < 0) viewRotation += Math.PI * 2;
 			var diff = currentTargetAngle - viewRotation;
@@ -582,18 +617,26 @@ import tink.state.State;
 					});
 				}
 				else if (target != null && target.state != Dead) attackRequest();
+				else
+				{
+					target = null;
+					nearestTarget = null;
+					state.set(Idle);
+				}
 			}, Math.floor(config.damagePercentDelay * view.currentAnimation.getDuration()
 				* (config.attackSpeed < view.currentAnimation.getDuration() ? view.currentAnimation.getDuration() / config.attackSpeed : 1) * 1000)
 			);
 
 			return true;
 		}
-		else if (target != null && target.state != Dead)
+		else if (target != null && target.state != Dead && !config.isBuilding)
 		{
 			if (state == AttackTriggered) attackRequest();
 		}
 		else
 		{
+			target = null;
+			nearestTarget = null;
 			state.set(Idle);
 		}
 
@@ -633,7 +676,7 @@ import tink.state.State;
 		return
 			target != null
 			&& target.state != Dead
-			&& GeomUtil.getDistance(getWorldPoint(), target.getWorldPoint()) <= config.attackRange;
+			&& GeomUtil.getDistance(cast view, cast target.view) <= config.attackRange;
 	}
 
 	public function select() selectionCircle.visible = true;
@@ -644,6 +687,7 @@ import tink.state.State;
 		Actuate.stop(view, null, false, false);
 
 		if (t != null) t.remove();
+		if (debugInfo != null) debugInfo.remove();
 
 		if (moveEndDelayTimer != null)
 		{
@@ -683,4 +727,12 @@ enum UnitCommand {
 	Nothing;
 	MoveTo(point:SimplePoint);
 	AttackMoveTo(point:SimplePoint);
+}
+
+@:enum abstract UnitAnimationType(String) to String
+{
+	var Idle = "idle";
+	var Walk = "walk";
+	var Attack = "attack";
+	var Death = "death";
 }

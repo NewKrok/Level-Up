@@ -194,6 +194,13 @@ class GameWorld extends World
 		addWeatherEffect();
 
 		createExplosion(5, 20, 5);
+
+		/*var mc = new ModelCache();
+		var m = mc.loadModel(Res.Tow_Crossbow1);
+		m.x = 5;
+		m.y = 30;
+		m.z = 2;
+		s3d.addChild(m);*/
 	}
 
 	function createExplosion(x, y, z)
@@ -515,7 +522,7 @@ class GameWorld extends World
 
 		for (u in units)
 		{
-			if (isRerouteNeeded) u.reroute();
+			if (isRerouteNeeded && !u.config.isBuilding) u.reroute();
 			u.view.z = GeomUtil3D.getHeightByPosition(heightGrid, u.view.x, u.view.y) + u.config.zOffset;
 			u.update(d);
 		}
@@ -673,6 +680,8 @@ class GameWorld extends World
 
 					if (
 						distance < uA.config.unitSize + uB.config.unitSize
+						&& !uA.config.isBuilding
+						&& !uB.config.isBuilding
 						&& (
 							(!uA.config.isFlyingUnit && !uB.config.isFlyingUnit)
 							|| (uA.config.isFlyingUnit && uB.config.isFlyingUnit)

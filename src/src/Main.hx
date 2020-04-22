@@ -39,6 +39,9 @@ class Main extends Base2dApp
 		EnvironmentData.addData(Json.parse(Res.data.environment_data.entry.getText()));
 		AssetCache.addData(Json.parse(Res.data.environment_model_data.entry.getText()));
 
+		UnitData.addData(Json.parse(Res.data.neutral_unit_data.entry.getText()));
+		AssetCache.addData(Json.parse(Res.data.neutral_model_data.entry.getText()));
+
 		UnitData.addData(Json.parse(Res.data.elf_unit_data.entry.getText()));
 		AssetCache.addData(Json.parse(Res.data.elf_model_data.entry.getText()));
 

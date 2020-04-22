@@ -1,0 +1,29 @@
+{
+	"groups":[
+		{
+			"id": "neutral.building.crystaltower",
+			"models": [
+				{
+					"id": "neutral.building.crystaltower.death",
+					"url": "asset/model/neutral/building/crystaltower/Tow_Crystal1_Anim.hmd"
+				},
+				{
+					"id": "neutral.building.crystaltower.idle",
+					"url": "asset/model/neutral/building/crystaltower/Tow_Crystal1_Anim.hmd"
+				},
+				{
+					"id": "neutral.building.crystaltower.walk",
+					"url": "asset/model/neutral/building/crystaltower/Tow_Crystal1_Anim.hmd"
+				},
+				{
+					"id": "neutral.building.crystaltower.attack",
+					"url": "asset/model/neutral/building/crystaltower/Tow_Crystal1_Anim.hmd"
+				}
+			],
+			"textures": [
+				{"id": "Tow_Crystals_MainTex.png", "url": "asset/model/neutral/building/crystaltower/Tow_Crystals_MainTex.png"},
+				{"id": "Tow_Crystals_MainTex_n.jpg", "url": "asset/model/neutral/building/crystaltower/Tow_Crystals_MainTex_n.jpg"}
+			]
+		}
+	]
+}

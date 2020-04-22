@@ -138,7 +138,17 @@ import tink.state.State;
 
 	function damageTarget()
 	{
-		data.target.damage(data.damage, data.owner);
+		switch (data.owner.config.projectileConfig.type)
+		{
+			case ProjectileType.Pointer if (data.target != null && GeomUtil.getDistance(cast data.target.view, cast view) < 0.5):
+				data.target.damage(data.damage, data.owner);
+
+			case ProjectileType.Follower:
+				data.target.damage(data.damage, data.owner);
+
+			case _:
+		}
+
 		Actuate.stop(view, null, false, false);
 		state.set(Finished);
 	}

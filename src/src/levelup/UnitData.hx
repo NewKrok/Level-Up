@@ -22,7 +22,11 @@ typedef UnitConfig =
 	var modelGroup:String;
 	var idleAnimSpeedMultiplier:Float;
 	var runAnimSpeedMultiplier:Float;
+	var attackAnimSpeedMultiplier:Float;
+	var hasContinuousAttackAnimation:Bool;
 	var modelScale:Float;
+	var canRotate:Bool;
+	var isBuilding:Bool;
 	var speed:Float;
 	var speedMultiplier:Float;
 	var projectileConfig:ProjectileConfig;

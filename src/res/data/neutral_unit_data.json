@@ -1,0 +1,41 @@
+{
+	"units":[
+		{
+			"id": "crystalTower",
+			"unitName": "Crystal Tower",
+			"name": [""],
+			"race": "neutral",
+			"icon": "asset/icon/neutral/unit/crystal_tower.jpg",
+			"modelGroup": "neutral.building.crystaltower",
+			"idleAnimSpeedMultiplier": 1,
+			"runAnimSpeedMultiplier": 1,
+			"attackAnimSpeedMultiplier": 3,
+			"hasContinuousAttackAnimation": true,
+			"modelScale": 1,
+			"canRotate": false,
+			"isBuilding": true,
+			"speed": 0,
+			"speedMultiplier": 0,
+			"projectileConfig": {
+				"type": "pointer",
+				"lifeTime": 2000,
+				"speed": 1,
+				"model": "projectile.arrow",
+				"arc": 0,
+				"initialPoint": { "x": 0, "y": 0, "z": 0.8 }
+			},
+			"attackRange": 10,
+			"attackSpeed": 750,
+			"damagePercentDelay": 0.5,
+			"damageMin": 1,
+			"damageMax": 2,
+			"maxLife": 40,
+			"maxMana": 1,
+			"detectionRange": 10,
+			"unitSize": 0.7,
+			"height": 1,
+			"isFlyingUnit": false,
+			"zOffset": 0
+		}
+	]
+}
