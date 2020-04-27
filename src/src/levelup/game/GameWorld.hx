@@ -7,6 +7,7 @@ import h3d.Vector;
 import h3d.col.Bounds;
 import h3d.col.Point;
 import h3d.mat.BlendMode;
+import h3d.mat.Data.TextureFlags;
 import h3d.mat.Data.TextureFormat;
 import h3d.mat.Data.Wrap;
 import h3d.mat.Material;
@@ -23,6 +24,7 @@ import h3d.scene.Scene;
 import h3d.scene.World;
 import h3d.scene.fwd.DirLight;
 import h3d.shader.AlphaMap;
+import h3d.shader.AnimatedTexture;
 import h3d.shader.ColorKey;
 import h3d.shader.NormalMap;
 import haxe.crypto.Base64;
@@ -42,6 +44,7 @@ import levelup.game.js.AStar.GridNode;
 import levelup.game.js.Graph;
 import levelup.game.unit.BaseUnit;
 import levelup.shader.Hovering;
+import levelup.shader.KillColor;
 import levelup.shader.Wave;
 import levelup.util.GeomUtil3D;
 import lzstring.LZString;
@@ -192,101 +195,7 @@ class GameWorld extends World
 		setSunAndMoonOffsetPercent(worldConfig.sunAndMoonOffsetPercent);
 
 		addWeatherEffect();
-
-		createExplosion(5, 20, 5);
-
-		/*var mc = new ModelCache();
-		var m = mc.loadModel(Res.Tow_Crossbow1);
-		m.x = 5;
-		m.y = 30;
-		m.z = 2;
-		s3d.addChild(m);*/
 	}
-
-	function createExplosion(x, y, z)
-	{
-		var parts = new h3d.parts.GpuParticles(s3d);
-		parts.x = x;
-		parts.y = y;
-		parts.z = z;
-
-		var smokeG = new h3d.parts.GpuParticles.GpuPartGroup(parts);
-		smokeG.emitMode = GpuEmitMode.VolumeBounds;
-		smokeG.emitAngle = 0.5;
-		smokeG.emitDist = 0;
-		smokeG.gravity = 0;
-		smokeG.size = 5;
-		smokeG.sizeRand = 2;
-		smokeG.sizeIncr = 3;
-		smokeG.rotSpeed = 0.5;
-		smokeG.rotSpeedRand = 0.5;
-		smokeG.speed = 0.4;
-		smokeG.speedRand = 0.6;
-		smokeG.life = 1;
-		smokeG.lifeRand = 2;
-		smokeG.nparts = 10;
-		smokeG.texture = AssetCache.getTexture("asset/texture/effect/smoke.png");
-		smokeG.sortMode = GpuSortMode.Dynamic;
-		//parts.addGroup(smokeG);
-		//parts.material.mainPass.depthWrite = false;
-		//trace(parts.materials.length);
-/*
-		var fireG = new h3d.parts.GpuParticles.GpuPartGroup(parts);
-		fireG.emitMode = GpuEmitMode.VolumeBounds;
-		fireG.emitAngle = 0.5;
-		fireG.emitDist = 0;
-		fireG.gravity = 0;
-		fireG.size = 5;
-		fireG.sizeRand = 2;
-		fireG.sizeIncr = 3;
-		fireG.rotSpeed = 0.5;
-		fireG.rotSpeedRand = 0.5;
-		fireG.speed = 0.4;
-		fireG.speedRand = 0.6;
-		fireG.life = 1;
-		fireG.lifeRand = 2;
-		fireG.nparts = 10;
-		fireG.texture = AssetCache.getTexture("asset/texture/effect/T_ky_shockwave12_4x4_small.png");
-		fireG.sortMode = GpuSortMode.Dynamic;
-		parts.addGroup(fireG);
-*/
-		//var tile = Tile.fromTexture(AssetCache.getTexture("asset/texture/effect/T_ky_shockwave12_4x4_small.png"));
-		//anim = new Anim(tile.gridFlatten(256, 4, 4), 15, HppG.stage2d);
-		/*anim.loop = true;
-		anim.pause = false;*/
-
-		tex = AssetCache.getTexture("asset/texture/effect/test_eff_1.png");
-
-		var fireG = new h3d.parts.GpuParticles.GpuPartGroup(parts);
-		fireG.emitMode = GpuEmitMode.VolumeBounds;
-		fireG.emitAngle = 0.5;
-		fireG.emitDist = 0;
-		fireG.gravity = 0;
-		fireG.size = 5;
-		fireG.sizeRand = 2;
-		fireG.sizeIncr = 3;
-		fireG.rotSpeed = 0.5;
-		fireG.rotSpeedRand = 0.5;
-		fireG.speed = 0;
-		//fireG.speed = 0.4;
-		//fireG.speedRand = 0.6;
-		fireG.life = 1;
-		fireG.lifeRand = 2;
-		fireG.nparts = 10;
-		fireG.texture = tex;
-		fireG.sortMode = GpuSortMode.Dynamic;
-		parts.addGroup(fireG);
-
-		trace(">>>>",parts.materials.length);
-		//parts.material.mainPass.addShader(new ColorKey());
-
-		/*var newMat = parts.material.clone();
-		newMat.mainPass.addShader(new Wave());
-		Reflect.setField(fireG, "material", newMat);*/
-
-	}
-	var tex:Texture;
-	var index = 0.0;
 
 	public function setDayColor(c:String) dayColor.setColor(Std.parseInt("0x" + c.substr(1)));
 	public function setNightColor(c:String) nightColor.setColor(Std.parseInt("0x" + c.substr(1)));
@@ -502,17 +411,6 @@ class GameWorld extends World
 
 	public function update(d:Float)
 	{
-		index += 0.2;
-		switch(Math.floor(index))
-		{
-			case 0: tex.swapTexture(AssetCache.getTexture("asset/texture/effect/test_eff_1.png"));
-			case 1: tex.swapTexture(AssetCache.getTexture("asset/texture/effect/test_eff_2.png"));
-			case 2: tex.swapTexture(AssetCache.getTexture("asset/texture/effect/test_eff_3.png")); index -= 2;
-			case _:
-		}
-
-		//tex.swapTexture(anim.getFrame().getTexture());
-
 		var now = Date.now().getTime();
 
 		updateDayTime(d);
@@ -744,10 +642,13 @@ class GameWorld extends World
 			var p:Projectile = cast o;
 			p.state.bind(v ->
 			{
-				if (v == ProjectileState.Finished)
+				switch (v)
 				{
-					projectiles.remove(p);
-					p.dispose();
+					case ProjectileState.Disappeared:
+						projectiles.remove(p);
+						p.dispose();
+
+					case _:
 				}
 			});
 

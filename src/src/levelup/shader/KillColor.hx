@@ -2,19 +2,28 @@ package levelup.shader;
 
 class KillColor extends hxsl.Shader {
 
-	static var SRC = {
-		@param var colorKey : Vec4;
-		var textureColor : Vec4;
+	static var SRC =
+	{
+		@param var colorKey:Vec4;
+		@param var threshold:Float;
 
-		function fragment() {
-			var cdiff = textureColor - colorKey;
-			if( cdiff.dot(cdiff) > 0.00001 ) discard;
+		var pixelColor:Vec4;
+
+		function fragment()
+		{
+			var diff =
+				abs(pixelColor.r - colorKey.r) +
+				abs(pixelColor.g - colorKey.g) +
+				abs(pixelColor.b - colorKey.b);
+			if (diff < threshold) discard;
+			else pixelColor.a *= diff * 0.2;
 		}
 	}
 
-	public function new( v = 0 ) {
+	public function new(color = 0, threshold = 0.00001)
+	{
 		super();
-		colorKey.setColor(v);
+		colorKey.setColor(color);
+		this.threshold = threshold;
 	}
-
 }

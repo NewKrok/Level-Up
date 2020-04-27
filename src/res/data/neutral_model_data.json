@@ -24,6 +24,56 @@
 				{"id": "Tow_Crystals_MainTex.png", "url": "asset/model/neutral/building/crystaltower/Tow_Crystals_MainTex.png"},
 				{"id": "Tow_Crystals_MainTex_n.jpg", "url": "asset/model/neutral/building/crystaltower/Tow_Crystals_MainTex_n.jpg"}
 			]
+		},
+		{
+			"id": "neutral.building.crystaltower2",
+			"models": [
+				{
+					"id": "neutral.building.crystaltower2.death",
+					"url": "asset/model/neutral/building/crystaltower2/Tow_Crystal2_Anim.hmd"
+				},
+				{
+					"id": "neutral.building.crystaltower2.idle",
+					"url": "asset/model/neutral/building/crystaltower2/Tow_Crystal2_Anim.hmd"
+				},
+				{
+					"id": "neutral.building.crystaltower2.walk",
+					"url": "asset/model/neutral/building/crystaltower2/Tow_Crystal2_Anim.hmd"
+				},
+				{
+					"id": "neutral.building.crystaltower2.attack",
+					"url": "asset/model/neutral/building/crystaltower2/Tow_Crystal2_Anim.hmd"
+				}
+			],
+			"textures": [
+				{"id": "Tow_Crystals_MainTex.png", "url": "asset/model/neutral/building/crystaltower/Tow_Crystals_MainTex.png"},
+				{"id": "Tow_Crystals_MainTex_n.jpg", "url": "asset/model/neutral/building/crystaltower/Tow_Crystals_MainTex_n.jpg"}
+			]
+		},
+		{
+			"id": "neutral.building.crystaltower3",
+			"models": [
+				{
+					"id": "neutral.building.crystaltower3.death",
+					"url": "asset/model/neutral/building/crystaltower3/Tow_Crystal3_Anim.hmd"
+				},
+				{
+					"id": "neutral.building.crystaltower3.idle",
+					"url": "asset/model/neutral/building/crystaltower3/Tow_Crystal3_Anim.hmd"
+				},
+				{
+					"id": "neutral.building.crystaltower3.walk",
+					"url": "asset/model/neutral/building/crystaltower3/Tow_Crystal3_Anim.hmd"
+				},
+				{
+					"id": "neutral.building.crystaltower3.attack",
+					"url": "asset/model/neutral/building/crystaltower3/Tow_Crystal3_Anim.hmd"
+				}
+			],
+			"textures": [
+				{"id": "Tow_Crystals_MainTex.png", "url": "asset/model/neutral/building/crystaltower/Tow_Crystals_MainTex.png"},
+				{"id": "Tow_Crystals_MainTex_n.jpg", "url": "asset/model/neutral/building/crystaltower/Tow_Crystals_MainTex_n.jpg"}
+			]
 		}
 	]
 }

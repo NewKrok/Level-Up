@@ -16,7 +16,7 @@ class EnvironmentData
 typedef EnvironmentConfig = {
 	var id(default, never):String;
 	var name(default, never):String;
-	var modelGroup(default, never):String;
+	var assetGroup(default, never):String;
 	var scale(default, never):Float;
 	var environmentId(default, never):EnvironmentId;
 	var zOffset(default, never):Float;

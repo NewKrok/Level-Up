@@ -19,7 +19,7 @@ typedef UnitConfig =
 	var unitName:String;
 	var name:Array<String>;
 	var icon:String;
-	var modelGroup:String;
+	var assetGroup:String;
 	var idleAnimSpeedMultiplier:Float;
 	var runAnimSpeedMultiplier:Float;
 	var attackAnimSpeedMultiplier:Float;
@@ -49,9 +49,12 @@ typedef ProjectileConfig =
 	var type:ProjectileType;
 	var lifeTime:Int;
 	var speed:Float;
-	var model:String;
 	var arc:Float;
 	var initialPoint:{x:Float, y:Float, z:Float};
+	var projectileAnimationId:String;
+	@:optional var xAutoRotation:Float;
+	@:optional var zAutoRotation:Float;
+	@:optional var yAutoRotation:Float;
 }
 
 enum abstract ProjectileType(String) from String to String

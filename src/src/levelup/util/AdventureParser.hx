@@ -6,6 +6,8 @@ import haxe.Json;
 import levelup.game.GameState.AdventureConfig;
 import levelup.game.GameState.InitialUnitData;
 import levelup.game.GameState.PlayerId;
+import levelup.game.GameState.PositionDefinition;
+import levelup.game.GameState.RegionPositionDefinition;
 import levelup.game.GameState.StaticObjectConfig;
 import levelup.game.GameState.TerrainLayerInfo;
 import levelup.game.GameState.Trigger;
@@ -58,8 +60,8 @@ class AdventureParser
 		{
 			var environmentConfig = EnvironmentData.getEnvironmentConfig(o.id);
 
-			if (environmentConfig != null && neededModelGroups.indexOf(environmentConfig.modelGroup) == -1)
-				neededModelGroups.push(environmentConfig.modelGroup);
+			if (environmentConfig != null && neededModelGroups.indexOf(environmentConfig.assetGroup) == -1)
+				neededModelGroups.push(environmentConfig.assetGroup);
 		}
 
 		var units:Array<InitialUnitData> = [for (o in cast(rawWorldConfig.units, Array<Dynamic>)) {
@@ -94,17 +96,18 @@ class AdventureParser
 					TriggerAction.SetLocalVariable("unit", UnitDefinition.GetUnit(UnitOfPlayer(PlayerId.Player1, Filter.Index(0)))),
 					TriggerAction.JumpCameraToUnit(PlayerId.Player1, UnitDefinition.GetLocalVariable("unit")),
 					TriggerAction.SelectUnit(PlayerId.Player1, UnitDefinition.GetLocalVariable("unit")),
-					TriggerAction.CreateUnit("crystalTower", PlayerId.Player2, "Region 3")
+					TriggerAction.CreateUnit("crystalTower", PlayerId.Player2, PositionDefinition.RegionPosition(RegionPositionDefinition.CenterOf("Region 0"))),
+					TriggerAction.CreateUnit("crystalTower", PlayerId.Player3, PositionDefinition.RegionPosition(RegionPositionDefinition.CenterOf("Region 2")))
 				]
-			}/*,
+			},
 			{
 				id: "teamA-enemies-1",
 				isEnabled: true,
 				event: TriggerEvent.TimePeriodic(10),
 				condition: null,
 				actions: [
-					TriggerAction.CreateUnit("minion", PlayerId.Player2, "Region 0"),
-					TriggerAction.AttackMoveToRegion(UnitDefinition.LastCreatedUnit, "Region 2")
+					TriggerAction.CreateUnit("minion", PlayerId.Player2, PositionDefinition.RegionPosition(RegionPositionDefinition.RandomPointOf("Region 0"))),
+					TriggerAction.AttackMoveToRegion(UnitDefinition.LastCreatedUnit, PositionDefinition.RegionPosition(RegionPositionDefinition.CenterOf("Region 2")))
 				]
 			},
 			{
@@ -113,8 +116,8 @@ class AdventureParser
 				event: TriggerEvent.TimePeriodic(35),
 				condition: null,
 				actions: [
-					TriggerAction.CreateUnit("bandwagon", PlayerId.Player2, "Region 0"),
-					TriggerAction.AttackMoveToRegion(UnitDefinition.LastCreatedUnit, "Region 2")
+					TriggerAction.CreateUnit("bandwagon", PlayerId.Player2, PositionDefinition.RegionPosition(RegionPositionDefinition.RandomPointOf("Region 0"))),
+					TriggerAction.AttackMoveToRegion(UnitDefinition.LastCreatedUnit, PositionDefinition.RegionPosition(RegionPositionDefinition.CenterOf("Region 2")))
 				]
 			},
 			{
@@ -123,8 +126,8 @@ class AdventureParser
 				event: TriggerEvent.TimePeriodic(10),
 				condition: null,
 				actions: [
-					TriggerAction.CreateUnit("knome", PlayerId.Player3, "Region 2"),
-					TriggerAction.AttackMoveToRegion(UnitDefinition.LastCreatedUnit, "Region 0")
+					TriggerAction.CreateUnit("knome", PlayerId.Player3, PositionDefinition.RegionPosition(RegionPositionDefinition.RandomPointOf("Region 2"))),
+					TriggerAction.AttackMoveToRegion(UnitDefinition.LastCreatedUnit, PositionDefinition.RegionPosition(RegionPositionDefinition.CenterOf("Region 0")))
 				]
 			},
 			{
@@ -133,10 +136,10 @@ class AdventureParser
 				event: TriggerEvent.TimePeriodic(35),
 				condition: null,
 				actions: [
-					TriggerAction.CreateUnit("rockgolem", PlayerId.Player3, "Region 2"),
-					TriggerAction.AttackMoveToRegion(UnitDefinition.LastCreatedUnit, "Region 0")
+					TriggerAction.CreateUnit("rockgolem", PlayerId.Player3, PositionDefinition.RegionPosition(RegionPositionDefinition.RandomPointOf("Region 2"))),
+					TriggerAction.AttackMoveToRegion(UnitDefinition.LastCreatedUnit, PositionDefinition.RegionPosition(RegionPositionDefinition.CenterOf("Region 0")))
 				]
-			}*/
+			}
 		];
 
 		var triggers:Array<Trigger> = [for (t in cast(rawWorldConfig.triggers, Array<Dynamic>)) {
@@ -161,7 +164,12 @@ class AdventureParser
 		for (u in units)
 		{
 			var unitConfig = UnitData.getUnitConfig(u.id);
-			if (neededModelGroups.indexOf(unitConfig.modelGroup) == -1) neededModelGroups.push(unitConfig.modelGroup);
+			if (neededModelGroups.indexOf(unitConfig.assetGroup) == -1) neededModelGroups.push(unitConfig.assetGroup);
+			if (unitConfig.projectileConfig != null)
+			{
+				var projData = ProjectileAnimationData.getConfig(unitConfig.projectileConfig.projectileAnimationId);
+				if (neededModelGroups.indexOf(projData.assetGroup) == -1) neededModelGroups.push(projData.assetGroup);
+			}
 		}
 		for (trigger in triggers)
 		{
@@ -171,8 +179,13 @@ class AdventureParser
 				{
 					case TriggerAction.CreateUnit(unitId, _, _):
 						var unitConfig = UnitData.getUnitConfig(unitId);
-						if (neededModelGroups.indexOf(unitConfig.modelGroup) == -1)
-							neededModelGroups.push(unitConfig.modelGroup);
+						if (neededModelGroups.indexOf(unitConfig.assetGroup) == -1)
+							neededModelGroups.push(unitConfig.assetGroup);
+						if (unitConfig.projectileConfig != null)
+						{
+							var projData = ProjectileAnimationData.getConfig(unitConfig.projectileConfig.projectileAnimationId);
+							if (neededModelGroups.indexOf(projData.assetGroup) == -1) neededModelGroups.push(projData.assetGroup);
+						}
 
 					case _:
 				};

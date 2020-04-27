@@ -94,10 +94,21 @@ class GameState extends Base2dState
 
 		AssetCache.load(adventureConfig.neededModelGroups, adventureConfig.neededTextures.concat([
 			"asset/texture/effect/smoke.png",
+			"asset/texture/effect/Circle98.png",
+			"asset/texture/effect/Smoke3.png",
 			"asset/texture/effect/T_ky_shockwave12_4x4_small.png",
+			"asset/texture/effect/T_ky_circle01_4x4.png",
 			"asset/texture/effect/test_eff_1.png",
 			"asset/texture/effect/test_eff_2.png",
-			"asset/texture/effect/test_eff_3.png"
+			"asset/texture/effect/test_eff_3.png",
+			"asset/texture/effect/Debris2.png",
+			"asset/texture/effect/Circle17.png",
+			"asset/texture/effect/Circle98.png",
+			"asset/texture/effect/Dust2.png",
+			"asset/texture/effect/Snow4.png",
+			"asset/texture/effect/Circle17.png",
+			"asset/texture/effect/Trail60.png",
+			"asset/texture/effect/gradient/gradient_1.jpg"
 		])).handle(o -> switch(o)
 		{
 			case Success(_): onLoaded(rawMap);
@@ -192,7 +203,7 @@ class GameState extends Base2dState
 		for (o in adventureConfig.worldConfig.staticObjects.concat([]))
 		{
 			var config = EnvironmentData.getEnvironmentConfig(o.id);
-			var instance:Object = config == null ? AssetCache.getUndefinedModel() : AssetCache.getModel(config.modelGroup);
+			var instance:Object = config == null ? AssetCache.getUndefinedModel() : AssetCache.getModel(config.assetGroup);
 
 			if (config != null && config.hasTransparentTexture != null && config.hasTransparentTexture)
 				for (m in instance.getMaterials()) m.textureShader.killAlpha = true;
@@ -439,16 +450,16 @@ class GameState extends Base2dState
 						if (playerId == PlayerId.Player1) selectUnit(resolveUnitByDefinition(unitDefinition, localVariables));
 					}
 
-					case CreateUnit(unitId, owner, region):
-						var region = resolveRegionByName(region);
-						createUnit(unitId, owner, region.x, region.y);
+					case CreateUnit(unitId, owner, positionDefinition):
+						var position = resolvePositionByDefinition(positionDefinition);
+						createUnit(unitId, owner, position.x, position.y);
 
-					case AttackMoveToRegion(unitDefinition, region):
-						var region = resolveRegionByName(region);
+					case AttackMoveToRegion(unitDefinition, positionDefinition):
+						var position = resolvePositionByDefinition(positionDefinition);
 						var unit:BaseUnit = resolveUnitByDefinition(unitDefinition, localVariables);
-						if (region != null && unit != null)
+						if (unit != null)
 						{
-							unit.attackMoveTo({ y: region.x + region.width * Math.random(), x: region.y + region.height * Math.random() });
+							unit.attackMoveTo({ y: position.x, x: position.y });
 						}
 
 					case _: trace("Unknown action in action list: " + actions);
@@ -480,6 +491,28 @@ class GameState extends Base2dState
 	function getUnitsOfPlayer(playerId)
 	{
 		return world.units.filter(u -> return u.owner == playerId);
+	}
+
+	function resolvePositionByDefinition(positionDefinition):SimplePoint
+	{
+		switch(positionDefinition)
+		{
+			case PositionDefinition.RegionPosition(regionDefinition):
+				switch (regionDefinition)
+				{
+					case RegionPositionDefinition.CenterOf(region):
+						var region = resolveRegionByName(region);
+						return { x: region.x + region.width / 2, y: region.y + region.height / 2 };
+
+					case RegionPositionDefinition.RandomPointOf(region):
+						var region = resolveRegionByName(region);
+						return { x: region.x + region.width * Math.random(), y: region.y + region.height * Math.random() };
+				}
+
+			case PositionDefinition.WorldPoint(position): return { x: position.x, y: position.y };
+		}
+
+		return { x: 0, y: 0 };
 	}
 
 	function resolveRegionByName(name)
@@ -658,6 +691,16 @@ enum TriggerAction {
 	SetLocalVariable(name:String, value:Dynamic);
 	JumpCameraToUnit(player:PlayerId, unit:UnitDefinition);
 	SelectUnit(player:PlayerId, unit:UnitDefinition);
-	CreateUnit(unitId:String, owner:PlayerId, region:String);
-	AttackMoveToRegion(unit:UnitDefinition, region:String);
+	CreateUnit(unitId:String, owner:PlayerId, position:PositionDefinition);
+	AttackMoveToRegion(unit:UnitDefinition, position:PositionDefinition);
+}
+
+enum PositionDefinition {
+	RegionPosition(value:RegionPositionDefinition);
+	WorldPoint(position:SimplePoint);
+}
+
+enum RegionPositionDefinition {
+	CenterOf(regionId:String);
+	RandomPointOf(regionId:String);
 }

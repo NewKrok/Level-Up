@@ -1078,60 +1078,7 @@ class EditorState extends Base2dState
 			sunsetColor: model.sunsetColor,
 			dawnColor: model.dawnColor,
 			regions: regions,
-			//triggers: model.triggers,
-			triggers: [
-				{
-					id: "initial",
-					isEnabled: true,
-					event: TriggerEvent.OnInit,
-					condition: null,
-					actions: [
-						TriggerAction.SetLocalVariable("unit", UnitDefinition.GetUnit(UnitOfPlayer(PlayerId.Player1, Filter.Index(0)))),
-						TriggerAction.JumpCameraToUnit(PlayerId.Player1, UnitDefinition.GetLocalVariable("unit")),
-						TriggerAction.SelectUnit(PlayerId.Player1, UnitDefinition.GetLocalVariable("unit")),
-					]
-				},
-				{
-					id: "teamA-enemies-1",
-					isEnabled: true,
-					event: TriggerEvent.TimePeriodic(10),
-					condition: null,
-					actions: [
-						TriggerAction.CreateUnit("minion", PlayerId.Player2, "Region 0"),
-						TriggerAction.AttackMoveToRegion(UnitDefinition.LastCreatedUnit, "Region 3")
-					]
-				},
-				{
-					id: "teamA-enemies-2",
-					isEnabled: true,
-					event: TriggerEvent.TimePeriodic(35),
-					condition: null,
-					actions: [
-						TriggerAction.CreateUnit("bandwagon", PlayerId.Player2, "Region 0"),
-						TriggerAction.AttackMoveToRegion(UnitDefinition.LastCreatedUnit, "Region 3")
-					]
-				},
-				{
-					id: "teamB-enemies",
-					isEnabled: true,
-					event: TriggerEvent.TimePeriodic(10),
-					condition: null,
-					actions: [
-						TriggerAction.CreateUnit("knome", PlayerId.Player3, "Region 2"),
-						TriggerAction.AttackMoveToRegion(UnitDefinition.LastCreatedUnit, "Region 3")
-					]
-				},
-				{
-					id: "teamB-enemies-2",
-					isEnabled: true,
-					event: TriggerEvent.TimePeriodic(35),
-					condition: null,
-					actions: [
-						TriggerAction.CreateUnit("rockgolem", PlayerId.Player2, "Region 2"),
-						TriggerAction.AttackMoveToRegion(UnitDefinition.LastCreatedUnit, "Region 3")
-					]
-				}
-			],
+			triggers: model.triggers,
 			units: units,
 			staticObjects: staticObjects,
 			terrainLayers: terrainLayers,

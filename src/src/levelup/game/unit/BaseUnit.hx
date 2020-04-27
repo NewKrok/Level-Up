@@ -103,7 +103,7 @@ import tink.state.State;
 		moveResult = { handle: function(handler:Void->Void) { moveResultHandler = handler; } };
 		attackResult = { handle: function(handler:Void->Void) { attackResultHandler = handler; } };
 
-		view = AssetCache.getModel(config.modelGroup + ".idle");
+		view = AssetCache.getModel(config.assetGroup + ".idle");
 		view.z = config.zOffset;
 		view.scale(config.modelScale);
 		parent.addChild(view);
@@ -148,6 +148,7 @@ import tink.state.State;
 		debugInfo.paddingVertical = 5;
 		debugInfo.borderHeight = 1;
 		debugInfo.borderWidth = 1;
+		debugInfo.visible = false;
 		t = new Text(FontBuilder.getFont("Arial", 10), debugInfo);
 		t.maxWidth = 300;
 
@@ -158,10 +159,10 @@ import tink.state.State;
 				case Idle if (currentAnimationType != UnitAnimationType.Idle):
 					/*if (currentAnimation == null)
 					{
-						currentAnimation = AssetCache.getAnimation(config.modelGroup + ".idle").createInstance(view);
+						currentAnimation = AssetCache.getAnimation(config.assetGroup + ".idle").createInstance(view);
 					}
 
-					var newAnim = AssetCache.getAnimation(config.modelGroup + ".idle").createInstance(view);
+					var newAnim = AssetCache.getAnimation(config.assetGroup + ".idle").createInstance(view);
 					newAnim.onAnimEnd = () -> {};
 					if (animTransition == null)
 					{
@@ -178,20 +179,20 @@ import tink.state.State;
 					view.playAnimation(animTransition);*/
 
 					currentAnimationType = UnitAnimationType.Idle;
-					view.playAnimation(AssetCache.getAnimation(config.modelGroup + "." + currentAnimationType));
+					view.playAnimation(AssetCache.getAnimation(config.assetGroup + "." + currentAnimationType));
 					view.currentAnimation.speed = config.idleAnimSpeedMultiplier;
 
 				case MoveTo | AttackRequested if (!config.isBuilding):
 					currentAnimationType = UnitAnimationType.Walk;
-					view.playAnimation(AssetCache.getAnimation(config.modelGroup + "." + currentAnimationType));
+					view.playAnimation(AssetCache.getAnimation(config.assetGroup + "." + currentAnimationType));
 					view.currentAnimation.speed = config.runAnimSpeedMultiplier * config.speedMultiplier;
 /*
 					if (currentAnimation == null)
 					{
-						currentAnimation = AssetCache.getAnimation(config.modelGroup + ".idle").createInstance(view);
+						currentAnimation = AssetCache.getAnimation(config.assetGroup + ".idle").createInstance(view);
 					}
 
-					var newAnim = AssetCache.getAnimation(config.modelGroup + ".walk").createInstance(view);
+					var newAnim = AssetCache.getAnimation(config.assetGroup + ".walk").createInstance(view);
 					newAnim.onAnimEnd = () -> {};
 
 					if (animTransition == null)
@@ -215,7 +216,7 @@ import tink.state.State;
 
 				case Dead:
 					currentAnimationType = UnitAnimationType.Death;
-					view.playAnimation(AssetCache.getAnimation(config.modelGroup + "." + currentAnimationType)).loop = false;
+					view.playAnimation(AssetCache.getAnimation(config.assetGroup + "." + currentAnimationType)).loop = false;
 					view.currentAnimation.speed = 1;
 
 					var alphaShader = new Opacity(.5);
@@ -258,20 +259,20 @@ import tink.state.State;
 			if (currentAnimationType != UnitAnimationType.Attack)
 			{
 				currentAnimationType = UnitAnimationType.Attack;
-				view.playAnimation(AssetCache.getAnimation(config.modelGroup + "." + currentAnimationType));
+				view.playAnimation(AssetCache.getAnimation(config.assetGroup + "." + currentAnimationType));
 				view.currentAnimation.speed = config.attackAnimSpeedMultiplier;
 			}
 		}
 		else
 		{
 			currentAnimationType = UnitAnimationType.Attack;
-			view.playAnimation(AssetCache.getAnimation(config.modelGroup + "." + currentAnimationType));
+			view.playAnimation(AssetCache.getAnimation(config.assetGroup + "." + currentAnimationType));
 			view.currentAnimation.speed = config.attackAnimSpeedMultiplier;
 			view.currentAnimation.loop = false;
 			view.currentAnimation.onAnimEnd = function()
 			{
 				currentAnimationType = UnitAnimationType.Idle;
-				view.playAnimation(AssetCache.getAnimation(config.modelGroup + "." + currentAnimationType));
+				view.playAnimation(AssetCache.getAnimation(config.assetGroup + "." + currentAnimationType));
 				view.currentAnimation.speed = config.idleAnimSpeedMultiplier * config.speedMultiplier;
 				checkTargetLife();
 			};
@@ -587,7 +588,7 @@ import tink.state.State;
 	{
 		life.set(Math.max(life.value - v, 0));
 
-		if (attacker != null && target == null && state != Dead)
+		if (attacker != null && target == null && state != Dead && activeCommand == UnitCommand.Nothing)
 		{
 			target = attacker;
 			attackRequest();
@@ -650,10 +651,11 @@ import tink.state.State;
 			target = null;
 			nearestTarget = null;
 
+			Actuate.stop(view, null, false, true);
+			onMoveEnd();
+
 			if (attackResultHandler != null)
 			{
-				Actuate.stop(view, null, false, true);
-				onMoveEnd();
 				if (attackResultHandler != null) attackResultHandler();
 				attackResultHandler = null;
 			}

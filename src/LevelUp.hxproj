@@ -36,6 +36,7 @@
     <library name="coconut.react-dom" />
     <library name="heaps" />
     <library name="actuate" />
+    <library name="gsap" />
     <library name="hpp" />
     <library name="lzstring" />
     <library name="embed-js" />

@@ -9,6 +9,7 @@ import hxd.Res;
 import levelup.AssetCache;
 import levelup.EnvironmentData;
 import levelup.MapData;
+import levelup.ProjectileAnimationData;
 import levelup.TerrainAssets;
 import levelup.UnitData;
 import levelup.core.renderer.Renderer;
@@ -36,6 +37,9 @@ class Main extends Base2dApp
 		TerrainAssets.init();
 		SaveUtil.load();
 
+		ProjectileAnimationData.addData(Json.parse(Res.data.projectile_animation_data.entry.getText()));
+		AssetCache.addData(Json.parse(Res.data.projectile_animation_asset_data.entry.getText()));
+
 		EnvironmentData.addData(Json.parse(Res.data.environment_data.entry.getText()));
 		AssetCache.addData(Json.parse(Res.data.environment_model_data.entry.getText()));
 
@@ -50,8 +54,8 @@ class Main extends Base2dApp
 
 		//changeState(EditorState, [stage, s3d, SaveUtil.editorData.customMaps[0]]);
 		//changeState(EditorState, [stage, s3d, MapData.getRawMap("lobby")]);
-		//changeState(GameState, [stage, s3d, MapData.getRawMap("lobby")]);
-		changeState(GameState, [stage, s3d, SaveUtil.editorData.customMaps[0]]);
+		changeState(GameState, [stage, s3d, MapData.getRawMap("lobby")]);
+		//changeState(GameState, [stage, s3d, SaveUtil.editorData.customMaps[0]]);
 
 	}
 

@@ -7,6 +7,7 @@
 -lib coconut.react-dom
 -lib heaps
 -lib actuate
+-lib gsap
 -lib hpp
 -lib lzstring
 -lib embed-js
