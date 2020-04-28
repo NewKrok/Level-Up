@@ -6,6 +6,7 @@ http://flashplusplus.net/haxe/levelup/index.html
 
 ## Screenshot(s)
 Ingame
+![image](https://user-images.githubusercontent.com/13141660/80431506-e5ac6d80-88f1-11ea-8a47-8f10b47400e2.png)
 ![image](https://user-images.githubusercontent.com/13141660/70577922-89e48080-1bac-11ea-9b10-8f8183ee4ca3.png)
 
 Editor
@@ -23,10 +24,7 @@ Editor
 
 ## TODO - Game
 - Height map based pathfinding
-- Unit should counter attack when it was attacked from outside it's detection range
-- Units should realize when nearby allies were attacked
 - Implement Fog of war
-- Ranged attack with follower and normal projectile
 - Area damage
 - Html based hero ui
 - Life and mana bar into the game
