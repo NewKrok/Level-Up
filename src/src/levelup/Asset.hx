@@ -1114,8 +1114,10 @@ class Asset
 typedef AssetConfig = {
 	var id(default, never):String;
 	var name(default, never):String;
-	var model(default, never):Model;
-	var scale(default, never):Float;
+	var assetGroup(default, never):String;
+	var modelScale(default, never):Float;
+
+	@:optional var unitName(default, never):String;
 	@:optional var environmentId(default, never):EnvironmentId;
 	@:optional var race(default, never):RaceId;
 	@:optional var zOffset(default, never):Float;

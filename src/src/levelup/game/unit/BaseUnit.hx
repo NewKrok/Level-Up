@@ -109,8 +109,9 @@ import tink.state.State;
 		parent.addChild(view);
 
 		var s = new FixedColor(0x000000);
-		for( view in view.getMaterials() ) {
-			var p = view.allocPass("highlight");
+		for (m in view.getMaterials())
+		{
+			var p = m.allocPass("highlight");
 			p.culling = None;
 			p.depthWrite = false;
 			p.addShader(s);

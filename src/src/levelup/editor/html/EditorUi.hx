@@ -36,7 +36,6 @@ class EditorUi extends View
 	@:state var selectedRightMenu:Int = 0;
 
 	@:ref var editorLibrary:EditorLibrary;
-	@:ref var selectedAsset:AssetProperties;
 	@:ref var snapGridInfo:SnapGridInfo;
 
 	function render() '
@@ -55,12 +54,6 @@ class EditorUi extends View
 			/>
 			<div class="lu_row">
 				<div class="lu_editor_left">
-					<if {selectedWorldAsset != null}>
-						<AssetProperties
-							ref={selectedAsset}
-							asset=$selectedWorldAsset
-						/>
-					</if>
 				</div>
 				<div class="lu_editor_right">
 					<switch {model.toolState}>
@@ -124,6 +117,5 @@ class EditorUi extends View
 	';
 
 	public function removeSelection() editorLibrary.removeSelection();
-	public function forceUpdateSelectedUser() selectedAsset.forceUpdate();
 	public function increaseSnap() snapGridInfo.increaseSnap();
 }

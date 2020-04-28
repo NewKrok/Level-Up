@@ -53,8 +53,8 @@ class Main extends Base2dApp
 		AssetCache.addData(Json.parse(Res.data.orc_model_data.entry.getText()));
 
 		//changeState(EditorState, [stage, s3d, SaveUtil.editorData.customMaps[0]]);
-		//changeState(EditorState, [stage, s3d, MapData.getRawMap("lobby")]);
-		changeState(GameState, [stage, s3d, MapData.getRawMap("lobby")]);
+		changeState(EditorState, [stage, s3d, MapData.getRawMap("lobby")]);
+		//changeState(GameState, [stage, s3d, MapData.getRawMap("lobby")]);
 		//changeState(GameState, [stage, s3d, SaveUtil.editorData.customMaps[0]]);
 
 	}

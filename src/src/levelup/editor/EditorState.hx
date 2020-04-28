@@ -9,16 +9,17 @@ import h3d.Vector;
 import h3d.mat.BlendMode;
 import h3d.mat.Data.Face;
 import h3d.mat.Material;
+import h3d.mat.Pass;
 import h3d.mat.Texture;
 import h3d.pass.DefaultShadowMap;
 import h3d.prim.Grid;
-import h3d.prim.ModelCache;
 import h3d.scene.Graphics;
 import h3d.scene.Interactive;
 import h3d.scene.Mesh;
 import h3d.scene.Object;
 import h3d.shader.AlphaMap;
 import h3d.shader.ColorMult;
+import h3d.shader.FixedColor;
 import haxe.Json;
 import haxe.crypto.Base64;
 import haxe.io.BytesOutput;
@@ -34,6 +35,7 @@ import hxd.Window;
 import hxd.clipper.Rect;
 import js.Browser;
 import levelup.Asset;
+import levelup.UnitData;
 import levelup.editor.EditorModel.ToolState;
 import levelup.editor.dialog.EditorDialogManager;
 import levelup.editor.html.EditorUi;
@@ -90,7 +92,7 @@ class EditorState extends Base2dState
 	var debugUnitPath:Graphics;
 	var debugDetectionRadius:Graphics;
 
-	var selectionCircle:Graphics;
+	var selectionBox:Graphics;
 	var isDisposed:Bool = false;
 
 	var isMapDragActive:Bool = false;
@@ -99,13 +101,12 @@ class EditorState extends Base2dState
 	var dragStartObjectPoint:SimplePoint = { x: 0, y: 0 };
 
 	var cameraObject:Object = new Object();
-	var currentCameraPoint:{ x:Float, y:Float, z:Float } = { x: 0, y: 0, z: 0 };
+	var currentCameraPoint: { x:Float, y:Float, z:Float } = { x: 0, y: 0, z: 0 };
 	var currentCamDistance:Float = 0;
 	var cameraSpeed:Vector = new Vector(10, 10, 5);
 	var camAngle:Float = Math.PI - Math.PI / 4;
 	var camDistance:Float = 30;
 
-	var cache:ModelCache = new ModelCache();
 	var selectedWorldAsset:State<AssetItem> = new State<AssetItem>(null);
 	var selectedAssetConfig:AssetConfig;
 	var previewInstance:Object;
@@ -142,6 +143,15 @@ class EditorState extends Base2dState
 
 		adventureConfig = AdventureParser.loadLevel(rawMap);
 
+		AssetCache.load(adventureConfig.neededModelGroups, adventureConfig.neededTextures.concat([])).handle(o -> switch (o)
+	{
+		case Success(_): onLoaded(rawMap);
+			case Failure(e):
+		});
+	}
+
+	function onLoaded(rawMap)
+	{
 		model = new EditorModel(
 		{
 			name: adventureConfig.name,
@@ -254,7 +264,8 @@ class EditorState extends Base2dState
 
 				if (draggedInstance != null)
 				{
-					logAction({
+					logAction(
+					{
 						actionType: EditorActionType.Move,
 						target: draggedInstance,
 						oldValueSimplePoint: dragInstanceAbsStartPoint,
@@ -342,15 +353,15 @@ class EditorState extends Base2dState
 
 		for (o in adventureConfig.worldConfig.staticObjects.concat([]))
 		{
-			var config = Asset.getAsset(o.id);
-			if (config != null) createAsset(Asset.getAsset(o.id), o.x, o.y, o.z, o.scale == null ? config.scale : o.scale, o.rotation);
+			var config = EnvironmentData.getEnvironmentConfig(o.id);
+			if (config != null) createAsset(cast config, o.x, o.y, o.z, o.scale == null ? config.scale : o.scale, o.rotation);
 			else trace("Couldn't create asset with id: " + o.id);
 		}
 
 		for (o in adventureConfig.worldConfig.units.concat([]))
 		{
-			var config = Asset.getAsset(o.id);
-			if (config != null) createUnit(Asset.getAsset(o.id), o.x, o.y, o.z, o.scale == null ? config.scale : o.scale, o.rotation, o.owner);
+			var config = UnitData.getUnitConfig(o.id);
+			if (config != null) createUnit(cast config, o.x, o.y, o.z, o.scale == null ? config.modelScale : o.scale, o.rotation, o.owner);
 			else trace("Couldn't create unit with id: " + o.id);
 		}
 
@@ -365,22 +376,27 @@ class EditorState extends Base2dState
 			jumpCamera(adventureConfig.worldConfig.editorLastCamPosition.x, adventureConfig.worldConfig.editorLastCamPosition.y);
 		}
 
-		editorUi = new EditorUi({
+		editorUi = new EditorUi(
+		{
 			backToLobby: () -> HppG.changeState(GameState, [stage, s3d, MapData.getRawMap("lobby")]),
-			createNewAdventure: dialogManager.openDialog.bind({ view: new NewAdventureDialog({
-				createNewAdventure: createNewAdventure,
-				close: dialogManager.closeCurrentDialog,
-				defaultTerrainIdForNewAdventure: model.defaultTerrainIdForNewAdventure,
-				openTerrainChooser: dialogManager.openDialog.bind({ forceOpen: true, view: new TerrainChooser({
+			createNewAdventure: dialogManager.openDialog.bind({
+				view: new NewAdventureDialog({
+					createNewAdventure: createNewAdventure,
 					close: dialogManager.closeCurrentDialog,
-					terrainList: TerrainAssets.terrains,
-					selectTerrain: id ->
-					{
-						model.defaultTerrainIdForNewAdventure = id;
-						dialogManager.closeCurrentDialog();
-					}
-				}).reactify() })
-			}).reactify() }),
+					defaultTerrainIdForNewAdventure: model.defaultTerrainIdForNewAdventure,
+					openTerrainChooser: dialogManager.openDialog.bind({
+						forceOpen: true, view: new TerrainChooser({
+							close: dialogManager.closeCurrentDialog,
+							terrainList: TerrainAssets.terrains,
+							selectTerrain: id ->
+							{
+								model.defaultTerrainIdForNewAdventure = id;
+								dialogManager.closeCurrentDialog();
+							}
+						}).reactify()
+					})
+				}).reactify()
+			}),
 			save: save,
 			testRun: () -> HppG.changeState(GameState, [stage, s3d, save(), { isTestRun: true }]),
 			previewRequest: createPreview,
@@ -400,7 +416,7 @@ class EditorState extends Base2dState
 		modules.push(cast new RegionModule(cast this));
 		modules.push(cast new ScriptModule(cast this));
 
-		selectionCircle = new Graphics(world);
+		selectionBox = new Graphics(world);
 
 		createGrid();
 
@@ -412,29 +428,40 @@ class EditorState extends Base2dState
 	{
 		if (selectedWorldAsset == null)
 		{
-			selectionCircle.visible = false;
+			selectionBox.visible = false;
 		}
 		else
 		{
-			selectionCircle.visible = true;
-			selectionCircle.clear();
-			selectionCircle.lineStyle(4, 0xFFFFFF);
-			var angle = 0.0;
+			selectionBox.visible = true;
+			selectionBox.clear();
+			selectionBox.lineStyle(2, 0x00FF00);
 
-			var b = selectedWorldAsset.value.instance.getMeshes()[0].getBounds().getSize();
-			var size = b.x < b.y ? b.y : b.x;
-			var piece = Std.int(12 + size / 10 * 10);
+			var b = selectedWorldAsset.value.instance.getMeshes()[0].getBounds();
 
-			for (i in 0...piece)
-			{
-				angle += Math.PI * 2 / (piece - 1);
-				var xPos = selectedWorldAsset.value.instance.x + Math.cos(angle) * size / 2;
-				var yPos = selectedWorldAsset.value.instance.y + Math.sin(angle) * size / 2;
-				var zPos = 0.1 + GeomUtil3D.getHeightByPosition(world.heightGrid, xPos, yPos);
+			selectionBox.moveTo(b.xMin, b.yMin, b.zMin);
+			selectionBox.lineTo(b.xMin + b.xSize, b.yMin, b.zMin);
+			selectionBox.lineTo(b.xMin + b.xSize, b.yMin + b.ySize, b.zMin);
+			selectionBox.lineTo(b.xMin, b.yMin + b.ySize, b.zMin);
+			selectionBox.lineTo(b.xMin, b.yMin, b.zMin);
 
-				if (i == 0) selectionCircle.moveTo(xPos, yPos, zPos);
-				else selectionCircle.lineTo(xPos, yPos, zPos);
-			}
+			selectionBox.moveTo(b.xMin, b.yMin, b.zMin + b.zSize);
+			selectionBox.lineTo(b.xMin + b.xSize, b.yMin, b.zMin + b.zSize);
+			selectionBox.lineTo(b.xMin + b.xSize, b.yMin + b.ySize, b.zMin + b.zSize);
+			selectionBox.lineTo(b.xMin, b.yMin + b.ySize, b.zMin + b.zSize);
+			selectionBox.lineTo(b.xMin, b.yMin, b.zMin + b.zSize);
+
+			selectionBox.moveTo(b.xMin, b.yMin, b.zMin);
+			selectionBox.lineTo(b.xMin, b.yMin, b.zMin + b.zSize);
+
+			selectionBox.moveTo(b.xMin + b.xSize, b.yMin, b.zMin);
+			selectionBox.lineTo(b.xMin + b.xSize, b.yMin, b.zMin + b.zSize);
+
+			selectionBox.moveTo(b.xMin + b.xSize, b.yMin + b.ySize, b.zMin);
+			selectionBox.lineTo(b.xMin + b.xSize, b.yMin + b.ySize, b.zMin + b.zSize);
+
+
+			selectionBox.moveTo(b.xMin, b.yMin + b.ySize, b.zMin);
+			selectionBox.lineTo(b.xMin, b.yMin + b.ySize, b.zMin + b.zSize);
 		}
 	}
 
@@ -452,14 +479,15 @@ class EditorState extends Base2dState
 
 	function createAsset(config:AssetConfig, x, y, z, scale, rotation, owner = null)
 	{
-		var instance:Object = cache.loadModel(config.model);
+		var instance:Object = AssetCache.getModel(config.assetGroup + (config.unitName == null ? "" : ".idle" ));
 		if (config.hasTransparentTexture != null && config.hasTransparentTexture) for (m in instance.getMaterials()) m.textureShader.killAlpha = true;
 
 		var interactive = new Interactive(instance.getCollider(), world);
 
 		if (config.race == null)
 		{
-			model.staticObjects.push({
+			model.staticObjects.push(
+			{
 				id: config.id,
 				name: config.name,
 				x: x,
@@ -476,7 +504,8 @@ class EditorState extends Base2dState
 		}
 		else
 		{
-			model.units.push({
+			model.units.push(
+			{
 				id: config.id,
 				name: config.name,
 				x: x,
@@ -490,15 +519,16 @@ class EditorState extends Base2dState
 			});
 		}
 
-		worldInstances.push({
+		worldInstances.push(
+		{
 			instance: instance,
 			config: config,
 			interactive: interactive
 		});
 
-		if (config.hasAnimation != null && config.hasAnimation)
+		if (config.unitName != null)
 		{
-			instance.playAnimation(cache.loadAnimation(config.model));
+			instance.playAnimation(AssetCache.getAnimation(config.assetGroup + ".idle"));
 		}
 
 		var dragPoint:Vector;
@@ -516,11 +546,12 @@ class EditorState extends Base2dState
 
 		interactive.onRelease = e -> if (e.button == 0 && previewInstance == null) enableAssetInteractives();
 
-		var colorShader = new ColorMult();
-		colorShader.color = new Vector(1, 1, 0, 0.2);
+		var p = new Pass("editorHighlight", null, instance.getMaterials()[0].mainPass);
+		p.culling = None;
+		p.depthWrite = false;
 
-		interactive.onOver = e -> for (m in instance.getMaterials()) m.mainPass.addShader(colorShader);
-		interactive.onOut = e -> for (m in instance.getMaterials()) m.mainPass.removeShader(colorShader);
+		interactive.onOver = e -> instance.getMaterials()[0].addPass(p);
+		interactive.onOut = e -> instance.getMaterials()[0].removePass(p);
 
 		if (previewInstance != null)
 		{
@@ -574,23 +605,23 @@ class EditorState extends Base2dState
 					previewInstance.scale(0.9);
 
 				case Key.UP | Key.W if (selectedInstance != null):
-					logAction({
+					logAction(
+					{
 						actionType: EditorActionType.Scale,
 						target: selectedInstance,
 						oldValueFloat: selectedInstance.scaleX,
 						newValueFloat: selectedInstance.scaleX * 0.9
 					});
 					selectedInstance.scale(1.1);
-					editorUi.forceUpdateSelectedUser();
 				case Key.DOWN | Key.S if (selectedInstance != null):
-					logAction({
+					logAction(
+					{
 						actionType: EditorActionType.Scale,
 						target: selectedInstance,
 						oldValueFloat: selectedInstance.scaleX,
 						newValueFloat: selectedInstance.scaleX * 1.1
 					});
 					selectedInstance.scale(0.9);
-					editorUi.forceUpdateSelectedUser();
 
 				case Key.LEFT | Key.A if (previewInstance != null):
 					previewInstance.rotate(0, 0, Math.PI / 8);
@@ -600,24 +631,24 @@ class EditorState extends Base2dState
 				case Key.LEFT | Key.A if (selectedInstance != null):
 					var prevQ = selectedInstance.getRotationQuat().clone();
 					selectedInstance.rotate(0, 0, Math.PI / 8);
-					logAction({
+					logAction(
+					{
 						actionType: EditorActionType.Rotate,
 						target: selectedInstance,
 						oldValueQuat: prevQ,
 						newValueQuat: selectedInstance.getRotationQuat().clone()
 					});
-					editorUi.forceUpdateSelectedUser();
 
 				case Key.RIGHT | Key.D if (!hadActiveCommandWithCtrl && selectedInstance != null):
 					var prevQ = selectedInstance.getRotationQuat().clone();
 					selectedInstance.rotate(0, 0, -Math.PI / 8);
-					logAction({
+					logAction(
+					{
 						actionType: EditorActionType.Rotate,
 						target: selectedInstance,
 						oldValueQuat: prevQ,
 						newValueQuat: selectedInstance.getRotationQuat().clone()
 					});
-					editorUi.forceUpdateSelectedUser();
 
 				case Key.UP | Key.W: cameraObject.x += 5;
 				case Key.DOWN | Key.S: cameraObject.x -= 5;
@@ -634,7 +665,7 @@ class EditorState extends Base2dState
 					}
 					lastEscPressTime = now;
 
-					previewInstance.setScale(selectedAssetConfig.scale);
+					previewInstance.setScale(selectedAssetConfig.modelScale);
 					previewInstance.setRotation(0, 0, 0);
 
 				case Key.ESCAPE if (previewInstance == null):
@@ -646,7 +677,6 @@ class EditorState extends Base2dState
 						return;
 					}
 					lastEscPressTime = now;
-
 
 				case Key.ESCAPE if (selectedWorldAsset.value != null): selectedWorldAsset.set(null);
 
@@ -694,14 +724,14 @@ class EditorState extends Base2dState
 
 		if (selectedAssetConfig != null)
 		{
-			previewInstance = cache.loadModel(selectedAssetConfig.model);
+			previewInstance = AssetCache.getModel(selectedAssetConfig.assetGroup);
 			if (asset.hasTransparentTexture != null && asset.hasTransparentTexture) for (m in previewInstance.getMaterials()) m.textureShader.killAlpha = true;
 
-			if (selectedAssetConfig.hasAnimation != null && selectedAssetConfig.hasAnimation)
+			if (selectedAssetConfig.unitName != null)
 			{
-				previewInstance.playAnimation(cache.loadAnimation(selectedAssetConfig.model));
+				previewInstance.playAnimation(AssetCache.getAnimation(selectedAssetConfig.assetGroup + ".idle"));
 			}
-			previewInstance.setScale(selectedAssetConfig.scale);
+			previewInstance.setScale(selectedAssetConfig.modelScale);
 			previewInstance.setRotation(0, 0, 0);
 			if (selectedAssetConfig.zOffset != null) previewInstance.z = selectedAssetConfig.zOffset;
 
@@ -739,7 +769,7 @@ class EditorState extends Base2dState
 
 	function reprocessAction(a, useNewValue)
 	{
-		switch(a.actionType)
+		switch (a.actionType)
 		{
 			case EditorActionType.Scale:
 				a.target.setScale(useNewValue ? a.newValueFloat : a.oldValueFloat);
@@ -895,26 +925,26 @@ class EditorState extends Base2dState
 			debugDetectionRadius.lineStyle(2, 0xFF0000);
 			debugDetectionRadius.moveTo(u.view.x + u.config.attackRange, u.view.y, 0);
 			for (i in 0...19) debugDetectionRadius.lineTo(
-				u.view.x + u.config.attackRange * Math.cos(i * 20 * (Math.PI / 180)),
-				u.view.y + u.config.attackRange * Math.sin(i * 20 * (Math.PI / 180)),
-				0
-			);
+					u.view.x + u.config.attackRange * Math.cos(i * 20 * (Math.PI / 180)),
+					u.view.y + u.config.attackRange * Math.sin(i * 20 * (Math.PI / 180)),
+					0
+				);
 
 			debugDetectionRadius.lineStyle(2, 0x0000FF);
 			debugDetectionRadius.moveTo(u.view.x + u.config.unitSize, u.view.y, 0);
 			for (i in 0...19) debugDetectionRadius.lineTo(
-				u.view.x + u.config.unitSize * Math.cos(i * 20 * (Math.PI / 180)),
-				u.view.y + u.config.unitSize * Math.sin(i * 20 * (Math.PI / 180)),
-				0
-			);
+					u.view.x + u.config.unitSize * Math.cos(i * 20 * (Math.PI / 180)),
+					u.view.y + u.config.unitSize * Math.sin(i * 20 * (Math.PI / 180)),
+					0
+				);
 
 			debugDetectionRadius.lineStyle(2, 0x00FF00);
 			debugDetectionRadius.moveTo(u.view.x + u.config.detectionRange, u.view.y, 0);
 			for (i in 0...19) debugDetectionRadius.lineTo(
-				u.view.x + u.config.detectionRange * Math.cos(i * 20 * (Math.PI / 180)),
-				u.view.y + u.config.detectionRange * Math.sin(i * 20 * (Math.PI / 180)),
-				0
-			);
+					u.view.x + u.config.detectionRange * Math.cos(i * 20 * (Math.PI / 180)),
+					u.view.y + u.config.detectionRange * Math.sin(i * 20 * (Math.PI / 180)),
+					0
+				);
 		}
 	}
 
@@ -995,7 +1025,8 @@ class EditorState extends Base2dState
 		var rawHeightMap = new BitmapData(Std.int(data.size.x), Std.int(data.size.y));
 		rawHeightMap.fill(0, 0, Std.int(data.size.x), Std.int(data.size.y), 0x888888);
 
-		var worldConfig:WorldConfig = {
+		var worldConfig:WorldConfig =
+		{
 			regions: [],
 			triggers: [],
 			units: [],
@@ -1004,7 +1035,8 @@ class EditorState extends Base2dState
 			heightMap: Base64.encode(rawHeightMap.getPixels().bytes),
 			editorLastCamPosition: new Vector(data.size.x / 2, data.size.y / 2, data.size.y / 2)
 		};
-		var result = Json.stringify({
+		var result = Json.stringify(
+		{
 			name: "A Great New Adventure",
 			editorVersion: Main.editorVersion,
 			size: data.size,
@@ -1030,26 +1062,29 @@ class EditorState extends Base2dState
 			var l = world.terrainLayers[i];
 			var shader = l.material.mainPass.getShader(AlphaMap);
 
-			terrainLayers.push({
+			terrainLayers.push(
+			{
 				textureId: terrainModule.model.layers.toArray()[i].terrainId.value,
 				texture: shader != null ? Base64.encode(shader.texture.capturePixels().bytes) : null,
 				uvScale: terrainModule.model.layers.toArray()[i].uvScale.value
 			});
 		}
 
-		var units = [for (u in model.units) {
+		var units = [for (u in model.units)
+		{
 			owner: u.owner,
-			id: u.id,
-			name: u.name,
-			x: u.instance.x,
-			y: u.instance.y,
-			z: u.instance.z,
-			scale: u.instance.scaleX,
-			rotation: u.instance.getRotationQuat().clone(),
-			zOffset: u.zOffset,
+				   id: u.id,
+				   name: u.name,
+				   x: u.instance.x,
+				   y: u.instance.y,
+				   z: u.instance.z,
+				   scale: u.instance.scaleX,
+				   rotation: u.instance.getRotationQuat().clone(),
+				   zOffset: u.zOffset,
 		}];
 
-		var staticObjects = [for (o in model.staticObjects) {
+		var staticObjects = [for (o in model.staticObjects)
+		{
 			id: o.id,
 			name: o.name,
 			x: o.instance.x,
@@ -1061,7 +1096,8 @@ class EditorState extends Base2dState
 			isPathBlocker: o.isPathBlocker
 		}];
 
-		var regions = [for (r in model.regions) {
+		var regions = [for (r in model.regions)
+		{
 			id: r.id,
 			name: r.name,
 			x: Math.floor(r.instance.x),
@@ -1070,7 +1106,8 @@ class EditorState extends Base2dState
 			height: cast(r.instance.primitive, Grid).height
 		}];
 
-		var worldConfig:WorldConfig = {
+		var worldConfig:WorldConfig =
+		{
 			startingTime: model.startingTime,
 			sunAndMoonOffsetPercent: model.sunAndMoonOffsetPercent,
 			dayColor: model.dayColor,
@@ -1086,7 +1123,8 @@ class EditorState extends Base2dState
 			levellingHeightMap: Base64.encode(world.levellingHeightMap.getPixels().bytes),
 			editorLastCamPosition: new Vector(cameraObject.x, cameraObject.y, currentCamDistance)
 		};
-		var result = Json.stringify({
+		var result = Json.stringify(
+		{
 			name: model.name,
 			editorVersion: Main.editorVersion,
 			size: model.size,
@@ -1172,7 +1210,8 @@ typedef EditorAction =
 	@:optional var newValueString:String;
 }
 
-enum EditorActionType {
+enum EditorActionType
+{
 	Create;
 	Delete;
 	Move;
@@ -1180,7 +1219,8 @@ enum EditorActionType {
 	Scale;
 }
 
-enum EditorViewId {
+enum EditorViewId
+{
 	VDialogManager;
 	VTerrainModule;
 	VHeightMapModule;
