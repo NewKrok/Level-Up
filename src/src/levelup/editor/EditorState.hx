@@ -95,7 +95,6 @@ class EditorState extends Base2dState
 	var debugUnitPath:Graphics;
 	var debugDetectionRadius:Graphics;
 
-	var selectionBox:Graphics;
 	var isDisposed:Bool = false;
 
 	var isMapDragActive:Bool = false;
@@ -145,7 +144,7 @@ class EditorState extends Base2dState
 
 		compressor = new LZString();
 
-		cf.adventureLoader.load(rawMap).handle(o -> switch (o)
+		cf.adventureLoader.load(rawMap, true).handle(o -> switch (o)
 		{
 			case Success(result):
 				adventureConfig = result.config;
@@ -261,12 +260,10 @@ class EditorState extends Base2dState
 				else if (draggedInstance != null && GeomUtil.getDistance(cast draggedInstance, dragInstanceStartPoint) < 0.2)
 				{
 					selectedWorldAsset.set({ instance: draggedInstance, config: activeWorldInstance.config });
-					updateSelectionCircle();
 				}
 				else if (GeomUtil.getDistance({ x: e.relX, y: e.relY }, cameraDragStartPoint) < 0.2)
 				{
 					selectedWorldAsset.set(null);
-					updateSelectionCircle();
 				}
 
 				if (draggedInstance != null)
@@ -316,8 +313,6 @@ class EditorState extends Base2dState
 					snapPosition(model.isXDragLocked ? dragInstanceStartPoint.y : dragInstanceStartPoint.y + (e.relY - dragInstanceWorldStartPoint.y)),
 					draggedInstance.z
 				);
-
-				updateSelectionCircle();
 			}
 			else if (isMapDragActive)
 			{
@@ -423,53 +418,10 @@ class EditorState extends Base2dState
 		modules.push(cast new RegionModule(cast this));
 		modules.push(cast new ScriptModule(cast this));
 
-		selectionBox = new Graphics(world);
-
 		createGrid();
 
 		Window.getInstance().addEventTarget(onKeyEvent);
 		isLevelLoaded = true;
-	}
-
-	function updateSelectionCircle()
-	{
-		if (selectedWorldAsset == null)
-		{
-			selectionBox.visible = false;
-		}
-		else
-		{
-			selectionBox.visible = true;
-			selectionBox.clear();
-			selectionBox.lineStyle(2, 0x00FF00);
-
-			var b = selectedWorldAsset.value.instance.getBounds();
-
-			selectionBox.moveTo(b.xMin, b.yMin, b.zMin);
-			selectionBox.lineTo(b.xMin + b.xSize, b.yMin, b.zMin);
-			selectionBox.lineTo(b.xMin + b.xSize, b.yMin + b.ySize, b.zMin);
-			selectionBox.lineTo(b.xMin, b.yMin + b.ySize, b.zMin);
-			selectionBox.lineTo(b.xMin, b.yMin, b.zMin);
-
-			selectionBox.moveTo(b.xMin, b.yMin, b.zMin + b.zSize);
-			selectionBox.lineTo(b.xMin + b.xSize, b.yMin, b.zMin + b.zSize);
-			selectionBox.lineTo(b.xMin + b.xSize, b.yMin + b.ySize, b.zMin + b.zSize);
-			selectionBox.lineTo(b.xMin, b.yMin + b.ySize, b.zMin + b.zSize);
-			selectionBox.lineTo(b.xMin, b.yMin, b.zMin + b.zSize);
-
-			selectionBox.moveTo(b.xMin, b.yMin, b.zMin);
-			selectionBox.lineTo(b.xMin, b.yMin, b.zMin + b.zSize);
-
-			selectionBox.moveTo(b.xMin + b.xSize, b.yMin, b.zMin);
-			selectionBox.lineTo(b.xMin + b.xSize, b.yMin, b.zMin + b.zSize);
-
-			selectionBox.moveTo(b.xMin + b.xSize, b.yMin + b.ySize, b.zMin);
-			selectionBox.lineTo(b.xMin + b.xSize, b.yMin + b.ySize, b.zMin + b.zSize);
-
-
-			selectionBox.moveTo(b.xMin, b.yMin + b.ySize, b.zMin);
-			selectionBox.lineTo(b.xMin, b.yMin + b.ySize, b.zMin + b.zSize);
-		}
 	}
 
 	function getModule(c) return modules.filter(m ->Std.is(m, c))[0];
@@ -564,7 +516,14 @@ class EditorState extends Base2dState
 			onOutRoutines.push(() -> m.removePass(p));
 		}
 		interactive.onOver = e -> { onOverRoutines.map(fv -> fv()); };
-		interactive.onOut = e -> { onOutRoutines.map(fv -> fv()); };
+		interactive.onOut = e ->
+		{
+			if (selectedWorldAsset.value == null || selectedWorldAsset.value.instance == null || selectedWorldAsset.value.instance != instance)
+			{
+				onOutRoutines.map(fv -> fv());
+			}
+		};
+		selectedWorldAsset.bind(v -> if (v == null || v.instance == null || v.instance != instance) onOutRoutines.map(fv -> fv()));
 
 		if (previewInstance != null)
 		{

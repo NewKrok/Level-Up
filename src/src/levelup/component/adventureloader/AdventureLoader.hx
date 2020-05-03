@@ -9,6 +9,7 @@ import tink.CoreApi.Future;
 import tink.CoreApi.FutureTrigger;
 import tink.CoreApi.Noise;
 import tink.CoreApi.Outcome;
+import tink.core.Callback.CallbackLink;
 import tink.state.State;
 
 /**
@@ -24,6 +25,7 @@ import tink.state.State;
 	var adventureTitle:State<String> = new State<String>("");
 	var adventureSubTitle:State<String> = new State<String>("");
 	var adventureDescription:State<String> = new State<String>("");
+	var isEditorMode:State<Bool> = new State<Bool>(true);
 
 	var userActionTrigger:FutureTrigger<Outcome<Noise, String>>;
 
@@ -36,32 +38,59 @@ import tink.state.State;
 			adventureTitle: adventureTitle,
 			adventureSubTitle: adventureSubTitle,
 			adventureDescription: adventureDescription,
-			onStart: () ->
-			{
-				currentState.set(FadeOut);
-				TweenMax.delayedCall(1, currentState.set.bind(Idle));
-				userActionTrigger.trigger(Outcome.Success(Noise));
-			}
+			isEditorMode: isEditorMode,
+			onStart: onStart
 		});
 		cf.layout.registerView(LayoutId.AdventureLoader, view.reactify());
 	}
 
-	public function load(rawMap:String):Future<Outcome<AdventureLoaderResult, String>>
+	function onStart()
+	{
+		currentState.set(FadeOut);
+		TweenMax.delayedCall(1, currentState.set.bind(Idle));
+		userActionTrigger.trigger(Outcome.Success(Noise));
+	}
+
+	public function load(rawMap:String, isEditorMode:Bool = false):Future<Outcome<AdventureLoaderResult, String>>
 	{
 		currentState.set(LoadingInProgress);
 		var result:FutureTrigger<Outcome<AdventureLoaderResult, String>> = Future.trigger();
 		userActionTrigger = Future.trigger();
 
 		var adventureConfig = AdventureParser.loadLevel(rawMap);
-		preloaderImage.set(adventureConfig.preloaderImage);
-		adventureTitle.set(adventureConfig.title);
-		adventureSubTitle.set(adventureConfig.subTitle);
-		adventureDescription.set(adventureConfig.description);
+
+		this.isEditorMode.set(isEditorMode);
+
+		if (isEditorMode)
+		{
+			preloaderImage.set("asset/preloader/editor.jpg");
+			adventureTitle.set("Adventure Editor");
+			adventureSubTitle.set("0% loading...");
+			adventureDescription.set("<div style='text-align: center; color: #FFFF00; font-size: 1.5em'>" + adventureConfig.title + "</div>");
+
+			var cb:CallbackLink;
+			cb = cf.assetCache.loadPercentage.bind(v ->
+			{
+				adventureSubTitle.set(Math.floor(v * 100) + "% loading...");
+				if (v == 1) cb.cancel();
+			});
+		}
+		else
+		{
+			preloaderImage.set(adventureConfig.preloaderImage);
+			adventureTitle.set(adventureConfig.title);
+			adventureSubTitle.set(adventureConfig.subTitle);
+			adventureDescription.set(adventureConfig.description);
+		}
 
 		cf.assetCache.load(adventureConfig.neededModelGroups, adventureConfig.neededTextures).handle(o -> switch (o)
 		{
 			case Success(_):
-				TweenMax.delayedCall(1, currentState.set.bind(Loaded));
+				TweenMax.delayedCall(1, () ->
+				{
+					currentState.set(Loaded);
+					onStart();
+				});
 				result.trigger(Outcome.Success({config: adventureConfig, onUserAction: userActionTrigger}));
 
 			case Failure(e):

@@ -291,6 +291,11 @@ a {
 	left: 50%;
 }
 
+.lu_adventure_loader__level_info--centered {
+	top: 50%;
+	transform: translate(-50%, -50%);
+}
+
 .lu_adventure_loader__title {
 	text-align: center;
 	font-size: 30px;

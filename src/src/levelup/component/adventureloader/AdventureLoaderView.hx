@@ -15,6 +15,7 @@ class AdventureLoaderView extends View
 	@:attr var adventureTitle:String;
 	@:attr var adventureSubTitle:String;
 	@:attr var adventureDescription:String;
+	@:attr var isEditorMode:Bool;
 	@:attr var onStart:Void->Void;
 
 	function render() '
@@ -24,7 +25,7 @@ class AdventureLoaderView extends View
 				class={"lu_adventure_loader" + (currentState == Loaded ? " lu_adventure_loader--loaded" : "") + (currentState == FadeOut ? " lu_adventure_loader--fadeOut" : "")}
 				onclick={() -> if(currentState == Loaded) onStart()}
 			>
-				<div class="lu_adventure_loader__level_info">
+				<div class={"lu_adventure_loader__level_info" + (isEditorMode ? " lu_adventure_loader__level_info--centered" : "")}>
 					<div class="lu_adventure_loader__title">
 						<raw content=$adventureTitle />
 					</div>
@@ -35,15 +36,17 @@ class AdventureLoaderView extends View
 						<raw content=$adventureDescription />
 					</div>
 				</div>
-				<div class="lu_adventure_loader__container">
-					<div class={"lu_adventure_loader__line" + (currentState != LoadingInProgress ? " lu_opacity_pulse" : " lu_opacity_pulse--intensive")} style="width: ${loadPercentage * 100}%">
-						<div class={"lu_adventure_loader__circle" + (currentState != LoadingInProgress ? " lu_adventure_loader__circle--loaded" : "")}></div>
-						<div class="lu_adventure_loader__line_background"></div>
+				<if {!isEditorMode}>
+					<div class="lu_adventure_loader__container">
+						<div class={"lu_adventure_loader__line" + (currentState != LoadingInProgress ? " lu_opacity_pulse" : " lu_opacity_pulse--intensive")} style="width: ${loadPercentage * 100}%">
+							<div class={"lu_adventure_loader__circle" + (currentState != LoadingInProgress ? " lu_adventure_loader__circle--loaded" : "")}></div>
+							<div class="lu_adventure_loader__line_background"></div>
+						</div>
+						<div class={"lu_adventure_loader__loaded_text" + (currentState != LoadingInProgress ? " lu_adventure_loader__loaded_text--loaded" : "")}>
+							Click to continue...
+						</div>
 					</div>
-					<div class={"lu_adventure_loader__loaded_text" + (currentState != LoadingInProgress ? " lu_adventure_loader__loaded_text--loaded" : "")}>
-						Click to continue...
-					</div>
-				</div>
+				</if>
 			</div>
 		<else>
 			<div class="lu_hidden"></div>
