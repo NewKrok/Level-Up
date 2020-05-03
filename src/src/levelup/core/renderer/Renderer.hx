@@ -32,7 +32,7 @@ class EditorForwardComposite extends h3d.shader.ScreenShader
 			var outval = outline.get(calculatedUV).rgba;
 			if (outval.a < 0.4 && outval.a > 0)
 			{
-				pixelColor.rgba = vec4(1, 1, 1, 1);
+				pixelColor.rgba = vec4(0, 1, 0, 1);
 			}
 		}
 	}

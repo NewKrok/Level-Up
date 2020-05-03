@@ -3,9 +3,9 @@ package levelup.editor.html;
 import coconut.ui.View;
 import js.html.SelectElement;
 import levelup.Asset.AssetConfig;
+import levelup.UnitData.RaceId;
 import levelup.editor.EditorState.AssetItem;
 import levelup.game.GameState.PlayerId;
-import levelup.game.GameState.RaceId;
 import tink.pure.List;
 
 using StringTools;
@@ -21,44 +21,47 @@ class EditorLibrary extends View
 	@:attr var onPlayerSelect:PlayerId->Void;
 	@:attr var selectedPlayer:PlayerId;
 
-	@:skipCheck @:attr var environmentsList:List<AssetConfig>;
-	@:skipCheck @:attr var propsList:List<AssetConfig>;
-	@:skipCheck @:attr var buildingList:List<AssetConfig>;
-	@:skipCheck @:attr var unitsList:List<AssetConfig>;
-
 	@:computed var list:List<AssetConfig> = switch (selectedListIndex) {
-		case 0: environmentsList.filter(e -> return e.environmentId == selectedEnvironmentIndex);
-		case 1: propsList;
-		case 2: buildingList;
-		case 3: unitsList.filter(e -> return e.race == selectedRace);
+		case 0: cast List.fromArray(getUnitList());
+		case 1: cast List.fromArray(getEnvironmentList());
 		case _: List.fromArray([]);
 	};
 
+	function getEnvironmentList()
+	{
+		var arr = [];
+
+		for (k in EnvironmentData.config.keys())
+		{
+			var c = EnvironmentData.config.get(k);
+			arr.push(c);
+		}
+		return arr;
+	}
+
+	function getUnitList()
+	{
+		var arr = [];
+
+		for (k in UnitData.config.keys())
+		{
+			var c = UnitData.config.get(k);
+			if (c.race == selectedRace) arr.push(c);
+		}
+		return arr;
+	}
+
 	@:state var selectedListIndex:Int = 0;
-	@:state var selectedEnvironmentIndex:String = "bridge";
 	@:state var selectedRace:RaceId = RaceId.Human;
 	@:skipCheck @:state var selectedAsset:AssetConfig = null;
 
 	function render() '
 		<div class="lu_editor__base_panel">
 			<select class="lu_selector lu_offset" onchange={e -> { removeSelection(); selectedListIndex = cast(e.currentTarget, SelectElement).selectedIndex; }}>
-				<option>({environmentsList.length}) Environments</option>
-				<option>({propsList.length}) Props</option>
-				<option>({buildingList.length}) Buildings</option>
-				<option>({unitsList.length}) Units</option>
+				<option>({UnitData.count}) Units</option>
+				<option>({EnvironmentData.count}) Environments</option>
 			</select>
 			<if {selectedListIndex == 0}>
-				<div class="lu_row">
-					<select class="lu_selector lu_offset" onchange={e -> selectedEnvironmentIndex = cast cast(e.currentTarget, SelectElement).value}>
-						<option selected={selectedEnvironmentIndex == "bridge"} value="0">Bridge</option>
-						<option selected={selectedEnvironmentIndex == "plant"} value="4">Plant</option>
-						<option selected={selectedEnvironmentIndex == "rock"} value="1">Rock</option>
-						<option selected={selectedEnvironmentIndex == "tree"} value="2">Tree</option>
-						<option selected={selectedEnvironmentIndex == "trunk"} value="3">Trunk</option>
-					</select>
-				</div>
-			</if>
-			<if {selectedListIndex == 3}>
 				<div class="lu_row">
 					<div class="lu_player_color_box lu_left_offset" style={"background-color: #" + PlayerColor.colors[selectedPlayer]} ></div>
 					<select class="lu_selector lu_horizontal_offset" onchange={e -> onPlayerSelect(cast(e.currentTarget, SelectElement).selectedIndex)}>
@@ -70,11 +73,12 @@ class EditorLibrary extends View
 					</select>
 				</div>
 				<div class="lu_row">
-					<select class="lu_selector lu_offset" onchange={e -> selectedRace = cast(e.currentTarget, SelectElement).selectedIndex}>
-						<option selected={selectedRace == 0}>Human</option>
-						<option selected={selectedRace == 1}>Orc</option>
-						<option selected={selectedRace == 2}>Elf</option>
-						<option selected={selectedRace == 3}>Undead</option>
+					<select class="lu_selector lu_offset" onchange={e -> selectedRace = cast(e.currentTarget, SelectElement).value}>
+						<option selected={selectedRace == RaceId.Human} value="human">({UnitData.humanCount}) Human</option>
+						<option selected={selectedRace == RaceId.Elf} value="elf">({UnitData.elfCount}) Elf</option>
+						<option selected={selectedRace == RaceId.Orc} value="orc">({UnitData.orcCount}) Orc</option>
+						<option selected={selectedRace == RaceId.Undead} value="undead">({UnitData.undeadCount}) Undead</option>
+						<option selected={selectedRace == RaceId.Neutral} value="neutral">({UnitData.neutralCount}) Neutral</option>
 					</select>
 				</div>
 			</if>
@@ -85,7 +89,7 @@ class EditorLibrary extends View
 							class={"lu_list_element lu_list_element--interactive" + (e == selectedAsset ? " lu_list_element--selected" : "")}
 							onmouseover={() -> onAssetMouseOver(e)}
 							onclick={() -> {if (selectedAsset == e) {previewRequest(null); selectedAsset = null;} else {previewRequest(e); selectedAsset = e;}}}>
-							{e.name.replace("SM_", "").replace("_", " ")}
+							{e.name}
 						</li>
 					</for>
 				</ul>

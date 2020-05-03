@@ -3,8 +3,8 @@ package levelup;
 import h3d.mat.BlendMode;
 import hxd.Res;
 import hxd.res.Model;
-import levelup.game.GameState.RaceId;
 import levelup.EnvironmentData;
+import levelup.UnitData.RaceId;
 
 /**
  * ...
@@ -1112,11 +1112,10 @@ class Asset
 }
 
 typedef AssetConfig = {
-	var id(default, never):String;
-	var name(default, never):String;
-	var assetGroup(default, never):String;
-	var modelScale(default, never):Float;
-
+	@:optional var id(default, never):String;
+	@:optional var name(default, never):String;
+	@:optional var assetGroup(default, never):String;
+	@:optional var modelScale(default, never):Float;
 	@:optional var unitName(default, never):String;
 	@:optional var environmentId(default, never):EnvironmentId;
 	@:optional var race(default, never):RaceId;

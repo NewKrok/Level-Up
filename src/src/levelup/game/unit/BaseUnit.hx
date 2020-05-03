@@ -103,7 +103,7 @@ import tink.state.State;
 		moveResult = { handle: function(handler:Void->Void) { moveResultHandler = handler; } };
 		attackResult = { handle: function(handler:Void->Void) { attackResultHandler = handler; } };
 
-		view = AssetCache.getModel(config.assetGroup + ".idle");
+		view = AssetCache.instance.getModel(config.assetGroup + ".idle");
 		view.z = config.zOffset;
 		view.scale(config.modelScale);
 		parent.addChild(view);
@@ -160,10 +160,10 @@ import tink.state.State;
 				case Idle if (currentAnimationType != UnitAnimationType.Idle):
 					/*if (currentAnimation == null)
 					{
-						currentAnimation = AssetCache.getAnimation(config.assetGroup + ".idle").createInstance(view);
+						currentAnimation = AssetCache.instance.getAnimation(config.assetGroup + ".idle").createInstance(view);
 					}
 
-					var newAnim = AssetCache.getAnimation(config.assetGroup + ".idle").createInstance(view);
+					var newAnim = AssetCache.instance.getAnimation(config.assetGroup + ".idle").createInstance(view);
 					newAnim.onAnimEnd = () -> {};
 					if (animTransition == null)
 					{
@@ -180,20 +180,20 @@ import tink.state.State;
 					view.playAnimation(animTransition);*/
 
 					currentAnimationType = UnitAnimationType.Idle;
-					view.playAnimation(AssetCache.getAnimation(config.assetGroup + "." + currentAnimationType));
+					view.playAnimation(AssetCache.instance.getAnimation(config.assetGroup + "." + currentAnimationType));
 					view.currentAnimation.speed = config.idleAnimSpeedMultiplier;
 
 				case MoveTo | AttackRequested if (!config.isBuilding):
 					currentAnimationType = UnitAnimationType.Walk;
-					view.playAnimation(AssetCache.getAnimation(config.assetGroup + "." + currentAnimationType));
+					view.playAnimation(AssetCache.instance.getAnimation(config.assetGroup + "." + currentAnimationType));
 					view.currentAnimation.speed = config.runAnimSpeedMultiplier * config.speedMultiplier;
 /*
 					if (currentAnimation == null)
 					{
-						currentAnimation = AssetCache.getAnimation(config.assetGroup + ".idle").createInstance(view);
+						currentAnimation = AssetCache.instance.getAnimation(config.assetGroup + ".idle").createInstance(view);
 					}
 
-					var newAnim = AssetCache.getAnimation(config.assetGroup + ".walk").createInstance(view);
+					var newAnim = AssetCache.instance.getAnimation(config.assetGroup + ".walk").createInstance(view);
 					newAnim.onAnimEnd = () -> {};
 
 					if (animTransition == null)
@@ -217,7 +217,7 @@ import tink.state.State;
 
 				case Dead:
 					currentAnimationType = UnitAnimationType.Death;
-					view.playAnimation(AssetCache.getAnimation(config.assetGroup + "." + currentAnimationType)).loop = false;
+					view.playAnimation(AssetCache.instance.getAnimation(config.assetGroup + "." + currentAnimationType)).loop = false;
 					view.currentAnimation.speed = 1;
 
 					var alphaShader = new Opacity(.5);
@@ -260,20 +260,20 @@ import tink.state.State;
 			if (currentAnimationType != UnitAnimationType.Attack)
 			{
 				currentAnimationType = UnitAnimationType.Attack;
-				view.playAnimation(AssetCache.getAnimation(config.assetGroup + "." + currentAnimationType));
+				view.playAnimation(AssetCache.instance.getAnimation(config.assetGroup + "." + currentAnimationType));
 				view.currentAnimation.speed = config.attackAnimSpeedMultiplier;
 			}
 		}
 		else
 		{
 			currentAnimationType = UnitAnimationType.Attack;
-			view.playAnimation(AssetCache.getAnimation(config.assetGroup + "." + currentAnimationType));
+			view.playAnimation(AssetCache.instance.getAnimation(config.assetGroup + "." + currentAnimationType));
 			view.currentAnimation.speed = config.attackAnimSpeedMultiplier;
 			view.currentAnimation.loop = false;
 			view.currentAnimation.onAnimEnd = function()
 			{
 				currentAnimationType = UnitAnimationType.Idle;
-				view.playAnimation(AssetCache.getAnimation(config.assetGroup + "." + currentAnimationType));
+				view.playAnimation(AssetCache.instance.getAnimation(config.assetGroup + "." + currentAnimationType));
 				view.currentAnimation.speed = config.idleAnimSpeedMultiplier * config.speedMultiplier;
 				checkTargetLife();
 			};

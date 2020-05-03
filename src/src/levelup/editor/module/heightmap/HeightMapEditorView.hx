@@ -8,7 +8,6 @@ import levelup.editor.EditorState.AssetItem;
 import levelup.editor.module.heightmap.HeightMapModel.BrushType;
 import levelup.editor.module.terrain.TerrainModel.TerrainLayer;
 import levelup.game.GameState.PlayerId;
-import levelup.game.GameState.RaceId;
 import levelup.component.Slider;
 import tink.pure.List;
 

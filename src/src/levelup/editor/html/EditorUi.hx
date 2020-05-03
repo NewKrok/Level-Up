@@ -60,10 +60,6 @@ class EditorUi extends View
 						<case {ToolState.Library}>
 							<EditorLibrary
 								ref={editorLibrary}
-								environmentsList={environmentsList}
-								propsList={propsList}
-								buildingList={buildingList}
-								unitsList={unitsList}
 								previewRequest={previewRequest}
 								onAssetMouseOver={asset -> hoveredAsset = asset}
 								onPlayerSelect={id -> model.selectedPlayer = id}

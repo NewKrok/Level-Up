@@ -14,6 +14,7 @@ import tink.CoreApi.Outcome;
 import h3d.mat.Material;
 import h3d.mat.Texture;
 import h3d.prim.Sphere;
+import tink.state.State;
 
 /**
  * ...
@@ -21,21 +22,30 @@ import h3d.prim.Sphere;
  */
 class AssetCache
 {
-	private static var rawCache:RawModelCache = { groups: [] };
-	private static var modelCache:ModelCache = new ModelCache();
-	private static var modelDirectory:Map<String, Model> = new Map<String, Model>();
-	private static var loadedModelTextureCount:Int;
-	private static var loadedModelCount:Int;
+	public static var instance:AssetCache;
 
-	private static var textureDirectory:Map<String, Dynamic> = new Map<String, Dynamic>();
-	private static var loadedTextureCount:Int;
+	private var rawCache:RawModelCache = { groups: [] };
+	private var modelCache:ModelCache = new ModelCache();
+	private var modelDirectory:Map<String, Model> = new Map<String, Model>();
+	private var textureDirectory:Map<String, Dynamic> = new Map<String, Dynamic>();
 
-	private static var isLoadingInProgress:Bool;
+	private var isLoadingInProgress:Bool;
 
-	public static function addData(rawData:Dynamic) AssetCache.rawCache.groups = AssetCache.rawCache.groups.concat(rawData.groups);
+	private var totalAssetCount = 0;
+	private var loadedModelTextureCount:Int = 0;
+	private var loadedModelCount:Int = 0;
+	private var loadedTextureCount:Int = 0;
+	public var loadPercentage:State<Float> = new State<Float>(0);
 
-	public static function load(modelGroupList:Array<String>, textureList:Array<String>):Future<Outcome<Noise, String>>
+	public function new() instance = this;
+
+	public function addData(rawData:Dynamic) rawCache.groups = rawCache.groups.concat(rawData.groups);
+
+	public function load(modelGroupList:Array<String>, textureList:Array<String>):Future<Outcome<Noise, String>>
 	{
+		loadPercentage.set(0);
+		totalAssetCount = textureList.length;
+
 		var result:FutureTrigger<Outcome<Noise, String>> = Future.trigger();
 
 		loadModelGroups(modelGroupList).handle(function (o):Void switch(o)
@@ -53,7 +63,7 @@ class AssetCache
 		return result;
 	}
 
-	public static function loadModelGroups(modelGroupList:Array<String>):Future<Outcome<Noise, String>>
+	public function loadModelGroups(modelGroupList:Array<String>):Future<Outcome<Noise, String>>
 	{
 		var result:FutureTrigger<Outcome<Noise, String>> = Future.trigger();
 
@@ -76,6 +86,9 @@ class AssetCache
 					texture.modelReferences.push(model.url);
 		}
 
+		totalAssetCount += collectedModelDatas.length;
+		totalAssetCount += collectedModelTextures.length;
+
 		loadModelTextures(collectedModelTextures).handle(function (o):Void { switch(o)
 		{
 			case Success(_):
@@ -87,7 +100,7 @@ class AssetCache
 		return result;
 	}
 
-	private static function loadModelTextures(list:Array<TextureDataWithModelReferences>):Future<Outcome<Noise, String>>
+	private function loadModelTextures(list:Array<TextureDataWithModelReferences>):Future<Outcome<Noise, String>>
 	{
 		var result = Future.trigger();
 		loadedModelTextureCount = 0;
@@ -99,6 +112,7 @@ class AssetCache
 				modelCache.textures.set(modelRef + "@" + t.data.id, texture);
 
 			loadedModelTextureCount++;
+			updateLoadPercentage();
 			if (loadedModelTextureCount == list.length) result.trigger(Success(Noise));
 		}
 
@@ -115,7 +129,7 @@ class AssetCache
 		return result;
 	}
 
-	private static function loadModels(list:Array<RawModelData>):Future<Outcome<Noise, String>>
+	private function loadModels(list:Array<RawModelData>):Future<Outcome<Noise, String>>
 	{
 		var result = Future.trigger();
 		loadedModelCount = 0;
@@ -125,6 +139,7 @@ class AssetCache
 			modelDirectory.set(m.id, hxd.res.Any.fromBytes(m.url, data).toModel());
 
 			loadedModelCount++;
+			updateLoadPercentage();
 			if (loadedModelCount == list.length) result.trigger(Success(Noise));
 		}
 
@@ -141,7 +156,7 @@ class AssetCache
 		return result;
 	}
 
-	public static function getUndefinedModel()
+	public function getUndefinedModel()
 	{
 		var primtive = new Cube(1, 1, 1);
 		primtive.addNormals();
@@ -168,11 +183,13 @@ class AssetCache
 		return undefinedModel;
 	}
 
-	public static function getModel(modelId:String) return modelCache.loadModel(modelDirectory.get(modelId));
+	public function getModel(modelId:String) return modelCache.loadModel(modelDirectory.get(modelId));
 
-	public static function getAnimation(modelId:String) return modelCache.loadAnimation(modelDirectory.get(modelId));
+	public function getAnimation(modelId:String) return modelCache.loadAnimation(modelDirectory.get(modelId));
 
-	public static function loadTextures(list:Array<String>):Future<Outcome<Noise, String>>
+	public function hasModelCache(modelId:String) return modelDirectory.exists(modelId);
+
+	public function loadTextures(list:Array<String>):Future<Outcome<Noise, String>>
 	{
 		var result = Future.trigger();
 		loadedTextureCount = 0;
@@ -183,6 +200,7 @@ class AssetCache
 			textureDirectory.set(url, texture);
 
 			loadedTextureCount++;
+			updateLoadPercentage();
 			if (loadedTextureCount == list.length) result.trigger(Success(Noise));
 		}
 
@@ -199,7 +217,12 @@ class AssetCache
 		return result;
 	}
 
-	public static function getTexture(url:String) return textureDirectory.get(url);
+	function updateLoadPercentage()
+	{
+		loadPercentage.set((loadedModelCount + loadedModelTextureCount + loadedTextureCount) / totalAssetCount);
+	}
+
+	public function getTexture(url:String) return textureDirectory.get(url);
 }
 
 typedef RawModelCache =

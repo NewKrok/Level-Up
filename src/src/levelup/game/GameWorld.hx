@@ -213,13 +213,13 @@ class GameWorld extends World
 		heightGrid = layer.points;
 		setGridByHeightMap(layer);
 
-		var mesh = new Mesh(layer, Material.create(AssetCache.getTexture(terrainConfig.textureUrl)), s3d);
+		var mesh = new Mesh(layer, Material.create(AssetCache.instance.getTexture(terrainConfig.textureUrl)), s3d);
 		mesh.material.mainPass.isStatic = true;
 		mesh.material.texture.wrap = Wrap.Repeat;
 
 		if (terrainConfig.normalMapUrl != null)
 		{
-			var normalMap = AssetCache.getTexture(terrainConfig.normalMapUrl);
+			var normalMap = AssetCache.instance.getTexture(terrainConfig.normalMapUrl);
 			normalMap.wrap = Wrap.Repeat;
 			mesh.material.mainPass.addShader(new NormalMap(normalMap));
 		}
@@ -254,7 +254,7 @@ class GameWorld extends World
 		var alphaMask = new AlphaMap(Texture.fromBitmap(bmp));
 		alphaMask.uvScale.set(0.03333 * uvScale, 0.03333 * uvScale);
 
-		var mesh = new Mesh(layer, Material.create(AssetCache.getTexture(terrainConfig.textureUrl)), s3d);
+		var mesh = new Mesh(layer, Material.create(AssetCache.instance.getTexture(terrainConfig.textureUrl)), s3d);
 		mesh.material.mainPass.addShader(alphaMask);
 		mesh.material.mainPass.isStatic = true;
 		mesh.material.texture.wrap = Wrap.Repeat;
@@ -263,7 +263,7 @@ class GameWorld extends World
 
 		if (terrainConfig.normalMapUrl != null)
 		{
-			var normalMap = AssetCache.getTexture(terrainConfig.normalMapUrl);
+			var normalMap = AssetCache.instance.getTexture(terrainConfig.normalMapUrl);
 			normalMap.wrap = Wrap.Repeat;
 			mesh.material.mainPass.addShader(new NormalMap(normalMap));
 		}
@@ -339,7 +339,7 @@ class GameWorld extends World
 		var terrainConfig = TerrainAssets.getTerrain(terrainId);
 
 		var baseLayer = terrainLayers[0];
-		baseLayer.material.texture = AssetCache.getTexture(terrainConfig.textureUrl);
+		baseLayer.material.texture = AssetCache.instance.getTexture(terrainConfig.textureUrl);
 		baseLayer.material.texture.wrap = Wrap.Repeat;
 	}
 

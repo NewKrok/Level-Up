@@ -9,7 +9,10 @@
 				}
 			],
 			"textures": [
-				{"id": "texture/Manmade01Diffuse.jpg", "url": "asset/model/environment/Manmade01Diffuse.jpg"}
+				{"id": "texture/Manmade01Diffuse.jpg", "url": "asset/model/environment/Manmade01Diffuse.jpg"},
+				{"id": "texture/Manmade01Normal.jpg", "url": "asset/model/environment/Manmade01Normal.jpg"},
+				{"id": "texture/Rocks01Normal.jpg", "url": "asset/model/environment/Rocks01Normal.jpg"},
+				{"id": "texture/Rocks01Diffuse.jpg", "url": "asset/model/environment/Rocks01Diffuse.jpg"}
 			]
 		},
 		{

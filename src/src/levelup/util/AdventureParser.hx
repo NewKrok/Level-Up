@@ -202,7 +202,10 @@ class AdventureParser
 		}
 
 		return {
-			name: rawData.name,
+			title: "Demo MOBA game",//rawData.title,
+			subTitle: "Example Game",//rawData.subTitle,
+			description: "This is an example game which is demonstrate the base functionalities of the engine. It containes a custom level design, MOBA related triggers and custom units.\n\nIt's still under development, there are a lot of missing features and of course it containes bugs.\n\nCheck the source code and fork it! <span style='color:#FFFF00'><a href='https://github.com/NewKrok/Level-Up' target='_blank'>https://github.com/NewKrok/Level-Up</a></span>",//rawData.description,
+			preloaderImage: "asset/preloader/moba.jpg",//rawData.preloaderImage,
 			editorVersion: rawData.editorVersion,
 			size: rawData.size,
 			worldConfig: {

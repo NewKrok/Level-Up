@@ -1,5 +1,6 @@
 package levelup.editor;
 
+import Main.CoreFeatures;
 import coconut.ui.RenderResult;
 import format.jpg.Data;
 import format.jpg.Writer;
@@ -36,6 +37,7 @@ import hxd.clipper.Rect;
 import js.Browser;
 import levelup.Asset;
 import levelup.UnitData;
+import levelup.component.layout.LayoutView.LayoutId;
 import levelup.editor.EditorModel.ToolState;
 import levelup.editor.dialog.EditorDialogManager;
 import levelup.editor.html.EditorUi;
@@ -58,7 +60,6 @@ import levelup.util.AdventureParser;
 import levelup.util.GeomUtil3D;
 import levelup.util.SaveUtil;
 import motion.Actuate;
-import react.ReactDOM;
 import tink.pure.List;
 import tink.state.State;
 import lzstring.LZString;
@@ -70,6 +71,8 @@ import lzstring.LZString;
 class EditorState extends Base2dState
 {
 	public var id(default, never):UInt = Math.floor(Math.random() * 1000);
+
+	var cf:CoreFeatures;
 
 	var world:GameWorld;
 	var adventureConfig:AdventureConfig;
@@ -132,20 +135,22 @@ class EditorState extends Base2dState
 
 	var compressor:LZString;
 
-	public function new(stage:Base2dStage, s2d:h2d.Scene, s3d:h3d.scene.Scene, rawMap:String)
+	public function new(stage:Base2dStage, s2d:h2d.Scene, s3d:h3d.scene.Scene, rawMap:String, cf:CoreFeatures)
 	{
 		super(stage);
+		this.cf = cf;
 
 		this.s3d = s3d;
 		this.s2d = s2d;
 
 		compressor = new LZString();
 
-		adventureConfig = AdventureParser.loadLevel(rawMap);
+		cf.adventureLoader.load(rawMap).handle(o -> switch (o)
+		{
+			case Success(result):
+				adventureConfig = result.config;
+				onLoaded(rawMap);
 
-		AssetCache.load(adventureConfig.neededModelGroups, adventureConfig.neededTextures.concat([])).handle(o -> switch (o)
-	{
-		case Success(_): onLoaded(rawMap);
 			case Failure(e):
 		});
 	}
@@ -154,7 +159,9 @@ class EditorState extends Base2dState
 	{
 		model = new EditorModel(
 		{
-			name: adventureConfig.name,
+			title: adventureConfig.title,
+			subTitle: adventureConfig.subTitle,
+			description: adventureConfig.description,
 			size: adventureConfig.size,
 			startingTime: adventureConfig.worldConfig.startingTime,
 			sunAndMoonOffsetPercent: adventureConfig.worldConfig.sunAndMoonOffsetPercent,
@@ -354,7 +361,7 @@ class EditorState extends Base2dState
 		for (o in adventureConfig.worldConfig.staticObjects.concat([]))
 		{
 			var config = EnvironmentData.getEnvironmentConfig(o.id);
-			if (config != null) createAsset(cast config, o.x, o.y, o.z, o.scale == null ? config.scale : o.scale, o.rotation);
+			if (config != null) createAsset(cast config, o.x, o.y, o.z, o.scale == null ? config.modelScale : o.scale, o.rotation);
 			else trace("Couldn't create asset with id: " + o.id);
 		}
 
@@ -408,7 +415,7 @@ class EditorState extends Base2dState
 			model: model,
 			getModuleView: getModuleView
 		});
-		ReactDOM.render(editorUi.reactify(), Browser.document.getElementById("native-ui"));
+		cf.layout.registerView(LayoutId.EditorUi, editorUi.reactify());
 
 		modules.push(cast new TerrainModule(cast this));
 		modules.push(cast new HeightMapModule(cast this));
@@ -436,7 +443,7 @@ class EditorState extends Base2dState
 			selectionBox.clear();
 			selectionBox.lineStyle(2, 0x00FF00);
 
-			var b = selectedWorldAsset.value.instance.getMeshes()[0].getBounds();
+			var b = selectedWorldAsset.value.instance.getBounds();
 
 			selectionBox.moveTo(b.xMin, b.yMin, b.zMin);
 			selectionBox.lineTo(b.xMin + b.xSize, b.yMin, b.zMin);
@@ -479,7 +486,7 @@ class EditorState extends Base2dState
 
 	function createAsset(config:AssetConfig, x, y, z, scale, rotation, owner = null)
 	{
-		var instance:Object = AssetCache.getModel(config.assetGroup + (config.unitName == null ? "" : ".idle" ));
+		var instance:Object = AssetCache.instance.getModel(config.assetGroup + (config.race == null ? "" : ".idle" ));
 		if (config.hasTransparentTexture != null && config.hasTransparentTexture) for (m in instance.getMaterials()) m.textureShader.killAlpha = true;
 
 		var interactive = new Interactive(instance.getCollider(), world);
@@ -526,9 +533,9 @@ class EditorState extends Base2dState
 			interactive: interactive
 		});
 
-		if (config.unitName != null)
+		if (config.race != null)
 		{
-			instance.playAnimation(AssetCache.getAnimation(config.assetGroup + ".idle"));
+			instance.playAnimation(AssetCache.instance.getAnimation(config.assetGroup + ".idle"));
 		}
 
 		var dragPoint:Vector;
@@ -546,12 +553,18 @@ class EditorState extends Base2dState
 
 		interactive.onRelease = e -> if (e.button == 0 && previewInstance == null) enableAssetInteractives();
 
-		var p = new Pass("editorHighlight", null, instance.getMaterials()[0].mainPass);
-		p.culling = None;
-		p.depthWrite = false;
-
-		interactive.onOver = e -> instance.getMaterials()[0].addPass(p);
-		interactive.onOut = e -> instance.getMaterials()[0].removePass(p);
+		var onOverRoutines = [];
+		var onOutRoutines = [];
+		for (m in instance.getMaterials())
+		{
+			var p = new Pass("editorHighlight", null, m.mainPass);
+			p.culling = None;
+			p.depthWrite = false;
+			onOverRoutines.push(() -> m.addPass(p));
+			onOutRoutines.push(() -> m.removePass(p));
+		}
+		interactive.onOver = e -> { onOverRoutines.map(fv -> fv()); };
+		interactive.onOut = e -> { onOutRoutines.map(fv -> fv()); };
 
 		if (previewInstance != null)
 		{
@@ -724,19 +737,21 @@ class EditorState extends Base2dState
 
 		if (selectedAssetConfig != null)
 		{
-			previewInstance = AssetCache.getModel(selectedAssetConfig.assetGroup);
-			if (asset.hasTransparentTexture != null && asset.hasTransparentTexture) for (m in previewInstance.getMaterials()) m.textureShader.killAlpha = true;
+			var modelName = selectedAssetConfig.assetGroup + (selectedAssetConfig.race == null ? "" : ".idle");
+			var addPreviewToWorld = () -> {
+				previewInstance = AssetCache.instance.getModel(modelName);
+				if (asset.hasTransparentTexture != null && asset.hasTransparentTexture) for (m in previewInstance.getMaterials()) m.textureShader.killAlpha = true;
+				if (selectedAssetConfig.race != null) previewInstance.playAnimation(AssetCache.instance.getAnimation(modelName));
+				previewInstance.setScale(selectedAssetConfig.modelScale);
+				previewInstance.setRotation(0, 0, 0);
+				if (selectedAssetConfig.zOffset != null) previewInstance.z = selectedAssetConfig.zOffset;
 
-			if (selectedAssetConfig.unitName != null)
-			{
-				previewInstance.playAnimation(AssetCache.getAnimation(selectedAssetConfig.assetGroup + ".idle"));
+				s3d.addChild(previewInstance);
+				disableAssetInteractives();
 			}
-			previewInstance.setScale(selectedAssetConfig.modelScale);
-			previewInstance.setRotation(0, 0, 0);
-			if (selectedAssetConfig.zOffset != null) previewInstance.z = selectedAssetConfig.zOffset;
 
-			s3d.addChild(previewInstance);
-			disableAssetInteractives();
+			if (AssetCache.instance.hasModelCache(modelName)) addPreviewToWorld();
+			else AssetCache.instance.loadModelGroups([selectedAssetConfig.assetGroup]).handle(addPreviewToWorld);
 		}
 
 		Browser.document.getElementById("webgl").focus();
@@ -1125,7 +1140,9 @@ class EditorState extends Base2dState
 		};
 		var result = Json.stringify(
 		{
-			name: model.name,
+			title: model.title,
+			subTitle: model.subTitle,
+			description: model.description,
 			editorVersion: Main.editorVersion,
 			size: model.size,
 			worldConfig: compressor.compressToEncodedURIComponent(Json.stringify(worldConfig))
@@ -1135,7 +1152,7 @@ class EditorState extends Base2dState
 		var isNewMap:Bool = true;
 		for (i in 0...savedMaps.length)
 		{
-			if (savedMaps[i].indexOf('"name":"' + model.name + '"') != -1)
+			if (savedMaps[i].indexOf('"title":"' + model.title + '"') != -1)
 			{
 				SaveUtil.editorData.customMaps[i] = result;
 				isNewMap = false;

@@ -72,7 +72,7 @@ import tink.state.State;
 
 		var projectileAnimData = ProjectileAnimationData.getConfig(pConfig.projectileAnimationId);
 
-		view = AssetCache.getModel(projectileAnimData.modelId);
+		view = AssetCache.instance.getModel(projectileAnimData.modelId);
 		view.scale(projectileAnimData.modelScale);
 		view.getMeshes()[0].defaultTransform.initRotationX(Math.PI / 2);
 		view.getMeshes()[0].defaultTransform.initRotationY(Math.PI / 2);
@@ -165,10 +165,10 @@ import tink.state.State;
 		res.nparts = config.nparts;
 		res.fadeIn = config.fadeIn;
 		res.fadeOut = config.fadeOut;
-		res.texture = AssetCache.getTexture(config.texture);
+		res.texture = AssetCache.instance.getTexture(config.texture);
 		res.frameDivisionX = config.frameDivisionX;
 		res.frameDivisionY = config.frameDivisionY;
-		res.colorGradient = config.colorGradient != null ? AssetCache.getTexture(config.colorGradient) : null;
+		res.colorGradient = config.colorGradient != null ? AssetCache.instance.getTexture(config.colorGradient) : null;
 		res.sortMode = switch(config.sortMode)
 		{
 			case "none": GpuSortMode.None;
@@ -211,7 +211,7 @@ import tink.state.State;
 		smokeG.nparts = 10;
 		smokeG.fadeIn = 0;
 		smokeG.fadeOut = 0.1;
-		smokeG.texture = AssetCache.getTexture("asset/texture/effect/Circle98.png");
+		smokeG.texture = AssetCache.instance.getTexture("asset/texture/effect/Circle98.png");
 		smokeG.sortMode = GpuSortMode.Dynamic;
 		smokeG.emitLoop = false;
 		parts2.addGroup(smokeG);
@@ -233,8 +233,8 @@ import tink.state.State;
 		smokeG2.nparts = 15;
 		smokeG2.fadeIn = 0;
 		smokeG2.fadeOut = 0.1;
-		smokeG2.texture = AssetCache.getTexture("asset/texture/effect/Dust2.png");
-		smokeG2.colorGradient = AssetCache.getTexture("asset/texture/effect/gradient/gradient_1.jpg");
+		smokeG2.texture = AssetCache.instance.getTexture("asset/texture/effect/Dust2.png");
+		smokeG2.colorGradient = AssetCache.instance.getTexture("asset/texture/effect/gradient/gradient_1.jpg");
 		smokeG2.sortMode = GpuSortMode.Dynamic;
 		smokeG2.emitLoop = false;
 		parts2.addGroup(smokeG2);

@@ -2,8 +2,8 @@
 	"units":[
 		{
 			"id": "minion",
-			"unitName": "Minion",
-			"name": [""],
+			"name": "Minion",
+			"uniqueNames": [""],
 			"race": "orc",
 			"icon": "asset/icon/orc/unit/minion.jpg",
 			"assetGroup": "orc.unit.minion",
@@ -32,8 +32,8 @@
 		},
 		{
 			"id": "bandwagon",
-			"unitName": "Band Wagon",
-			"name": [""],
+			"name": "Band Wagon",
+			"uniqueNames": [""],
 			"race": "orc",
 			"icon": "asset/icon/orc/unit/bandwagon.jpg",
 			"assetGroup": "orc.unit.bandwagon",

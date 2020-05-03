@@ -3,7 +3,7 @@
 		{
 			"id": "Bridge01",
 			"name": "Bridge 01",
-			"scale": 0.005,
+			"modelScale": 0.005,
 			"environmentId": "bridge",
 			"assetGroup": "environment.bridge.Bridge01",
 			"previewUrl": "",
@@ -14,7 +14,7 @@
 		{
 			"id": "Rock08",
 			"name": "Rock 08",
-			"scale": 0.005,
+			"modelScale": 0.005,
 			"environmentId": "rock",
 			"assetGroup": "environment.rock.Rock08",
 			"previewUrl": "",
@@ -25,7 +25,7 @@
 		{
 			"id": "Rock09",
 			"name": "Rock 01",
-			"scale": 0.005,
+			"modelScale": 0.005,
 			"environmentId": "rock",
 			"assetGroup": "environment.rock.Rock09",
 			"previewUrl": "",
@@ -36,7 +36,7 @@
 		{
 			"id": "Rock10",
 			"name": "Rock 10",
-			"scale": 0.005,
+			"modelScale": 0.005,
 			"environmentId": "rock",
 			"assetGroup": "environment.rock.Rock10",
 			"previewUrl": "",
@@ -47,7 +47,7 @@
 		{
 			"id": "Rock20",
 			"name": "Rock 20",
-			"scale": 0.005,
+			"modelScale": 0.005,
 			"environmentId": "rock",
 			"assetGroup": "environment.rock.Rock20",
 			"previewUrl": "",
@@ -58,7 +58,7 @@
 		{
 			"id": "Tree03",
 			"name": "Tree 03",
-			"scale": 0.005,
+			"modelScale": 0.005,
 			"environmentId": "tree",
 			"assetGroup": "environment.tree.Tree03",
 			"previewUrl": "",
@@ -69,7 +69,7 @@
 		{
 			"id": "Tree04",
 			"name": "Tree 04",
-			"scale": 0.005,
+			"modelScale": 0.005,
 			"environmentId": "tree",
 			"assetGroup": "environment.tree.Tree04",
 			"previewUrl": "",
@@ -80,7 +80,7 @@
 		{
 			"id": "Tree06",
 			"name": "Tree 06",
-			"scale": 0.005,
+			"modelScale": 0.005,
 			"environmentId": "tree",
 			"assetGroup": "environment.tree.Tree06",
 			"previewUrl": "",
@@ -91,7 +91,7 @@
 		{
 			"id": "Tree07",
 			"name": "Tree 07",
-			"scale": 0.005,
+			"modelScale": 0.005,
 			"environmentId": "tree",
 			"assetGroup": "environment.tree.Tree07",
 			"previewUrl": "",

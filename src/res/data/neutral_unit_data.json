@@ -2,8 +2,8 @@
 	"units":[
 		{
 			"id": "crystalTower",
-			"unitName": "Crystal Tower",
-			"name": [""],
+			"name": "Crystal Tower",
+			"uniqueNames": [""],
 			"race": "neutral",
 			"icon": "asset/icon/neutral/unit/crystal_tower.jpg",
 			"assetGroup": "neutral.building.crystaltower",
@@ -39,8 +39,8 @@
 		},
 		{
 			"id": "crystalTower2",
-			"unitName": "Crystal Tower Level 2",
-			"name": [""],
+			"name": "Crystal Tower Level 2",
+			"uniqueNames": [""],
 			"race": "neutral",
 			"icon": "asset/icon/neutral/unit/crystal_tower2.jpg",
 			"assetGroup": "neutral.building.crystaltower2",
@@ -77,8 +77,8 @@
 		},
 		{
 			"id": "crystalTower3",
-			"unitName": "Crystal Tower Level 3",
-			"name": [""],
+			"name": "Crystal Tower Level 3",
+			"uniqueNames": [""],
 			"race": "neutral",
 			"icon": "asset/icon/neutral/unit/crystal_tower3.jpg",
 			"assetGroup": "neutral.building.crystaltower3",

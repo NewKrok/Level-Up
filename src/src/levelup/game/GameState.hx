@@ -1,5 +1,6 @@
 package levelup.game;
 
+import Main.CoreFeatures;
 import coconut.ui.RenderResult;
 import h2d.Flow;
 import h2d.Scene;
@@ -83,7 +84,7 @@ class GameState extends Base2dState
 	var isControlEnabled:Bool = false;
 	var isDisposed:Bool = false;
 
-	public function new(stage:Base2dStage, s2d:h2d.Scene, s3d:h3d.scene.Scene, rawMap:String, stateConfigParam:GameStateConfig = null)
+	public function new(stage:Base2dStage, s2d:h2d.Scene, s3d:h3d.scene.Scene, rawMap:String, cf:CoreFeatures, stateConfigParam:GameStateConfig = null)
 	{
 		super(stage);
 
@@ -92,9 +93,12 @@ class GameState extends Base2dState
 		this.stateConfig = stateConfigParam == null ? { isTestRun: false } : stateConfigParam;
 		adventureConfig = AdventureParser.loadLevel(rawMap);
 
-		AssetCache.load(adventureConfig.neededModelGroups, adventureConfig.neededTextures.concat([])).handle(o -> switch(o)
+		cf.adventureLoader.load(rawMap).handle(o -> switch(o)
 		{
-			case Success(_): onLoaded(rawMap);
+			case Success(result):
+				adventureConfig = result.config;
+				onLoaded(rawMap);
+
 			case Failure(e):
 		});
 	}
@@ -186,7 +190,7 @@ class GameState extends Base2dState
 		for (o in adventureConfig.worldConfig.staticObjects.concat([]))
 		{
 			var config = EnvironmentData.getEnvironmentConfig(o.id);
-			var instance:Object = config == null ? AssetCache.getUndefinedModel() : AssetCache.getModel(config.assetGroup);
+			var instance:Object = config == null ? AssetCache.instance.getUndefinedModel() : AssetCache.instance.getModel(config.assetGroup);
 
 			if (config != null && config.hasTransparentTexture != null && config.hasTransparentTexture)
 				for (m in instance.getMaterials()) m.textureShader.killAlpha = true;
@@ -222,7 +226,7 @@ class GameState extends Base2dState
 
 		model.startGame();
 
-		if (adventureConfig.name == "Lobby" && !stateConfig.isTestRun)
+		if (adventureConfig.title == "Lobby" && !stateConfig.isTestRun)
 		{
 			var ui:RenderResult = LobbyUi.fromHxx({
 				isTestRun: stateConfig.isTestRun,
@@ -232,7 +236,7 @@ class GameState extends Base2dState
 				),
 				closeTestRun: () -> HppG.changeState(EditorState, [stage, s3d, rawMap])
 			});
-			ReactDOM.render(ui, Browser.document.getElementById("native-ui"));
+			ReactDOM.render(ui, Browser.document.getElementById("lu_native_ui"));
 		}
 		else
 		{
@@ -241,7 +245,7 @@ class GameState extends Base2dState
 				openLobby: () -> HppG.changeState(GameState, [stage, s3d, MapData.getRawMap("lobby")]),
 				closeTestRun: () -> HppG.changeState(EditorState, [stage, s3d, rawMap])
 			});
-			ReactDOM.render(ui, Browser.document.getElementById("native-ui"));
+			ReactDOM.render(ui, Browser.document.getElementById("lu_native_ui"));
 		}
 	}
 
@@ -554,7 +558,10 @@ typedef GameStateConfig =
 
 typedef AdventureConfig =
 {
-	var name(default, never):String;
+	var preloaderImage(default, never):String;
+	var title(default, never):String;
+	var subTitle(default, never):String;
+	var description(default, never):String;
 	var editorVersion(default, never):String;
 	var size(default, never):SimplePoint;
 	var worldConfig:WorldConfig;
@@ -658,13 +665,6 @@ typedef TerrainLayerInfo =
 	var Player8 = 7;
 	var Player9 = 8;
 	var Player10 = 9;
-}
-
-@:enum abstract RaceId(Int) from Int to Int {
-	var Human = 0;
-	var Orc = 1;
-	var Elf = 2;
-	var Undead = 3;
 }
 
 enum TriggerAction {

@@ -66,7 +66,7 @@ import tink.state.Observable;
 
 				var newTerrain = TerrainAssets.getTerrain(model.selectedLayer.terrainId);
 				var activeMesh = core.world.terrainLayers[model.selectedLayerIndex];
-				activeMesh.material.texture = AssetCache.getTexture(newTerrain.textureUrl);
+				activeMesh.material.texture = AssetCache.instance.getTexture(newTerrain.textureUrl);
 				activeMesh.material.texture.wrap = Wrap.Repeat;
 
 				var prevNormalMap = activeMesh.material.mainPass.getShader(NormalMap);
@@ -74,7 +74,7 @@ import tink.state.Observable;
 
 				if (newTerrain.normalMapUrl != null)
 				{
-					var normalMap = AssetCache.getTexture(newTerrain.normalMapUrl);
+					var normalMap = AssetCache.instance.getTexture(newTerrain.normalMapUrl);
 					normalMap.wrap = Wrap.Repeat;
 					activeMesh.material.mainPass.addShader(new NormalMap(normalMap));
 				}

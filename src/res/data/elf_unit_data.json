@@ -2,8 +2,8 @@
 	"units":[
 		{
 			"id": "knome",
-			"unitName": "Knome",
-			"name": [""],
+			"name": "Knome",
+			"uniqueNames": [""],
 			"race": "elf",
 			"icon": "asset/icon/elf/unit/knome.jpg",
 			"assetGroup": "elf.unit.knome",
@@ -32,8 +32,8 @@
 		},
 		{
 			"id": "battleowl",
-			"unitName": "Battle Owl",
-			"name": [""],
+			"name": "Battle Owl",
+			"uniqueNames": [""],
 			"race": "elf",
 			"icon": "asset/icon/elf/unit/battleowl.jpg",
 			"assetGroup": "elf.unit.battleowl",
@@ -62,8 +62,8 @@
 		},
 		{
 			"id": "ranger",
-			"unitName": "Ranger",
-			"name": [""],
+			"name": "Ranger",
+			"uniqueNames": [""],
 			"race": "elf",
 			"icon": "asset/icon/elf/unit/ranger.jpg",
 			"assetGroup": "elf.unit.ranger",
@@ -99,8 +99,8 @@
 		},
 		{
 			"id": "rockgolem",
-			"unitName": "rockgolem Golem",
-			"name": [""],
+			"name": "rockgolem Golem",
+			"uniqueNames": [""],
 			"race": "elf",
 			"icon": "asset/icon/elf/unit/rockgolem.jpg",
 			"assetGroup": "elf.unit.rockgolem",

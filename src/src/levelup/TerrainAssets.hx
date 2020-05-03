@@ -4,7 +4,6 @@ import h3d.mat.Texture;
 import hxd.Res;
 import hxd.res.Model;
 import levelup.TerrainAssets.TerrainEffect;
-import levelup.game.GameState.RaceId;
 
 /**
  * ...
