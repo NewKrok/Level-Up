@@ -1,0 +1,37 @@
+{
+	"environments":[
+		{
+			"id": "Bridge01",
+			"name": "Bridge 01",
+			"modelScale": 0.005,
+			"environmentId": "bridge",
+			"assetGroup": "environment.bridge.Bridge01",
+			"previewUrl": "",
+			"zOffset": 1,
+			"isPathBlocker": false,
+			"hasTransparentTexture": false
+		},
+		{
+			"id": "Rock{1...28}",
+			"name": "Rock {counter}",
+			"modelScale": 0.005,
+			"environmentId": "rock",
+			"assetGroup": "environment.rock.Rock{counter}",
+			"previewUrl": "",
+			"zOffset": 0,
+			"isPathBlocker": true,
+			"hasTransparentTexture": false
+		},
+		{
+			"id": "Tree{1...41}",
+			"name": "Tree {counter}",
+			"modelScale": 0.005,
+			"environmentId": "tree",
+			"assetGroup": "environment.tree.Tree{counter}",
+			"previewUrl": "",
+			"zOffset": 0,
+			"isPathBlocker": true,
+			"hasTransparentTexture": true
+		}
+	]
+}

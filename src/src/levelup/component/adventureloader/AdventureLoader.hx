@@ -2,6 +2,7 @@ package levelup.component.adventureloader;
 
 import Main.CoreFeatures;
 import com.greensock.TweenMax;
+import js.Browser;
 import levelup.component.layout.LayoutView.LayoutId;
 import levelup.game.GameState.AdventureConfig;
 import levelup.util.AdventureParser;
@@ -83,18 +84,31 @@ import tink.state.State;
 			adventureDescription.set(adventureConfig.description);
 		}
 
-		cf.assetCache.load(adventureConfig.neededModelGroups, adventureConfig.neededTextures).handle(o -> switch (o)
-		{
-			case Success(_):
-				TweenMax.delayedCall(1, () ->
-				{
-					currentState.set(Loaded);
-					onStart();
-				});
-				result.trigger(Outcome.Success({config: adventureConfig, onUserAction: userActionTrigger}));
+		// Preload loader image
+		var img = Browser.document.createImageElement();
+		img.src = preloaderImage.value;
+		img.id = "lu_image_reloader";
+		img.className = "lu_hidden";
+		Browser.document.body.appendChild(img);
 
-			case Failure(e):
-		});
+		img.onload = () ->
+		{
+			Browser.document.body.removeChild(img);
+			img = null;
+
+			cf.assetCache.load(adventureConfig.neededModelGroups, adventureConfig.neededTextures).handle(o -> switch (o)
+			{
+				case Success(_):
+					TweenMax.delayedCall(1, () ->
+					{
+						currentState.set(Loaded);
+						onStart();
+					});
+					result.trigger(Outcome.Success({config: adventureConfig, onUserAction: userActionTrigger}));
+
+				case Failure(e):
+			});
+		};
 
 		return result;
 	}

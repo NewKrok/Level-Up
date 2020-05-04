@@ -130,10 +130,6 @@ class GameState extends Base2dState
 		world = new GameWorld(s3d, adventureConfig.size, adventureConfig.worldConfig, 1, 64, 64);
 		world.done();
 
-		var c = new Cube(1, 1, 1);
-		c.addNormals();
-		c.addUVs();
-
 		world.onWorldClick = e ->
 		{
 			if (isControlEnabled && selectedUnit.value != null && selectedUnit.value.state != Dead)

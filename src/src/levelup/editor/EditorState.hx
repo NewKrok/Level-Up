@@ -42,6 +42,7 @@ import levelup.editor.EditorModel.ToolState;
 import levelup.editor.dialog.EditorDialogManager;
 import levelup.editor.html.EditorUi;
 import levelup.editor.html.NewAdventureDialog;
+import levelup.editor.module.camera.CameraModule;
 import levelup.editor.module.dayandnight.DayAndNightModule;
 import levelup.editor.module.heightmap.HeightMapModule;
 import levelup.editor.module.region.RegionModule;
@@ -339,10 +340,10 @@ class EditorState extends Base2dState
 				}
 				else
 				{
-					var camStep = Math.PI / 30;
+					var camStep = Math.PI / 60;
 					camAngle += e.wheelDelta < 0 ? camStep : -camStep;
-					camAngle = Math.max(camAngle, camStep * 16);
-					camAngle = Math.min(camAngle, camStep * 29);
+					camAngle = Math.max(camAngle, camStep * 32);
+					camAngle = Math.min(camAngle, camStep * 62);
 				}
 			}
 			else
@@ -417,6 +418,7 @@ class EditorState extends Base2dState
 		modules.push(cast new DayAndNightModule(cast this));
 		modules.push(cast new RegionModule(cast this));
 		modules.push(cast new ScriptModule(cast this));
+		modules.push(cast new CameraModule(cast this));
 
 		createGrid();
 
@@ -628,6 +630,9 @@ class EditorState extends Base2dState
 				case Key.RIGHT | Key.D: cameraObject.y += 5;
 
 				case Key.SPACE if (previewInstance != null): editorUi.removeSelection();
+
+				case Key.ESCAPE if (selectedWorldAsset.value != null): selectedWorldAsset.set(null);
+
 				case Key.ESCAPE if (previewInstance != null):
 					var now = Date.now().getTime();
 					if (now - lastEscPressTime < 500)
@@ -649,8 +654,6 @@ class EditorState extends Base2dState
 						return;
 					}
 					lastEscPressTime = now;
-
-				case Key.ESCAPE if (selectedWorldAsset.value != null): selectedWorldAsset.set(null);
 
 				case Key.C if (selectedWorldAsset.value != null):
 					createPreview(selectedWorldAsset.value.config);
@@ -1024,7 +1027,7 @@ class EditorState extends Base2dState
 		SaveUtil.editorData.showGrid = model.showGrid;
 		SaveUtil.save();
 
-		HppG.changeState(EditorState, [stage, s3d, result]);
+		HppG.changeState(EditorState, [stage, s3d, result, cf]);
 	}
 
 	public function save()
@@ -1142,6 +1145,8 @@ class EditorState extends Base2dState
 
 		s2d.removeChildren();
 		s3d.removeChildren();
+
+		cf.layout.removeView(LayoutId.EditorUi);
 
 		Actuate.reset();
 

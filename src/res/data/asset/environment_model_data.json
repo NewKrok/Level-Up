@@ -1,0 +1,75 @@
+{
+	"groups":[
+		{
+			"id": "environment.bridge.Bridge01",
+			"models": [
+				{
+					"id": "environment.bridge.Bridge01",
+					"url": "asset/model/environment/bridge/Bridge01.hmd"
+				}
+			],
+			"textures": [
+				{"id": "texture/Manmade01Diffuse.jpg", "url": "asset/model/environment/Manmade01Diffuse.jpg"},
+				{"id": "texture/Manmade01Normal.jpg", "url": "asset/model/environment/Manmade01Normal.jpg"},
+				{"id": "texture/Rocks01Normal.jpg", "url": "asset/model/environment/Rocks01Normal.jpg"},
+				{"id": "texture/Rocks01Diffuse.jpg", "url": "asset/model/environment/Rocks01Diffuse.jpg"}
+			]
+		},
+		{
+			"id": "environment.rock.Rock{1...28}",
+			"models": [
+				{
+					"id": "environment.rock.Rock{counter}",
+					"url": "asset/model/environment/rock/Rock{counter}.hmd"
+				}
+			],
+			"textures": [
+				{"id": "texture/Rocks01Diffuse.jpg", "url": "asset/model/environment/Rocks01Diffuse.jpg"},
+				{"id": "texture/Rocks01Normal.jpg", "url": "asset/model/environment/Rocks01Normal.jpg"}
+			]
+		},
+		{
+			"id": "environment.tree.Tree{1...20}",
+			"models": [
+				{
+					"id": "environment.tree.Tree{counter}",
+					"url": "asset/model/environment/tree/Tree{counter}.hmd"
+				}
+			],
+			"textures": [
+				{"id": "texture/Coniferous01Diffuse.png", "url": "asset/model/environment/Coniferous01Diffuse.png"},
+				{"id": "texture/Coniferous01Normal.jpg", "url": "asset/model/environment/Coniferous01Normal.jpg"},
+				{"id": "texture/Trunk01Diffuse.jpg", "url": "asset/model/environment/Trunk01Diffuse.jpg"},
+				{"id": "texture/Trunk01Normal.jpg", "url": "asset/model/environment/Trunk01Normal.jpg"}
+			]
+		},
+		{
+			"id": "environment.tree.Tree40",
+			"models": [
+				{
+					"id": "environment.tree.Tree40",
+					"url": "asset/model/environment/tree/Tree40.hmd"
+				}
+			],
+			"textures": [
+				{"id": "texture/Trunk01Diffuse.jpg", "url": "asset/model/environment/Trunk01Diffuse.jpg"},
+				{"id": "texture/Trunk01Normal.jpg", "url": "asset/model/environment/Trunk01Normal.jpg"}
+			]
+		},
+		{
+			"id": "environment.tree.Tree{21...39}",
+			"models": [
+				{
+					"id": "environment.tree.Tree{counter}",
+					"url": "asset/model/environment/tree/Tree{counter}.hmd"
+				}
+			],
+			"textures": [
+				{"id": "texture/Decidious01Diffuse.png", "url": "asset/model/environment/Decidious01Diffuse.png"},
+				{"id": "texture/Decidious01Normal.jpg", "url": "asset/model/environment/Decidious01Normal.jpg"},
+				{"id": "texture/Trunk01Diffuse.jpg", "url": "asset/model/environment/Trunk01Diffuse.jpg"},
+				{"id": "texture/Trunk01Normal.jpg", "url": "asset/model/environment/Trunk01Normal.jpg"}
+			]
+		}
+	]
+}

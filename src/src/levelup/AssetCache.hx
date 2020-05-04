@@ -39,7 +39,41 @@ class AssetCache
 
 	public function new() instance = this;
 
-	public function addData(rawData:Dynamic) rawCache.groups = rawCache.groups.concat(rawData.groups);
+	public function addData(rawData:Dynamic)
+	{
+		var newGroups = [];
+		var castedRawData:Array<RawModelGroupData> = cast rawData.groups;
+
+		for (d in castedRawData)
+		{
+			if (d.id.indexOf("{") == -1)
+			{
+				newGroups.push(d);
+			}
+			else
+			{
+				var assetFrom = Std.parseInt(d.id.substring(d.id.indexOf("{") + 1, d.id.indexOf("...")));
+				var assetTo = Std.parseInt(d.id.substring(d.id.indexOf("...") + 3, d.id.indexOf("}")));
+				for (i in assetFrom...assetTo)
+				{
+					var pureId = d.id.substring(0, d.id.indexOf("{"));
+					var countStr = i < 10 ? "0" + i : Std.string(i);
+
+					var group = {
+						id: pureId + countStr,
+						models: [for (modelInfo in d.models) {{
+							id: StringTools.replace(modelInfo.id, "{counter}", countStr),
+							url: StringTools.replace(modelInfo.url, "{counter}", countStr)
+						}}],
+						textures: d.textures
+					}
+					newGroups.push(group);
+				}
+			}
+		}
+
+		rawCache.groups = rawCache.groups.concat(newGroups);
+	}
 
 	public function load(modelGroupList:Array<String>, textureList:Array<String>):Future<Outcome<Noise, String>>
 	{
@@ -188,6 +222,7 @@ class AssetCache
 	public function getAnimation(modelId:String) return modelCache.loadAnimation(modelDirectory.get(modelId));
 
 	public function hasModelCache(modelId:String) return modelDirectory.exists(modelId);
+	public function hasTextureCache(textureId:String) return textureDirectory.exists(textureId);
 
 	public function loadTextures(list:Array<String>):Future<Outcome<Noise, String>>
 	{

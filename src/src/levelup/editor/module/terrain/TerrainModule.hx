@@ -63,20 +63,31 @@ import tink.state.Observable;
 			selectTerrain: id -> {
 				core.dialogManager.closeCurrentDialog();
 				model.selectedLayer.terrainId.set(id);
-
 				var newTerrain = TerrainAssets.getTerrain(model.selectedLayer.terrainId);
-				var activeMesh = core.world.terrainLayers[model.selectedLayerIndex];
-				activeMesh.material.texture = AssetCache.instance.getTexture(newTerrain.textureUrl);
-				activeMesh.material.texture.wrap = Wrap.Repeat;
 
-				var prevNormalMap = activeMesh.material.mainPass.getShader(NormalMap);
-				if (prevNormalMap != null) activeMesh.material.mainPass.removeShader(prevNormalMap);
-
-				if (newTerrain.normalMapUrl != null)
+				var changeTerrain = () ->
 				{
-					var normalMap = AssetCache.instance.getTexture(newTerrain.normalMapUrl);
-					normalMap.wrap = Wrap.Repeat;
-					activeMesh.material.mainPass.addShader(new NormalMap(normalMap));
+					var activeMesh = core.world.terrainLayers[model.selectedLayerIndex];
+					activeMesh.material.texture = AssetCache.instance.getTexture(newTerrain.textureUrl);
+					activeMesh.material.texture.wrap = Wrap.Repeat;
+
+					var prevNormalMap = activeMesh.material.mainPass.getShader(NormalMap);
+					if (prevNormalMap != null) activeMesh.material.mainPass.removeShader(prevNormalMap);
+
+					if (newTerrain.normalMapUrl != null)
+					{
+						var normalMap = AssetCache.instance.getTexture(newTerrain.normalMapUrl);
+						normalMap.wrap = Wrap.Repeat;
+						activeMesh.material.mainPass.addShader(new NormalMap(normalMap));
+					}
+				}
+
+				if (AssetCache.instance.hasTextureCache(newTerrain.textureUrl)) changeTerrain();
+				else
+				{
+					var list = [newTerrain.textureUrl];
+					if (newTerrain.normalMapUrl != null) list.push(newTerrain.normalMapUrl);
+					AssetCache.instance.loadTextures(list).handle(changeTerrain);
 				}
 			},
 			close: core.dialogManager.closeCurrentDialog
@@ -97,13 +108,26 @@ import tink.state.Observable;
 			addLayer: () ->
 			{
 				model.addLayer();
-				core.world.addTerrainLayer(TerrainAssets.getTerrain(model.layers.toArray()[model.layers.length - 1].terrainId), 1);
-				var layerInstance:Mesh = core.world.terrainLayers[core.world.terrainLayers.length - 1];
-				var grid:Grid = cast layerInstance.primitive;
-				model.layers.toArray()[model.layers.length - 1].uvScale.observe().bind(v ->
+				var terrainData = TerrainAssets.getTerrain(model.layers.toArray()[model.layers.length - 1].terrainId);
+
+				var createLayer = () ->
 				{
-					scaleTerrainTexture(layerInstance, v);
-				});
+					core.world.addTerrainLayer(terrainData, 1);
+					var layerInstance:Mesh = core.world.terrainLayers[core.world.terrainLayers.length - 1];
+					var grid:Grid = cast layerInstance.primitive;
+					model.layers.toArray()[model.layers.length - 1].uvScale.observe().bind(v ->
+					{
+						scaleTerrainTexture(layerInstance, v);
+					});
+				}
+
+				if (AssetCache.instance.hasTextureCache(terrainData.textureUrl)) createLayer();
+				else
+				{
+					var list = [terrainData.textureUrl];
+					if (terrainData.normalMapUrl != null) list.push(terrainData.normalMapUrl);
+					AssetCache.instance.loadTextures(list).handle(createLayer);
+				}
 			},
 			changeBrushSize: e -> model.brushSize = e,
 			changeBrushOpacity: e -> model.brushOpacity = e,
