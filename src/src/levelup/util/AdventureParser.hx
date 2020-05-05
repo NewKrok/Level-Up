@@ -93,6 +93,27 @@ class AdventureParser
 				event: TriggerEvent.OnInit,
 				condition: null,
 				actions: [
+					//TriggerAction.SetGlobalVariable("camDirection", 1),
+					TriggerAction.JumpCameraToCamera(PlayerId.Player1, "Untitled Camera 0"),
+					TriggerAction.AnimateCameraToCamera(PlayerId.Player1, "Untitled Camera 1", 5),
+				]
+			}/*,
+			{
+				id: "camera-loop",
+				isEnabled: true,
+				event: TriggerEvent.TimePeriodic(3),
+				condition: null,
+				actions: [
+					TriggerAction.SetGlobalVariable("camDirection", 1),
+				]
+			}*/
+
+			/*{
+				id: "initial",
+				isEnabled: true,
+				event: TriggerEvent.OnInit,
+				condition: null,
+				actions: [
 					TriggerAction.SetLocalVariable("unit", UnitDefinition.GetUnit(UnitOfPlayer(PlayerId.Player1, Filter.Index(0)))),
 					TriggerAction.JumpCameraToUnit(PlayerId.Player1, UnitDefinition.GetLocalVariable("unit")),
 					TriggerAction.SelectUnit(PlayerId.Player1, UnitDefinition.GetLocalVariable("unit")),
@@ -139,7 +160,7 @@ class AdventureParser
 					TriggerAction.CreateUnit("rockgolem", PlayerId.Player3, PositionDefinition.RegionPosition(RegionPositionDefinition.RandomPointOf("Region 2"))),
 					TriggerAction.AttackMoveToRegion(UnitDefinition.LastCreatedUnit, PositionDefinition.RegionPosition(RegionPositionDefinition.CenterOf("Region 0")))
 				]
-			}
+			}*/
 		];
 
 		var triggers:Array<Trigger> = [for (t in cast(rawWorldConfig.triggers, Array<Dynamic>)) {
@@ -202,9 +223,9 @@ class AdventureParser
 		}
 
 		return {
-			title: "Demo MOBA game",//rawData.title,
-			subTitle: "Example Game",//rawData.subTitle,
-			description: "This is an example game which is demonstrate the base functionalities of the engine. It containes a custom level design, MOBA related triggers and custom units.\n\nIt's still under development, there are a lot of missing features and of course it containes bugs.\n\nCheck the source code and fork it! <span style='color:#FFFF00'><a href='https://github.com/NewKrok/Level-Up' target='_blank'>https://github.com/NewKrok/Level-Up</a></span>",//rawData.description,
+			title: rawData.title,
+			subTitle: rawData.subTitle,
+			description: rawData.description,
 			preloaderImage: "asset/preloader/moba.jpg",//rawData.preloaderImage,
 			editorVersion: rawData.editorVersion,
 			size: rawData.size,
@@ -216,6 +237,7 @@ class AdventureParser
 				sunsetColor: sunsetColor,
 				dawnColor: dawnColor,
 				regions: regions,
+				cameras: rawWorldConfig.cameras == null ? [] : rawWorldConfig.cameras,
 				triggers: triggers,
 				units: units,
 				staticObjects: staticObjects,

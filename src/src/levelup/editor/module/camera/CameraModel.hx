@@ -2,6 +2,8 @@ package levelup.editor.module.camera;
 
 import coconut.data.Model;
 import coconut.data.List;
+import h3d.Vector;
+import levelup.game.GameState.CameraData;
 import tink.state.State;
 
 /**
@@ -10,13 +12,8 @@ import tink.state.State;
  */
 class CameraModel implements Model
 {
-	@:skipCheck @:observable var cameras:List<EditorCamera> = List.fromArray([]);
+	@:skipCheck @:observable var cameras:List<CameraData> = List.fromArray([]);
 
-	@:transition function addCamera(camera:EditorCamera) return { cameras: cameras.append(camera) };
-	@:transition function addCameras(cameraArr:Array<EditorCamera>) return { cameras: List.fromArray(cameraArr) };
-}
-
-typedef EditorCamera =
-{
-	var name:String;
+	@:transition function addCamera(camera:CameraData) return { cameras: cameras.append(camera) };
+	@:transition function addCameras(cameraArr:Array<CameraData>) return { cameras: List.fromArray(cameraArr) };
 }

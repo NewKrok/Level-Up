@@ -2,7 +2,7 @@ package levelup.editor.module.camera;
 
 import coconut.ui.View;
 import coconut.data.List;
-import levelup.editor.module.camera.CameraModel.EditorCamera;
+import levelup.game.GameState.CameraData;
 
 using StringTools;
 
@@ -12,21 +12,25 @@ using StringTools;
  */
 class CameraEditorView extends View
 {
-	@:skipCheck @:attr var cameras:List<EditorCamera>;
+	@:skipCheck @:attr var cameras:List<CameraData>;
 	@:attr var addCamera:Void->Void;
+	@:attr var jumpToCamera:CameraData->Void;
 
 	function render()
 	{
 		return hxx('
 			<div class="lu_editor__base_panel">
 				<div class="lu_relative lu_fill_height">
-					<div class="lu_title"><i class="fas fa-object-ungroup lu_right_offset"></i>
-						Regions
+					<div class="lu_title"><i class="fas fa-video lu_right_offset"></i>
+						Cameras
+					</div>
+					<div class="lu_button lu_button--full" onclick=$addCamera>
+						<i class="fas fa-plus-circle lu_right_offset"></i> Add Camera
 					</div>
 					<div class="lu_relative lu_terrain_layer_list_container">
 						<if {cameras.length == 0}>
 							<div class="lu_offset">
-								You don\'t have any camera yet. <span class="lu_highlight">You can add it with the "Create Camera" button</span>.
+								You don\'t have any camera yet. <span class="lu_highlight">You can add it with the "Add Camera" button</span>.
 							</div>
 							<div class="lu_offset">
 								<i class="fas fa-info-circle"></i> Cameras are useful for defining custom view points in the map which will enable for you for example to create an in-game cinematics for your game.
@@ -34,7 +38,7 @@ class CameraEditorView extends View
 						<else>
 							<ul>
 								<for {c in cameras}>
-									<li class="lu_list_element">{c.name}</li>
+									<li onClick={jumpToCamera(c)} class="lu_list_element">{c.name}</li>
 								</for>
 							</ul>
 						</if>

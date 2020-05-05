@@ -103,11 +103,13 @@ class EditorState extends Base2dState
 	var cameraDragStartPoint:SimplePoint = { x: 0, y: 0 };
 	var dragStartObjectPoint:SimplePoint = { x: 0, y: 0 };
 
+	// TODO: Create a separated cam class
 	var cameraObject:Object = new Object();
 	var currentCameraPoint: { x:Float, y:Float, z:Float } = { x: 0, y: 0, z: 0 };
 	var currentCamDistance:Float = 0;
 	var cameraSpeed:Vector = new Vector(10, 10, 5);
 	var camAngle:Float = Math.PI - Math.PI / 4;
+	var camRotation:Float = Math.PI / 2;
 	var camDistance:Float = 30;
 
 	var selectedWorldAsset:State<AssetItem> = new State<AssetItem>(null);
@@ -341,9 +343,16 @@ class EditorState extends Base2dState
 				else
 				{
 					var camStep = Math.PI / 60;
-					camAngle += e.wheelDelta < 0 ? camStep : -camStep;
-					camAngle = Math.max(camAngle, camStep * 32);
-					camAngle = Math.min(camAngle, camStep * 62);
+					if (Key.isDown(Key.CTRL))
+					{
+						camAngle += e.wheelDelta < 0 ? camStep : -camStep;
+						camAngle = Math.max(camAngle, Math.PI / 2 + 0.001);
+						camAngle = Math.min(camAngle, Math.PI);
+					}
+					else
+					{
+						camRotation += e.wheelDelta < 0 ? camStep : -camStep;
+					}
 				}
 			}
 			else
@@ -426,7 +435,7 @@ class EditorState extends Base2dState
 		isLevelLoaded = true;
 	}
 
-	function getModule(c) return modules.filter(m ->Std.is(m, c))[0];
+	function getModule(c:Dynamic) return modules.filter(m ->Std.is(m, c))[0];
 
 	public function registerView(id:EditorViewId, view:RenderResult)
 	{
@@ -651,6 +660,7 @@ class EditorState extends Base2dState
 					{
 						camDistance = 30;
 						camAngle = Math.PI - Math.PI / 4;
+						camRotation = Math.PI / 2;
 						return;
 					}
 					lastEscPressTime = now;
@@ -968,11 +978,16 @@ class EditorState extends Base2dState
 		if (Math.abs(distanceOffset) < 0.001) currentCamDistance = camDistance;
 		else currentCamDistance += distanceOffset;
 
-		s3d.camera.target.set(currentCameraPoint.x, currentCameraPoint.y);
+		s3d.camera.target.set(
+			currentCameraPoint.x,
+			currentCameraPoint.y
+		);
+
+		var newDistance = currentCamDistance * Math.cos(camAngle);
 
 		s3d.camera.pos.set(
-			currentCameraPoint.x + currentCamDistance * Math.cos(camAngle),
-			currentCameraPoint.y,
+			currentCameraPoint.x + newDistance * Math.sin(camRotation),
+			currentCameraPoint.y + newDistance * Math.cos(camRotation),
 			cameraObject.z + currentCamDistance * Math.sin(camAngle)
 		);
 	}
@@ -1005,6 +1020,7 @@ class EditorState extends Base2dState
 		var worldConfig:WorldConfig =
 		{
 			regions: [],
+			cameras: [],
 			triggers: [],
 			units: [],
 			staticObjects: [],
@@ -1083,6 +1099,8 @@ class EditorState extends Base2dState
 			height: cast(r.instance.primitive, Grid).height
 		}];
 
+		var cameraModule = cast(getModule(CameraModule), CameraModule);
+
 		var worldConfig:WorldConfig =
 		{
 			startingTime: model.startingTime,
@@ -1092,6 +1110,7 @@ class EditorState extends Base2dState
 			sunsetColor: model.sunsetColor,
 			dawnColor: model.dawnColor,
 			regions: regions,
+			cameras: cameraModule.getCameras().toArray(),
 			triggers: model.triggers,
 			units: units,
 			staticObjects: staticObjects,
@@ -1215,6 +1234,7 @@ enum EditorViewId
 
 typedef EditorCore =
 {
+	public var adventureConfig:AdventureConfig;
 	public var snapPosition:Float->Float;
 	public var model:EditorModel;
 	public var s2d:h2d.Scene;
@@ -1225,6 +1245,10 @@ typedef EditorCore =
 	public var dialogManager:EditorDialogManager;
 	public var updateGrid:Void->Void;
 	public var isPathFindingLayerDirty:Bool;
+	public var jumpCamera:Float->Float->Float->Void;
+	public var camDistance:Float;
+	public var camAngle:Float;
+	public var camRotation:Float;
 }
 
 typedef InitialAdventureData =

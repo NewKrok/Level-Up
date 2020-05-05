@@ -71,6 +71,7 @@ class GameState extends Base2dState
 	var currentCamDistance:Float = 0;
 	var cameraSpeed:Vector = new Vector(10, 10, 5);
 	var camAngle:Float = Math.PI - Math.PI / 4;
+	var camRotation:Float = Math.PI / 2;
 	var camDistance:Float = 40;
 	var hasCameraAnimation:Bool = false;
 	var camAnimationResult:Result;
@@ -332,9 +333,12 @@ class GameState extends Base2dState
 		}
 
 		s3d.camera.target.set(currentCameraPoint.x, currentCameraPoint.y);
+
+		var newDistance = currentCamDistance * Math.cos(camAngle);
+
 		s3d.camera.pos.set(
-			currentCameraPoint.x + currentCamDistance * Math.cos(camAngle),
-			currentCameraPoint.y,
+			currentCameraPoint.x + newDistance * Math.sin(camRotation),
+			currentCameraPoint.y + newDistance * Math.cos(camRotation),
 			(hasCameraAnimation || cameraTarget == null)
 				? currentCamDistance * Math.sin(camAngle)
 				: currentCamDistance * Math.sin(camAngle)
@@ -350,6 +354,31 @@ class GameState extends Base2dState
 		camAnimationPosition.z = currentCameraPoint.z;
 
 		Actuate.tween(camAnimationPosition, time, { x: x, y: y, z: z })
+			.ease(ease == null ? Linear.easeNone : ease)
+			.onUpdate(function()
+			{
+				camAnimationPosition.x = camAnimationPosition.x;
+				camAnimationPosition.y = camAnimationPosition.y;
+				camAnimationPosition.z = camAnimationPosition.z;
+			})
+			.onComplete(function()
+			{
+				hasCameraAnimation = false;
+				if (camAnimationResultHandler != null) camAnimationResultHandler();
+			});
+
+		return camAnimationResult;
+	}
+
+	function animateCameraTo(camera:CameraData, time:Float, ease:IEasing = null)
+	{
+		camAnimationResultHandler = null;
+		hasCameraAnimation = true;
+		camAnimationPosition.x = currentCameraPoint.x;
+		camAnimationPosition.y = currentCameraPoint.y;
+		camAnimationPosition.z = currentCameraPoint.z;
+
+		Actuate.tween(camAnimationPosition, time, { x: camera.position.x, y: camera.position.y })
 			.ease(ease == null ? Linear.easeNone : ease)
 			.onUpdate(function()
 			{
@@ -424,6 +453,33 @@ class GameState extends Base2dState
 						{
 							var unit:BaseUnit = resolveUnitByDefinition(unitDefinition, localVariables);
 							jumpCamera(unit.view.x, unit.view.y);
+						}
+					}
+
+					case JumpCameraToCamera(playerId, cameraName):
+					{
+						// TODO Define own player id, it could be different during multiplayer games
+						if (playerId == PlayerId.Player1)
+						{
+							var camera = adventureConfig.worldConfig.cameras.filter(r -> return r.name == cameraName)[0];
+							camDistance = camera.camDistance;
+							camAngle = camera.camAngle;
+							camRotation = camera.camRotation;
+							jumpCamera(
+								camera.position.x,
+								camera.position.y,
+								camera.position.z
+							);
+						}
+					}
+
+					case AnimateCameraToCamera(playerId, cameraName, time):
+					{
+						// TODO Define own player id, it could be different during multiplayer games
+						if (playerId == PlayerId.Player1)
+						{
+							var camera = adventureConfig.worldConfig.cameras.filter(r -> return r.name == cameraName)[0];
+							animateCameraTo(camera, time);
 						}
 					}
 
@@ -569,6 +625,7 @@ typedef WorldConfig =
 {
 	@:optional var regions(default, never):Array<Region>;
 	@:optional var triggers(default, never):Array<Trigger>;
+	@:optional var cameras(default, never):Array<CameraData>;
 	@:optional var units(default, never):Array<InitialUnitData>;
 	@:optional var staticObjects(default, never):Array<StaticObjectConfig>;
 	@:optional var terrainLayers(default, never):Array<TerrainLayerInfo>;
@@ -650,6 +707,15 @@ typedef TerrainLayerInfo =
 	var uvScale:Float;
 }
 
+typedef CameraData =
+{
+	var name(default, never):String;
+	var position(default, never):Vector;
+	var camDistance(default, never):Float;
+	var camAngle(default, never):Float;
+	var camRotation(default, never):Float;
+}
+
 @:enum abstract PlayerId(Int) from Int to Int {
 	var Player1 = 0;
 	var Player2 = 1;
@@ -669,6 +735,8 @@ enum TriggerAction {
 	EnableTrigger(id:String);
 	SetLocalVariable(name:String, value:Dynamic);
 	JumpCameraToUnit(player:PlayerId, unit:UnitDefinition);
+	JumpCameraToCamera(player:PlayerId, camera:String);
+	AnimateCameraToCamera(player:PlayerId, camera:String, time:Float);
 	SelectUnit(player:PlayerId, unit:UnitDefinition);
 	CreateUnit(unitId:String, owner:PlayerId, position:PositionDefinition);
 	AttackMoveToRegion(unit:UnitDefinition, position:PositionDefinition);
