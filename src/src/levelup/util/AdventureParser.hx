@@ -5,6 +5,7 @@ import h3d.Vector;
 import haxe.Json;
 import levelup.game.GameState.AdventureConfig;
 import levelup.game.GameState.InitialUnitData;
+import levelup.game.GameState.MathDefinition;
 import levelup.game.GameState.PlayerId;
 import levelup.game.GameState.PositionDefinition;
 import levelup.game.GameState.RegionPositionDefinition;
@@ -17,6 +18,7 @@ import levelup.game.GameState.TriggerCondition;
 import levelup.game.GameState.TriggerEvent;
 import levelup.game.GameState.UnitDefinition;
 import levelup.game.GameState.Filter;
+import levelup.game.GameState.VariableDefinition;
 import levelup.game.GameState.WorldConfig;
 import levelup.game.GameWorld.Region;
 import lzstring.LZString;
@@ -90,28 +92,32 @@ class AdventureParser
 			{
 				id: "initial",
 				isEnabled: true,
-				event: TriggerEvent.OnInit,
+				events: [TriggerEvent.OnInit],
 				condition: null,
 				actions: [
-					//TriggerAction.SetGlobalVariable("camDirection", 1),
-					TriggerAction.JumpCameraToCamera(PlayerId.Player1, "Untitled Camera 0"),
-					TriggerAction.AnimateCameraToCamera(PlayerId.Player1, "Untitled Camera 1", 5),
+					TriggerAction.SetGlobalVariable("camDirection", VariableDefinition.Value("Untitled Camera 0")),
+					TriggerAction.JumpCameraToCamera(PlayerId.Player1, VariableDefinition.GetGlobalVariable("camDirection"))
 				]
-			}/*,
+			},
 			{
 				id: "camera-loop",
 				isEnabled: true,
-				event: TriggerEvent.TimePeriodic(3),
+				events: [TriggerEvent.OnInit, TriggerEvent.TimePeriodic(30)],
 				condition: null,
 				actions: [
-					TriggerAction.SetGlobalVariable("camDirection", 1),
+					TriggerAction.IfElse(ConditionDefinition.Equal(VariableDefinition.Value("Untitled Camera 0"), VariableDefinition.GetGlobalVariable("camDirection")), [
+						TriggerAction.SetGlobalVariable("camDirection", VariableDefinition.Value("Untitled Camera 1"))
+					], [
+						TriggerAction.SetGlobalVariable("camDirection", VariableDefinition.Value("Untitled Camera 0"))
+					]),
+					TriggerAction.AnimateCameraToCamera(PlayerId.Player1, VariableDefinition.GetGlobalVariable("camDirection"), VariableDefinition.Value(30), VariableDefinition.Value("quad-ease-in-out"))
 				]
-			}*/
+			}
 
 			/*{
 				id: "initial",
 				isEnabled: true,
-				event: TriggerEvent.OnInit,
+				events: [TriggerEvent.OnInit],
 				condition: null,
 				actions: [
 					TriggerAction.SetLocalVariable("unit", UnitDefinition.GetUnit(UnitOfPlayer(PlayerId.Player1, Filter.Index(0)))),
@@ -124,7 +130,7 @@ class AdventureParser
 			{
 				id: "teamA-enemies-1",
 				isEnabled: true,
-				event: TriggerEvent.TimePeriodic(10),
+				events: [TriggerEvent.TimePeriodic(10)],
 				condition: null,
 				actions: [
 					TriggerAction.CreateUnit("minion", PlayerId.Player2, PositionDefinition.RegionPosition(RegionPositionDefinition.RandomPointOf("Region 0"))),
@@ -134,7 +140,7 @@ class AdventureParser
 			{
 				id: "teamA-enemies-2",
 				isEnabled: true,
-				event: TriggerEvent.TimePeriodic(35),
+				events: [TriggerEvent.TimePeriodic(35)],
 				condition: null,
 				actions: [
 					TriggerAction.CreateUnit("bandwagon", PlayerId.Player2, PositionDefinition.RegionPosition(RegionPositionDefinition.RandomPointOf("Region 0"))),
@@ -144,7 +150,7 @@ class AdventureParser
 			{
 				id: "teamB-enemies",
 				isEnabled: true,
-				event: TriggerEvent.TimePeriodic(10),
+				event: [TriggerEvent.TimePeriodic(10)],
 				condition: null,
 				actions: [
 					TriggerAction.CreateUnit("knome", PlayerId.Player3, PositionDefinition.RegionPosition(RegionPositionDefinition.RandomPointOf("Region 2"))),
@@ -154,7 +160,7 @@ class AdventureParser
 			{
 				id: "teamB-enemies-2",
 				isEnabled: true,
-				event: TriggerEvent.TimePeriodic(35),
+				events: [TriggerEvent.TimePeriodic(35)],
 				condition: null,
 				actions: [
 					TriggerAction.CreateUnit("rockgolem", PlayerId.Player3, PositionDefinition.RegionPosition(RegionPositionDefinition.RandomPointOf("Region 2"))),
@@ -163,10 +169,10 @@ class AdventureParser
 			}*/
 		];
 
-		var triggers:Array<Trigger> = [for (t in cast(rawWorldConfig.triggers, Array<Dynamic>)) {
+		/*var triggers:Array<Trigger> = [for (t in cast(rawWorldConfig.triggers, Array<Dynamic>)) {
 			id: t.id != null ? t.id.toLowerCase() : Std.string(Math.random() * 999999999),
 			isEnabled: t.isEnabled != null ? t.isEnabled : true,
-			event: switch (t.event) {
+			events: t.event == null ? null : switch (t.event) {
 				case EnterRegion(region): EnterRegion(getRegion(regions, region.id));
 				case _: t.event;
 			},
@@ -174,7 +180,7 @@ class AdventureParser
 				case _: t.condition;
 			},
 			actions: t.actions
-		}];
+		}];*/
 
 		var editorLastCamPosition = rawWorldConfig.editorLastCamPosition == null ? null : new Vector(
 			rawWorldConfig.editorLastCamPosition.x,
@@ -192,7 +198,7 @@ class AdventureParser
 				if (neededModelGroups.indexOf(projData.assetGroup) == -1) neededModelGroups.push(projData.assetGroup);
 			}
 		}
-		for (trigger in triggers)
+		for (trigger in rawWorldConfig.triggers)
 		{
 			for (a in trigger.actions)
 			{
@@ -238,7 +244,7 @@ class AdventureParser
 				dawnColor: dawnColor,
 				regions: regions,
 				cameras: rawWorldConfig.cameras == null ? [] : rawWorldConfig.cameras,
-				triggers: triggers,
+				triggers: rawWorldConfig.triggers,
 				units: units,
 				staticObjects: staticObjects,
 				terrainLayers: terrainLayers,
