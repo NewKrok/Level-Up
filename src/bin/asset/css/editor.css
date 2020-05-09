@@ -43,7 +43,7 @@
 	width: 280px;
 	background-color: #5E6161DD;
 	color: #FFF;
-	height: 100%;
+	height: calc(100% - 272px);
 }
 
 .lu_editor__preview {

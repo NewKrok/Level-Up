@@ -44,6 +44,21 @@
 			]
 		},
 		{
+			"id": "environment.tree.Tree{21...39}",
+			"models": [
+				{
+					"id": "environment.tree.Tree{counter}",
+					"url": "asset/model/environment/tree/Tree{counter}.hmd"
+				}
+			],
+			"textures": [
+				{"id": "texture/Decidious01Diffuse.png", "url": "asset/model/environment/Decidious01Diffuse.png"},
+				{"id": "texture/Decidious01Normal.jpg", "url": "asset/model/environment/Decidious01Normal.jpg"},
+				{"id": "texture/Trunk01Diffuse.jpg", "url": "asset/model/environment/Trunk01Diffuse.jpg"},
+				{"id": "texture/Trunk01Normal.jpg", "url": "asset/model/environment/Trunk01Normal.jpg"}
+			]
+		},
+		{
 			"id": "environment.tree.Tree40",
 			"models": [
 				{
@@ -57,18 +72,57 @@
 			]
 		},
 		{
-			"id": "environment.tree.Tree{21...39}",
+			"id": "environment.plant.Plant{1...41}",
 			"models": [
 				{
-					"id": "environment.tree.Tree{counter}",
-					"url": "asset/model/environment/tree/Tree{counter}.hmd"
+					"id": "environment.plant.Plant{counter}",
+					"url": "asset/model/environment/plant/Plant{counter}.hmd"
 				}
 			],
 			"textures": [
-				{"id": "texture/Decidious01Diffuse.png", "url": "asset/model/environment/Decidious01Diffuse.png"},
-				{"id": "texture/Decidious01Normal.jpg", "url": "asset/model/environment/Decidious01Normal.jpg"},
+				{"id": "texture/Plants01Diffuse.png", "url": "asset/model/environment/Plants01Diffuse.png"},
+				{"id": "texture/Plants01Normal.jpg", "url": "asset/model/environment/Plants01Normal.jpg"}
+			]
+		},
+		{
+			"id": "environment.trunk.Trunk{1...3}",
+			"models": [
+				{
+					"id": "environment.trunk.Trunk{counter}",
+					"url": "asset/model/environment/trunk/Trunk{counter}.hmd"
+				}
+			],
+			"textures": [
 				{"id": "texture/Trunk01Diffuse.jpg", "url": "asset/model/environment/Trunk01Diffuse.jpg"},
 				{"id": "texture/Trunk01Normal.jpg", "url": "asset/model/environment/Trunk01Normal.jpg"}
+			]
+		},
+		{
+			"id": "environment.trunk.Trunk{5...8}",
+			"models": [
+				{
+					"id": "environment.trunk.Trunk{counter}",
+					"url": "asset/model/environment/trunk/Trunk{counter}.hmd"
+				}
+			],
+			"textures": [
+				{"id": "texture/Trunk01Diffuse.jpg", "url": "asset/model/environment/Trunk01Diffuse.jpg"},
+				{"id": "texture/Trunk01Normal.jpg", "url": "asset/model/environment/Trunk01Normal.jpg"}
+			]
+		},
+		{
+			"id": "environment.trunk.Trunk04",
+			"models": [
+				{
+					"id": "environment.trunk.Trunk04",
+					"url": "asset/model/environment/trunk/Trunk04.hmd"
+				}
+			],
+			"textures": [
+				{"id": "texture/Trunk01Diffuse.jpg", "url": "asset/model/environment/Trunk01Diffuse.jpg"},
+				{"id": "texture/Trunk01Normal.jpg", "url": "asset/model/environment/Trunk01Normal.jpg"},
+				{"id": "texture/Coniferous01Diffuse.png", "url": "asset/model/environment/Coniferous01Diffuse.png"},
+				{"id": "texture/Coniferous01Normal.jpg", "url": "asset/model/environment/Coniferous01Normal.jpg"}
 			]
 		}
 	]

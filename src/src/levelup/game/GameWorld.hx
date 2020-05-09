@@ -2,6 +2,7 @@ package levelup.game;
 
 import h2d.Anim;
 import h2d.Tile;
+import h3d.Matrix;
 import h3d.Quat;
 import h3d.Vector;
 import h3d.col.Bounds;
@@ -117,6 +118,8 @@ class GameWorld extends World
 		this.worldConfig = worldConfig;
 		this.blockSize = blockSize;
 
+		createSkyBox();
+
 		instance = this;
 
 		heightMap = new BitmapData(cast size.y, cast size.x);
@@ -201,6 +204,30 @@ class GameWorld extends World
 	public function setNightColor(c:String) nightColor.setColor(Std.parseInt("0x" + c.substr(1)));
 	public function setSunsetColor(c:String) sunsetColor.setColor(Std.parseInt("0x" + c.substr(1)));
 	public function setDawnColor(c:String) dawnColor.setColor(Std.parseInt("0x" + c.substr(1)));
+
+	function createSkyBox()
+	{
+		var skyTexture = new h3d.mat.Texture(256, 256, [Cube, MipMapped]);
+		skyTexture.uploadPixels(AssetCache.instance.getImage("asset/texture/skybox_a/sb_1.jpg").getPixels(), 0, 3);
+		skyTexture.uploadPixels(AssetCache.instance.getImage("asset/texture/skybox_a/sb_2.jpg").getPixels(), 0, 0);
+		skyTexture.uploadPixels(AssetCache.instance.getImage("asset/texture/skybox_a/sb_3.jpg").getPixels(), 0, 4);
+		skyTexture.uploadPixels(AssetCache.instance.getImage("asset/texture/skybox_a/sb_4.jpg").getPixels(), 0, 5);
+		skyTexture.uploadPixels(AssetCache.instance.getImage("asset/texture/skybox_a/sb_5.jpg").getPixels(), 0, 2);
+		skyTexture.uploadPixels(AssetCache.instance.getImage("asset/texture/skybox_a/sb_6.jpg").getPixels(), 0, 1);
+		skyTexture.mipMap = Linear;
+
+		var sky = new h3d.prim.Sphere(size.x > size.y ? size.x * 2 : size.y * 2, 64, 64);
+		sky.addNormals();
+
+		var skyMesh = new h3d.scene.Mesh(sky, s3d);
+		skyMesh.defaultTransform = new Matrix();
+		skyMesh.defaultTransform.initRotation(Math.PI / 2, Math.PI / 2, Math.PI / 2);
+		skyMesh.material.mainPass.culling = Front;
+		skyMesh.material.mainPass.addShader(new h3d.shader.CubeMap(skyTexture));
+		skyMesh.material.shadows = false;
+		skyMesh.x = size.x / 2;
+		skyMesh.y = size.y / 2;
+	}
 
 	private function addStaticTerrainLayer(terrainConfig:TerrainConfig, uvScale:Float)
 	{

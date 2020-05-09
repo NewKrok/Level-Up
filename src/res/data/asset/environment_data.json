@@ -32,6 +32,28 @@
 			"zOffset": 0,
 			"isPathBlocker": true,
 			"hasTransparentTexture": true
+		},
+		{
+			"id": "Plant{1...41}",
+			"name": "Plant {counter}",
+			"modelScale": 0.01,
+			"environmentId": "plant",
+			"assetGroup": "environment.plant.Plant{counter}",
+			"previewUrl": "",
+			"zOffset": 0,
+			"isPathBlocker": true,
+			"hasTransparentTexture": true
+		},
+		{
+			"id": "Trunk{1...8}",
+			"name": "Trunk {counter}",
+			"modelScale": 0.01,
+			"environmentId": "trunk",
+			"assetGroup": "environment.trunk.Trunk{counter}",
+			"previewUrl": "",
+			"zOffset": 0,
+			"isPathBlocker": true,
+			"hasTransparentTexture": true
 		}
 	]
 }

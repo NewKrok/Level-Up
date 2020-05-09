@@ -18,7 +18,7 @@ class EnvironmentData
 			else
 			{
 				var assetFrom = Std.parseInt(e.id.substring(e.id.indexOf("{") + 1, e.id.indexOf("...")));
-				var assetTo = Std.parseInt(e.id.substring(e.id.indexOf("...") + 3, e.id.indexOf("}")));
+				var assetTo = Std.parseInt(e.id.substring(e.id.indexOf("...") + 3, e.id.indexOf("}"))) + 1;
 				for (i in assetFrom...assetTo)
 				{
 					count++;

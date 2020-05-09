@@ -5,7 +5,9 @@ import h3d.prim.ModelCache;
 import haxe.ds.Map;
 import h3d.scene.Mesh;
 import hxd.BitmapData;
+import hxd.Pixels;
 import hxd.net.BinaryLoader;
+import hxd.res.Image;
 import hxd.res.Model;
 import tink.CoreApi.Future;
 import tink.CoreApi.FutureTrigger;
@@ -27,7 +29,8 @@ class AssetCache
 	private var rawCache:RawModelCache = { groups: [] };
 	private var modelCache:ModelCache = new ModelCache();
 	private var modelDirectory:Map<String, Model> = new Map<String, Model>();
-	private var textureDirectory:Map<String, Dynamic> = new Map<String, Dynamic>();
+	private var textureDirectory:Map<String, Texture> = new Map<String, Texture>();
+	private var imageDirectory:Map<String, Image> = new Map<String, Image>();
 
 	private var isLoadingInProgress:Bool;
 
@@ -35,6 +38,7 @@ class AssetCache
 	private var loadedModelTextureCount:Int = 0;
 	private var loadedModelCount:Int = 0;
 	private var loadedTextureCount:Int = 0;
+	private var loadedImageCount:Int = 0;
 	public var loadPercentage:State<Float> = new State<Float>(0);
 
 	public function new() instance = this;
@@ -53,7 +57,7 @@ class AssetCache
 			else
 			{
 				var assetFrom = Std.parseInt(d.id.substring(d.id.indexOf("{") + 1, d.id.indexOf("...")));
-				var assetTo = Std.parseInt(d.id.substring(d.id.indexOf("...") + 3, d.id.indexOf("}")));
+				var assetTo = Std.parseInt(d.id.substring(d.id.indexOf("...") + 3, d.id.indexOf("}"))) + 1;
 				for (i in assetFrom...assetTo)
 				{
 					var pureId = d.id.substring(0, d.id.indexOf("{"));
@@ -75,19 +79,26 @@ class AssetCache
 		rawCache.groups = rawCache.groups.concat(newGroups);
 	}
 
-	public function load(modelGroupList:Array<String>, textureList:Array<String>):Future<Outcome<Noise, String>>
+	public function load(modelGroupList:Array<String>, textureList:Array<String>, imageList:Array<String>):Future<Outcome<Noise, String>>
 	{
 		loadPercentage.set(0);
 		totalAssetCount = textureList.length;
+		totalAssetCount += imageList.length;
 
 		var result:FutureTrigger<Outcome<Noise, String>> = Future.trigger();
 
 		loadModelGroups(modelGroupList).handle(function (o):Void switch(o)
 		{
 			case Success(_):
-				loadTextures(textureList).handle(o -> switch(o)
+				loadTextures(textureList).handle(function (o):Void switch(o)
 				{
-					case Success(_): result.trigger(Success(Noise));
+					case Success(_):
+						loadImages(imageList).handle(o -> switch(o)
+						{
+							case Success(_): result.trigger(Success(Noise));
+							case Failure(e): result.trigger(Failure(e));
+						});
+
 					case Failure(e): result.trigger(Failure(e));
 				});
 
@@ -252,12 +263,41 @@ class AssetCache
 		return result;
 	}
 
+	public function loadImages(list:Array<String>):Future<Outcome<Noise, String>>
+	{
+		var result = Future.trigger();
+		loadedImageCount = 0;
+
+		var onLoaded = (data, url) ->
+		{
+			var image = hxd.res.Any.fromBytes(url, data).toImage();
+			imageDirectory.set(url, image);
+
+			loadedImageCount++;
+			updateLoadPercentage();
+			if (loadedImageCount == list.length) result.trigger(Success(Noise));
+		}
+
+		var loadRoutine = t ->
+		{
+			var loader = new BinaryLoader(t);
+			loader.onError = e -> result.trigger(Failure(e));
+			loader.load();
+			loader.onLoaded = data -> onLoaded(data, t);
+		}
+
+		for (t in list) loadRoutine(t);
+
+		return result;
+	}
+
 	function updateLoadPercentage()
 	{
-		loadPercentage.set((loadedModelCount + loadedModelTextureCount + loadedTextureCount) / totalAssetCount);
+		loadPercentage.set((loadedModelCount + loadedModelTextureCount + loadedTextureCount + loadedImageCount) / totalAssetCount);
 	}
 
 	public function getTexture(url:String) return textureDirectory.get(url);
+	public function getImage(url:String) return imageDirectory.get(url);
 }
 
 typedef RawModelCache =

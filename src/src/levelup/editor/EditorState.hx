@@ -32,6 +32,7 @@ import hpp.util.GeomUtil.SimplePoint;
 import hxd.BitmapData;
 import hxd.Event;
 import hxd.Key;
+import hxd.Res;
 import hxd.Window;
 import hxd.clipper.Rect;
 import js.Browser;
@@ -111,6 +112,9 @@ class EditorState extends Base2dState
 	var camAngle:Float = Math.PI - Math.PI / 4;
 	var camRotation:Float = Math.PI / 2;
 	var camDistance:Float = 30;
+
+	var lastMouseMove2dPoint:Vector = new Vector();
+	var currentMouseMove2dPoint:Vector = new Vector();
 
 	var selectedWorldAsset:State<AssetItem> = new State<AssetItem>(null);
 	var selectedAssetConfig:AssetConfig;
@@ -228,6 +232,7 @@ class EditorState extends Base2dState
 			}
 			else if (e.button == 1)
 			{
+				disableAssetInteractives();
 				isMapDragActive = true;
 				cameraDragStartPoint.x = e.relX;
 				cameraDragStartPoint.y = e.relY;
@@ -286,10 +291,13 @@ class EditorState extends Base2dState
 			else if (e.button == 1)
 			{
 				isMapDragActive = false;
+				if (model.toolState == ToolState.Library && previewInstance == null) enableAssetInteractives();
 			}
 		}
 		world.onWorldMouseMove = e ->
 		{
+			currentMouseMove2dPoint = s3d.camera.project(e.relX, e.relY, e.relZ, HppG.stage2d.width, HppG.stage2d.height);
+
 			for (m in modules) if (m.onWorldMouseMove != null) m.onWorldMouseMove(e);
 
 			if (previewInstance != null)
@@ -319,8 +327,16 @@ class EditorState extends Base2dState
 			}
 			else if (isMapDragActive)
 			{
-				cameraObject.x = dragStartObjectPoint.x + (cameraDragStartPoint.x - e.relX) * 2;
-				cameraObject.y = dragStartObjectPoint.y + (cameraDragStartPoint.y - e.relY) * 2;
+				if (hadActiveCommandWithCtrl)
+				{
+					camRotation += (lastMouseMove2dPoint.x - currentMouseMove2dPoint.x) * Math.PI / 1800;
+					camAngle += (lastMouseMove2dPoint.y - currentMouseMove2dPoint.y) * Math.PI / 1800;
+				}
+				else
+				{
+					cameraObject.x = dragStartObjectPoint.x + (cameraDragStartPoint.x - e.relX) * 2;
+					cameraObject.y = dragStartObjectPoint.y + (cameraDragStartPoint.y - e.relY) * 2;
+				}
 			}
 			else if (isMouseDrawActive)
 			{
@@ -328,6 +344,8 @@ class EditorState extends Base2dState
 			}
 
 			if (previewInstance != null || draggedInstance != null) isPathFindingLayerDirty = true;
+
+			lastMouseMove2dPoint = currentMouseMove2dPoint.clone();
 		}
 		world.onWorldWheel = e ->
 		{
@@ -633,10 +651,21 @@ class EditorState extends Base2dState
 						newValueQuat: selectedInstance.getRotationQuat().clone()
 					});
 
-				case Key.UP | Key.W: cameraObject.x += 5;
-				case Key.DOWN | Key.S: cameraObject.x -= 5;
-				case Key.LEFT | Key.A: cameraObject.y -= 5;
-				case Key.RIGHT | Key.D: cameraObject.y += 5;
+				case Key.UP | Key.W:
+					cameraObject.x += 5 * Math.sin(camRotation);
+					cameraObject.y += 5 * Math.cos(camRotation);
+
+				case Key.DOWN | Key.S:
+					cameraObject.x -= 5 * Math.sin(camRotation);
+					cameraObject.y -= 5 * Math.cos(camRotation);
+
+				case Key.LEFT | Key.A:
+					cameraObject.x += 5 * Math.sin(camRotation + Math.PI / 2);
+					cameraObject.y += 5 * Math.cos(camRotation + Math.PI / 2);
+
+				case Key.RIGHT | Key.D:
+					cameraObject.x += 5 * Math.sin(camRotation - Math.PI / 2);
+					cameraObject.y += 5 * Math.cos(camRotation - Math.PI / 2);
 
 				case Key.SPACE if (previewInstance != null): editorUi.removeSelection();
 

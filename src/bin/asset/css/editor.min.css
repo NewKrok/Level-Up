@@ -3,7 +3,7 @@
 .lu_editor_header{width:100%;display:flex;background-color:#31302e;z-index:1;}
 .lu_editor_main_menu{color:#FFF;width:100%;background-color:#5E6161;border-bottom:1px solid #4a4947;}
 .lu_editor_right{height:calc(100% - 70px);position:absolute;pointer-events:visible;display:flex;flex-direction:column;width:280px;right:0;top:70px;align-items:center;}
-.lu_editor__base_panel{width:280px;background-color:#5E6161DD;color:#FFF;height:100%;}
+.lu_editor__base_panel{width:280px;background-color:#5E6161DD;color:#FFF;height:calc(100% - 272px);}
 .lu_editor__preview{width:280px;background-color:#5E6161DD;color:#FFF;}
 .lu_editor__preview_image{display:block;height:240px;}
 .lu_editor__empty_preview{width:240px;height:240px;background-color:#222222;line-height:240px;text-align:center;font-size:4em;}
