@@ -127,3 +127,18 @@ ul {
 	background: none;
 	height: 20px;
 }
+
+.lu_form__select {
+	background: #44382cb0;
+	color: #FFF;
+	padding: 5px;
+	border-radius: 3px;
+	outline: none;
+	border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.lu_form__select:hover,
+.lu_form__select:active {
+	outline: none;
+	border: 1px solid rgba(255, 255, 255, 0.6);
+}

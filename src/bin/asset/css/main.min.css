@@ -17,6 +17,7 @@ a{color:unset;text-decoration:none;}
 .lu_horizontal_offset{margin:0 10px;}
 .lu_left_offset{margin-left:10px;}
 .lu_right_offset{margin-right:10px;}
+.lu_right_offset--s{margin-right:5px;}
 .lu_bottom_offset{margin-bottom:10px;}
 .lu_bottom_offset--l{margin-bottom:20px;}
 .lu_width_30_p{width:30%;}

@@ -2,7 +2,7 @@ package levelup.editor.module.camera;
 
 import coconut.ui.View;
 import coconut.data.List;
-import levelup.game.GameState.CameraData;
+import levelup.core.camera.ActionCamera.CameraData;
 
 using StringTools;
 

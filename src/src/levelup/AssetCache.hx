@@ -81,7 +81,13 @@ class AssetCache
 
 	public function load(modelGroupList:Array<String>, textureList:Array<String>, imageList:Array<String>):Future<Outcome<Noise, String>>
 	{
+		loadedModelTextureCount = 0;
+		loadedModelCount = 0;
+		loadedTextureCount = 0;
+		loadedImageCount = 0;
+
 		loadPercentage.set(0);
+
 		totalAssetCount = textureList.length;
 		totalAssetCount += imageList.length;
 
@@ -141,6 +147,8 @@ class AssetCache
 
 			case Failure(e): result.trigger(o);
 		}});
+
+		if (modelGroupList.length == 0) result.trigger(Success(Noise));
 
 		return result;
 	}

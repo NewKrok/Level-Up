@@ -16,6 +16,7 @@ import levelup.game.GameWorld.Region;
  */
 class EditorModel implements Model
 {
+	@:editable var id:String;
 	@:editable var title:String;
 	@:editable var subTitle:String;
 	@:editable var description:String;

@@ -11,48 +11,63 @@ import hxd.Save;
  */
 class SaveUtil
 {
-	private static var savedGameDataName:String = "(game) fpp_level_up";
-	private static var savedEditorDataName:String = "(editor) fpp_level_up";
+	private static var savedAppDataName:String = "(app) _fpp_level_up";
+	private static var savedGameDataName:String = "(game) _fpp_level_up";
+	private static var savedEditorDataName:String = "(editor) _fpp_level_up";
 
+	public static var appData(default, null):SavedAppData;
 	public static var gameData(default, null):SavedGameData;
 	public static var editorData(default, null):SavedEditorData;
 
 	public static function load()
 	{
-		var defaultGameData:SavedGameData = {
-			app: {
+		var defaultAppData:SavedAppData = {
+			video: {
+				resolutionQuality: 1
 			},
-			game: {
+			gameplay: {
+				showFPS: false
 			}
+		};
+		appData = Save.load(defaultAppData, savedAppDataName);
+
+		var defaultGameData:SavedGameData = {
 		};
 		gameData = Save.load(defaultGameData, savedGameDataName);
 
 		var defaultEditorData:SavedEditorData = {
 			showGrid: true,
-			customMaps: []
+			customAdventures: []
 		};
 		editorData = Save.load(defaultEditorData, savedEditorDataName);
 	}
 
 	public static function save()
 	{
+		Save.save(appData, savedAppDataName);
 		Save.save(gameData, savedGameDataName);
 		Save.save(editorData, savedEditorDataName);
 	}
 }
 
 typedef SavedGameData = {
-	var app:ApplicationInfo;
-	var game:GameInfo;
+
 }
 
-typedef ApplicationInfo = {
+typedef SavedAppData = {
+	var video:VideoSettings;
+	var gameplay:GameplaySettings;
 }
 
-typedef GameInfo = {
+typedef VideoSettings = {
+	var resolutionQuality:Float;
+}
+
+typedef GameplaySettings = {
+	var showFPS:Bool;
 }
 
 typedef SavedEditorData = {
 	var showGrid:Bool;
-	var customMaps:Array<String>;
+	var customAdventures:Array<String>;
 }

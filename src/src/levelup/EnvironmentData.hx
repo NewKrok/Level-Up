@@ -64,7 +64,9 @@ enum abstract EnvironmentId(String) from String to String
 {
 	var Bridge = "bridge";
 	var Rock = "rock";
+	var Stone = "stone";
 	var Tree = "tree";
-	var Trunk = "trunk";
 	var Plant = "plant";
+	var Bush = "bush";
+	var Ground = "ground";
 }

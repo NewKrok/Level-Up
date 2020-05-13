@@ -1,10 +1,12 @@
 package;
 
+import com.greensock.TweenLite;
 import h3d.Engine;
 import haxe.Json;
 import haxe.Timer;
 import hpp.heaps.Base2dApp;
 import hpp.heaps.Base2dStage.StageScaleMode;
+import hpp.heaps.HppG;
 import hxd.Res;
 import js.Browser;
 import levelup.AssetCache;
@@ -18,6 +20,8 @@ import levelup.component.layout.Layout;
 import levelup.component.layout.LayoutView;
 import levelup.core.renderer.Renderer;
 import levelup.editor.EditorState;
+import levelup.game.GameState;
+import levelup.mainmenu.MainMenuState;
 import levelup.util.SaveUtil;
 import react.ReactDOM;
 
@@ -29,7 +33,6 @@ class Main extends Base2dApp
 {
 	public static var editorVersion:String = "0.0.1";
 
-	var gameState:EditorState;
 	var assetCache:AssetCache;
 	var layout:Layout;
 	var adventureLoader:AdventureLoader;
@@ -45,8 +48,10 @@ class Main extends Base2dApp
 		layout = new Layout();
 		adventureLoader = new AdventureLoader(cast this);
 
-		TerrainAssets.init();
 		SaveUtil.load();
+		TerrainAssets.init();
+
+		//Engine.ANTIALIASING = SaveUtil.gameData.app.antialias;
 
 		ProjectileAnimationData.addData(Json.parse(Res.data.asset.projectile_animation_data.entry.getText()));
 		assetCache.addData(Json.parse(Res.data.asset.projectile_animation_asset_data.entry.getText()));
@@ -65,14 +70,31 @@ class Main extends Base2dApp
 
 		//changeState(EditorState, [stage, s3d, SaveUtil.editorData.customMaps[0]]);
 		//changeState(EditorState, [stage, s3d, MapData.getRawMap("lobby"), cast this]);
-		changeState(EditorState, [stage, s3d, MapData.getRawMap("main_menu_elf_theme"), cast this]);
+		//changeState(GameState, [stage, s3d, MapData.getRawMap("main_menu_elf_theme"), cast this]);
+		//changeState(EditorState, [stage, s3d, MapData.getRawMap("main_menu_elf_theme"), cast this]);
 		//changeState(GameState, [stage, s3d, MapData.getRawMap("lobby")]);
 		//changeState(GameState, [stage, s3d, SaveUtil.editorData.customMaps[0]]);
+
+		changeState(MainMenuState, [s3d, cast this]);
+		onResize();
+	}
+
+	override function onResize()
+	{
+		super.onResize();
+
+		if (SaveUtil.appData != null)
+		{
+			engine.resize(
+				Math.floor(Browser.window.innerWidth * SaveUtil.appData.video.resolutionQuality),
+				Math.floor(Browser.window.innerHeight * SaveUtil.appData.video.resolutionQuality)
+			);
+		}
 	}
 
 	static function main()
 	{
-		Engine.ANTIALIASING = 2;
+		Engine.ANTIALIASING = 1;
 		Res.initEmbed();
 		// It looks Heaps need a little time to init assets, but I don't see related event to handle it properly
 		// Without this delay sometimes it use wrong font

@@ -72,6 +72,96 @@
 			]
 		},
 		{
+			"id": "environment.tree.mtd_Tree_{1...9}",
+			"models": [
+				{
+					"id": "environment.tree.mtd_Tree_{counter}",
+					"url": "asset/model/environment/tree/mtd/Tree_{counter}.hmd"
+				}
+			],
+			"textures": [
+				{"id": "texture/Tree_bark.jpg", "url": "asset/model/environment/Tree_bark.jpg"},
+				{"id": "texture/Tree_bark_n.jpg", "url": "asset/model/environment/Tree_bark_n.jpg"},
+				{"id": "texture/Tree_leaves.png", "url": "asset/model/environment/Tree_leaves.png"},
+				{"id": "texture/Tree_leaves_n.jpg", "url": "asset/model/environment/Tree_leaves_n.jpg"}
+			]
+		},
+		{
+			"id": "environment.tree.mtd_Tree_Dead{1...3}",
+			"models": [
+				{
+					"id": "environment.tree.mtd_Tree_Dead{counter}",
+					"url": "asset/model/environment/tree/mtd/Tree_Dead{counter}.hmd"
+				}
+			],
+			"textures": [
+				{"id": "texture/Tree_bark.jpg", "url": "asset/model/environment/Tree_bark.jpg"},
+				{"id": "texture/Tree_bark_n.jpg", "url": "asset/model/environment/Tree_bark_n.jpg"},
+				{"id": "texture/Tree_leaves.png", "url": "asset/model/environment/Tree_leaves.png"},
+				{"id": "texture/Tree_leaves_n.jpg", "url": "asset/model/environment/Tree_leaves_n.jpg"}
+			]
+		},
+		{
+			"id": "environment.tree.mtd_Tree_Fall{1...5}",
+			"models": [
+				{
+					"id": "environment.tree.mtd_Tree_Fall{counter}",
+					"url": "asset/model/environment/tree/mtd/Tree_Fall{counter}.hmd"
+				}
+			],
+			"textures": [
+				{"id": "texture/Tree_bark.jpg", "url": "asset/model/environment/Tree_bark.jpg"},
+				{"id": "texture/Tree_bark_n.jpg", "url": "asset/model/environment/Tree_bark_n.jpg"},
+				{"id": "texture/Tree_leaves.png", "url": "asset/model/environment/Tree_leaves.png"},
+				{"id": "texture/Tree_leaves_n.jpg", "url": "asset/model/environment/Tree_leaves_n.jpg"}
+			]
+		},
+		{
+			"id": "environment.tree.mtd_Tree_Pine{1...5}",
+			"models": [
+				{
+					"id": "environment.tree.mtd_Tree_Pine{counter}",
+					"url": "asset/model/environment/tree/mtd/Tree_Pine_{counter}.hmd"
+				}
+			],
+			"textures": [
+				{"id": "texture/Tree_bark.jpg", "url": "asset/model/environment/Tree_bark.jpg"},
+				{"id": "texture/Tree_bark_n.jpg", "url": "asset/model/environment/Tree_bark_n.jpg"},
+				{"id": "texture/Tree_leaves.png", "url": "asset/model/environment/Tree_leaves.png"},
+				{"id": "texture/Tree_leaves_n.jpg", "url": "asset/model/environment/Tree_leaves_n.jpg"}
+			]
+		},
+		{
+			"id": "environment.tree.mtd_Tree_Small{1...5}",
+			"models": [
+				{
+					"id": "environment.tree.mtd_Tree_Small{counter}",
+					"url": "asset/model/environment/tree/mtd/Tree_Small_{counter}.hmd"
+				}
+			],
+			"textures": [
+				{"id": "texture/Tree_bark.jpg", "url": "asset/model/environment/Tree_bark.jpg"},
+				{"id": "texture/Tree_bark_n.jpg", "url": "asset/model/environment/Tree_bark_n.jpg"},
+				{"id": "texture/Tree_leaves.png", "url": "asset/model/environment/Tree_leaves.png"},
+				{"id": "texture/Tree_leaves_n.jpg", "url": "asset/model/environment/Tree_leaves_n.jpg"}
+			]
+		},
+		{
+			"id": "environment.tree.mtd_Trunk{1...3}",
+			"models": [
+				{
+					"id": "environment.tree.mtd_Trunk{counter}",
+					"url": "asset/model/environment/tree/mtd/Trunk_{counter}.hmd"
+				}
+			],
+			"textures": [
+				{"id": "texture/Tree_bark.jpg", "url": "asset/model/environment/Tree_bark.jpg"},
+				{"id": "texture/Tree_bark_n.jpg", "url": "asset/model/environment/Tree_bark_n.jpg"},
+				{"id": "texture/Tree_leaves.png", "url": "asset/model/environment/Tree_leaves.png"},
+				{"id": "texture/Tree_leaves_n.jpg", "url": "asset/model/environment/Tree_leaves_n.jpg"}
+			]
+		},
+		{
 			"id": "environment.plant.Plant{1...41}",
 			"models": [
 				{
@@ -123,6 +213,84 @@
 				{"id": "texture/Trunk01Normal.jpg", "url": "asset/model/environment/Trunk01Normal.jpg"},
 				{"id": "texture/Coniferous01Diffuse.png", "url": "asset/model/environment/Coniferous01Diffuse.png"},
 				{"id": "texture/Coniferous01Normal.jpg", "url": "asset/model/environment/Coniferous01Normal.jpg"}
+			]
+		},
+		{
+			"id": "environment.bush.Bush{1...9}",
+			"models": [
+				{
+					"id": "environment.bush.Bush{counter}",
+					"url": "asset/model/environment/bush/Bush_{counter}.hmd"
+				}
+			],
+			"textures": [
+				{"id": "texture/Tree_leaves.png", "url": "asset/model/environment/Tree_leaves.png"},
+				{"id": "texture/Tree_leaves_n.jpg", "url": "asset/model/environment/Tree_leaves_n.jpg"}
+			]
+		},
+		{
+			"id": "environment.ground.Floor{1...6}",
+			"models": [
+				{
+					"id": "environment.ground.Floor{counter}",
+					"url": "asset/model/environment/ground/Floor{counter}.hmd"
+				}
+			],
+			"textures": [
+				{"id": "texture/Stone_elements.jpg", "url": "asset/model/environment/Stone_elements.jpg"},
+				{"id": "texture/Stone_elements_n.jpg", "url": "asset/model/environment/Stone_elements_n.jpg"}
+			]
+		},
+		{
+			"id": "environment.ground.Ground_Decal_Leaves{1...2}",
+			"models": [
+				{
+					"id": "environment.ground.Ground_Decal_Leaves{counter}",
+					"url": "asset/model/environment/ground/Ground_Decal_Leaves{counter}.hmd"
+				}
+			],
+			"textures": [
+				{"id": "texture/Ground_decals.png", "url": "asset/model/environment/Ground_decals.png"},
+				{"id": "texture/Ground_decals_n.jpg", "url": "asset/model/environment/Ground_decals_n.jpg"}
+			]
+		},
+		{
+			"id": "environment.ground.Ground_Decal{1...3}",
+			"models": [
+				{
+					"id": "environment.ground.Ground_Decal{counter}",
+					"url": "asset/model/environment/ground/Ground_Decal{counter}.hmd"
+				}
+			],
+			"textures": [
+				{"id": "texture/Ground_decals.png", "url": "asset/model/environment/Ground_decals.png"},
+				{"id": "texture/Ground_decals_n.jpg", "url": "asset/model/environment/Ground_decals_n.jpg"}
+			]
+		},
+		{
+			"id": "environment.ground.Ground_Decal_grass1",
+			"models": [
+				{
+					"id": "environment.ground.Ground_Decal_grass1",
+					"url": "asset/model/environment/ground/Ground_Decal_grass1.hmd"
+				}
+			],
+			"textures": [
+				{"id": "texture/Ground_decals.png", "url": "asset/model/environment/Ground_decals.png"},
+				{"id": "texture/Ground_decals_n.jpg", "url": "asset/model/environment/Ground_decals_n.jpg"}
+			]
+		},
+		{
+			"id": "environment.stone.Column{1...5}",
+			"models": [
+				{
+					"id": "environment.stone.Column{counter}",
+					"url": "asset/model/environment/stone/Column{counter}.hmd"
+				}
+			],
+			"textures": [
+				{"id": "texture/Stone_elements.jpg", "url": "asset/model/environment/Stone_elements.jpg"},
+				{"id": "texture/Stone_elements_n.jpg", "url": "asset/model/environment/Stone_elements_n.jpg"}
 			]
 		}
 	]

@@ -154,11 +154,11 @@ class GameWorld extends World
 
 		interact = new Interactive(terrainLayers[0].getCollider(), s3d);
 		interact.enableRightButton = true;
-		interact.onClick = function (e) { onWorldClick(e); };
-		interact.onPush = function (e) { onWorldMouseDown(e); };
-		interact.onRelease = function (e) { onWorldMouseUp(e); };
-		interact.onMove = function (e) { onWorldMouseMove(e); };
-		interact.onWheel = function (e) { onWorldWheel(e); };
+		interact.onClick = e -> if (onWorldClick != null) onWorldClick(e);
+		interact.onPush = e -> if (onWorldMouseDown != null) onWorldMouseDown(e);
+		interact.onRelease = e -> if (onWorldMouseUp != null) onWorldMouseUp(e);
+		interact.onMove = e -> if (onWorldMouseMove != null) onWorldMouseMove(e);
+		interact.onWheel = e -> if (onWorldWheel != null) onWorldWheel(e);
 
 		for (r in worldConfig.regions)
 		{

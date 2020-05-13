@@ -17,6 +17,7 @@ class LayoutView extends View
 	function render() '
 		<div id="lu_native_ui" class="lu_native_ui">
 			{getView(AdventureLoader)}
+			{getView(MainMenuUi)}
 			{getView(EditorUi)}
 			{getView(GameUi)}
 		</div>
@@ -32,6 +33,7 @@ class LayoutView extends View
 enum abstract LayoutId(String) from String to String
 {
 	var AdventureLoader = "AdventureLoader";
+	var MainMenuUi = "MainMenuUi";
 	var EditorUi = "EditorUi";
 	var GameUi = "GameUi";
 }

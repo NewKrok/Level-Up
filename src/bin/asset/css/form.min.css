@@ -19,3 +19,5 @@ ul{list-style:none;padding:0;margin:0;}
 .lu_slider__thumb_container{width:calc(100% - 15px);position:absolute;pointer-events:none;top:0;}
 .lu_slider__thumb{width:15px;height:15px;background-color:#69fd75;position:relative;transition:left 0.2s;}
 .lu_color_picker{padding:0;margin:0;border:1px solid #000;background:none;height:20px;}
+.lu_form__select{background:#44382cb0;color:#FFF;padding:5px;border-radius:3px;outline:none;border:1px solid rgba(255,255,255,0.2);}
+.lu_form__select:hover,.lu_form__select:active{outline:none;border:1px solid rgba(255,255,255,0.6);}

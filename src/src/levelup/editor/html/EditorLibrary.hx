@@ -63,10 +63,10 @@ class EditorLibrary extends View
 			</select>
 			<if {selectedListIndex == 0}>
 				<div class="lu_row">
-					<div class="lu_player_color_box lu_left_offset" style={"background-color: #" + PlayerColor.colors[selectedPlayer]} ></div>
+					<div class="lu_player_color_box lu_left_offset" style={"background-color: #" + Player.colors[selectedPlayer]} ></div>
 					<select class="lu_selector lu_horizontal_offset" onchange={e -> onPlayerSelect(cast(e.currentTarget, SelectElement).selectedIndex)}>
 						<for {i in 0...10}>
-							<option selected={i == selectedPlayer} style={"color: #" + PlayerColor.colors[i]}>
+							<option selected={i == selectedPlayer} style={"color: #" + Player.colors[i]}>
 								Player {i + 1}
 							</option>
 						</for>

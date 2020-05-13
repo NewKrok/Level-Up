@@ -102,7 +102,7 @@ class AdventureParser
 			{
 				id: "camera-loop",
 				isEnabled: true,
-				events: [TriggerEvent.OnInit, TriggerEvent.TimePeriodic(30)],
+				events: [TriggerEvent.OnInit, TriggerEvent.TimePeriodic(10)],
 				condition: null,
 				actions: [
 					TriggerAction.IfElse(ConditionDefinition.Equal(VariableDefinition.Value("Untitled Camera 0"), VariableDefinition.GetGlobalVariable("camDirection")), [
@@ -110,7 +110,7 @@ class AdventureParser
 					], [
 						TriggerAction.SetGlobalVariable("camDirection", VariableDefinition.Value("Untitled Camera 0"))
 					]),
-					TriggerAction.AnimateCameraToCamera(PlayerId.Player1, VariableDefinition.GetGlobalVariable("camDirection"), VariableDefinition.Value(30), VariableDefinition.Value("quad-ease-in-out"))
+					TriggerAction.AnimateCameraToCamera(PlayerId.Player1, VariableDefinition.GetGlobalVariable("camDirection"), VariableDefinition.Value(10), VariableDefinition.Value("quad-ease-in-out"))
 				]
 			}
 
@@ -229,6 +229,7 @@ class AdventureParser
 		}
 
 		return {
+			id: rawData.id,
 			title: rawData.title,
 			subTitle: rawData.subTitle,
 			description: rawData.description,

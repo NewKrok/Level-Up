@@ -3,7 +3,7 @@ package levelup.editor.module.camera;
 import coconut.data.Model;
 import coconut.data.List;
 import h3d.Vector;
-import levelup.game.GameState.CameraData;
+import levelup.core.camera.ActionCamera.CameraData;
 import tink.state.State;
 
 /**

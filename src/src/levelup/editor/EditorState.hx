@@ -151,6 +151,14 @@ class EditorState extends Base2dState
 
 		compressor = new LZString();
 
+		if (rawMap == null)
+		{
+			rawMap = createNewAdventureRawData({
+				size: { x: 100, y: 100 },
+				defaultTerrainTextureId: TerrainAssets.terrains[0].id
+			});
+		}
+
 		cf.adventureLoader.load(rawMap, true).handle(o -> switch (o)
 		{
 			case Success(result):
@@ -158,6 +166,7 @@ class EditorState extends Base2dState
 				onLoaded(rawMap);
 
 			case Failure(e):
+				trace('Fatal error, couldn\'t load resources for {rawMap.id} with title: {rawMap.title}. Error message $e');
 		});
 	}
 
@@ -165,6 +174,7 @@ class EditorState extends Base2dState
 	{
 		model = new EditorModel(
 		{
+			id: adventureConfig.id,
 			title: adventureConfig.title,
 			subTitle: adventureConfig.subTitle,
 			description: adventureConfig.description,
@@ -699,6 +709,29 @@ class EditorState extends Base2dState
 					previewInstance.setScale(selectedWorldAsset.value.instance.scaleX);
 					previewInstance.setRotationQuat(selectedWorldAsset.value.instance.getRotationQuat().clone());
 
+				case Key.DELETE if (selectedWorldAsset.value != null):
+					for (obj in model.staticObjects)
+					{
+						if (obj.instance == selectedWorldAsset.value.instance)
+						{
+							model.staticObjects.remove(obj);
+							obj.instance.remove();
+							selectedWorldAsset.set(null);
+							return;
+						}
+					}
+					for (unit in model.units)
+					{
+						if (unit.instance == selectedWorldAsset.value.instance)
+						{
+							model.units.remove(unit);
+							unit.instance.remove();
+							selectedWorldAsset.set(null);
+							return;
+						}
+					}
+					if (draggedInstance != null) draggedInstance = null;
+
 				case Key.N if (!Key.isDown(Key.CTRL)): editorUi.increaseSnap();
 				case Key.G if (!Key.isDown(Key.CTRL)): model.showGrid = !model.showGrid;
 			}
@@ -1043,6 +1076,20 @@ class EditorState extends Base2dState
 
 	public function createNewAdventure(data:InitialAdventureData)
 	{
+		var result = createNewAdventureRawData(data);
+
+		var savedMaps = SaveUtil.editorData.customAdventures;
+		if (savedMaps.length > 0) SaveUtil.editorData.customAdventures[0] = result;
+		else SaveUtil.editorData.customAdventures.push(result);
+
+		SaveUtil.editorData.showGrid = model.showGrid;
+		SaveUtil.save();
+
+		HppG.changeState(EditorState, [stage, s3d, result, cf]);
+	}
+
+	function createNewAdventureRawData(data:InitialAdventureData)
+	{
 		var rawHeightMap = new BitmapData(Std.int(data.size.x), Std.int(data.size.y));
 		rawHeightMap.fill(0, 0, Std.int(data.size.x), Std.int(data.size.y), 0x888888);
 
@@ -1059,20 +1106,16 @@ class EditorState extends Base2dState
 		};
 		var result = Json.stringify(
 		{
-			name: "A Great New Adventure",
+			id: "Local-" + Date.now().getTime(),
+			title: "A Great New Adventure",
+			subTitle: "",
+			description: "",
 			editorVersion: Main.editorVersion,
 			size: data.size,
 			worldConfig: compressor.compressToEncodedURIComponent(Json.stringify(worldConfig))
 		});
 
-		var savedMaps = SaveUtil.editorData.customMaps;
-		if (savedMaps.length > 0) SaveUtil.editorData.customMaps[0] = result;
-		else SaveUtil.editorData.customMaps.push(result);
-
-		SaveUtil.editorData.showGrid = model.showGrid;
-		SaveUtil.save();
-
-		HppG.changeState(EditorState, [stage, s3d, result, cf]);
+		return result;
 	}
 
 	public function save()
@@ -1150,6 +1193,7 @@ class EditorState extends Base2dState
 		};
 		var result = Json.stringify(
 		{
+			id: model.id,
 			title: model.title,
 			subTitle: model.subTitle,
 			description: model.description,
@@ -1158,19 +1202,20 @@ class EditorState extends Base2dState
 			worldConfig: compressor.compressToEncodedURIComponent(Json.stringify(worldConfig))
 		});
 
-		var savedMaps = SaveUtil.editorData.customMaps;
+		var savedMaps = SaveUtil.editorData.customAdventures;
 		var isNewMap:Bool = true;
 		for (i in 0...savedMaps.length)
 		{
-			if (savedMaps[i].indexOf('"title":"' + model.title + '"') != -1)
+			if (savedMaps[i].indexOf('"id":"' + model.id + '"') != -1)
 			{
-				SaveUtil.editorData.customMaps[i] = result;
+				trace("FOUND!");
+				SaveUtil.editorData.customAdventures[i] = result;
 				isNewMap = false;
 				break;
 			}
 		}
 		trace(result);
-		if (isNewMap) SaveUtil.editorData.customMaps.push(result);
+		if (isNewMap) SaveUtil.editorData.customAdventures.push(result);
 
 		SaveUtil.editorData.showGrid = model.showGrid;
 		SaveUtil.save();
