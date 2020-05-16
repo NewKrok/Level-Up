@@ -5,6 +5,10 @@
 http://flashplusplus.net/haxe/levelup/index.html
 
 ## Screenshot(s)
+Main Menu
+![image](https://user-images.githubusercontent.com/13141660/82105383-61445200-971b-11ea-8392-63b6198534ac.png)
+![image](https://user-images.githubusercontent.com/13141660/82105407-7b7e3000-971b-11ea-819f-d65350c6b2de.png)
+
 Ingame
 ![image](https://user-images.githubusercontent.com/13141660/80431506-e5ac6d80-88f1-11ea-8a47-8f10b47400e2.png)
 ![image](https://user-images.githubusercontent.com/13141660/70577922-89e48080-1bac-11ea-9b10-8f8183ee4ca3.png)
@@ -27,7 +31,6 @@ Editor
 - Implement Fog of war
 - Area damage
 - Html based hero ui
-- Life and mana bar into the game
 - Add team system
 - Implement a Moba custom game
 - etc...
@@ -36,7 +39,6 @@ Editor
 - Add missing preview images (Is it possible to generate it like the heightmap?)
 - Script editor
 - Weather editor
-- Camera editor
 - Unit editor
 - Team editor
 - Pathfinding editor
@@ -49,6 +51,11 @@ Editor
 - Possibility to change the layer order
 - Undo / Redo functionality
 - Fix paint bug when the position is locked - after mouse up
+
+## TODO - Camera editor
+- Possibility to modify/delete/rename cameras
+- Create cam preview 3d object
+- Undo / Redo functionality
 
 ## TODO - HeightMap editor
 - Undo / Redo functionality
