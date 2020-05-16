@@ -4,6 +4,7 @@ import Main.CoreFeatures;
 import coconut.ui.RenderResult;
 import format.jpg.Data;
 import format.jpg.Writer;
+import h2d.Bitmap;
 import h2d.Scene;
 import h3d.Quat;
 import h3d.Vector;
@@ -178,6 +179,7 @@ class EditorState extends Base2dState
 			title: adventureConfig.title,
 			subTitle: adventureConfig.subTitle,
 			description: adventureConfig.description,
+			preloaderImage: adventureConfig.preloaderImage,
 			size: adventureConfig.size,
 			startingTime: adventureConfig.worldConfig.startingTime,
 			sunAndMoonOffsetPercent: adventureConfig.worldConfig.sunAndMoonOffsetPercent,
@@ -1197,24 +1199,22 @@ class EditorState extends Base2dState
 			title: model.title,
 			subTitle: model.subTitle,
 			description: model.description,
+			preloaderImage: model.preloaderImage,
 			editorVersion: Main.editorVersion,
 			size: model.size,
 			worldConfig: compressor.compressToEncodedURIComponent(Json.stringify(worldConfig))
 		});
-
 		var savedMaps = SaveUtil.editorData.customAdventures;
 		var isNewMap:Bool = true;
 		for (i in 0...savedMaps.length)
 		{
 			if (savedMaps[i].indexOf('"id":"' + model.id + '"') != -1)
 			{
-				trace("FOUND!");
 				SaveUtil.editorData.customAdventures[i] = result;
 				isNewMap = false;
 				break;
 			}
 		}
-		trace(result);
 		if (isNewMap) SaveUtil.editorData.customAdventures.push(result);
 
 		SaveUtil.editorData.showGrid = model.showGrid;

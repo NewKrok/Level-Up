@@ -10,9 +10,9 @@ import levelup.util.SaveUtil;
  * ...
  * @author Krisztian Somoracz
  */
-class AdventureEditorView extends View
+class CustomAdventuresView extends View
 {
-	@:attr var openAdventureEditor:String->Void;
+	@:attr var openAdventure:String->Void;
 
 	var list:Array<AdventureConfig>;
 
@@ -24,20 +24,13 @@ class AdventureEditorView extends View
 			<div>
 				<div class="lu_adventure_editor__block">
 					<div class="lu_adventure_editor__title">
-						Your Adventures
+						Your Own Adventures
 					</div>
 					<div class="lu_adventure_editor__list">
-						<div
-							class="lu_adventure_editor__adventure"
-							onClick={openAdventureEditor.bind(null)}
-						>
-							<i class="fas fa-plus-circle lu_adventure_editor__add_icon"></i>
-							<div>Create new Adventure</div>
-						</div>
 						<for {adv in list}>
 							<div
 								class="lu_adventure_editor__adventure"
-								onClick={openAdventureEditor.bind(adv.id)}
+								onClick={openAdventure.bind(adv.id)}
 							>
 								{AdventurePreviewGenerator.generate(adv)}
 								<div class="lu_adventure_editor__adventure_title">

@@ -11,6 +11,7 @@ import levelup.component.layout.LayoutView.LayoutId;
 import levelup.core.camera.ActionCamera;
 import levelup.core.trigger.TriggerExecutor;
 import levelup.editor.EditorState;
+import levelup.game.GameState;
 import levelup.game.unit.BaseUnit;
 import levelup.mainmenu.html.MainMenuView;
 import levelup.game.GameState.AdventureConfig;
@@ -111,13 +112,23 @@ import levelup.util.SaveUtil;
 	function createUi()
 	{
 		view = new MainMenuView({
+			openAdventure: levelId ->
+			{
+				TweenLite.delayedCall(
+					0.4,
+					HppG.changeState.bind(
+						GameState,
+						[stage, s3d, SaveUtil.editorData.customAdventures.filter(adv -> return adv.indexOf(levelId) != -1)[0], cf]
+					)
+				);
+			},
 			openAdventureEditor: levelId ->
 			{
 				TweenLite.delayedCall(
 					0.4,
 					HppG.changeState.bind(
 						EditorState,
-						[stage, s3d, levelId == null ? null : MapData.getRawMap(levelId), cf]
+						[stage, s3d, levelId == null ? null : SaveUtil.editorData.customAdventures.filter(adv -> return adv.indexOf(levelId) != -1)[0], cf]
 					)
 				);
 			}

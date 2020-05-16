@@ -20,6 +20,7 @@ class EditorModel implements Model
 	@:editable var title:String;
 	@:editable var subTitle:String;
 	@:editable var description:String;
+	@:editable var preloaderImage:String;
 	@:editable var startingTime:Float;
 	@:editable var sunAndMoonOffsetPercent:Float;
 	@:editable var dayColor:String;

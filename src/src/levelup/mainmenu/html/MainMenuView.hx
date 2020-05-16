@@ -10,6 +10,7 @@ import levelup.util.SaveUtil;
  */
 class MainMenuView extends View
 {
+	@:attr var openAdventure:String->Void;
 	@:attr var openAdventureEditor:String->Void;
 
 	@:state var menuState:MenuViewState = MainMenu;
@@ -27,8 +28,8 @@ class MainMenuView extends View
 				<div class="lu_main_menu__button" onClick={changeStateTo(Campaign)}>
 					Campaign
 				</div>
-				<div class="lu_main_menu__button" onClick={changeStateTo.bind(CustomGames)}>
-					Custom Games
+				<div class="lu_main_menu__button" onClick={changeStateTo.bind(CustomAdventures)}>
+					Custom Adventures
 				</div>
 				<div class="lu_main_menu__button" onClick={changeStateTo.bind(Multiplayer)}>
 					Multiplayer
@@ -56,7 +57,7 @@ class MainMenuView extends View
 				<div class="lu_main_menu_modal__content">
 					<switch {menuState}>
 						<case {Campaign}> <CampaignView />
-						<case {CustomGames}> <CustomGamesView />
+						<case {CustomAdventures}> <CustomAdventuresView openAdventure=$openAdventure />
 						<case {Multiplayer}> <MultiplayerView />
 						<case {AdventureEditor}> <AdventureEditorView openAdventureEditor=$openAdventureEditor/>
 						<case {Achievements}> <AchievementsView />
@@ -81,7 +82,7 @@ class MainMenuView extends View
 	function getLabelFromState(s) return switch(s)
 	{
 		case Campaign: "Campaign";
-		case CustomGames: "Custom Games";
+		case CustomAdventures: "Custom Adventures";
 		case Multiplayer: "Multiplayer";
 		case AdventureEditor: "Adventure Editor";
 		case Achievements: "Achievements";
@@ -100,7 +101,7 @@ class MainMenuView extends View
 enum MenuViewState {
 	MainMenu;
 	Campaign;
-	CustomGames;
+	CustomAdventures;
 	Multiplayer;
 	AdventureEditor;
 	Achievements;
