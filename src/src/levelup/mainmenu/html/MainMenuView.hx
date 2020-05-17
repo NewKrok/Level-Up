@@ -24,7 +24,7 @@ class MainMenuView extends View
 	function render() '
 		<div class="lu_main_menu_container">
 			<div class={"lu_main_menu" + (menuState == MainMenu ? " lu_main_menu--open" : "")}>
-				<img src="/asset/img/logo.png" class="lu_main_menu__logo" />
+				<img src="./asset/img/logo.png" class="lu_main_menu__logo" />
 				<div class="lu_main_menu__button" onClick={changeStateTo(Campaign)}>
 					Campaign
 				</div>

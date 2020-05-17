@@ -58,8 +58,6 @@ import tink.state.State;
 	public var onClick:BaseUnit->Void;
 
 	public var view:Object;
-	public var animTransition:SmoothTarget;
-	public var currentAnimation:Animation;
 	public var currentAnimationType:UnitAnimationType;
 	public var unitInfo:UnitInfo;
 
@@ -158,67 +156,20 @@ import tink.state.State;
 			switch(v)
 			{
 				case Idle if (currentAnimationType != UnitAnimationType.Idle):
-					/*if (currentAnimation == null)
-					{
-						currentAnimation = AssetCache.instance.getAnimation(config.assetGroup + ".idle").createInstance(view);
-					}
-
-					var newAnim = AssetCache.instance.getAnimation(config.assetGroup + ".idle").createInstance(view);
-					newAnim.onAnimEnd = () -> {};
-					if (animTransition == null)
-					{
-						animTransition = new Transition("asd", currentAnimation, newAnim);
-						animTransition.onAnimEnd = () -> {};
-					}
-					else
-					{
-						animTransition.anim1 = currentAnimation;
-						animTransition.anim2 = newAnim;
-						animTransition.blendFactor = 0;
-					}
-					currentAnimation = newAnim;
-					view.playAnimation(animTransition);*/
-
-					currentAnimationType = UnitAnimationType.Idle;
-					view.playAnimation(AssetCache.instance.getAnimation(config.assetGroup + "." + currentAnimationType));
-					view.currentAnimation.speed = config.idleAnimSpeedMultiplier;
+					changeAnimationTo(UnitAnimationType.Idle, config.idleAnimSpeedMultiplier);
 
 				case MoveTo | AttackRequested if (!config.isBuilding):
-					currentAnimationType = UnitAnimationType.Walk;
-					view.playAnimation(AssetCache.instance.getAnimation(config.assetGroup + "." + currentAnimationType));
-					view.currentAnimation.speed = config.runAnimSpeedMultiplier * config.speedMultiplier;
-/*
-					if (currentAnimation == null)
-					{
-						currentAnimation = AssetCache.instance.getAnimation(config.assetGroup + ".idle").createInstance(view);
-					}
-
-					var newAnim = AssetCache.instance.getAnimation(config.assetGroup + ".walk").createInstance(view);
-					newAnim.onAnimEnd = () -> {};
-
-					if (animTransition == null)
-					{
-						animTransition = new Transition("asd", currentAnimation, newAnim);
-						animTransition.onAnimEnd = () -> {};
-					}
-					else
-					{
-						animTransition.anim1 = currentAnimation;
-						animTransition.anim2 = newAnim;
-						animTransition.blendFactor = 0;
-					}
-
-					//animTransition = new SmoothTransition(currentAnimation, newAnim, 200000);
-					currentAnimation = newAnim;
-					view.playAnimation(animTransition);*/
+					changeAnimationTo(UnitAnimationType.Walk, config.runAnimSpeedMultiplier);
 
 				case AttackTriggered:
 					// Handled in a different way bewcause it's hybrid between idle and attack
 
 				case Dead:
-					currentAnimationType = UnitAnimationType.Death;
-					view.playAnimation(AssetCache.instance.getAnimation(config.assetGroup + "." + currentAnimationType)).loop = false;
-					view.currentAnimation.speed = 1;
+					changeAnimationTo(UnitAnimationType.Death, config.deathAnimSpeedMultiplier);
+					var transition:SmoothTransition = cast view.currentAnimation;
+					transition.anim1.loop = false;
+					transition.anim2.loop = false;
+					transition.loop = false;
 
 					var alphaShader = new Opacity(.5);
 					view.getMaterials()[0].mainPass.addShader(alphaShader);
@@ -232,6 +183,57 @@ import tink.state.State;
 		});
 
 		unitInfo = new UnitInfo(s2d, this);
+	}
+
+	function changeAnimationTo(animType:UnitAnimationType, newAnimationSpeed:Float)
+	{
+		currentAnimationType = animType;
+
+		if (view.currentAnimation == null)
+		{
+			view.playAnimation(AssetCache.instance.getAnimation(config.assetGroup + "." + currentAnimationType));
+			view.currentAnimation.speed = newAnimationSpeed;
+		}
+		else
+		{
+			var currentAnimation = getCurrentAnimation();
+			var lastFrame = view.currentAnimation.frame;
+
+			var transition = new SmoothTransition(
+				currentAnimation,
+				AssetCache.instance.getAnimation(config.assetGroup + "." + currentAnimationType).createInstance(view),
+				5
+			);
+			transition.anim1.speed = currentAnimation.speed;
+			transition.anim2.speed = newAnimationSpeed;
+
+			view.stopAnimation();
+			view.playAnimation(transition);
+
+			var currentTransition:SmoothTransition = cast view.currentAnimation;
+			currentTransition.anim1.setFrame(lastFrame);
+
+			view.currentAnimation.onAnimEnd = () -> {
+				var lastFrame = currentTransition.anim2.frame;
+				view.stopAnimation();
+				view.playAnimation(currentTransition.anim2);
+				view.currentAnimation.setFrame(lastFrame);
+				view.currentAnimation.speed = newAnimationSpeed;
+			};
+		}
+	}
+
+	function getCurrentAnimation()
+	{
+		return if (view == null || view.currentAnimation == null)
+		{
+			null;
+		}
+		else if (Std.is(view.currentAnimation, SmoothTransition))
+		{
+			cast(view.currentAnimation, SmoothTransition).anim2;
+		}
+		else view.currentAnimation;
 	}
 
 	function createSelectionCircle()
@@ -259,9 +261,7 @@ import tink.state.State;
 		{
 			if (currentAnimationType != UnitAnimationType.Attack)
 			{
-				currentAnimationType = UnitAnimationType.Attack;
-				view.playAnimation(AssetCache.instance.getAnimation(config.assetGroup + "." + currentAnimationType));
-				view.currentAnimation.speed = config.attackAnimSpeedMultiplier;
+				changeAnimationTo(UnitAnimationType.Attack, config.attackAnimSpeedMultiplier);
 			}
 		}
 		else
@@ -272,9 +272,7 @@ import tink.state.State;
 			view.currentAnimation.loop = false;
 			view.currentAnimation.onAnimEnd = function()
 			{
-				currentAnimationType = UnitAnimationType.Idle;
-				view.playAnimation(AssetCache.instance.getAnimation(config.assetGroup + "." + currentAnimationType));
-				view.currentAnimation.speed = config.idleAnimSpeedMultiplier * config.speedMultiplier;
+				changeAnimationTo(UnitAnimationType.Idle, config.idleAnimSpeedMultiplier);
 				checkTargetLife();
 			};
 			var animDuration = view.currentAnimation.getDuration() * 1000;

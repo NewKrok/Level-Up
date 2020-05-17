@@ -96,7 +96,7 @@ class AdventureParser
 				condition: null,
 				actions: [
 					TriggerAction.SetGlobalVariable("camDirection", VariableDefinition.Value("Untitled Camera 0")),
-					TriggerAction.JumpCameraToCamera(PlayerId.Player1, VariableDefinition.GetGlobalVariable("camDirection"))
+					//TriggerAction.JumpCameraToCamera(PlayerId.Player1, VariableDefinition.GetGlobalVariable("camDirection"))
 				]
 			},
 			{

@@ -39,6 +39,7 @@ typedef UnitConfig =
 	var idleAnimSpeedMultiplier:Float;
 	var runAnimSpeedMultiplier:Float;
 	var attackAnimSpeedMultiplier:Float;
+	var deathAnimSpeedMultiplier:Float;
 	var hasContinuousAttackAnimation:Bool;
 	var modelScale:Float;
 	var canRotate:Bool;
