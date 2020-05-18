@@ -11,9 +11,9 @@ import hxd.Save;
  */
 class SaveUtil
 {
-	private static var savedAppDataName:String = "(app) _fpp_level_up";
-	private static var savedGameDataName:String = "(game) _fpp_level_up";
-	private static var savedEditorDataName:String = "(editor) _fpp_level_up";
+	private static var savedAppDataName:String = "(app)_fpp_level_up";
+	private static var savedGameDataName:String = "(game)_fpp_level_up";
+	private static var savedEditorDataName:String = "(editor)_fpp_level_up";
 
 	public static var appData(default, null):SavedAppData;
 	public static var gameData(default, null):SavedGameData;
@@ -22,11 +22,23 @@ class SaveUtil
 	public static function load()
 	{
 		var defaultAppData:SavedAppData = {
-			video: {
+			graphics: {
 				resolutionQuality: 1
 			},
+			sound: {
+				masterVolume: 0.8,
+				isMusicEnabled: true,
+				musicVolume: 1,
+				isSoundEnabled: true,
+				soundVolume: 1,
+			},
 			gameplay: {
-				showFPS: false
+				menuBackground: "data/level/mainmenu/main_menu_elf_theme.json",
+				showFPS: false,
+				showUnitInfo: ShowUnitInfo.Always
+			},
+			language: {
+				textLanguage: Language.English
 			}
 		};
 		appData = Save.load(defaultAppData, savedAppDataName);
@@ -55,19 +67,47 @@ typedef SavedGameData = {
 }
 
 typedef SavedAppData = {
-	var video:VideoSettings;
+	var graphics:VideoSettings;
+	var sound:SoundSettings;
 	var gameplay:GameplaySettings;
+	var language:LanguageSettings;
 }
 
 typedef VideoSettings = {
 	var resolutionQuality:Float;
 }
 
+typedef SoundSettings = {
+	var masterVolume:Float;
+	var isMusicEnabled:Bool;
+	var musicVolume:Float;
+	var isSoundEnabled:Bool;
+	var soundVolume:Float;
+}
+
 typedef GameplaySettings = {
+	var menuBackground:String;
 	var showFPS:Bool;
+	var showUnitInfo:ShowUnitInfo;
+}
+
+enum ShowUnitInfo {
+	None;
+	Always;
+	WhenItsNotFull;
 }
 
 typedef SavedEditorData = {
 	var showGrid:Bool;
 	var customAdventures:Array<String>;
+}
+
+typedef LanguageSettings = {
+	var textLanguage:Language;
+}
+
+enum abstract Language(String) from String to String
+{
+	var English = "en";
+	var Hungarian = "hu";
 }

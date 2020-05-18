@@ -107,7 +107,7 @@ class TriggerExecutor
 				switch(a)
 				{
 					case Log(message): trace(resolveVariableDefinition(message, localVariables));
-					case LoadLevel(levelName): HppG.changeState(GameState, [s2d, s3d, MapData.getRawMap(levelName)]);
+					case LoadLevel(levelName): HppG.changeState(GameState, [s2d, s3d, levelName]);
 					case EnableTrigger(id): for (t in triggers) if (t.id == id) { enableTrigger(t); break; }
 					case RunTrigger(id): for (t in triggers) if (t.id == id) { runTrigger(t); break; }
 					case SetLocalVariable(name, variable): localVariables.set(name, resolveVariableDefinition(variable, localVariables));

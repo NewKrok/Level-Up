@@ -57,6 +57,7 @@ import levelup.game.GameState.WorldConfig;
 import levelup.game.GameWorld;
 import levelup.game.GameWorld.Region;
 import levelup.game.unit.BaseUnit;
+import levelup.mainmenu.MainMenuState;
 import levelup.shader.Opacity;
 import levelup.shader.ForcedZIndex;
 import levelup.util.AdventureParser;
@@ -420,7 +421,7 @@ class EditorState extends Base2dState
 
 		editorUi = new EditorUi(
 		{
-			backToLobby: () -> HppG.changeState(GameState, [stage, s3d, MapData.getRawMap("lobby")]),
+			backToLobby: () -> HppG.changeState(MainMenuState, [s3d, cf]),
 			createNewAdventure: dialogManager.openDialog.bind({
 				view: new NewAdventureDialog({
 					createNewAdventure: createNewAdventure,
@@ -440,7 +441,7 @@ class EditorState extends Base2dState
 				}).reactify()
 			}),
 			save: save,
-			testRun: () -> HppG.changeState(GameState, [stage, s3d, save(), { isTestRun: true }]),
+			testRun: () -> HppG.changeState(GameState, [stage, s3d, save(), cf, { isTestRun: true }]),
 			previewRequest: createPreview,
 			environmentsList: List.fromArray(Asset.environment),
 			propsList: List.fromArray(Asset.props),
@@ -1204,6 +1205,7 @@ class EditorState extends Base2dState
 			size: model.size,
 			worldConfig: compressor.compressToEncodedURIComponent(Json.stringify(worldConfig))
 		});
+
 		var savedMaps = SaveUtil.editorData.customAdventures;
 		var isNewMap:Bool = true;
 		for (i in 0...savedMaps.length)
@@ -1219,6 +1221,7 @@ class EditorState extends Base2dState
 
 		SaveUtil.editorData.showGrid = model.showGrid;
 		SaveUtil.save();
+		trace(result);
 
 		return result;
 	}

@@ -6,6 +6,7 @@ import h3d.scene.Scene;
 import hpp.heaps.Base2dStage;
 import hpp.heaps.Base2dState;
 import hpp.heaps.HppG;
+import js.Browser;
 import levelup.component.FpsView;
 import levelup.component.layout.LayoutView.LayoutId;
 import levelup.core.camera.ActionCamera;
@@ -50,11 +51,14 @@ import levelup.util.SaveUtil;
 			"asset/texture/skybox_a/sb_6.jpg"
 		];
 
-		adventureConfig = AdventureParser.loadLevel(MapData.getRawMap("main_menu_elf_theme"));
-		cf.assetCache.load(adventureConfig.neededModelGroups, adventureConfig.neededTextures, neededImages).handle(o -> switch (o)
+		Browser.window.fetch(SaveUtil.appData.gameplay.menuBackground).then(res -> res.text()).then(res ->
 		{
-			case Success(_): loaded(s3d);
-			case Failure(e):
+			adventureConfig = AdventureParser.loadLevel(res);
+			cf.assetCache.load(adventureConfig.neededModelGroups, adventureConfig.neededTextures, neededImages).handle(o -> switch (o)
+			{
+				case Success(_): loaded(s3d);
+				case Failure(e):
+			});
 		});
 	}
 

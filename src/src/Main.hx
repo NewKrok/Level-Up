@@ -11,7 +11,6 @@ import hxd.Res;
 import js.Browser;
 import levelup.AssetCache;
 import levelup.EnvironmentData;
-import levelup.MapData;
 import levelup.ProjectileAnimationData;
 import levelup.TerrainAssets;
 import levelup.UnitData;
@@ -68,12 +67,10 @@ class Main extends Base2dApp
 		UnitData.addData(Json.parse(Res.data.asset.orc_unit_data.entry.getText()));
 		assetCache.addData(Json.parse(Res.data.asset.orc_model_data.entry.getText()));
 
-		//changeState(EditorState, [stage, s3d, SaveUtil.editorData.customMaps[0]]);
 		//changeState(EditorState, [stage, s3d, MapData.getRawMap("lobby"), cast this]);
 		//changeState(GameState, [stage, s3d, MapData.getRawMap("main_menu_elf_theme"), cast this]);
 		//changeState(EditorState, [stage, s3d, MapData.getRawMap("main_menu_elf_theme"), cast this]);
-		//changeState(GameState, [stage, s3d, MapData.getRawMap("lobby")]);
-		//changeState(GameState, [stage, s3d, SaveUtil.editorData.customMaps[0]]);
+		//changeState(GameState, [stage, s3d, SaveUtil.editorData.customAdventures[0], cast this]);
 
 		changeState(MainMenuState, [s3d, cast this]);
 		onResize();
@@ -86,8 +83,8 @@ class Main extends Base2dApp
 		if (SaveUtil.appData != null)
 		{
 			engine.resize(
-				Math.floor(Browser.window.innerWidth * SaveUtil.appData.video.resolutionQuality),
-				Math.floor(Browser.window.innerHeight * SaveUtil.appData.video.resolutionQuality)
+				Math.floor(Browser.window.innerWidth * SaveUtil.appData.graphics.resolutionQuality),
+				Math.floor(Browser.window.innerHeight * SaveUtil.appData.graphics.resolutionQuality)
 			);
 		}
 	}

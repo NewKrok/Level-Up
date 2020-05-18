@@ -13,7 +13,6 @@ import hpp.heaps.Base2dState;
 import hpp.heaps.HppG;
 import hpp.util.GeomUtil.SimplePoint;
 import js.Browser;
-import levelup.MapData;
 import levelup.core.camera.ActionCamera;
 import levelup.core.trigger.TriggerExecutor;
 import levelup.editor.EditorState;
@@ -24,6 +23,7 @@ import levelup.game.html.GameUi;
 import levelup.game.module.CameraController;
 import levelup.game.ui.HeroUi;
 import levelup.game.unit.BaseUnit;
+import levelup.mainmenu.MainMenuState;
 import levelup.util.AdventureParser;
 import levelup.util.SaveUtil;
 import motion.Actuate;
@@ -45,6 +45,7 @@ class GameState extends Base2dState
 	var triggerExecutor:TriggerExecutor;
 	var camera:ActionCamera;
 	var cameraController:CameraController;
+	var cf:CoreFeatures;
 
 	var s2d:h2d.Scene;
 	var s3d:h3d.scene.Scene;
@@ -66,6 +67,7 @@ class GameState extends Base2dState
 
 		this.s3d = s3d;
 		this.s2d = s2d;
+		this.cf = cf;
 		this.stateConfig = stateConfigParam == null ? { isTestRun: false } : stateConfigParam;
 		adventureConfig = AdventureParser.loadLevel(rawMap);
 
@@ -191,8 +193,8 @@ class GameState extends Base2dState
 
 		var ui:RenderResult = GameUi.fromHxx({
 			isTestRun: stateConfig.isTestRun,
-			openLobby: () -> HppG.changeState(GameState, [stage, s3d, MapData.getRawMap("lobby")]),
-			closeTestRun: () -> HppG.changeState(EditorState, [stage, s3d, rawMap])
+			openLobby: () -> HppG.changeState(MainMenuState, [stage, s3d, cf]),
+			closeTestRun: () -> HppG.changeState(EditorState, [stage, s3d, rawMap, cf])
 		});
 		ReactDOM.render(ui, Browser.document.getElementById("lu_native_ui"));
 	}

@@ -19,18 +19,30 @@ class SettingsView extends View
 	@:state var selectedShowFPS:Bool = false;
 	@:state var subMenuIndex:Int = 0;
 
+	var tabs:Array<String> = [
+		"Graphics",
+		"Sound",
+		"Gameplay",
+		"Language"
+	];
+
 	override function viewDidMount()
 	{
-		selectedResolutionQuality = SaveUtil.appData.video.resolutionQuality;
+		selectedResolutionQuality = SaveUtil.appData.graphics.resolutionQuality;
 		selectedShowFPS = SaveUtil.appData.gameplay.showFPS;
 	}
 
 	function render() '
 		<div class="lu_main_menu_settings lu_row">
 			<div class="lu_main_menu_settings_submenu">
-				<div class={"lu_main_menu_settings_submenu__button" + (subMenuIndex == 0 ? " lu_main_menu_settings_submenu__button--active" : "")} onClick={() -> subMenuIndex = 0}>Video</div>
-				<div class={"lu_main_menu_settings_submenu__button" + (subMenuIndex == 1 ? " lu_main_menu_settings_submenu__button--active" : "")} onClick={() -> subMenuIndex = 1}>Audio</div>
-				<div class={"lu_main_menu_settings_submenu__button" + (subMenuIndex == 2 ? " lu_main_menu_settings_submenu__button--active" : "")} onClick={() -> subMenuIndex = 2}>Gameplay</div>
+				<for {i in 0...tabs.length}>
+					<div
+						class={"lu_main_menu_settings_submenu__button" + (subMenuIndex == i ? " lu_main_menu_settings_submenu__button--active" : "")}
+						onClick = {() -> subMenuIndex = i}
+					>
+						{tabs[i]}
+					</div>
+				</for>
 			</div>
 
 			<div class="lu_fill_width">
@@ -63,11 +75,11 @@ class SettingsView extends View
 	function setResolutionQuality(e:Event)
 	{
 		var element:SelectElement = cast e.currentTarget;
-		SaveUtil.appData.video.resolutionQuality = selectedResolutionQuality = Std.parseFloat(element.value);
+		SaveUtil.appData.graphics.resolutionQuality = selectedResolutionQuality = Std.parseFloat(element.value);
 
 		Engine.getCurrent().resize(
-			Math.floor(Browser.window.innerWidth * SaveUtil.appData.video.resolutionQuality),
-			Math.floor(Browser.window.innerHeight * SaveUtil.appData.video.resolutionQuality)
+			Math.floor(Browser.window.innerWidth * SaveUtil.appData.graphics.resolutionQuality),
+			Math.floor(Browser.window.innerHeight * SaveUtil.appData.graphics.resolutionQuality)
 		);
 	}
 
