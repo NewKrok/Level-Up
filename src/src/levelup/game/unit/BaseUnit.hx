@@ -497,11 +497,12 @@ import tink.state.State;
 
 		var now = Date.now();
 
-		// 0.8 is a hacky solution to make easier the unit selection
-		collider.a.x = view.x - 0.8 + config.zOffset * 1.7;
+		collider.a.x = view.x;
 		collider.a.y = view.y;
-		collider.b.x = view.x - 0.8 + config.zOffset * 1.7;
+		collider.a.z = view.z;
+		collider.b.x = view.x;
 		collider.b.y = view.y;
+		collider.b.z = view.z + 1;
 
 		setRotation();
 

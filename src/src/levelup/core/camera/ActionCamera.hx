@@ -2,8 +2,8 @@ package levelup.core.camera;
 
 import h3d.Camera;
 import h3d.Vector;
+import hpp.util.GeomUtil.SimplePoint;
 import levelup.AsyncUtil.Result;
-import levelup.game.unit.BaseUnit;
 import motion.Actuate;
 import motion.easing.IEasing;
 import motion.easing.Linear;
@@ -16,21 +16,19 @@ import motion.easing.Linear;
 {
 	var camera:Camera = _;
 
-	var currentCameraPoint:{ x:Float, y:Float, z:Float } = { x: 0, y: 0, z: 0 };
-	var camAnimationPosition:{ x:Float, y:Float, z:Float } = { x: 0, y: 0, z: 0 };
-	var currentCamDistance:Float = 0;
-	public var cameraSpeed:Vector = new Vector(10, 10, 5);
+	public var currentCameraPoint(default, never):{ x:Float, y:Float, z:Float } = { x: 0, y: 0, z: 0 };
+	public var cameraSpeed:Vector = new Vector(5, 5, 5);
 	public var camAngle:Float = Math.PI - Math.PI / 4;
 	public var camRotation:Float = Math.PI / 2;
 	public var camDistance:Float = 40;
+
+	var camAnimationPosition:{ x:Float, y:Float, z:Float } = { x: 0, y: 0, z: 0 };
+	var currentCamDistance:Float = 0;
 	var hasCameraAnimation:Bool = false;
 	var camAnimationResult:Result;
-	var cameraTarget:BaseUnit;
+	var cameraTarget:{ getPosition:Void->SimplePoint };
 
-	public function new()
-	{
-
-	}
+	public function new() {}
 
 	public function update(d:Float)
 	{
@@ -77,6 +75,7 @@ import motion.easing.Linear;
 		camAnimationPosition.y = currentCameraPoint.y;
 		camAnimationPosition.z = currentCameraPoint.z;
 
+		Actuate.stop(camAnimationPosition);
 		Actuate.tween(camAnimationPosition, time, { x: x, y: y, z: z })
 			.ease(ease == null ? Linear.easeNone : ease)
 			.onUpdate(function()
@@ -148,6 +147,12 @@ import motion.easing.Linear;
 	{
 		currentCamDistance = camDistance;
 		cameraTarget = target;
+	}
+
+	public function dispose()
+	{
+		Actuate.stop(this);
+		Actuate.stop(camAnimationPosition);
 	}
 }
 

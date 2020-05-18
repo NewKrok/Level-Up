@@ -21,6 +21,7 @@ import levelup.game.GameModel.PlayState;
 import levelup.game.GameState.Trigger;
 import levelup.game.GameWorld.Region;
 import levelup.game.html.GameUi;
+import levelup.game.module.CameraController;
 import levelup.game.ui.HeroUi;
 import levelup.game.unit.BaseUnit;
 import levelup.util.AdventureParser;
@@ -43,6 +44,7 @@ class GameState extends Base2dState
 	var model:GameModel;
 	var triggerExecutor:TriggerExecutor;
 	var camera:ActionCamera;
+	var cameraController:CameraController;
 
 	var s2d:h2d.Scene;
 	var s3d:h3d.scene.Scene;
@@ -181,6 +183,8 @@ class GameState extends Base2dState
 		camera = new ActionCamera(s3d.camera);
 		camera.jumpCamera(adventureConfig.size.x / 2, adventureConfig.size.y / 2);
 
+		cameraController = new CameraController(camera);
+
 		triggerExecutor = new TriggerExecutor(s2d, s3d, world, camera, adventureConfig.worldConfig.triggers, adventureConfig.worldConfig.cameras, adventureConfig.worldConfig.regions);
 
 		model.startGame();
@@ -223,7 +227,7 @@ class GameState extends Base2dState
 	function selectUnit(u)
 	{
 		selectedUnit.set(u);
-		camera.setCameraTarget(selectedUnit.value);
+		camera.setCameraTarget(cast selectedUnit.value);
 	}
 
 	function drawDebugPath():Void
@@ -246,6 +250,11 @@ class GameState extends Base2dState
 		}
 	}
 
+	override public function onStageResize(width:UInt, height:UInt):Void
+	{
+		super.onStageResize(width, height);
+	}
+
 	override function update(d:Float)
 	{
 		if (world == null) return;
@@ -254,6 +263,7 @@ class GameState extends Base2dState
 		if (isDisposed) return;
 
 		camera.update(d);
+		cameraController.onUpdate(d);
 	}
 
 	override public function dispose():Void
@@ -268,6 +278,9 @@ class GameState extends Base2dState
 		world.remove();
 		world.dispose();
 		world = null;
+
+		cameraController.dispose();
+		camera.dispose();
 
 		s2d.removeChildren();
 		s3d.removeChildren();

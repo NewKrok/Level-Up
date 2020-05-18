@@ -88,7 +88,7 @@ class AdventureParser
 		}];
 
 		// TODO remove it
-		rawWorldConfig.triggers = [
+		/*rawWorldConfig.triggers = [
 			{
 				id: "initial",
 				isEnabled: true,
@@ -114,7 +114,7 @@ class AdventureParser
 				]
 			}
 
-			/*{
+			{
 				id: "initial",
 				isEnabled: true,
 				events: [TriggerEvent.OnInit],
@@ -166,21 +166,8 @@ class AdventureParser
 					TriggerAction.CreateUnit("rockgolem", PlayerId.Player3, PositionDefinition.RegionPosition(RegionPositionDefinition.RandomPointOf("Region 2"))),
 					TriggerAction.AttackMoveToRegion(UnitDefinition.LastCreatedUnit, PositionDefinition.RegionPosition(RegionPositionDefinition.CenterOf("Region 0")))
 				]
-			}*/
-		];
-
-		/*var triggers:Array<Trigger> = [for (t in cast(rawWorldConfig.triggers, Array<Dynamic>)) {
-			id: t.id != null ? t.id.toLowerCase() : Std.string(Math.random() * 999999999),
-			isEnabled: t.isEnabled != null ? t.isEnabled : true,
-			events: t.event == null ? null : switch (t.event) {
-				case EnterRegion(region): EnterRegion(getRegion(regions, region.id));
-				case _: t.event;
-			},
-			condition: t.condition == null ? null : switch (t.condition) {
-				case _: t.condition;
-			},
-			actions: t.actions
-		}];*/
+			}
+		];*/
 
 		var editorLastCamPosition = rawWorldConfig.editorLastCamPosition == null ? null : new Vector(
 			rawWorldConfig.editorLastCamPosition.x,
@@ -198,9 +185,9 @@ class AdventureParser
 				if (neededModelGroups.indexOf(projData.assetGroup) == -1) neededModelGroups.push(projData.assetGroup);
 			}
 		}
-		for (trigger in rawWorldConfig.triggers)
+		for (trigger in cast(rawWorldConfig.triggers, Array<Dynamic>))
 		{
-			for (a in trigger.actions)
+			for (a in cast(trigger.actions, Array<Dynamic>))
 			{
 				switch (a)
 				{
