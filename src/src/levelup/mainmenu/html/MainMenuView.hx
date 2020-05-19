@@ -10,8 +10,11 @@ import levelup.util.SaveUtil;
  */
 class MainMenuView extends View
 {
+	@:attr var isMenuBackgroundInLoadingState:Bool;
+
 	@:attr var openAdventure:String->Void;
 	@:attr var openAdventureEditor:String->Void;
+	@:attr var reloadMenuBackground:Void->Void;
 
 	@:state var menuState:MenuViewState = MainMenu;
 	@:state var showFps:Bool = false;
@@ -23,6 +26,9 @@ class MainMenuView extends View
 
 	function render() '
 		<div class="lu_main_menu_container">
+			<div class={"lu_main_menu__world_loader" + (isMenuBackgroundInLoadingState ? "" : " lu_main_menu__world_loader--hidden")}>
+				<div class="lu_circle_loader"></div>
+			</div>
 			<div class={"lu_main_menu" + (menuState == MainMenu ? " lu_main_menu--open" : "")}>
 				<img src="./asset/img/logo.png" class="lu_main_menu__logo" />
 				<div class="lu_main_menu__button" onClick={changeStateTo(Campaign)}>
@@ -61,7 +67,12 @@ class MainMenuView extends View
 						<case {Multiplayer}> <MultiplayerView />
 						<case {AdventureEditor}> <AdventureEditorView openAdventureEditor=$openAdventureEditor/>
 						<case {Achievements}> <AchievementsView />
-						<case {Settings}> <SettingsView onImportantChange=$onImportantChange/>
+						<case {Settings}>
+							<SettingsView
+								onShowFpsChange=$onShowFpsChange
+								onMenuBackgroundChange=$reloadMenuBackground
+								isMenuBackgroundInLoadingState=$isMenuBackgroundInLoadingState
+							/>
 						<case {Credits}> <CreditsView />
 
 						<case {_}>
@@ -74,7 +85,7 @@ class MainMenuView extends View
 		</div>
 	';
 
-	function onImportantChange()
+	function onShowFpsChange()
 	{
 		showFps = SaveUtil.appData.gameplay.showFPS;
 	}

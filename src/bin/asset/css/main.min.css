@@ -1,5 +1,6 @@
 html,body{margin:0;padding:0;background-color:#111111;width:100%;height:100%;font-family:'Open Sans',sans-serif;font-size:1em;}
 a{color:unset;text-decoration:none;}
+.lu_disabled{opacity:0.5;pointer-events:none;user-select:none;}
 .lu_hidden{display:none;}
 .lu_non_visible{opacity:0;}
 .lu_relative{position:relative;}
@@ -50,6 +51,9 @@ a{color:unset;text-decoration:none;}
 .lu_adventure_loader__title{text-align:center;font-size:30px;}
 .lu_adventure_loader__sub_title{text-align:center;margin:10px 0 20px 0;}
 .lu_adventure_loader__description{white-space:pre-wrap;}
+.lu_circle_loader{border:5px solid #FFFFFF60;border-radius:50%;border-top:5px solid #d21d33;width:30px;height:30px;-webkit-animation:spin 2s ease-in-out infinite;animation:spin 2s ease-in-out infinite;}
+@-webkit-keyframes spin{0%{-webkit-transform:rotate(0deg);} 100%{-webkit-transform:rotate(360deg);}}
+@keyframes spin{0%{transform:rotate(0deg);} 100%{transform:rotate(360deg);}}
 .lu_opacity_pulse{animation:pulse 2s infinite;}
 .lu_opacity_pulse--intensive{animation:pulse 0.5s infinite;}
 @keyframes pulse{0%{opacity:0.4;} 50%{opacity:0.7;} 100%{opacity:0.4;}}

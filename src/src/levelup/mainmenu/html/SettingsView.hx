@@ -13,10 +13,14 @@ import levelup.util.SaveUtil;
  */
 class SettingsView extends View
 {
-	@:attr var onImportantChange:Void->Void;
+	@:attr var isMenuBackgroundInLoadingState:Bool;
+
+	@:attr var onShowFpsChange:Void->Void;
+	@:attr var onMenuBackgroundChange:Void->Void;
 
 	@:state var selectedResolutionQuality:Float = 0.0;
 	@:state var selectedShowFPS:Bool = false;
+	@:state var selectedMenuBackground:Int = 0;
 	@:state var subMenuIndex:Int = 0;
 
 	var tabs:Array<String> = [
@@ -30,6 +34,7 @@ class SettingsView extends View
 	{
 		selectedResolutionQuality = SaveUtil.appData.graphics.resolutionQuality;
 		selectedShowFPS = SaveUtil.appData.gameplay.showFPS;
+		selectedMenuBackground = SaveUtil.appData.gameplay.menuBackground == "main_menu_elf_theme" ? 0 : 1;
 	}
 
 	function render() '
@@ -65,6 +70,19 @@ class SettingsView extends View
 								<option selected={!selectedShowFPS} value="0">Off</option>
 							</select>
 						</div>
+						<div class="lu_main_menu_settings__entry lu_row">
+						<div class="lu_right_offset">Menu background</div>
+							<if {isMenuBackgroundInLoadingState}>
+								<div class="lu_form__select lu_disabled">
+									loading...
+								</div>
+							<else>
+								<select onChange=$setMenuBackground class="lu_form__select">
+									<option selected={selectedMenuBackground == 0} value="0">Elf theme</option>
+									<option selected={selectedMenuBackground == 1} value="1">Orc theme</option>
+								</select>
+							</if>
+						</div>
 
 					<case {_}><div></div>
 				</switch>
@@ -88,6 +106,16 @@ class SettingsView extends View
 		var element:SelectElement = cast e.currentTarget;
 		SaveUtil.appData.gameplay.showFPS = selectedShowFPS = Std.parseFloat(element.value) == 1;
 
-		onImportantChange();
+		onShowFpsChange();
+	}
+
+	function setMenuBackground(e:Event)
+	{
+		var element:SelectElement = cast e.currentTarget;
+		selectedMenuBackground = Std.parseInt(element.value);
+
+		SaveUtil.appData.gameplay.menuBackground = selectedMenuBackground == 0 ? "main_menu_elf_theme" : "main_menu_orc_theme";
+
+		onMenuBackgroundChange();
 	}
 }

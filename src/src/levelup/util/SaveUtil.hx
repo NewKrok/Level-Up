@@ -11,7 +11,7 @@ import hxd.Save;
  */
 class SaveUtil
 {
-	private static var savedAppDataName:String = "(app)_fpp_level_up";
+	private static var savedAppDataName:String = "(app)__fpp_level_up";
 	private static var savedGameDataName:String = "(game)_fpp_level_up";
 	private static var savedEditorDataName:String = "(editor)_fpp_level_up";
 
@@ -33,7 +33,7 @@ class SaveUtil
 				soundVolume: 1,
 			},
 			gameplay: {
-				menuBackground: "data/level/mainmenu/main_menu_elf_theme.json",
+				menuBackground: "main_menu_elf_theme",
 				showFPS: false,
 				showUnitInfo: ShowUnitInfo.Always
 			},

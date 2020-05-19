@@ -13,6 +13,12 @@ a {
 	text-decoration: none;
 }
 
+.lu_disabled {
+	opacity: 0.5;
+	pointer-events: none;
+	user-select: none;
+}
+
 .lu_hidden {
 	display: none;
 }
@@ -312,6 +318,26 @@ a {
 
 .lu_adventure_loader__description {
 	white-space: pre-wrap;
+}
+
+.lu_circle_loader {
+	border: 5px solid #FFFFFF60;
+	border-radius: 50%;
+	border-top: 5px solid #d21d33;
+	width: 30px;
+	height: 30px;
+	-webkit-animation: spin 2s ease-in-out infinite;
+	animation: spin 2s ease-in-out infinite;
+}
+
+@-webkit-keyframes spin {
+	0% { -webkit-transform: rotate(0deg); }
+	100% { -webkit-transform: rotate(360deg); }
+}
+
+@keyframes spin {
+	0% { transform: rotate(0deg); }
+	100% { transform: rotate(360deg); }
 }
 
 .lu_opacity_pulse {

@@ -20,6 +20,7 @@ import levelup.game.GameWorld;
 import levelup.util.AdventureParser;
 import Main.CoreFeatures;
 import levelup.util.SaveUtil;
+import tink.state.State;
 
 /**
  * ...
@@ -37,9 +38,21 @@ import levelup.util.SaveUtil;
 	var camera:ActionCamera;
 	var view:MainMenuView;
 
+	var isMenuBackgroundInLoadingState:State<Bool> = new State<Bool>(false);
+
 	public function new(stage:Base2dStage)
 	{
 		super(stage);
+
+		createUi();
+		loadBackground();
+	}
+
+	function loadBackground()
+	{
+		isMenuBackgroundInLoadingState.set(true);
+
+		if (world != null) disposeWorld();
 
 		// TODO It should be configurable
 		var neededImages = [
@@ -51,13 +64,13 @@ import levelup.util.SaveUtil;
 			"asset/texture/skybox_a/sb_6.jpg"
 		];
 
-		Browser.window.fetch(SaveUtil.appData.gameplay.menuBackground).then(res -> res.text()).then(res ->
+		Browser.window.fetch("data/level/mainmenu/" + SaveUtil.appData.gameplay.menuBackground + ".json").then(res -> res.text()).then(res ->
 		{
 			adventureConfig = AdventureParser.loadLevel(res);
 			cf.assetCache.load(adventureConfig.neededModelGroups, adventureConfig.neededTextures, neededImages).handle(o -> switch (o)
 			{
 				case Success(_): loaded(s3d);
-				case Failure(e):
+				case Failure(e): isMenuBackgroundInLoadingState.set(false);
 			});
 		});
 	}
@@ -69,7 +82,7 @@ import levelup.util.SaveUtil;
 		camera = new ActionCamera(s3d.camera);
 		triggerExecutor = new TriggerExecutor(cast stage, s3d, world, camera, adventureConfig.worldConfig.triggers, adventureConfig.worldConfig.cameras, adventureConfig.worldConfig.regions);
 
-		createUi();
+		isMenuBackgroundInLoadingState.set(false);
 	}
 
 	function createWorld()
@@ -116,6 +129,7 @@ import levelup.util.SaveUtil;
 	function createUi()
 	{
 		view = new MainMenuView({
+			isMenuBackgroundInLoadingState: isMenuBackgroundInLoadingState.observe(),
 			openAdventure: levelId ->
 			{
 				TweenLite.delayedCall(
@@ -135,6 +149,11 @@ import levelup.util.SaveUtil;
 						[stage, s3d, levelId == null ? null : SaveUtil.editorData.customAdventures.filter(adv -> return adv.indexOf(levelId) != -1)[0], cf]
 					)
 				);
+			},
+			reloadMenuBackground: () ->
+			{
+				isMenuBackgroundInLoadingState.set(true);
+				TweenLite.delayedCall(0.5, loadBackground);
 			}
 		});
 		cf.layout.registerView(LayoutId.MainMenuUi, view.reactify());
@@ -148,9 +167,12 @@ import levelup.util.SaveUtil;
 		camera.update(d);
 	}
 
-	override public function dispose():Void
+	function disposeWorld()
 	{
-		super.dispose();
+		camera.dispose();
+		camera = null;
+		triggerExecutor.dispose();
+		triggerExecutor = null;
 
 		world.remove();
 		world.dispose();
@@ -158,6 +180,13 @@ import levelup.util.SaveUtil;
 
 		stage.removeChildren();
 		s3d.removeChildren();
+	}
+
+	override public function dispose():Void
+	{
+		super.dispose();
+
+		disposeWorld();
 
 		cf.layout.removeView(LayoutId.MainMenuUi);
 	}

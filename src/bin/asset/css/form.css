@@ -131,10 +131,20 @@ ul {
 .lu_form__select {
 	background: #44382cb0;
 	color: #FFF;
-	padding: 5px;
 	border-radius: 3px;
 	outline: none;
 	border: 1px solid rgba(255, 255, 255, 0.2);
+	font: inherit;
+	font-size: 0.8em;
+	height: 1.5em;
+	padding: 5px 10px;
+	box-sizing: content-box;
+	align-items: center;
+	display: flex;
+	cursor: pointer;
+	-webkit-appearance: none;
+	-moz-appearance: none;
+	text-overflow: '';
 }
 
 .lu_form__select:hover,

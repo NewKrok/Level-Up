@@ -67,10 +67,13 @@ class Main extends Base2dApp
 		UnitData.addData(Json.parse(Res.data.asset.orc_unit_data.entry.getText()));
 		assetCache.addData(Json.parse(Res.data.asset.orc_model_data.entry.getText()));
 
-		//changeState(EditorState, [stage, s3d, MapData.getRawMap("lobby"), cast this]);
-		//changeState(GameState, [stage, s3d, MapData.getRawMap("main_menu_elf_theme"), cast this]);
-		//changeState(EditorState, [stage, s3d, MapData.getRawMap("main_menu_elf_theme"), cast this]);
+
+
 		//changeState(GameState, [stage, s3d, SaveUtil.editorData.customAdventures[0], cast this]);
+
+		/*Browser.window.fetch("data/level/mainmenu/main_menu_orc_theme.json").then(res -> res.text()).then(res -> {
+			changeState(EditorState, [stage, s3d, res, cast this]);
+		});*/
 
 		changeState(MainMenuState, [s3d, cast this]);
 		onResize();
