@@ -2,6 +2,7 @@ package levelup.mainmenu.html;
 
 import coconut.ui.View;
 import h3d.Engine;
+import hpp.util.Language;
 import js.Browser;
 import js.html.Event;
 import js.html.SelectElement;
@@ -14,13 +15,17 @@ import levelup.util.SaveUtil;
 class SettingsView extends View
 {
 	@:attr var isMenuBackgroundInLoadingState:Bool;
+	@:attr var isTextLanguageInLoadingState:Bool;
 
 	@:attr var onShowFpsChange:Void->Void;
 	@:attr var onMenuBackgroundChange:Void->Void;
+	@:attr var onTextLanguageChange:Void->Void;
 
 	@:state var selectedResolutionQuality:Float = 0.0;
 	@:state var selectedShowFPS:Bool = false;
 	@:state var selectedMenuBackground:Int = 0;
+	@:state var selectedTextLanguage:Int = 0;
+
 	@:state var subMenuIndex:Int = 0;
 
 	var tabs:Array<String> = [
@@ -35,6 +40,7 @@ class SettingsView extends View
 		selectedResolutionQuality = SaveUtil.appData.graphics.resolutionQuality;
 		selectedShowFPS = SaveUtil.appData.gameplay.showFPS;
 		selectedMenuBackground = SaveUtil.appData.gameplay.menuBackground == "main_menu_elf_theme" ? 0 : 1;
+		selectedTextLanguage = SaveUtil.appData.language.textLanguage == LanguageKey.English ? 0 : 1;
 	}
 
 	function render() '
@@ -45,7 +51,7 @@ class SettingsView extends View
 						class={"lu_main_menu_settings_submenu__button" + (subMenuIndex == i ? " lu_main_menu_settings_submenu__button--active" : "")}
 						onClick = {() -> subMenuIndex = i}
 					>
-						{tabs[i]}
+						{Language.get(tabs[i])}
 					</div>
 				</for>
 			</div>
@@ -54,33 +60,48 @@ class SettingsView extends View
 				<switch {subMenuIndex}>
 					<case {0}>
 						<div class="lu_main_menu_settings__entry lu_row">
-							<div class="lu_right_offset">Resolution</div>
+							<div class="lu_right_offset">{Language.get("Resolution")}</div>
 							<select onChange=$setResolutionQuality class="lu_form__select">
-								<option selected={selectedResolutionQuality == 0.5} value="0.5">Low</option>
-								<option selected={selectedResolutionQuality == 0.75} value="0.75">Medium</option>
-								<option selected={selectedResolutionQuality == 1} value="1">High</option>
+								<option selected={selectedResolutionQuality == 0.5} value="0.5">{Language.get("Low")}</option>
+								<option selected={selectedResolutionQuality == 0.75} value="0.75">{Language.get("Medium")}</option>
+								<option selected={selectedResolutionQuality == 1} value="1">{Language.get("High")}</option>
 							</select>
 						</div>
 
 					<case {2}>
 						<div class="lu_main_menu_settings__entry lu_row">
-							<div class="lu_right_offset">Show FPS</div>
+							<div class="lu_right_offset">{Language.get("Show FPS")}</div>
 							<select onChange=$setShowFPS class="lu_form__select">
-								<option selected={selectedShowFPS} value="1">On</option>
-								<option selected={!selectedShowFPS} value="0">Off</option>
+								<option selected={selectedShowFPS} value="1">{Language.get("On")}</option>
+								<option selected={!selectedShowFPS} value="0">{Language.get("Off")}</option>
 							</select>
 						</div>
 						<div class="lu_main_menu_settings__entry lu_row">
-						<div class="lu_right_offset">Menu background</div>
+							<div class="lu_right_offset">{Language.get("Menu background")}</div>
 							<if {isMenuBackgroundInLoadingState}>
 								<div class="lu_form__select lu_disabled">
-									loading...
+									{Language.get("loading...")}
 								</div>
 							<else>
 								<select onChange=$setMenuBackground class="lu_form__select">
 									<option selected={selectedMenuBackground == 0} value="0">Elf theme</option>
 									<option selected={selectedMenuBackground == 1} value="1">Orc theme</option>
 								</select>
+							</if>
+						</div>
+
+					<case {3}>
+						<div class="lu_main_menu_settings__entry lu_row">
+							<div class="lu_right_offset">{Language.get("Text language")}</div>
+							<if {isTextLanguageInLoadingState}>
+								<div class="lu_form__select lu_disabled">
+									{Language.get("loading...")}
+								</div>
+							<else>
+								<select onChange=$setLanguage class="lu_form__select">
+								<option selected={selectedTextLanguage == 0} value="0">{Language.get("English")}</option>
+								<option selected={selectedTextLanguage == 1} value="1">{Language.get("Magyar")}</option>
+							</select>
 							</if>
 						</div>
 
@@ -117,5 +138,16 @@ class SettingsView extends View
 		SaveUtil.appData.gameplay.menuBackground = selectedMenuBackground == 0 ? "main_menu_elf_theme" : "main_menu_orc_theme";
 
 		onMenuBackgroundChange();
+	}
+
+	function setLanguage(e:Event)
+	{
+		var element:SelectElement = cast e.currentTarget;
+		selectedTextLanguage = Std.parseInt(element.value);
+
+		SaveUtil.appData.language.textLanguage = selectedTextLanguage == 0 ? LanguageKey.English : LanguageKey.Hungarian;
+		SaveUtil.save();
+
+		onTextLanguageChange();
 	}
 }

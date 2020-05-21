@@ -1,6 +1,7 @@
 package levelup.mainmenu.html;
 
 import coconut.ui.View;
+import hpp.util.Language;
 import levelup.game.GameState.AdventureConfig;
 import levelup.util.AdventureParser;
 import levelup.util.AdventurePreviewGenerator;
@@ -24,7 +25,7 @@ class CustomAdventuresView extends View
 			<div>
 				<div class="lu_adventure_editor__block">
 					<div class="lu_adventure_editor__title">
-						Your Own Adventures
+						{Language.get("Your Adventures")}
 					</div>
 					<div class="lu_adventure_editor__list">
 						<for {adv in list}>

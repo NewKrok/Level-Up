@@ -1,6 +1,7 @@
 package levelup.mainmenu.html;
 
 import coconut.ui.View;
+import hpp.util.Language;
 
 /**
  * ...
@@ -9,6 +10,6 @@ import coconut.ui.View;
 class CreditsView extends View
 {
 	function render() '
-		<div>Credits...</div>
+		<div>{Language.get("Coming soon...")}</div>
 	';
 }

@@ -1,7 +1,10 @@
 package levelup.mainmenu.html;
 
 import coconut.ui.View;
+import hpp.util.Language;
+import levelup.SoundFxAssets.SoundFxKey;
 import levelup.component.FpsView;
+import levelup.util.LanguageUtil;
 import levelup.util.SaveUtil;
 
 /**
@@ -11,10 +14,12 @@ import levelup.util.SaveUtil;
 class MainMenuView extends View
 {
 	@:attr var isMenuBackgroundInLoadingState:Bool;
+	@:attr var isTextLanguageInLoadingState:Bool;
 
 	@:attr var openAdventure:String->Void;
 	@:attr var openAdventureEditor:String->Void;
 	@:attr var reloadMenuBackground:Void->Void;
+	@:attr var onTextLanguageChange:Void->Void;
 
 	@:state var menuState:MenuViewState = MainMenu;
 	@:state var showFps:Bool = false;
@@ -26,39 +31,40 @@ class MainMenuView extends View
 
 	function render() '
 		<div class="lu_main_menu_container">
+			<if {LanguageUtil.languageForceUpdate == 0}></if>
 			<div class={"lu_main_menu__world_loader" + (isMenuBackgroundInLoadingState ? "" : " lu_main_menu__world_loader--hidden")}>
 				<div class="lu_circle_loader"></div>
 			</div>
 			<div class={"lu_main_menu" + (menuState == MainMenu ? " lu_main_menu--open" : "")}>
 				<img src="./asset/img/logo.png" class="lu_main_menu__logo" />
 				<div class="lu_main_menu__button" onClick={changeStateTo(Campaign)}>
-					Campaign
+					{Language.get("Campaign")}
 				</div>
 				<div class="lu_main_menu__button" onClick={changeStateTo.bind(CustomAdventures)}>
-					Custom Adventures
+					{Language.get("Custom Adventures")}
 				</div>
 				<div class="lu_main_menu__button" onClick={changeStateTo.bind(Multiplayer)}>
-					Multiplayer
+					{Language.get("Multiplayer")}
 				</div>
 				<div class="lu_main_menu__button" onClick={changeStateTo.bind(AdventureEditor)}>
-					Adventure Editor
+					{Language.get("Adventure Editor")}
 				</div>
 				<div class="lu_main_menu__button" onClick={changeStateTo.bind(Achievements)}>
-					Achievements
+					{Language.get("Achievements")}
 				</div>
 				<div class="lu_main_menu__button" onClick={changeStateTo.bind(Settings)}>
-					Settings
+					{Language.get("Settings")}
 				</div>
 				<div class="lu_main_menu__button" onClick={changeStateTo.bind(Credits)}>
-					Credits
+					{Language.get("Credits")}
 				</div>
 			</div>
 			<div class={"lu_main_menu_modal" + (menuState == MainMenu ? " lu_main_menu_modal--open" : "")}>
 				<div class="lu_main_menu_modal__header">
 					<div class="lu_main_menu_modal__header_button" onClick={changeStateTo.bind(MainMenu)}>
-						<i class="fas fa-caret-left lu_right_offset--s"></i> Back
+						<i class="fas fa-caret-left lu_right_offset--s"></i> {Language.get("Back")}
 					</div>
-					<div>{getLabelFromState(menuState)}</div>
+					<div>{Language.get(getLabelFromState(menuState))}</div>
 				</div>
 				<div class="lu_main_menu_modal__content">
 					<switch {menuState}>
@@ -72,6 +78,8 @@ class MainMenuView extends View
 								onShowFpsChange=$onShowFpsChange
 								onMenuBackgroundChange=$reloadMenuBackground
 								isMenuBackgroundInLoadingState=$isMenuBackgroundInLoadingState
+								onTextLanguageChange = $onTextLanguageChange
+								isTextLanguageInLoadingState=$isTextLanguageInLoadingState
 							/>
 						<case {Credits}> <CreditsView />
 
@@ -104,6 +112,7 @@ class MainMenuView extends View
 
 	function changeStateTo(state)
 	{
+		SoundFxAssets.instance.getSound(SoundFxKey.Click).play();
 		if (menuState == Settings) SaveUtil.save();
 		menuState = state;
 	}

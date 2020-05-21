@@ -38,7 +38,7 @@ class SaveUtil
 				showUnitInfo: ShowUnitInfo.Always
 			},
 			language: {
-				textLanguage: Language.English
+				textLanguage: LanguageKey.English
 			}
 		};
 		appData = Save.load(defaultAppData, savedAppDataName);
@@ -103,10 +103,10 @@ typedef SavedEditorData = {
 }
 
 typedef LanguageSettings = {
-	var textLanguage:Language;
+	var textLanguage:LanguageKey;
 }
 
-enum abstract Language(String) from String to String
+enum abstract LanguageKey(String) from String to String
 {
 	var English = "en";
 	var Hungarian = "hu";

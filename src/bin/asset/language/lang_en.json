@@ -1,0 +1,31 @@
+{
+	"h": {
+		"Campaign": "Campaign",
+		"Custom Adventures": "Custom Adventures",
+		"Multiplayer": "Multiplayer",
+		"Adventure Editor": "Adventure Editor",
+		"Achievements": "Achievements",
+		"Settings": "Settings",
+		"Credits": "Credits",
+		"Back": "Back",
+		"Graphics": "Graphics",
+		"Sound": "Sound",
+		"Gameplay": "Gameplay",
+		"Language": "Language",
+		"Resolution": "Resolution",
+		"Low": "Low",
+		"Medium": "Medium",
+		"High": "High",
+		"Show FPS": "Show FPS",
+		"On": "On",
+		"Off": "Off",
+		"Menu background": "Menu background",
+		"loading...": "loading...",
+		"Text language": "Magyar",
+		"English": "English",
+		"Magyar": "Magyar",
+		"Coming soon...": "Coming soon...",
+		"Your Adventures": "Your Adventures",
+		"Create new Adventure": "Create new Adventure"
+	}
+}

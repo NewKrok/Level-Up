@@ -19,6 +19,7 @@ import levelup.game.GameState.AdventureConfig;
 import levelup.game.GameWorld;
 import levelup.util.AdventureParser;
 import Main.CoreFeatures;
+import levelup.util.LanguageUtil;
 import levelup.util.SaveUtil;
 import tink.state.State;
 
@@ -39,6 +40,7 @@ import tink.state.State;
 	var view:MainMenuView;
 
 	var isMenuBackgroundInLoadingState:State<Bool> = new State<Bool>(false);
+	var isTextLanguageInLoadingState:State<Bool> = new State<Bool>(false);
 
 	public function new(stage:Base2dStage)
 	{
@@ -130,6 +132,7 @@ import tink.state.State;
 	{
 		view = new MainMenuView({
 			isMenuBackgroundInLoadingState: isMenuBackgroundInLoadingState.observe(),
+			isTextLanguageInLoadingState: isTextLanguageInLoadingState.observe(),
 			openAdventure: levelId ->
 			{
 				TweenLite.delayedCall(
@@ -154,6 +157,15 @@ import tink.state.State;
 			{
 				isMenuBackgroundInLoadingState.set(true);
 				TweenLite.delayedCall(0.5, loadBackground);
+			},
+			onTextLanguageChange: () ->
+			{
+				isTextLanguageInLoadingState.set(true);
+				LanguageUtil.loadLanguage().handle(function (o):Void switch(o)
+				{
+					case Success(_): isTextLanguageInLoadingState.set(false);
+					case Failure(e):
+				});
 			}
 		});
 		cf.layout.registerView(LayoutId.MainMenuUi, view.reactify());

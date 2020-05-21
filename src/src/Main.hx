@@ -1,28 +1,27 @@
 package;
 
-import com.greensock.TweenLite;
 import h3d.Engine;
 import haxe.Json;
 import haxe.Timer;
 import hpp.heaps.Base2dApp;
 import hpp.heaps.Base2dStage.StageScaleMode;
-import hpp.heaps.HppG;
 import hxd.Res;
 import js.Browser;
 import levelup.AssetCache;
 import levelup.EnvironmentData;
 import levelup.ProjectileAnimationData;
+import levelup.SoundFxAssets;
 import levelup.TerrainAssets;
 import levelup.UnitData;
 import levelup.component.adventureloader.AdventureLoader;
 import levelup.component.layout.Layout;
-import levelup.component.layout.LayoutView;
 import levelup.core.renderer.Renderer;
-import levelup.editor.EditorState;
-import levelup.game.GameState;
 import levelup.mainmenu.MainMenuState;
+import levelup.util.LanguageUtil;
 import levelup.util.SaveUtil;
-import react.ReactDOM;
+import tink.CoreApi.Future;
+import tink.CoreApi.Noise;
+import tink.CoreApi.Outcome;
 
 /**
  * ...
@@ -33,6 +32,8 @@ class Main extends Base2dApp
 	public static var editorVersion:String = "0.0.1";
 
 	var assetCache:AssetCache;
+	var soundFxAssets:SoundFxAssets;
+
 	var layout:Layout;
 	var adventureLoader:AdventureLoader;
 
@@ -44,6 +45,7 @@ class Main extends Base2dApp
 		stage.stageScaleMode = StageScaleMode.NO_SCALE;
 
 		assetCache = new AssetCache();
+		soundFxAssets = new SoundFxAssets();
 		layout = new Layout();
 		adventureLoader = new AdventureLoader(cast this);
 
@@ -67,16 +69,26 @@ class Main extends Base2dApp
 		UnitData.addData(Json.parse(Res.data.asset.orc_unit_data.entry.getText()));
 		assetCache.addData(Json.parse(Res.data.asset.orc_model_data.entry.getText()));
 
-
-
 		//changeState(GameState, [stage, s3d, SaveUtil.editorData.customAdventures[0], cast this]);
 
 		/*Browser.window.fetch("data/level/mainmenu/main_menu_orc_theme.json").then(res -> res.text()).then(res -> {
 			changeState(EditorState, [stage, s3d, res, cast this]);
 		});*/
 
-		changeState(MainMenuState, [s3d, cast this]);
-		onResize();
+		soundFxAssets.load([SoundFxKey.Click]).handle(function (o):Void switch(o)
+		{
+			case Success(_):
+				LanguageUtil.loadLanguage().handle(function (o):Void switch(o)
+				{
+					case Success(_):
+						changeState(MainMenuState, [s3d, cast this]);
+						onResize();
+
+					case Failure(e): trace("Couldn't load the initial language: " + SaveUtil.appData.language.textLanguage + ", error: " + e);
+				});
+
+			case Failure(e): trace("Couldn't load initial sound fx pack: " + e);
+		});
 	}
 
 	override function onResize()
@@ -96,6 +108,7 @@ class Main extends Base2dApp
 	{
 		Engine.ANTIALIASING = 1;
 		Res.initEmbed();
+
 		// It looks Heaps need a little time to init assets, but I don't see related event to handle it properly
 		// Without this delay sometimes it use wrong font
 		Timer.delay(function() { new Main(); }, 500);
