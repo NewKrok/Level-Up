@@ -1,5 +1,6 @@
 html,body{margin:0;padding:0;background-color:#111111;width:100%;height:100%;font-family:'Open Sans',sans-serif;font-size:1em;}
 a{color:unset;text-decoration:none;}
+.lu_text--l{font-size:1.5em;}
 .lu_disabled{opacity:0.5;pointer-events:none;user-select:none;}
 .lu_hidden{display:none;}
 .lu_non_visible{opacity:0;}
@@ -30,10 +31,11 @@ a{color:unset;text-decoration:none;}
 .lu_preloader_block{position:absolute;top:30%;left:50%;transform:translate(-50%,-50%);display:flex;flex-direction:column;filter:drop-shadow(2px 4px 6px black);}
 .lu_preloader_back{position:relative;width:260px;height:15px;background-color:#2E221B;margin-top:10px;padding:1px;box-sizing:border-box;}
 #lu_preloader_line{min-width:10px;width:0%;height:100%;transition:width 0.3s;background-color:#a81629;background-repeat:repeat-x;}
-#lu_native_ui_container{width:100%;height:100%;position:absolute;top:0;pointer-events:none;}
-.lu_title{font-size:1em;font-weight:bold;text-align:center;padding:5px;background:#00000077;user-select:none;}
+.lu_native_ui_container{width:100%;height:100%;position:absolute;left:0;top:0;pointer-events:none;}
+.lu_native_ui{width:100%;height:100%;}
+.lu_title{font-size:1em;font-weight:bold;padding:5px;background:#00000077;user-select:none;}
 .lu_player_color_box{width:1em;height:1em;border:1px solid #FFF;}
-.lu_fps_view{position:absolute;font-size:1em;font-weight:bold;padding:5px 10px;background-color:rgba(0,0,0,0.3);color:#00FF00;}
+.lu_fps_view{position:absolute;font-size:1em;font-weight:bold;padding:5px 10px;background-color:rgba(0,0,0,0.3);color:#00FF00;user-select:none;}
 .lu_fps_view--bl{bottom:10px;left:10px;}
 .lu_fps_view--low{color:#FF0000;}
 .lu_adventure_loader{pointer-events:all;width:100%;height:100%;position:absolute;z-index:2;background:linear-gradient(to bottom,#222,#000);opacity:1;transition:opacity 1s;background-position:center;background-repeat:no-repeat;background-size:cover;}

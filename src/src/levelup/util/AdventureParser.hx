@@ -215,6 +215,10 @@ class AdventureParser
 			if (textureInfo.normalMapUrl != null) neededTextures.push(textureInfo.normalMapUrl);
 		}
 
+		rawWorldConfig.skybox.id = "skybox.ls_nigth_02";
+		var neededImages:Array<String> = [];
+		neededImages = neededImages.concat(SkyboxData.getConfig(rawWorldConfig.skybox.id).assets);
+
 		return {
 			id: rawData.id,
 			title: rawData.title,
@@ -224,6 +228,7 @@ class AdventureParser
 			editorVersion: rawData.editorVersion,
 			size: rawData.size,
 			worldConfig: {
+				skybox: rawWorldConfig.skybox,
 				startingTime: startingTime,
 				sunAndMoonOffsetPercent: sunAndMoonOffsetPercent,
 				dayColor: dayColor,
@@ -237,11 +242,11 @@ class AdventureParser
 				staticObjects: staticObjects,
 				terrainLayers: terrainLayers,
 				heightMap: rawWorldConfig.heightMap,
-				levellingHeightMap: rawWorldConfig.levellingHeightMap,
 				editorLastCamPosition: editorLastCamPosition
 			},
 			neededModelGroups: neededModelGroups,
-			neededTextures: neededTextures
+			neededTextures: neededTextures,
+			neededImages: neededImages
 		};
 	}
 

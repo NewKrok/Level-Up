@@ -64,10 +64,8 @@ class GameWorld extends World
 
 	public var graph:Graph;
 	public var heightMap:BitmapData;
-	public var levellingHeightMap:BitmapData;
 	public var heightGrid:Array<Point>;
 	public var heightGridCache:Array<Float> = null;
-	public var levellingHeightGridCache:Array<Float> = null;
 	public var terrainLayers:Array<Mesh> = [];
 
 	public var blockSize:Float;
@@ -118,24 +116,16 @@ class GameWorld extends World
 		this.worldConfig = worldConfig;
 		this.blockSize = blockSize;
 
-		createSkyBox();
+		createSkybox();
 
 		instance = this;
 
 		heightMap = new BitmapData(cast size.y, cast size.x);
-		heightMap.fill(0, 0, heightMap.width, heightMap.height, 0x333333);
-
-		levellingHeightMap = new BitmapData(cast size.y, cast size.x);
-		levellingHeightMap.fill(0, 0, heightMap.width, heightMap.height, 0x333333);
+		heightMap.fill(0, 0, heightMap.width, heightMap.height, 0xFFFFFF);
 
 		if (worldConfig.heightMap != null)
 		{
 			heightMap.setPixels(new Pixels(heightMap.width, heightMap.height, Base64.decode(worldConfig.heightMap), PixelFormat.RGBA));
-		}
-
-		if (worldConfig.levellingHeightMap != null)
-		{
-			levellingHeightMap.setPixels(new Pixels(levellingHeightMap.width, levellingHeightMap.height, Base64.decode(worldConfig.levellingHeightMap), PixelFormat.RGBA));
 		}
 
 		if (worldConfig.terrainLayers != null)
@@ -205,15 +195,15 @@ class GameWorld extends World
 	public function setSunsetColor(c:String) sunsetColor.setColor(Std.parseInt("0x" + c.substr(1)));
 	public function setDawnColor(c:String) dawnColor.setColor(Std.parseInt("0x" + c.substr(1)));
 
-	function createSkyBox()
+	function createSkybox()
 	{
-		var skyTexture = new h3d.mat.Texture(256, 256, [Cube, MipMapped]);
-		skyTexture.uploadPixels(AssetCache.instance.getImage("asset/texture/skybox_a/sb_1.jpg").getPixels(), 0, 3);
-		skyTexture.uploadPixels(AssetCache.instance.getImage("asset/texture/skybox_a/sb_2.jpg").getPixels(), 0, 0);
-		skyTexture.uploadPixels(AssetCache.instance.getImage("asset/texture/skybox_a/sb_3.jpg").getPixels(), 0, 4);
-		skyTexture.uploadPixels(AssetCache.instance.getImage("asset/texture/skybox_a/sb_4.jpg").getPixels(), 0, 5);
-		skyTexture.uploadPixels(AssetCache.instance.getImage("asset/texture/skybox_a/sb_5.jpg").getPixels(), 0, 2);
-		skyTexture.uploadPixels(AssetCache.instance.getImage("asset/texture/skybox_a/sb_6.jpg").getPixels(), 0, 1);
+		var skyboxOrder = [3, 0, 4, 5, 2, 1];
+		var skyTexture = new h3d.mat.Texture(512, 512, [Cube, MipMapped]);
+		var arr = SkyboxData.getConfig(worldConfig.skybox.id).assets;
+		for (i in 0...arr.length)
+		{
+			skyTexture.uploadPixels(AssetCache.instance.getImage(arr[i]).getPixels(), 0, skyboxOrder[i]);
+		}
 		skyTexture.mipMap = Linear;
 
 		var sky = new h3d.prim.Sphere(size.x > size.y ? size.x * 2 : size.y * 2, 64, 64);
@@ -316,23 +306,21 @@ class GameWorld extends World
 		if (!hasCache)
 		{
 			heightGridCache = [];
-			levellingHeightGridCache = [];
 			heightMap.lock();
-			levellingHeightMap.lock();
 		}
 
+		var maxColor = 65793;
+		var minColor = 16711423;
+		var maxDiff = minColor - maxColor;
 		for (i in 0...g.points.length)
 		{
 			var point = g.points[i];
 			if (hasCache) point.z = heightGridCache[i];
 			else
 			{
-				var pixelIntensity = (heightMap.getPixel(cast point.x, cast point.y) >> 16) & 0xFF;
-				var levellingSize = (levellingHeightMap.getPixel(cast point.x, cast point.y) >> 16) & 0xFF;
+				var pixelIntensity:Float = heightMap.getPixel(cast point.x, cast point.y) | 0xFF000000;
+				var calculatedZ:Float = 15 + ((pixelIntensity - maxColor) / (maxDiff)) * 20;
 
-				var calculatedZ = (-2 + Math.round(levellingSize / (255 / 5))) * 2 + pixelIntensity / 255 * 5;
-
-				levellingHeightGridCache.push(levellingSize);
 				heightGridCache.push(calculatedZ);
 				point.z = calculatedZ;
 			}
@@ -341,14 +329,12 @@ class GameWorld extends World
 		if (!hasCache)
 		{
 			heightMap.unlock();
-			levellingHeightMap.unlock();
 		}
 	}
 
 	public function updateHeightMap():Void
 	{
 		heightGridCache = null;
-		levellingHeightGridCache = null;
 
 		for (l in terrainLayers)
 		{
@@ -726,4 +712,13 @@ typedef StaticObject =
 {
 	var instance:Object;
 	var zOffset:Float;
+}
+
+typedef SkyboxConfig =
+{
+	var id(default, never):String;
+	var xOffset(default, never):Float;
+	var yOffset(default, never):Float;
+	var zOffset(default, never):Float;
+	var scale(default, never):Float;
 }

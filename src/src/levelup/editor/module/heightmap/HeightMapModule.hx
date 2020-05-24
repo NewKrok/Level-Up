@@ -190,19 +190,18 @@ import levelup.util.GeomUtil3D;
 			var calculatedX:Int = cast (core.model.isYDragLocked ? dragStartPoint.x : previewPos.x) * 2;
 			var calculatedY:Int = cast (core.model.isXDragLocked ? dragStartPoint.y : previewPos.y) * 2;
 
-			var drawColor = model.brushType == BrushType.Flat
+			var drawColor:Int = model.brushType == BrushType.Flat
 				? flatBrushColor
 				: model.brushType == BrushType.Smooth
 					? core.world.heightMap.getPixel(calculatedX, calculatedY)
-					: model.brushType == BrushType.Levelling
-						? Math.round(0xFFFFFF * (model.brushOpacity / 5))
-						: model.brushType == BrushType.Up ? 0xFFFFFF : 0x000000;
+					: model.brushType == BrushType.Up ? 0xFFFFFF : 0x000000;
 
-			alphaMap.beginFill(drawColor, model.brushType == BrushType.Flat || model.brushType == BrushType.Levelling ? 1 : model.brushOpacity);
+			// TODO solve "Down" opacity problem
+			alphaMap.beginFill(drawColor, model.brushType == BrushType.Flat ? 1 : model.brushType == BrushType.Up ? model.brushOpacity : 0.1);
 
 			if (model.selectedBrushId == 0)
 			{
-				if (model.brushType != BrushType.Levelling || model.brushType == BrushType.Flat || (model.brushNoise == 0 && model.brushGradient == 0))
+				if (model.brushType == BrushType.Flat || (model.brushNoise == 0 && model.brushGradient == 0))
 				{
 					alphaMap.drawCircle(
 						calculatedX,
@@ -233,7 +232,7 @@ import levelup.util.GeomUtil3D;
 
 							if (model.brushType == BrushType.Smooth || model.brushNoise == 0 || Math.random() > model.brushNoise)
 							{
-								alphaMap.beginFill(drawColor, (model.brushType == BrushType.Levelling ? 1 : model.brushOpacity * alphaByGradient) * alphaByNoise);
+								alphaMap.beginFill(drawColor, model.brushOpacity * alphaByGradient * alphaByNoise);
 								alphaMap.drawRect(
 									calculatedX - model.brushSize / 2 + i,
 									calculatedY - model.brushSize / 2 + j,
@@ -247,7 +246,7 @@ import levelup.util.GeomUtil3D;
 			}
 			else
 			{
-				if (model.brushType != BrushType.Levelling || model.brushType == BrushType.Flat || (model.brushNoise == 0 && model.brushGradient == 0))
+				if (model.brushType == BrushType.Flat || (model.brushNoise == 0 && model.brushGradient == 0))
 				{
 					alphaMap.drawRect(
 						calculatedX - model.brushSize / 2,
@@ -272,7 +271,7 @@ import levelup.util.GeomUtil3D;
 
 							if (model.brushNoise == 0 || Math.random() > model.brushNoise)
 							{
-								alphaMap.beginFill(drawColor, (model.brushType == BrushType.Levelling ? 1 : (model.brushOpacity * alphaByGradient) * alphaByNoise));
+								alphaMap.beginFill(drawColor, model.brushOpacity * alphaByGradient * alphaByNoise);
 								alphaMap.drawRect(
 									calculatedX - model.brushSize / 2 + i,
 									calculatedY - model.brushSize / 2 + j,
@@ -285,9 +284,7 @@ import levelup.util.GeomUtil3D;
 				}
 			}
 
-			var bmp = model.brushType == BrushType.Levelling
-				? core.world.levellingHeightMap
-				: core.world.heightMap;
+			var bmp = core.world.heightMap;
 
 			var tex = Texture.fromBitmap(bmp);
 			tex.flags.set(Target);
@@ -297,9 +294,16 @@ import levelup.util.GeomUtil3D;
 
 			bmp.setPixels(tex.capturePixels());
 
+			if (bb != null) bb.remove();
+			bb = new Bitmap(Tile.fromBitmap(bmp));
+			HppG.stage2d.addChild(bb);
+			bb.x = 100;
+			bb.y = 100;
+
 			core.world.updateHeightMap();
 			core.updateGrid();
 			core.isPathFindingLayerDirty = true;
 		}
 	}
+	var bb = new Bitmap();
 }

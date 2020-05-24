@@ -50,10 +50,12 @@ ul {
 	width: fit-content;
 	min-width: 25px;
 	min-height: 20px;
-	line-height: 20px;
+	line-height: 1px;
 	font-size: 0.9em;
 	user-select: none;
-	text-align: center;
+	display: flex;
+	justify-content: center;
+	align-items: center;
 }
 
 .lu_button--full {

@@ -19,6 +19,7 @@ import levelup.editor.EditorState;
 import levelup.game.GameModel.PlayState;
 import levelup.game.GameState.Trigger;
 import levelup.game.GameWorld.Region;
+import levelup.game.GameWorld.SkyboxConfig;
 import levelup.game.html.GameUi;
 import levelup.game.module.CameraController;
 import levelup.game.ui.HeroUi;
@@ -138,13 +139,18 @@ class GameState extends Base2dState
 			for (j in 0...row.length)
 			{
 				var gridIndex = j * (row.length + 1) + i;
-				var current = world.levellingHeightGridCache[gridIndex];
-				var up = world.levellingHeightGridCache[i > 0 ? gridIndex - (row.length + 1) : gridIndex];
-				var down = world.levellingHeightGridCache[i < world.graph.grid.length - 1 ? gridIndex + (row.length + 1) : gridIndex];
-				var left = world.levellingHeightGridCache[j > 0 ? gridIndex - 1 : gridIndex];
-				var right = world.levellingHeightGridCache[j < row.length - 2 ? gridIndex + 1 : gridIndex];
+				var current = world.heightGridCache[gridIndex];
+				var up = world.heightGridCache[i > 0 ? gridIndex - (row.length + 1) : gridIndex];
+				var down = world.heightGridCache[i < world.graph.grid.length - 1 ? gridIndex + (row.length + 1) : gridIndex];
+				var left = world.heightGridCache[j > 0 ? gridIndex - 1 : gridIndex];
+				var right = world.heightGridCache[j < row.length - 2 ? gridIndex + 1 : gridIndex];
 
-				if (current - up != 0 || current - down != 0 || current - left != 0 || current - right != 0) world.graph.grid[i][j].weight = 0;
+				row[j].weight = (
+					Math.abs(current - up) > 1.5
+					|| Math.abs(current - down) > 1.5
+					|| Math.abs(current - left) > 1.5
+					|| Math.abs(current - right) > 1.5
+				) ? 0 : row[j].weight;
 			}
 		}
 
@@ -310,10 +316,12 @@ typedef AdventureConfig =
 	var worldConfig:WorldConfig;
 	var neededModelGroups:Array<String>;
 	var neededTextures:Array<String>;
+	var neededImages:Array<String>;
 }
 
 typedef WorldConfig =
 {
+	var skybox(default, never):SkyboxConfig;
 	@:optional var regions(default, never):Array<Region>;
 	@:optional var triggers(default, never):Array<Trigger>;
 	@:optional var cameras(default, never):Array<CameraData>;
@@ -321,7 +329,6 @@ typedef WorldConfig =
 	@:optional var staticObjects(default, never):Array<StaticObjectConfig>;
 	@:optional var terrainLayers(default, never):Array<TerrainLayerInfo>;
 	@:optional var heightMap(default, never):String;
-	@:optional var levellingHeightMap(default, never):String;
 	@:optional var editorLastCamPosition(default, never):Vector;
 	@:optional var startingTime(default, never):Float;
 	@:optional var sunAndMoonOffsetPercent(default, never):Float;

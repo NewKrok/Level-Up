@@ -9,6 +9,7 @@ import levelup.game.GameState.PlayerId;
 import levelup.game.GameState.StaticObjectConfig;
 import levelup.game.GameState.Trigger;
 import levelup.game.GameWorld.Region;
+import levelup.game.GameWorld.SkyboxConfig;
 
 /**
  * ...
@@ -21,6 +22,7 @@ class EditorModel implements Model
 	@:editable var subTitle:String;
 	@:editable var description:String;
 	@:editable var preloaderImage:String;
+	@:editable var skybox:SkyboxConfig;
 	@:editable var startingTime:Float;
 	@:editable var sunAndMoonOffsetPercent:Float;
 	@:editable var dayColor:String;
@@ -41,7 +43,7 @@ class EditorModel implements Model
 	@:editable var isXDragLocked:Bool = false;
 	@:editable var isYDragLocked:Bool = false;
 	@:editable var selectedPlayer:PlayerId = PlayerId.Player1;
-	@:editable var toolState:ToolState = Library;
+	@:editable var toolState:ToolState = WorldSettingsEditor;
 
 	@:transition function toggleXDragLock() return { isXDragLocked: !isXDragLocked };
 	@:transition function toggleYDragLock() return { isYDragLocked: !isYDragLocked };
@@ -50,6 +52,8 @@ class EditorModel implements Model
 enum ToolState
 {
 	Library;
+	WorldSettingsEditor;
+	SkyboxEditor;
 	TerrainEditor;
 	HeightMapEditor;
 	DayAndNightEditor;

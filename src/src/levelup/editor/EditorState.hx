@@ -41,16 +41,19 @@ import levelup.Asset;
 import levelup.UnitData;
 import levelup.component.layout.LayoutView.LayoutId;
 import levelup.editor.EditorModel.ToolState;
+import levelup.editor.component.editortools.EditorTools;
 import levelup.editor.dialog.EditorDialogManager;
-import levelup.editor.html.EditorUi;
+import levelup.editor.html.EditorView;
 import levelup.editor.html.NewAdventureDialog;
 import levelup.editor.module.camera.CameraModule;
 import levelup.editor.module.dayandnight.DayAndNightModule;
 import levelup.editor.module.heightmap.HeightMapModule;
 import levelup.editor.module.region.RegionModule;
 import levelup.editor.module.script.ScriptModule;
+import levelup.editor.module.skybox.SkyboxModule;
 import levelup.editor.module.terrain.TerrainChooser;
 import levelup.editor.module.terrain.TerrainModule;
+import levelup.editor.module.worldsettings.WorldSettingsModule;
 import levelup.game.GameState;
 import levelup.game.GameState.StaticObjectConfig;
 import levelup.game.GameState.WorldConfig;
@@ -85,7 +88,7 @@ class EditorState extends Base2dState
 	var s2d:h2d.Scene;
 	var s3d:h3d.scene.Scene;
 
-	var editorUi:EditorUi;
+	var editorUi:EditorView;
 	var dialogManager:EditorDialogManager;
 	var views:Map<EditorViewId, RenderResult> = [];
 	var modules:Array<EditorModule> = [];
@@ -182,6 +185,7 @@ class EditorState extends Base2dState
 			description: adventureConfig.description,
 			preloaderImage: adventureConfig.preloaderImage,
 			size: adventureConfig.size,
+			skybox: adventureConfig.worldConfig.skybox,
 			startingTime: adventureConfig.worldConfig.startingTime,
 			sunAndMoonOffsetPercent: adventureConfig.worldConfig.sunAndMoonOffsetPercent,
 			dayColor: adventureConfig.worldConfig.dayColor,
@@ -419,7 +423,22 @@ class EditorState extends Base2dState
 			jumpCamera(adventureConfig.worldConfig.editorLastCamPosition.x, adventureConfig.worldConfig.editorLastCamPosition.y);
 		}
 
-		editorUi = new EditorUi(
+		var editorTools = new EditorTools({
+			toolState: model.observables.toolState,
+			changeToolState: s -> model.toolState = s
+		});
+		registerView(EditorViewId.VEditorTools, editorTools.reactify());
+
+		modules.push(cast new WorldSettingsModule(cast this));
+		modules.push(cast new SkyboxModule(cast this));
+		modules.push(cast new TerrainModule(cast this));
+		modules.push(cast new HeightMapModule(cast this));
+		modules.push(cast new DayAndNightModule(cast this));
+		modules.push(cast new RegionModule(cast this));
+		modules.push(cast new ScriptModule(cast this));
+		modules.push(cast new CameraModule(cast this));
+
+		editorUi = new EditorView(
 		{
 			backToLobby: () -> HppG.changeState(MainMenuState, [s3d, cf]),
 			createNewAdventure: dialogManager.openDialog.bind({
@@ -452,13 +471,6 @@ class EditorState extends Base2dState
 			getModuleView: getModuleView
 		});
 		cf.layout.registerView(LayoutId.EditorUi, editorUi.reactify());
-
-		modules.push(cast new TerrainModule(cast this));
-		modules.push(cast new HeightMapModule(cast this));
-		modules.push(cast new DayAndNightModule(cast this));
-		modules.push(cast new RegionModule(cast this));
-		modules.push(cast new ScriptModule(cast this));
-		modules.push(cast new CameraModule(cast this));
 
 		createGrid();
 
@@ -887,8 +899,8 @@ class EditorState extends Base2dState
 	function drawPathFindingLayer():Void
 	{
 		calculatePathMap();
-
-		/*pathFindingLayer.clear();
+/*
+		pathFindingLayer.clear();
 		pathFindingLayer.lineStyle(4, 0x000000, 0.1);
 
 		for (i in 0...world.graph.grid.length)
@@ -918,13 +930,18 @@ class EditorState extends Base2dState
 			for (j in 0...row.length)
 			{
 				var gridIndex = j * (row.length + 1) + i;
-				var current = world.levellingHeightGridCache[gridIndex];
-				var up = world.levellingHeightGridCache[i > 0 ? gridIndex - (row.length + 1) : gridIndex];
-				var down = world.levellingHeightGridCache[i < world.graph.grid.length - 1 ? gridIndex + (row.length + 1) : gridIndex];
-				var left = world.levellingHeightGridCache[j > 0 ? gridIndex - 1 : gridIndex];
-				var right = world.levellingHeightGridCache[j < row.length - 2 ? gridIndex + 1 : gridIndex];
+				var current = world.heightGridCache[gridIndex];
+				var up = world.heightGridCache[i > 0 ? gridIndex - (row.length + 1) : gridIndex];
+				var down = world.heightGridCache[i < world.graph.grid.length - 1 ? gridIndex + (row.length + 1) : gridIndex];
+				var left = world.heightGridCache[j > 0 ? gridIndex - 1 : gridIndex];
+				var right = world.heightGridCache[j < row.length - 2 ? gridIndex + 1 : gridIndex];
 
-				row[j].weight = (current - up != 0 || current - down != 0 || current - left != 0 || current - right != 0) ? 0 : row[j].weight;
+				row[j].weight = (
+					Math.abs(current - up) > 1.5
+					|| Math.abs(current - down) > 1.5
+					|| Math.abs(current - left) > 1.5
+					|| Math.abs(current - right) > 1.5
+				) ? 0 : row[j].weight;
 			}
 		}
 
@@ -1094,10 +1111,17 @@ class EditorState extends Base2dState
 	function createNewAdventureRawData(data:InitialAdventureData)
 	{
 		var rawHeightMap = new BitmapData(Std.int(data.size.x), Std.int(data.size.y));
-		rawHeightMap.fill(0, 0, Std.int(data.size.x), Std.int(data.size.y), 0x888888);
+		rawHeightMap.fill(0, 0, Std.int(data.size.x), Std.int(data.size.y), 0x888888FF);
 
 		var worldConfig:WorldConfig =
 		{
+			skybox: {
+				id: SkyboxData.getConfig("skybox.ls_nigth_01").id,
+				xOffset: 0,
+				yOffset: 0,
+				zOffset: 0,
+				scale: 1,
+			},
 			regions: [],
 			cameras: [],
 			triggers: [],
@@ -1178,6 +1202,7 @@ class EditorState extends Base2dState
 
 		var worldConfig:WorldConfig =
 		{
+			skybox: model.skybox,
 			startingTime: model.startingTime,
 			sunAndMoonOffsetPercent: model.sunAndMoonOffsetPercent,
 			dayColor: model.dayColor,
@@ -1191,7 +1216,6 @@ class EditorState extends Base2dState
 			staticObjects: staticObjects,
 			terrainLayers: terrainLayers,
 			heightMap: Base64.encode(world.heightMap.getPixels().bytes),
-			levellingHeightMap: Base64.encode(world.levellingHeightMap.getPixels().bytes),
 			editorLastCamPosition: new Vector(cameraObject.x, cameraObject.y, currentCamDistance)
 		};
 		var result = Json.stringify(
@@ -1299,6 +1323,9 @@ enum EditorActionType
 enum EditorViewId
 {
 	VDialogManager;
+	VEditorTools;
+	VWorldSettingsModule;
+	VSkyboxModule;
 	VTerrainModule;
 	VHeightMapModule;
 	VDayAndNightModule;

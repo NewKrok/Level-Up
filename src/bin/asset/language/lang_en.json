@@ -21,11 +21,13 @@
 		"Off": "Off",
 		"Menu background": "Menu background",
 		"loading...": "loading...",
-		"Text language": "Magyar",
+		"Text language": "Text language",
 		"English": "English",
 		"Magyar": "Magyar",
 		"Coming soon...": "Coming soon...",
 		"Your Adventures": "Your Adventures",
-		"Create new Adventure": "Create new Adventure"
+		"Create new Adventure": "Create new Adventure",
+		"Save": "Save",
+		"Test Run": "Test Run"
 	}
 }

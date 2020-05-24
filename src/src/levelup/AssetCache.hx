@@ -69,7 +69,10 @@ class AssetCache
 							id: StringTools.replace(modelInfo.id, "{counter}", countStr),
 							url: StringTools.replace(modelInfo.url, "{counter}", countStr)
 						}}],
-						textures: d.textures
+						textures: [for (textureInfo in d.textures) {{
+							id: StringTools.replace(textureInfo.id, "{counter}", countStr),
+							url: StringTools.replace(textureInfo.url, "{counter}", countStr)
+						}}]
 					}
 					newGroups.push(group);
 				}

@@ -1,0 +1,17 @@
+.lu_editor__properties {
+	height: 100%;
+	pointer-events: visible;
+	display: flex;
+	flex-direction: column;
+	width: 280px;
+	top: 70px;
+	align-items: center;
+	align-self: flex-end;
+	margin: 5px;
+	width: 280px;
+	background-color: #FFFFFF11;
+	color: #FFF;
+	height: 100%;
+	filter: drop-shadow(0 2px 4px #000);
+	backdrop-filter: blur(5px);
+}

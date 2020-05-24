@@ -91,22 +91,12 @@ import tink.state.State;
 		img.className = "lu_hidden";
 		Browser.document.body.appendChild(img);
 
-		// TODO It should be configurable
-		var neededImages = [
-			"asset/texture/skybox_a/sb_1.jpg",
-			"asset/texture/skybox_a/sb_2.jpg",
-			"asset/texture/skybox_a/sb_3.jpg",
-			"asset/texture/skybox_a/sb_4.jpg",
-			"asset/texture/skybox_a/sb_5.jpg",
-			"asset/texture/skybox_a/sb_6.jpg"
-		];
-
 		img.onload = () ->
 		{
 			Browser.document.body.removeChild(img);
 			img = null;
 
-			cf.assetCache.load(adventureConfig.neededModelGroups, adventureConfig.neededTextures, neededImages).handle(o -> switch (o)
+			cf.assetCache.load(adventureConfig.neededModelGroups, adventureConfig.neededTextures, adventureConfig.neededImages).handle(o -> switch (o)
 			{
 				case Success(_):
 					TweenMax.delayedCall(1, () ->
