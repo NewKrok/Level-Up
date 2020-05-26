@@ -27,6 +27,7 @@ import h3d.scene.fwd.DirLight;
 import h3d.shader.AlphaMap;
 import h3d.shader.AnimatedTexture;
 import h3d.shader.ColorKey;
+import h3d.shader.CubeMap;
 import h3d.shader.NormalMap;
 import haxe.crypto.Base64;
 import hpp.heaps.HppG;
@@ -94,6 +95,8 @@ class GameWorld extends World
 	var lastRerouteTime:Float = 0;
 	var pathBlocksByUnits:Array<GridNode> = [];
 
+	var skybox:Mesh;
+
 	var shadow:DefaultShadowMap;
 	var shadowColor:Vector = new Vector(0.4, 0.4, 0.4);
 	var sunAndMoon:DirLight;
@@ -116,7 +119,7 @@ class GameWorld extends World
 		this.worldConfig = worldConfig;
 		this.blockSize = blockSize;
 
-		createSkybox();
+		createSkybox(worldConfig.skybox.id);
 
 		instance = this;
 
@@ -195,11 +198,13 @@ class GameWorld extends World
 	public function setSunsetColor(c:String) sunsetColor.setColor(Std.parseInt("0x" + c.substr(1)));
 	public function setDawnColor(c:String) dawnColor.setColor(Std.parseInt("0x" + c.substr(1)));
 
-	function createSkybox()
+	public function createSkybox(skyboxId)
 	{
+		disposeSkybox();
+
 		var skyboxOrder = [3, 0, 4, 5, 2, 1];
 		var skyTexture = new h3d.mat.Texture(512, 512, [Cube, MipMapped]);
-		var arr = SkyboxData.getConfig(worldConfig.skybox.id).assets;
+		var arr = SkyboxData.getConfig(skyboxId).assets;
 		for (i in 0...arr.length)
 		{
 			skyTexture.uploadPixels(AssetCache.instance.getImage(arr[i]).getPixels(), 0, skyboxOrder[i]);
@@ -209,14 +214,14 @@ class GameWorld extends World
 		var sky = new h3d.prim.Sphere(size.x > size.y ? size.x * 2 : size.y * 2, 64, 64);
 		sky.addNormals();
 
-		var skyMesh = new h3d.scene.Mesh(sky, s3d);
-		skyMesh.defaultTransform = new Matrix();
-		skyMesh.defaultTransform.initRotation(Math.PI / 2, Math.PI / 2, Math.PI / 2);
-		skyMesh.material.mainPass.culling = Front;
-		skyMesh.material.mainPass.addShader(new h3d.shader.CubeMap(skyTexture));
-		skyMesh.material.shadows = false;
-		skyMesh.x = size.x / 2;
-		skyMesh.y = size.y / 2;
+		skybox = new Mesh(sky, s3d);
+		skybox.defaultTransform = new Matrix();
+		skybox.defaultTransform.initRotation(Math.PI / 2, Math.PI / 2, Math.PI / 2);
+		skybox.material.mainPass.culling = Front;
+		skybox.material.mainPass.addShader(new CubeMap(skyTexture));
+		skybox.material.shadows = false;
+		skybox.x = size.x / 2;
+		skybox.y = size.y / 2;
 	}
 
 	private function addStaticTerrainLayer(terrainConfig:TerrainConfig, uvScale:Float)
@@ -669,9 +674,21 @@ class GameWorld extends World
 		}
 	}
 
+	function disposeSkybox()
+	{
+		if (skybox != null)
+		{
+			skybox.material.mainPass.getShader(CubeMap).texture.dispose();
+			skybox.remove();
+			skybox = null;
+		}
+	}
+
 	override public function dispose()
 	{
 		super.dispose();
+
+		disposeSkybox();
 
 		for (i in 0...units.length)
 		{
@@ -717,8 +734,7 @@ typedef StaticObject =
 typedef SkyboxConfig =
 {
 	var id(default, never):String;
-	var xOffset(default, never):Float;
-	var yOffset(default, never):Float;
 	var zOffset(default, never):Float;
+	var rotation(default, never):Float;
 	var scale(default, never):Float;
 }

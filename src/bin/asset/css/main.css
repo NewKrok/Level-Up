@@ -331,6 +331,7 @@ a {
 }
 
 .lu_circle_loader {
+	pointer-events: none;
 	border: 5px solid #FFFFFF60;
 	border-radius: 50%;
 	border-top: 5px solid #d21d33;
@@ -338,6 +339,11 @@ a {
 	height: 30px;
 	-webkit-animation: spin 2s ease-in-out infinite;
 	animation: spin 2s ease-in-out infinite;
+}
+
+.lu_circle_loader--s {
+	width: 20px;
+	height: 20px;
 }
 
 @-webkit-keyframes spin {

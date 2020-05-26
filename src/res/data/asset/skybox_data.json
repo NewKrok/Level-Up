@@ -1,6 +1,10 @@
 {
 	"data":[
+		{"id": "skybox.ls_sunset_01"},
 		{"id": "skybox.ls_nigth_01"},
-		{"id": "skybox.ls_nigth_02"}
+		{"id": "skybox.ls_nigth_02"},
+		{"id": "skybox.ls_nigth_03"},
+		{"id": "skybox.ls_nigth_04"},
+		{"id": "skybox.ls_nigth_05"}
 	]
 }

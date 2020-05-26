@@ -1117,9 +1117,8 @@ class EditorState extends Base2dState
 		{
 			skybox: {
 				id: SkyboxData.getConfig("skybox.ls_nigth_01").id,
-				xOffset: 0,
-				yOffset: 0,
 				zOffset: 0,
+				rotation: 0,
 				scale: 1,
 			},
 			regions: [],

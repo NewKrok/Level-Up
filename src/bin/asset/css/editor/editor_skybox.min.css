@@ -1,0 +1,10 @@
+.lu_editor_skybox{width:100%;height:100%;display:flex;flex-direction:column;}
+.lu_editor_skybox__list{display:flex;flex-wrap:wrap;justify-content:start;overflow-x:hidden;overflow-y:scroll;}
+.lu_editor_skybox__list_element{width:77px;height:77px;border:2px solid #FFFFFF00;user-select:none;cursor:pointer;transform:rotate(90deg);opacity:1;}
+.lu_editor_skybox__list_element__image{width:100%;height:100%;display:block;opacity:1;}
+.lu_editor_skybox__list_element__image--disabled{opacity:0.5;}
+.lu_editor_skybox__list_element:hover{border-color:#FFFFFF88;}
+.lu_editor_skybox__list_element--selected{border-color:#FFFFFF88;}
+.lu_editor_skybox__list_element--disabled{pointer-events:none;}
+.lu_editor_skybox__list_element_loader{pointer-events:none;position:absolute;top:50%;left:50%;transform:translate(-12px,-12px) scale(0.6);transition:opacity 0.3s,transform 0.3s;opacity:0;width:20px;height:20px;display:inline-block;}
+.lu_editor_skybox__list_element_loader--active{opacity:1;transform:translate(-15px,-15px) scale(1);transition:opacity 0.3s,transform 0.3s;}

@@ -2,7 +2,7 @@ package levelup;
 
 class SkyboxData
 {
-	private static var config:Map<String, SkyboxAssetConfig> = new Map<String, SkyboxAssetConfig>();
+	public static var config:Map<String, SkyboxAssetConfig> = new Map<String, SkyboxAssetConfig>();
 
 	public static function addData(rawData:Dynamic)
 	{
