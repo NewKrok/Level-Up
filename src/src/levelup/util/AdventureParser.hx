@@ -41,7 +41,7 @@ class AdventureParser
 
 		var startingTime = rawWorldConfig.startingTime == null ? 12 : rawWorldConfig.startingTime;
 		var sunAndMoonOffsetPercent = rawWorldConfig.sunAndMoonOffsetPercent == null ? 20 : rawWorldConfig.sunAndMoonOffsetPercent;
-		var dayColor = rawWorldConfig.dayColor == null ? "#FFFFFF" : rawWorldConfig.dayColor;
+		var dayColor = rawWorldConfig.dayColor == null ? "#E0E0E0" : rawWorldConfig.dayColor;
 		var nightColor = rawWorldConfig.nightColor == null ? "#333399" : rawWorldConfig.nightColor;
 		var sunsetColor = rawWorldConfig.sunsetColor == null ? "#CC9919" : rawWorldConfig.sunsetColor;
 		var dawnColor = rawWorldConfig.dawnColor == null ? "#808080" : rawWorldConfig.dawnColor;
@@ -215,7 +215,13 @@ class AdventureParser
 			if (textureInfo.normalMapUrl != null) neededTextures.push(textureInfo.normalMapUrl);
 		}
 
-		rawWorldConfig.skybox.id = "skybox.ls_nigth_02";
+		if (rawWorldConfig.skybox == null) rawWorldConfig.skybox = {
+			id: "skybox.ls_sunny_01",
+			zOffset: 0,
+			rotation: 0,
+			scale: 0
+		};
+
 		var neededImages:Array<String> = [];
 		neededImages = neededImages.concat(SkyboxData.getConfig(rawWorldConfig.skybox.id).assets);
 
@@ -235,6 +241,7 @@ class AdventureParser
 				nightColor: nightColor,
 				sunsetColor: sunsetColor,
 				dawnColor: dawnColor,
+				globalWeather: rawWorldConfig.globalWeather == null ? 0 : rawWorldConfig.globalWeather,
 				regions: regions,
 				cameras: rawWorldConfig.cameras == null ? [] : rawWorldConfig.cameras,
 				triggers: rawWorldConfig.triggers,

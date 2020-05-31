@@ -95,11 +95,12 @@ class GameWorld extends World
 	var lastRerouteTime:Float = 0;
 	var pathBlocksByUnits:Array<GridNode> = [];
 
-	var skybox:Mesh;
+	public var skybox:Mesh;
 
 	var shadow:DefaultShadowMap;
 	var shadowColor:Vector = new Vector(0.4, 0.4, 0.4);
 	var sunAndMoon:DirLight;
+	var moonLight:DirLight;
 	var sunObj:Mesh;
 	var moonObj:Mesh;
 	var sunAngle = Math.PI;
@@ -110,6 +111,8 @@ class GameWorld extends World
 	var dawnColor:Vector = new Vector();
 	var dayTimeSpeed:Float = Math.PI / 200;
 	var isDayTimeEnabled:Bool = true;
+
+	var globalWeather:GpuParticles;
 
 	public function new(s3d:Scene, size:SimplePoint, worldConfig:WorldConfig, blockSize:Float, chunkSize:Int, worldSize:Int, ?autoCollect = true)
 	{
@@ -176,6 +179,8 @@ class GameWorld extends World
 		sunObj.material.castShadows = false;
 		sunObj.material.receiveShadows = false;
 
+		// Why can't have 2 dirlights in the same time?
+		//moonLight = new DirLight(null, s3d);
 		var s = new Sphere();
 		s.addNormals();
 		s.addUVs();
@@ -190,7 +195,7 @@ class GameWorld extends World
 		setTime(worldConfig.startingTime);
 		setSunAndMoonOffsetPercent(worldConfig.sunAndMoonOffsetPercent);
 
-		addWeatherEffect();
+		addWeatherEffects();
 	}
 
 	public function setDayColor(c:String) dayColor.setColor(Std.parseInt("0x" + c.substr(1)));
@@ -361,37 +366,67 @@ class GameWorld extends World
 		baseLayer.material.texture.wrap = Wrap.Repeat;
 	}
 
-	public function addWeatherEffect()
+	public function addWeatherEffects()
 	{
+		if (worldConfig.globalWeather != 0) setGlobalWeatherEffect(worldConfig.globalWeather);
+
 		//addSnow();
 		//addRain();
 	}
 
-	function addSnow()
+	public function setGlobalWeatherEffect(v)
+	{
+		if (globalWeather != null)
+		{
+			globalWeather.removeGroup(globalWeather.getGroup("base"));
+			globalWeather.remove();
+			globalWeather = null;
+		}
+
+		switch (v)
+		{
+			case 1: globalWeather = addGlobalSnow();
+			//case 2: globalWeather = addGlobalRain();
+
+			case _:
+		}
+	}
+
+	function addGlobalSnow()
 	{
 		var parts = new GpuParticles(s3d);
+		parts.volumeBounds = Bounds.fromValues( -10, -10, 15, 20, 20, 20);
+
 		var g = parts.addGroup();
+		g.name = "base";
 		g.size = 0.2;
 		g.gravity = 1;
 		g.life = 10;
-		g.nparts = 10000;
+		g.nparts = 5000;
 		g.emitMode = CameraBounds;
-		parts.volumeBounds = Bounds.fromValues( -20, -20, 15, 40, 40, 40);
+
+		return parts;
 	}
 
-	function addRain()
+	function addGlobalRain()
 	{
-		/*var t = Res.texture.weather.rain.toTexture();
+		// TODO improve it
+		/*var t = Res.raindrop.toTexture();
 
 		var parts = new GpuParticles(s3d);
+		parts.volumeBounds = Bounds.fromValues(-10, -10, 15, 20, 20, 20);
+		parts.material.mainPass.depthWrite = false;
+
 		var g = parts.addGroup();
 		g.texture = t;
-		g.gravity = 50;
+		g.size = 3;
+		g.gravity = 30;
 		g.speed = 0;
 		g.life = 2;
-		g.nparts = 10000;
+		g.nparts = 1000;
 		g.emitMode = CameraBounds;
-		parts.volumeBounds = Bounds.fromValues( -20, -20, 15, 40, 40, 40);*/
+
+		return parts;*/
 	}
 
 	public function setTime(time:Float):Void
@@ -458,10 +493,18 @@ class GameWorld extends World
 		var isInTransitionFinishState:Bool = false;
 
 		var sunAndMoonAngle = isDayTime ? sunAngle + Math.PI : sunAngle;
+		// Revert it when moon light will be fixed
+		//var sunAndMoonAngle = sunAngle + Math.PI;
 		var sunAndMoonX = -sunAndMoonOffset;
 		var sunAndMoonY = size.y * 0.6 * Math.cos(sunAndMoonAngle);
 		var sunAndMoonZ = size.y * 0.6 * Math.sin(sunAndMoonAngle);
 		sunAndMoon.setDirection(new Vector(sunAndMoonX, sunAndMoonY, sunAndMoonZ));
+
+		/*var moonAngle = sunAndMoonAngle + Math.PI;
+		var moonX = -sunAndMoonOffset;
+		var moonY = size.y * 0.6 * Math.cos(moonAngle);
+		var moonZ = size.y * 0.6 * Math.sin(moonAngle);
+		moonLight.setDirection(new Vector(moonX, moonY, moonZ));*/
 
 		var dayTimeColorPercent = 1.0;
 		var ambientRed = isDayTime ? dayColor.x : nightColor.x;
@@ -502,8 +545,8 @@ class GameWorld extends World
 			ambientBlue = nightColor.z + dayTimeColorPercent * (dawnColor.z - nightColor.z);
 		}
 
-		s3d.lightSystem.ambientLight.set(ambientRed, ambientGreen, ambientBlue, 0.5);
-		sunAndMoon.color.set(ambientRed, ambientGreen, ambientBlue, 0.5);
+		s3d.lightSystem.ambientLight.set(ambientRed, ambientGreen, ambientBlue);
+		sunAndMoon.color.set(ambientRed, ambientGreen, ambientBlue);
 
 		var sunObjAngle = sunAngle;
 		sunObj.x = sunAndMoonOffset;

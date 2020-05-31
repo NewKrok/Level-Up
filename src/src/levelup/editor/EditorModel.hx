@@ -22,7 +22,6 @@ class EditorModel implements Model
 	@:editable var subTitle:String;
 	@:editable var description:String;
 	@:editable var preloaderImage:String;
-	@:editable var skybox:SkyboxConfig;
 	@:editable var startingTime:Float;
 	@:editable var sunAndMoonOffsetPercent:Float;
 	@:editable var dayColor:String;
@@ -62,5 +61,5 @@ enum ToolState
 	WeatherEditor;
 	ScriptEditor;
 	UnitEditor;
-	TeamEditor;
+	TeamSettingsEditor;
 }

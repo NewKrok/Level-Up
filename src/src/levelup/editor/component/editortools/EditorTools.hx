@@ -12,80 +12,72 @@ class EditorTools extends View
 	@:attr var toolState:ToolState;
 	@:attr var changeToolState:ToolState->Void;
 
+	var tools:Array<ToolDefinition> = [
+		{
+			icon: "fas fa-globe-americas",
+			state: ToolState.WorldSettingsEditor,
+		},
+		{
+			icon: "fas fa-users-cog",
+			state: ToolState.TeamSettingsEditor,
+		},
+		{
+			icon: "fas fa-cloud-moon",
+			state: ToolState.SkyboxEditor,
+		},
+		{
+			icon: "fas fa-sun",
+			state: ToolState.DayAndNightEditor,
+		},
+		{
+			icon: "fas fa-cloud",
+			state: ToolState.WeatherEditor,
+		},
+		{
+			icon: "fas fa-map",
+			state: ToolState.HeightMapEditor,
+		},
+		{
+			icon: "fas fa-paint-brush",
+			state: ToolState.TerrainEditor,
+		},
+		{
+			icon: "fas fa-object-ungroup",
+			state: ToolState.RegionEditor,
+		},
+		{
+			icon: "fas fa-video",
+			state: ToolState.CameraEditor,
+		},
+		{
+			icon: "fas fa-folder-open",
+			state: ToolState.Library,
+		},
+		{
+			icon: "fas fa-user-cog",
+			state: ToolState.UnitEditor,
+		},
+		{
+			icon: "fas fa-code",
+			state: ToolState.ScriptEditor,
+		}
+	];
+
 	function render() '
 		<div class="lu_row lu_editor__tools">
-			<div
-				class={"lu_editor__tools__button" + (toolState == ToolState.WorldSettingsEditor ? " lu_editor__tools__button--selected" : "")}
-				onclick={e -> changeToolState(ToolState.WorldSettingsEditor)}
-			>
-				<i class="fas fa-globe-americas"></i>
-			</div>
-			<div
-				class={"lu_editor__tools__button" + (toolState == ToolState.SkyboxEditor ? " lu_editor__tools__button--selected" : "")}
-				onclick={e -> changeToolState(ToolState.SkyboxEditor)}
-			>
-				<i class="fas fa-cloud-moon"></i>
-			</div>
-			<div
-				class={"lu_editor__tools__button" + (toolState == ToolState.Library ? " lu_editor__tools__button--selected" : "")}
-				onclick={e -> changeToolState(ToolState.Library)}
-			>
-				<i class="fas fa-folder-open"></i>
-			</div>
-			<div
-				class={"lu_editor__tools__button" + (toolState == ToolState.TerrainEditor ? " lu_editor__tools__button--selected" : "")}
-				onclick = {e -> changeToolState(ToolState.TerrainEditor)}
-			>
-				<i class="fas fa-paint-brush"></i>
-			</div>
-			<div
-				class={"lu_editor__tools__button" + (toolState == ToolState.HeightMapEditor ? " lu_editor__tools__button--selected" : "")}
-				onclick = {e -> changeToolState(ToolState.HeightMapEditor)}
-			>
-				<i class="fas fa-map"></i>
-			</div>
-			<div
-				class={"lu_editor__tools__button" + (toolState == ToolState.DayAndNightEditor ? " lu_editor__tools__button--selected" : "")}
-				onclick = {e -> changeToolState(ToolState.DayAndNightEditor)}
-			>
-				<i class="fas fa-sun"></i>
-			</div>
-			<div
-				class={"lu_editor__tools__button" + (toolState == ToolState.WeatherEditor ? " lu_editor__tools__button--selected" : "")}
-				onclick = {e -> changeToolState(ToolState.WeatherEditor)}
-			>
-				<i class="fas fa-cloud"></i>
-			</div>
-			<div
-				class={"lu_editor__tools__button" + (toolState == ToolState.RegionEditor ? " lu_editor__tools__button--selected" : "")}
-				onclick = {e -> changeToolState(ToolState.RegionEditor)}
-			>
-				<i class="fas fa-object-ungroup"></i>
-			</div>
-			<div
-				class={"lu_editor__tools__button" + (toolState == ToolState.CameraEditor ? " lu_editor__tools__button--selected" : "")}
-				onclick = {e -> changeToolState(ToolState.CameraEditor)}
-			>
-				<i class="fas fa-video"></i>
-			</div>
-			<div
-				class={"lu_editor__tools__button" + (toolState == ToolState.ScriptEditor ? " lu_editor__tools__button--selected" : "")}
-				onclick = {e -> changeToolState(ToolState.ScriptEditor)}
-			>
-				<i class="fas fa-code"></i>
-			</div>
-			<div
-				class={"lu_editor__tools__button" + (toolState == ToolState.UnitEditor ? " lu_editor__tools__button--selected" : "")}
-				onclick = {e -> changeToolState(ToolState.UnitEditor)}
-			>
-				<i class="fas fa-user-cog"></i>
-			</div>
-			<div
-				class={"lu_editor__tools__button" + (toolState == ToolState.TeamEditor ? " lu_editor__tools__button--selected" : "")}
-				onclick = {e -> changeToolState(ToolState.TeamEditor)}
-			>
-				<i class="fas fa-users-cog"></i>
-			</div>
+			<for {tool in tools}>
+				<div
+				class={"lu_editor__tools__button" + (toolState == tool.state ? " lu_editor__tools__button--selected" : "")}
+				onclick={e -> changeToolState(tool.state)}
+				>
+					<i class={tool.icon}></i>
+				</div>
+			</for>
 		</div>
 	';
+}
+
+typedef ToolDefinition = {
+	var icon:String;
+	var state:ToolState;
 }

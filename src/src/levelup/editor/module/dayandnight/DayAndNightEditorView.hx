@@ -32,86 +32,86 @@ class DayAndNightEditorView extends View
 	@:ref var dawnColorPicker:InputElement;
 
 	function render() '
-		<div class="lu_editor__base_panel">
-			<div class="lu_relative lu_fill_height">
-				<div class="lu_title">Day and Night Settings</div>
-				<div class="lu_offset">
-					<div class="lu_vertical_offset--s">
+		<div class="lu_editor__properties__container">
+			<div class="lu_title">
+				<i class="fas fa-sun lu_horizontal_offset"></i>Light Settings
+			</div>
+			<div class="lu_editor__properties__block">
+				<div class="lu_bottom_offset">
 					<i class="fas fa-clock lu_right_offset"></i>Starting Time
-					</div>
-					<Slider
-						min={0}
-						max={24}
-						startValue={defaultStartTime}
-						step={0.1}
-						onChange=$changeStartingTime
+				</div>
+				<Slider
+					min={0}
+					max={24}
+					startValue={defaultStartTime}
+					step={0.1}
+					onChange=$changeStartingTime
 
-					/>
+				/>
+			</div>
+			<div class="lu_editor__properties__block">
+				<div class="lu_bottom_offset">
+					<i class="fas fa-arrows-alt-v lu_right_offset"></i>Horizontal Offset
 				</div>
-				<div class="lu_offset">
-					<div class="lu_vertical_offset--s">
-						<i class="fas fa-arrows-alt-v lu_right_offset"></i>Vertical Offset
-					</div>
-					<Slider
-						min={0}
-						max={100}
-						startValue={defaultSunAndMoonOffsetPercent}
-						step={1}
-						onChange=$changeSunAndMoonOffsetPercent
-					/>
+				<Slider
+					min={0}
+					max={100}
+					startValue={defaultSunAndMoonOffsetPercent}
+					step={1}
+					onChange=$changeSunAndMoonOffsetPercent
+				/>
+			</div>
+			<div class="lu_editor__properties__block">
+				<div class="lu_bottom_offset">
+					<i class="fas fa-palette lu_right_offset"></i>Day Color
 				</div>
-				<div class="lu_offset">
-					<div class="lu_vertical_offset--s">
-						<i class="fas fa-palette-v lu_right_offset"></i>Day Color
-					</div>
-					<input
-						ref=$dayColorPicker
-						type="color"
-						id="day"
-						class="lu_color_picker lu_fill_width"
-						value=$dayColor
-						onchange=${e -> changeDayColor(e.currentTarget.value)}
-					/>
+				<input
+					ref=$dayColorPicker
+					type="color"
+					id="day"
+					class="lu_color_picker lu_fill_width"
+					value=$dayColor
+					onchange=${e -> changeDayColor(e.currentTarget.value)}
+				/>
+			</div>
+			<div class="lu_editor__properties__block">
+				<div class="lu_bottom_offset">
+					<i class="fas fa-palette lu_right_offset"></i>Night Color
 				</div>
-				<div class="lu_offset">
-					<div class="lu_vertical_offset--s">
-						<i class="fas fa-palette-v lu_right_offset"></i>Night Color
-					</div>
-					<input
-						ref=$nightColorPicker
-						type="color"
-						id="night"
-						class="lu_color_picker lu_fill_width"
-						value=$nightColor
-						onchange=${e -> changeNightColor(e.currentTarget.value)}
-					/>
+				<input
+					ref=$nightColorPicker
+					type="color"
+					id="night"
+					class="lu_color_picker lu_fill_width"
+					value=$nightColor
+					onchange=${e -> changeNightColor(e.currentTarget.value)}
+				/>
+			</div>
+			<div class="lu_editor__properties__block">
+				<div class="lu_bottom_offset">
+					<i class="fas fa-palette lu_right_offset"></i>Sunset Color
 				</div>
-				<div class="lu_offset">
-					<div class="lu_vertical_offset--s">
-						<i class="fas fa-palette-v lu_right_offset"></i>Sunset Color
-					</div>
-					<input
-						ref=$sunsetColorPicker
-						type="color"
-						id="sunset"
-						class="lu_color_picker lu_fill_width"
-						value=$sunsetColor
-						onchange=${e -> changeSunsetColor(e.currentTarget.value)}
-					/>
+				<input
+					ref=$sunsetColorPicker
+					type="color"
+					id="sunset"
+					class="lu_color_picker lu_fill_width"
+					value=$sunsetColor
+					onchange=${e -> changeSunsetColor(e.currentTarget.value)}
+				/>
+			</div>
+			<div class="lu_editor__properties__block">
+				<div class="lu_bottom_offset">
+					<i class="fas fa-palette lu_right_offset"></i>Dawn Color
 				</div>
-				<div class="lu_offset">
-					<div class="lu_vertical_offset--s">
-						<i class="fas fa-palette-v lu_right_offset"></i>Dawn Color
-					</div>
-					<input
-						ref=$dawnColorPicker
-						type="color"
-						id="dawn"
-						class="lu_color_picker lu_fill_width"
-						value=$dawnColor
-						onchange=${e -> changeDawnColor(e.currentTarget.value)}
-					/>
-				</div>
+				<input
+					ref=$dawnColorPicker
+					type="color"
+					id="dawn"
+					class="lu_color_picker lu_fill_width"
+					value=$dawnColor
+					onchange=${e -> changeDawnColor(e.currentTarget.value)}
+				/>
 			</div>
 		</div>
 	';

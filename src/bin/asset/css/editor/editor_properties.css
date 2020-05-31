@@ -1,10 +1,8 @@
 .lu_editor__properties {
-	height: 100%;
 	pointer-events: visible;
 	display: flex;
 	flex-direction: column;
 	width: 280px;
-	top: 70px;
 	align-items: center;
 	align-self: flex-end;
 	margin: 5px;
@@ -14,9 +12,32 @@
 	height: 100%;
 	filter: drop-shadow(0 2px 4px #000);
 	backdrop-filter: blur(5px);
+	overflow: auto;
+}
+
+.lu_editor__properties__container {
+	width: 100%;
+	height: 100%;
+	display: flex;
+	flex-direction: column;
 }
 
 .lu_editor__properties__block {
 	padding: 10px;
 	border-bottom: 1px solid #FFFFFF11;
+}
+
+.lu_editor__properties__block:last-of-type {
+	border: none;
+}
+
+.lu_editor__properties__block--header {
+	padding-bottom: 0;
+	border: none;
+}
+
+.lu_editor__properties__block--content {
+	padding-top: 0;
+	overflow-x: hidden;
+	overflow-y: auto;
 }

@@ -336,6 +336,7 @@ typedef WorldConfig =
 	@:optional var nightColor(default, never):String;
 	@:optional var sunsetColor(default, never):String;
 	@:optional var dawnColor(default, never):String;
+	var globalWeather(default, never):Int;
 }
 
 typedef StaticObjectConfig =

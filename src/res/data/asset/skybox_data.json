@@ -1,6 +1,15 @@
 {
 	"data":[
+		{"id": "skybox.ls_sunny_01"},
+		{"id": "skybox.ls_sunny_02"},
+		{"id": "skybox.ls_sunny_03"},
+		{"id": "skybox.ls_sunny_04"},
+		{"id": "skybox.ls_sunny_05"},
 		{"id": "skybox.ls_sunset_01"},
+		{"id": "skybox.ls_sunset_02"},
+		{"id": "skybox.ls_sunset_03"},
+		{"id": "skybox.ls_sunset_04"},
+		{"id": "skybox.ls_sunset_05"},
 		{"id": "skybox.ls_nigth_01"},
 		{"id": "skybox.ls_nigth_02"},
 		{"id": "skybox.ls_nigth_03"},

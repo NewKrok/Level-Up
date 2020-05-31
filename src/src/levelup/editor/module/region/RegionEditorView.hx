@@ -18,12 +18,12 @@ class RegionEditorView extends View
 	function render()
 	{
 		return hxx('
-			<div class="lu_editor__base_panel">
-				<div class="lu_relative lu_fill_height">
-					<div class="lu_title"><i class="fas fa-object-ungroup lu_right_offset"></i>
-						Regions
-					</div>
-					<div class="lu_relative lu_terrain_layer_list_container">
+			<div class="lu_editor__properties__container">
+				<div class="lu_title">
+					<i class="fas fa-object-ungroup lu_horizontal_offset"></i>Region editor
+				</div>
+				<div class="lu_editor__properties__block">
+					<div class="lu_relative">
 						<if {regions.length == 0}>
 							<div class="lu_offset">
 								You don\'t have any region yet. <span class="lu_highlight">You can draw it with mouse</span>.

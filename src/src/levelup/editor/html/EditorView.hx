@@ -32,8 +32,6 @@ class EditorView extends View
 	@:skipCheck @:attr var unitsList:List<AssetConfig>;
 	@:skipCheck @:attr var selectedWorldAsset:AssetItem;
 
-	@:skipCheck @:state var hoveredAsset:AssetConfig = null;
-
 	@:state var selectedRightMenu:Int = 0;
 
 	@:ref var editorLibrary:EditorLibrary;
@@ -52,44 +50,24 @@ class EditorView extends View
 			{getModuleView(EditorViewId.VEditorTools)}
 			<div class="lu_editor__properties">
 				<switch {model.toolState}>
-					<case {ToolState.WorldSettingsEditor}>
-						{getModuleView(EditorViewId.VWorldSettingsModule)}
-
-					<case {ToolState.SkyboxEditor}>
-						{getModuleView(EditorViewId.VSkyboxModule)}
+					<case {ToolState.WorldSettingsEditor}> {getModuleView(EditorViewId.VWorldSettingsModule)}
+					<case {ToolState.TeamSettingsEditor}> {getModuleView(EditorViewId.VTeamSettingsModule)}
+					<case {ToolState.SkyboxEditor}> {getModuleView(EditorViewId.VSkyboxModule)}
+					<case {ToolState.DayAndNightEditor}> {getModuleView(EditorViewId.VDayAndNightModule)}
+					<case {ToolState.WeatherEditor}> {getModuleView(EditorViewId.VWeatherModule)}
+					<case {ToolState.TerrainEditor}> {getModuleView(EditorViewId.VTerrainModule)}
+					<case {ToolState.HeightMapEditor}> {getModuleView(EditorViewId.VHeightMapModule)}
+					<case {ToolState.RegionEditor}> {getModuleView(EditorViewId.VRegionModule)}
+					<case {ToolState.CameraEditor}> {getModuleView(EditorViewId.VCameraModule)}
+					<case {ToolState.ScriptEditor}> {getModuleView(EditorViewId.VScriptModule)}
 
 					<case {ToolState.Library}>
 						<EditorLibrary
 							ref={editorLibrary}
 							previewRequest={previewRequest}
-							onAssetMouseOver={asset -> hoveredAsset = asset}
 							onPlayerSelect={id -> model.selectedPlayer = id}
 							selectedPlayer={model.observables.selectedPlayer}
 						/>
-						<EditorPreview
-							assetConfig=$hoveredAsset
-						/>
-
-					<case {ToolState.TerrainEditor}>
-						{getModuleView(EditorViewId.VTerrainModule)}
-
-					<case {ToolState.HeightMapEditor}>
-						{getModuleView(EditorViewId.VHeightMapModule)}
-
-					<case {ToolState.DayAndNightEditor}>
-						{getModuleView(EditorViewId.VDayAndNightModule)}
-
-					<case {ToolState.RegionEditor}>
-						{getModuleView(EditorViewId.VRegionModule)}
-
-					<case {ToolState.ScriptEditor}>
-						{getModuleView(EditorViewId.VScriptModule)}
-
-					<case {ToolState.CameraEditor}>
-						{getModuleView(EditorViewId.VCameraModule)}
-
-					<case {ToolState.WeatherEditor}>
-						{getModuleView(EditorViewId.VWeatherModule)}
 
 					<case {_}>
 				</switch>

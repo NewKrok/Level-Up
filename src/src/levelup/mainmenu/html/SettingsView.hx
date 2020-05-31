@@ -99,9 +99,9 @@ class SettingsView extends View
 								</div>
 							<else>
 								<select onChange=$setLanguage class="lu_form__select">
-								<option selected={selectedTextLanguage == 0} value="0">{Language.get("English")}</option>
-								<option selected={selectedTextLanguage == 1} value="1">{Language.get("Magyar")}</option>
-							</select>
+									<option selected={selectedTextLanguage == 0} value="0">{Language.get("English")}</option>
+									<option selected={selectedTextLanguage == 1} value="1">{Language.get("Magyar")}</option>
+								</select>
 							</if>
 						</div>
 

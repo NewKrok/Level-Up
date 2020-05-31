@@ -51,8 +51,10 @@ import levelup.editor.module.heightmap.HeightMapModule;
 import levelup.editor.module.region.RegionModule;
 import levelup.editor.module.script.ScriptModule;
 import levelup.editor.module.skybox.SkyboxModule;
+import levelup.editor.module.teamsettings.TeamSettingsModule;
 import levelup.editor.module.terrain.TerrainChooser;
 import levelup.editor.module.terrain.TerrainModule;
+import levelup.editor.module.weather.WeatherModule;
 import levelup.editor.module.worldsettings.WorldSettingsModule;
 import levelup.game.GameState;
 import levelup.game.GameState.StaticObjectConfig;
@@ -185,7 +187,6 @@ class EditorState extends Base2dState
 			description: adventureConfig.description,
 			preloaderImage: adventureConfig.preloaderImage,
 			size: adventureConfig.size,
-			skybox: adventureConfig.worldConfig.skybox,
 			startingTime: adventureConfig.worldConfig.startingTime,
 			sunAndMoonOffsetPercent: adventureConfig.worldConfig.sunAndMoonOffsetPercent,
 			dayColor: adventureConfig.worldConfig.dayColor,
@@ -430,10 +431,12 @@ class EditorState extends Base2dState
 		registerView(EditorViewId.VEditorTools, editorTools.reactify());
 
 		modules.push(cast new WorldSettingsModule(cast this));
+		modules.push(cast new TeamSettingsModule(cast this));
 		modules.push(cast new SkyboxModule(cast this));
+		modules.push(cast new DayAndNightModule(cast this));
+		modules.push(cast new WeatherModule(cast this));
 		modules.push(cast new TerrainModule(cast this));
 		modules.push(cast new HeightMapModule(cast this));
-		modules.push(cast new DayAndNightModule(cast this));
 		modules.push(cast new RegionModule(cast this));
 		modules.push(cast new ScriptModule(cast this));
 		modules.push(cast new CameraModule(cast this));
@@ -1121,6 +1124,7 @@ class EditorState extends Base2dState
 				rotation: 0,
 				scale: 1,
 			},
+			globalWeather: 0,
 			regions: [],
 			cameras: [],
 			triggers: [],
@@ -1197,17 +1201,20 @@ class EditorState extends Base2dState
 			height: cast(r.instance.primitive, Grid).height
 		}];
 
+		var skyboxModule = cast(getModule(SkyboxModule), SkyboxModule);
 		var cameraModule = cast(getModule(CameraModule), CameraModule);
+		var watherModule = cast(getModule(WeatherModule), WeatherModule);
 
 		var worldConfig:WorldConfig =
 		{
-			skybox: model.skybox,
+			skybox: skyboxModule.getSkyboxData(),
 			startingTime: model.startingTime,
 			sunAndMoonOffsetPercent: model.sunAndMoonOffsetPercent,
 			dayColor: model.dayColor,
 			nightColor: model.nightColor,
 			sunsetColor: model.sunsetColor,
 			dawnColor: model.dawnColor,
+			globalWeather: watherModule.getGlobalWeather(),
 			regions: regions,
 			cameras: cameraModule.getCameras().toArray(),
 			triggers: model.triggers,
@@ -1332,7 +1339,7 @@ enum EditorViewId
 	VCameraModule;
 	VWeatherModule;
 	VScriptModule;
-	VTeamModule;
+	VTeamSettingsModule;
 }
 
 typedef EditorCore =

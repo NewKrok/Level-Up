@@ -309,6 +309,7 @@ class AssetCache
 
 	public function getTexture(url:String) return textureDirectory.get(url);
 	public function getImage(url:String) return imageDirectory.get(url);
+	public function getModelPreviewUrl(modelGroupId:String) return rawCache.groups.filter(data -> return data.id == modelGroupId)[0].previewUrl;
 }
 
 typedef RawModelCache =
@@ -319,6 +320,7 @@ typedef RawModelCache =
 typedef RawModelGroupData =
 {
 	var id:String;
+	@:optional var previewUrl:String; // TODO remove optional
 	var models:Array<RawModelData>;
 	var textures:Array<RawTextureData>;
 }

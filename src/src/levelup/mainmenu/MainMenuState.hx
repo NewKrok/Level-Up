@@ -56,20 +56,10 @@ import tink.state.State;
 
 		if (world != null) disposeWorld();
 
-		// TODO It should be configurable
-		var neededImages = [
-			"asset/texture/skybox_a/sb_1.jpg",
-			"asset/texture/skybox_a/sb_2.jpg",
-			"asset/texture/skybox_a/sb_3.jpg",
-			"asset/texture/skybox_a/sb_4.jpg",
-			"asset/texture/skybox_a/sb_5.jpg",
-			"asset/texture/skybox_a/sb_6.jpg"
-		];
-
 		Browser.window.fetch("data/level/mainmenu/" + SaveUtil.appData.gameplay.menuBackground + ".json").then(res -> res.text()).then(res ->
 		{
 			adventureConfig = AdventureParser.loadLevel(res);
-			cf.assetCache.load(adventureConfig.neededModelGroups, adventureConfig.neededTextures, neededImages).handle(o -> switch (o)
+			cf.assetCache.load(adventureConfig.neededModelGroups, adventureConfig.neededTextures, adventureConfig.neededImages).handle(o -> switch (o)
 			{
 				case Success(_): loaded(s3d);
 				case Failure(e): isMenuBackgroundInLoadingState.set(false);

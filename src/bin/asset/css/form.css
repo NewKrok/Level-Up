@@ -95,10 +95,12 @@ ul {
 }
 
 .lu_slider {
-	background-color: #000000CC;
+	background: #44382cb0;
 	position: relative;
 	height: 15px;
 	cursor: pointer;
+	border: 1px solid rgba(255, 255, 255, 0.2);
+	border-radius: 3px;
 }
 
 .lu_native_slider {
@@ -115,19 +117,30 @@ ul {
 }
 
 .lu_slider__thumb {
-	width: 15px;
-	height: 15px;
+	width: 13px;
+	height: 13px;
 	background-color: #69fd75;
 	position: relative;
-	transition: left 0.2s;
+	border-radius: 3px;
+	margin: 1px;
 }
 
 .lu_color_picker {
 	padding: 0;
 	margin: 0;
-	border: 1px solid #000;
+	border: none;
 	background: none;
-	height: 20px;
+	height: 25px;
+}
+
+.lu_color_picker:active {
+	border: none;
+	outline: none;
+}
+
+.lu_color_picker:focus {
+	border: none;
+	outline: none;
 }
 
 .lu_form__select {
@@ -138,7 +151,6 @@ ul {
 	border: 1px solid rgba(255, 255, 255, 0.2);
 	font: inherit;
 	font-size: 0.8em;
-	height: 1.5em;
 	padding: 5px 10px;
 	box-sizing: content-box;
 	align-items: center;
@@ -147,6 +159,7 @@ ul {
 	-webkit-appearance: none;
 	-moz-appearance: none;
 	text-overflow: '';
+	box-sizing: border-box;
 }
 
 .lu_form__select:hover,

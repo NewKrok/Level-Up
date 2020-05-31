@@ -102,7 +102,7 @@
 		},
 		{
 			"id": "rockgolem",
-			"name": "rockgolem Golem",
+			"name": "Rock Golem",
 			"uniqueNames": [""],
 			"race": "elf",
 			"icon": "asset/icon/elf/unit/rockgolem.jpg",

@@ -2,6 +2,7 @@
 	"groups":[
 		{
 			"id": "elf.unit.knome",
+			"previewUrl": "asset/img/preview/unit/elf/knome.jpg",
 			"models": [
 				{
 					"id": "elf.unit.knome.death",
@@ -27,6 +28,7 @@
 		},
 		{
 			"id": "elf.unit.battleowl",
+			"previewUrl": "asset/img/preview/unit/elf/battleowl.jpg",
 			"models": [
 				{
 					"id": "elf.unit.battleowl.death",
@@ -52,6 +54,7 @@
 		},
 		{
 			"id": "elf.unit.ranger",
+			"previewUrl": "asset/img/preview/unit/elf/ranger.jpg",
 			"models": [
 				{
 					"id": "elf.unit.ranger.death",
@@ -77,6 +80,7 @@
 		},
 		{
 			"id": "elf.unit.rockgolem",
+			"previewUrl": "asset/img/preview/unit/elf/rockgolem.jpg",
 			"models": [
 				{
 					"id": "elf.unit.rockgolem.death",

@@ -13,41 +13,58 @@ class SkyboxView extends View
 {
 	@:attr var selectedSkybox:String;
 	@:attr var isSkyboxLoadingInProgress:Bool;
+	@:attr var setSkyboxZOffset:Float->Void;
+	@:attr var setSkyboxRotation:Float->Void;
+	@:attr var setSkyboxScale:Float->Void;
 	@:attr var changeSkyBox:SkyboxAssetConfig->Void;
 
 	function render() '
-		<div class="lu_editor_skybox">
+		<div class="lu_editor__properties__container">
 			<div class="lu_title">
 				<i class="fas fa-cloud-moon lu_horizontal_offset"></i>Skybox settings
 			</div>
 			<div class="lu_editor__properties__block">
 				<div class="lu_bottom_offset">
-					<i class="fas fa-arrows-alt-v lu_right_offset"></i>Z-Offset
+					<i class="fas fa-arrows-alt-v lu_right_offset"></i>Vertical Offset
 				</div>
 				<Slider
-					min={0}
+					min={-100}
 					max={100}
-					startValue={50}
+					startValue={0}
 					step={1}
-					onChange={null}
+					onChange=$setSkyboxZOffset
 				/>
 			</div>
-			<div class="lu_editor__properties__block">
+			{/**<div class="lu_editor__properties__block">
 				<div class="lu_bottom_offset">
 					<i class="fas fa-sync-alt lu_right_offset"></i>Rotation
 				</div>
 				<Slider
 					min={0}
-					max={100}
-					startValue={50}
-					step={1}
-					onChange={null}
+					max={Math.PI * 2}
+					startValue={0}
+					step={Math.PI / 90}
+					onChange=$setSkyboxRotation
+				/>
+			</div>*/}
+			<div class="lu_editor__properties__block">
+				<div class="lu_bottom_offset">
+					<i class="fas fa-expand-alt lu_right_offset"></i>Scale
+				</div>
+				<Slider
+					min={0.1}
+					max={4}
+					startValue={1}
+					step={0.05}
+					onChange=$setSkyboxScale
 				/>
 			</div>
-			<div class="lu_editor__properties__block">
+			<div class="lu_editor__properties__block lu_editor__properties__block--header">
 				<div class="lu_bottom_offset">
 					<i class="fas fa-images lu_right_offset"></i>Select skybox
 				</div>
+			</div>
+			<div class="lu_editor__properties__block lu_editor__properties__block--content">
 				<div class="lu_editor_skybox__list">
 					<for {skybox in SkyboxData.config}>
 						<div class={"lu_editor_skybox__list_element"

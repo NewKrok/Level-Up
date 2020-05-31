@@ -746,6 +746,20 @@ class TerrainAssets
 				previewUrl: "asset/img/preview/terrain/grass/grass_basecolor.jpg",
 				textureUrl: "asset/texture/terrain/grass/grass_basecolor.jpg",
 				normalMapUrl: "asset/texture/terrain/grass/grass_normal.jpg"
+			},
+			{
+				id: "other.dark",
+				type: TerrainType.Other,
+				previewUrl: "asset/img/preview/terrain/other/dark.jpg",
+				textureUrl: "asset/texture/terrain/other/dark.jpg",
+				normalMapUrl: "asset/texture/terrain/other/dark.jpg"
+			},
+			{
+				id: "other.blueprint",
+				type: TerrainType.Other,
+				previewUrl: "asset/img/preview/terrain/other/blueprint.jpg",
+				textureUrl: "asset/texture/terrain/other/blueprint.jpg",
+				normalMapUrl: "asset/texture/terrain/other/blueprint.jpg"
 			}
 		];
 	}
