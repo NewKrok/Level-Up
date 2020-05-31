@@ -86,12 +86,17 @@ ul {
 }
 
 .lu_icon_button:hover {
-	background-color: #5E6161FF;
+	color: #FFFF00;
 }
 
 .lu_icon_button--selected {
 	color: #6afd75;
 	pointer-events: none;
+}
+
+.lu_icon_button--disabled {
+	pointer-events: none;
+	opacity: 0.3;
 }
 
 .lu_slider {

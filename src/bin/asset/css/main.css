@@ -48,6 +48,10 @@ a {
 	justify-content: space-evenly;
 }
 
+.lu_row--space_between {
+	justify-content: space-between;
+}
+
 .lu_col {
 	display: flex;
 	flex-direction: column;

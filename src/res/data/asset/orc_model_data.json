@@ -2,6 +2,7 @@
 	"groups":[
 		{
 			"id": "orc.unit.minion",
+			"previewUrl": "asset/img/preview/unit/orc/minion.jpg",
 			"models": [
 				{
 					"id": "orc.unit.minion.death",
@@ -27,6 +28,7 @@
 		},
 		{
 			"id": "orc.unit.bandwagon",
+			"previewUrl": "asset/img/preview/unit/orc/bandwagon.jpg",
 			"models": [
 				{
 					"id": "orc.unit.bandwagon.death",

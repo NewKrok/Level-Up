@@ -6,6 +6,15 @@
 	opacity: 1;
 	border-radius: 6px;
 	margin: 1px;
+	align-self: start;
+}
+
+.lu_editor_library__list_element--small {
+	width: 59px;
+}
+
+.lu_editor_library__list_element--large {
+	width: 115px;
 }
 
 .lu_editor_library__list_element:hover {
@@ -27,5 +36,5 @@
 .lu_editor_library__list_element__name {
 	width: 100%;
 	text-align: center;
-	font-size: 0.8em;
+	font-size: 0.7em;
 }

@@ -2,7 +2,7 @@
 	"units":[
 		{
 			"id": "crystalTower",
-			"name": "Crystal Tower",
+			"name": "Crystal Tower A",
 			"uniqueNames": [""],
 			"race": "neutral",
 			"icon": "asset/icon/neutral/unit/crystal_tower.jpg",
@@ -40,7 +40,7 @@
 		},
 		{
 			"id": "crystalTower2",
-			"name": "Crystal Tower Level 2",
+			"name": "Crystal Tower B",
 			"uniqueNames": [""],
 			"race": "neutral",
 			"icon": "asset/icon/neutral/unit/crystal_tower2.jpg",
@@ -79,7 +79,7 @@
 		},
 		{
 			"id": "crystalTower3",
-			"name": "Crystal Tower Level 3",
+			"name": "Crystal Tower C",
 			"uniqueNames": [""],
 			"race": "neutral",
 			"icon": "asset/icon/neutral/unit/crystal_tower3.jpg",

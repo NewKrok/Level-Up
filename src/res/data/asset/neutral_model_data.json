@@ -2,6 +2,7 @@
 	"groups":[
 		{
 			"id": "neutral.building.crystaltower",
+			"previewUrl": "asset/img/preview/unit/neutral/crystaltower_a.jpg",
 			"models": [
 				{
 					"id": "neutral.building.crystaltower.death",
@@ -27,6 +28,7 @@
 		},
 		{
 			"id": "neutral.building.crystaltower2",
+			"previewUrl": "asset/img/preview/unit/neutral/crystaltower_b.jpg",
 			"models": [
 				{
 					"id": "neutral.building.crystaltower2.death",
@@ -52,6 +54,7 @@
 		},
 		{
 			"id": "neutral.building.crystaltower3",
+			"previewUrl": "asset/img/preview/unit/neutral/crystaltower_c.jpg",
 			"models": [
 				{
 					"id": "neutral.building.crystaltower3.death",
