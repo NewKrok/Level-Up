@@ -1,9 +1,14 @@
 package levelup.editor.module.camera;
 
+import coconut.data.List;
+import coconut.Ui.hxx;
 import h3d.scene.Object;
+import levelup.core.camera.ActionCamera.CameraData;
 import levelup.editor.EditorModel.ToolState;
 import levelup.editor.EditorState.EditorCore;
 import levelup.editor.EditorState.EditorViewId;
+import levelup.editor.html.ConfirmationDialog;
+import tink.state.State;
 
 /**
  * ...
@@ -13,16 +18,16 @@ import levelup.editor.EditorState.EditorViewId;
 {
 	var core:EditorCore = _;
 
-	var model:CameraModel;
+	var cameras:State<List<CameraData>> = new State<List<CameraData>>(List.fromArray([]));
 	var cameraContainer:Object;
 
 	public function new()
 	{
-		model = new CameraModel();
-
 		core.registerView(EditorViewId.VCameraModule, CameraEditorView.fromHxx({
-			cameras: model.observables.cameras,
-			addCamera: createCamera,
+			cameras: cameras,
+			addCamera: addCamera,
+			removeCamera: removeCamera,
+			changeCamName: changeCamName,
 			jumpToCamera: cam -> {
 				core.camDistance = cam.camDistance;
 				core.camAngle = cam.camAngle;
@@ -43,27 +48,58 @@ import levelup.editor.EditorState.EditorViewId;
 			cameraContainer.visible = v == ToolState.CameraEditor;
 		});
 
-		model.addCameras(core.adventureConfig.worldConfig.cameras);
+		cameras.set(List.fromArray(core.adventureConfig.worldConfig.cameras));
 	}
 
-	function createCamera()
+	function addCamera()
 	{
-		var nameIndex = model.cameras.length;
+		var nameIndex = cameras.value.length;
 		var name = "Untitled Camera " + nameIndex;
-		while (model.cameras.length != 0 && model.cameras.toArray().filter(cam -> cam.name == name).length > 0)
+		while (cameras.value.length != 0 && cameras.value.toArray().filter(cam -> cam.name == name).length > 0)
 		{
 			nameIndex++;
 			name = "Untitled Camera " + nameIndex;
 		}
 
-		model.addCamera({
-			name: name,
-			position: core.s3d.camera.target.clone(),
-			camDistance: core.camDistance,
-			camAngle: core.camAngle,
-			camRotation: core.camRotation
-		});
+		cameras.set(
+			cameras.value.append({
+				name: name,
+				position: core.s3d.camera.target.clone(),
+				camDistance: core.camDistance,
+				camAngle: core.camAngle,
+				camRotation: core.camRotation
+			})
+		);
 	}
 
-	public function getCameras() return model.cameras;
+	function removeCamera(camName:String)
+	{
+		core.dialogManager.openDialog({view: new ConfirmationDialog({
+			question: hxx('<div class="lu_offset">Do you want to delete <span class="lu_highlight">$camName</span>?</div>'),
+			onAccept: () ->
+			{
+				core.dialogManager.closeCurrentDialog();
+				cameras.set(List.fromArray(cameras.value.toArray().filter(c -> return c.name != camName)));
+			},
+			onCancel: core.dialogManager.closeCurrentDialog
+		}).reactify()});
+	}
+
+	function changeCamName(camName:String, newCamName:String)
+	{
+		cameras.set(
+			List.fromArray(cameras.value.toArray().map(c -> return c.name == camName
+				? {
+					name: newCamName,
+					position: c.position,
+					camDistance: c.camDistance,
+					camAngle: c.camAngle,
+					camRotation: c.camRotation
+				}
+				: c
+			))
+		);
+	}
+
+	public function getCameras() return cameras.value.toArray();
 }

@@ -61,5 +61,7 @@ enum ToolState
 	WeatherEditor;
 	ScriptEditor;
 	UnitEditor;
+	SkillEditor;
+	ItemEditor;
 	TeamSettingsEditor;
 }

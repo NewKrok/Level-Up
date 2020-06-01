@@ -10,10 +10,14 @@
 	user-select: none;
 	cursor: pointer;
 	padding: 5px 10px;
+	transition: transform 0.1s ease-out;
+	transition-delay: 0.1s;
 }
 
 .lu_editor__tools__button:hover {
 	color: #FFFF00;
+	transform: scale(1.5);
+	transition-delay: 0s;
 }
 
 .lu_editor__tools__button--selected {

@@ -99,6 +99,22 @@ ul {
 	opacity: 0.3;
 }
 
+.lu_input {
+	background: #44382cb0;
+	position: relative;
+	cursor: pointer;
+	border: 1px solid rgba(255, 255, 255, 0.2);
+	border-radius: 3px;
+	color: #FFF;
+	padding: 5px 5px;
+	outline: none;
+}
+
+.lu_input:focus,
+.lu_input:active {
+	border: 1px solid rgba(255, 255, 255, 0.6);
+}
+
 .lu_slider {
 	background: #44382cb0;
 	position: relative;

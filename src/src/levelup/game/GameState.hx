@@ -324,7 +324,6 @@ typedef WorldConfig =
 	var skybox(default, never):SkyboxConfig;
 	@:optional var regions(default, never):Array<Region>;
 	@:optional var triggers(default, never):Array<Trigger>;
-	@:optional var cameras(default, never):Array<CameraData>;
 	@:optional var units(default, never):Array<InitialUnitData>;
 	@:optional var staticObjects(default, never):Array<StaticObjectConfig>;
 	@:optional var terrainLayers(default, never):Array<TerrainLayerInfo>;
@@ -336,6 +335,7 @@ typedef WorldConfig =
 	@:optional var nightColor(default, never):String;
 	@:optional var sunsetColor(default, never):String;
 	@:optional var dawnColor(default, never):String;
+	var cameras(default, never):Array<CameraData>;
 	var globalWeather(default, never):Int;
 }
 

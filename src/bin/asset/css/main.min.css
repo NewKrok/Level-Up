@@ -9,6 +9,7 @@ a{color:unset;text-decoration:none;}
 .lu_row--breakable{flex-wrap:wrap;}
 .lu_row--space_evenly{justify-content:space-evenly;}
 .lu_row--space_between{justify-content:space-between;}
+.lu_row--center{justify-content:center;}
 .lu_col{display:flex;flex-direction:column;}
 .lu_col--reverse{display:flex;flex-direction:column-reverse;}
 .lu_fill{width:100%;height:100%;}

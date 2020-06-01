@@ -58,13 +58,21 @@ class EditorTools extends View
 			state: ToolState.UnitEditor,
 		},
 		{
+			icon: "fas fa-book-medical",
+			state: ToolState.SkillEditor,
+		},
+		{
+			icon: "fas fa-box-open",
+			state: ToolState.ItemEditor,
+		},
+		{
 			icon: "fas fa-code",
 			state: ToolState.ScriptEditor,
 		}
 	];
 
 	function render() '
-		<div class="lu_row lu_editor__tools">
+		<div class="lu_row lu_row--center lu_editor__tools">
 			<for {tool in tools}>
 				<div
 				class={"lu_editor__tools__button" + (toolState == tool.state ? " lu_editor__tools__button--selected" : "")}

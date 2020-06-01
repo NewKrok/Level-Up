@@ -1,0 +1,8 @@
+.lu_editor_camera__add_button{cursor:pointer;user-select:none;display:flex;justify-content:center;align-items:center;font-size:0.9em;color:#FFF;}
+.lu_editor_camera__add_button:hover{background-color:#FFFFFF11;}
+.lu_editor_camera__edit_button{cursor:pointer;user-select:none;color:#FFF;}
+.lu_editor_camera__edit_button:hover{color:#FFFF00;}
+.lu_editor_camera__remove_button{cursor:pointer;user-select:none;color:#f93535;}
+.lu_editor_camera__remove_button:hover{color:#FFFF00;}
+.lu_editor_camera__list{display:flex;flex-direction:column;}
+.lu_editor_camera__list_element{user-select:none;padding:5px 0;cursor:pointer;}

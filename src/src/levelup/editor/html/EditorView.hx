@@ -60,6 +60,9 @@ class EditorView extends View
 					<case {ToolState.RegionEditor}> {getModuleView(EditorViewId.VRegionModule)}
 					<case {ToolState.CameraEditor}> {getModuleView(EditorViewId.VCameraModule)}
 					<case {ToolState.ScriptEditor}> {getModuleView(EditorViewId.VScriptModule)}
+					<case {ToolState.UnitEditor}> {getModuleView(EditorViewId.VUnitEditorModule)}
+					<case {ToolState.SkillEditor}> {getModuleView(EditorViewId.VSkillEditorModule)}
+					<case {ToolState.ItemEditor}> {getModuleView(EditorViewId.VItemEditorModule)}
 
 					<case {ToolState.Library}>
 						<EditorLibrary

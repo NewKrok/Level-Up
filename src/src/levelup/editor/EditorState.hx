@@ -48,12 +48,15 @@ import levelup.editor.html.NewAdventureDialog;
 import levelup.editor.module.camera.CameraModule;
 import levelup.editor.module.dayandnight.DayAndNightModule;
 import levelup.editor.module.heightmap.HeightMapModule;
+import levelup.editor.module.itemeditor.ItemEditorModule;
 import levelup.editor.module.region.RegionModule;
 import levelup.editor.module.script.ScriptModule;
+import levelup.editor.module.skilleditor.SkillEditorModule;
 import levelup.editor.module.skybox.SkyboxModule;
 import levelup.editor.module.teamsettings.TeamSettingsModule;
 import levelup.editor.module.terrain.TerrainChooser;
 import levelup.editor.module.terrain.TerrainModule;
+import levelup.editor.module.uniteditor.UnitEditorModule;
 import levelup.editor.module.weather.WeatherModule;
 import levelup.editor.module.worldsettings.WorldSettingsModule;
 import levelup.game.GameState;
@@ -440,6 +443,9 @@ class EditorState extends Base2dState
 		modules.push(cast new RegionModule(cast this));
 		modules.push(cast new ScriptModule(cast this));
 		modules.push(cast new CameraModule(cast this));
+		modules.push(cast new UnitEditorModule(cast this));
+		modules.push(cast new SkillEditorModule(cast this));
+		modules.push(cast new ItemEditorModule(cast this));
 
 		editorUi = new EditorView(
 		{
@@ -1216,7 +1222,7 @@ class EditorState extends Base2dState
 			dawnColor: model.dawnColor,
 			globalWeather: watherModule.getGlobalWeather(),
 			regions: regions,
-			cameras: cameraModule.getCameras().toArray(),
+			cameras: cameraModule.getCameras(),
 			triggers: model.triggers,
 			units: units,
 			staticObjects: staticObjects,
@@ -1340,6 +1346,9 @@ enum EditorViewId
 	VWeatherModule;
 	VScriptModule;
 	VTeamSettingsModule;
+	VUnitEditorModule;
+	VSkillEditorModule;
+	VItemEditorModule;
 }
 
 typedef EditorCore =
