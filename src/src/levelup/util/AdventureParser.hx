@@ -88,32 +88,21 @@ class AdventureParser
 		}];
 
 		// TODO remove it
-		/*rawWorldConfig.triggers = [
+		rawWorldConfig.triggers = [
 			{
 				id: "initial",
 				isEnabled: true,
 				events: [TriggerEvent.OnInit],
 				condition: null,
 				actions: [
-					TriggerAction.SetGlobalVariable("camDirection", VariableDefinition.Value("Untitled Camera 0")),
-					//TriggerAction.JumpCameraToCamera(PlayerId.Player1, VariableDefinition.GetGlobalVariable("camDirection"))
-				]
-			},
-			{
-				id: "camera-loop",
-				isEnabled: true,
-				events: [TriggerEvent.OnInit, TriggerEvent.TimePeriodic(10)],
-				condition: null,
-				actions: [
-					TriggerAction.IfElse(ConditionDefinition.Equal(VariableDefinition.Value("Untitled Camera 0"), VariableDefinition.GetGlobalVariable("camDirection")), [
-						TriggerAction.SetGlobalVariable("camDirection", VariableDefinition.Value("Untitled Camera 1"))
-					], [
-						TriggerAction.SetGlobalVariable("camDirection", VariableDefinition.Value("Untitled Camera 0"))
-					]),
-					TriggerAction.AnimateCameraToCamera(PlayerId.Player1, VariableDefinition.GetGlobalVariable("camDirection"), VariableDefinition.Value(10), VariableDefinition.Value("quad-ease-in-out"))
+					TriggerAction.JumpCameraToCamera(PlayerId.Player1, VariableDefinition.Value("InitialCamera")),
+					TriggerAction.AnimateCameraToCamera(PlayerId.Player1, VariableDefinition.Value("IdleCamera"), VariableDefinition.Value(5), VariableDefinition.Value("linear")),
+					TriggerAction.Wait(VariableDefinition.Value(5)),
+					TriggerAction.StartCameraShake(VariableDefinition.Value(0.5), VariableDefinition.Value(5))
 				]
 			}
-
+		];
+/*
 			{
 				id: "initial",
 				isEnabled: true,

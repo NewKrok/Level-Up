@@ -427,9 +427,12 @@ enum TriggerAction {
 	IfElse(condition:ConditionDefinition, ifActions:Array<TriggerAction>, elseActions:Array<TriggerAction>);
 	SetLocalVariable(name:String, value:VariableDefinition);
 	SetGlobalVariable(name:String, value:VariableDefinition);
+	Wait(time:VariableDefinition);
 	JumpCameraToUnit(player:PlayerId, unit:UnitDefinition);
 	JumpCameraToCamera(player:PlayerId, camera:VariableDefinition);
 	AnimateCameraToCamera(player:PlayerId, camera:VariableDefinition, time:VariableDefinition, ease:VariableDefinition);
+	StartCameraShake(amplitude:VariableDefinition, time:VariableDefinition);
+	StopCameraShake;
 	SelectUnit(player:PlayerId, unit:UnitDefinition);
 	CreateUnit(unitId:String, owner:PlayerId, position:PositionDefinition);
 	AttackMoveToRegion(unit:UnitDefinition, position:PositionDefinition);

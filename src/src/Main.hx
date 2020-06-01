@@ -79,13 +79,13 @@ class Main extends Base2dApp
 				LanguageUtil.loadLanguage().handle(function (o):Void switch(o)
 				{
 					case Success(_):
-						//changeState(MainMenuState, [s3d, cast this]);
+						changeState(MainMenuState, [s3d, cast this]);
 						//changeState(EditorState, [stage, s3d, SaveUtil.editorData.customAdventures[0], cast this]);
 
-						Browser.window.fetch("data/level/mainmenu/main_menu_elf_theme.json").then(res -> res.text()).then(res -> {
+						/*Browser.window.fetch("data/level/mainmenu/main_menu_elf_theme.json").then(res -> res.text()).then(res -> {
 							changeState(EditorState, [stage, s3d, res, cast this]);
 							onResize();
-						});
+						});*/
 
 						onResize();
 

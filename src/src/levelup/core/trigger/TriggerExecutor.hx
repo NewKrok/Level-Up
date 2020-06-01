@@ -1,5 +1,6 @@
 package levelup.core.trigger;
 
+import com.greensock.TweenMax;
 import hpp.heaps.HppG;
 import hpp.util.GeomUtil.SimplePoint;
 import levelup.core.camera.ActionCamera;
@@ -100,8 +101,10 @@ class TriggerExecutor
 	{
 		var localVariables:Map<String, Dynamic> = [];
 
-		for (a in actions)
+		for (i in 0...actions.length)
 		{
+			var a = actions[i];
+
 			if (a != null)
 			{
 				switch(a)
@@ -112,6 +115,10 @@ class TriggerExecutor
 					case RunTrigger(id): for (t in triggers) if (t.id == id) { runTrigger(t); break; }
 					case SetLocalVariable(name, variable): localVariables.set(name, resolveVariableDefinition(variable, localVariables));
 					case SetGlobalVariable(name, variable): globalVariables.set(name, resolveVariableDefinition(variable, localVariables));
+
+					case Wait(time):
+						TweenMax.delayedCall(resolveVariableDefinition(time, localVariables), runActions.bind(actions.slice(i + 1), p));
+						break;
 
 					case IfElse(condition, ifActions, elseActions):
 						if (resolveConditionDefinition(condition, localVariables)) runActions(ifActions, p);
@@ -165,6 +172,9 @@ class TriggerExecutor
 							);
 						}
 					}
+
+					case StartCameraShake(amplitude, time): camera.startCameraShake(resolveVariableDefinition(amplitude, localVariables), resolveVariableDefinition(time, localVariables));
+					case StopCameraShake: camera.stopCameraShake();
 
 					case SelectUnit(playerId, unitDefinition):
 					{

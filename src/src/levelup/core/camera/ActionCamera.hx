@@ -1,5 +1,6 @@
 package levelup.core.camera;
 
+import com.greensock.TweenMax;
 import h3d.Camera;
 import h3d.Vector;
 import hpp.util.GeomUtil.SimplePoint;
@@ -23,6 +24,7 @@ import motion.easing.Linear;
 	public var camDistance:Float = 40;
 
 	var camAnimationPosition:{ x:Float, y:Float, z:Float } = { x: 0, y: 0, z: 0 };
+	var cameraPositionModifier:{ x:Float, y:Float, z:Float } = { x: 0, y: 0, z: 0 };
 	var currentCamDistance:Float = 0;
 	var hasCameraAnimation:Bool = false;
 	var camAnimationResult:Result;
@@ -58,11 +60,11 @@ import motion.easing.Linear;
 		var newDistance = currentCamDistance * Math.cos(camAngle);
 
 		camera.pos.set(
-			currentCameraPoint.x + newDistance * Math.sin(camRotation),
-			currentCameraPoint.y + newDistance * Math.cos(camRotation),
-			(hasCameraAnimation || cameraTarget == null)
+			currentCameraPoint.x + newDistance * Math.sin(camRotation) + cameraPositionModifier.x,
+			currentCameraPoint.y + newDistance * Math.cos(camRotation) + cameraPositionModifier.y,
+			((hasCameraAnimation || cameraTarget == null)
 				? currentCamDistance * Math.sin(camAngle)
-				: currentCamDistance * Math.sin(camAngle)
+				: currentCamDistance * Math.sin(camAngle)) + cameraPositionModifier.z
 		);
 	}
 
@@ -143,6 +145,24 @@ import motion.easing.Linear;
 		update(0);
 	}
 
+	public function startCameraShake(amplitude, time) shakeRoutine(amplitude, time);
+
+	private function shakeRoutine(amplitude, time)
+	{
+		TweenMax.to(cameraPositionModifier, time, {
+			x: Math.random() * (amplitude * 2) - amplitude,
+			y: Math.random() * (amplitude * 2) - amplitude,
+			z: Math.random() * (amplitude * 2) - amplitude,
+			onComplete: shakeRoutine.bind(amplitude, time),
+			ease: com.greensock.easing.Linear.easeNone
+		});
+	}
+
+	public function stopCameraShake()
+	{
+		TweenMax.killTweensOf(cameraPositionModifier);
+	}
+
 	public function setCameraTarget(target)
 	{
 		currentCamDistance = camDistance;
@@ -153,6 +173,7 @@ import motion.easing.Linear;
 	{
 		Actuate.stop(this);
 		Actuate.stop(camAnimationPosition);
+		stopCameraShake();
 	}
 }
 
