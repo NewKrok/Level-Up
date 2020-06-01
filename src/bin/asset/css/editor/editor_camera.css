@@ -12,23 +12,21 @@
 	background-color: #FFFFFF11;
 }
 
-.lu_editor_camera__edit_button {
+.lu_editor_camera__action_button {
 	cursor: pointer;
 	user-select: none;
 	color: #FFF;
 }
 
-.lu_editor_camera__edit_button:hover {
+.lu_editor_camera__action_button:hover {
 	color: #FFFF00;
 }
 
-.lu_editor_camera__remove_button {
-	cursor: pointer;
-	user-select: none;
+.lu_editor_camera__action_button--remove {
 	color: #f93535;
 }
 
-.lu_editor_camera__remove_button:hover {
+.lu_editor_camera__action_button--remove:hover {
 	color: #FFFF00;
 }
 
@@ -41,4 +39,9 @@
 	user-select: none;
 	padding: 5px 0;
 	cursor: pointer;
+	border-bottom: 1px solid #FFFFFF11;
+}
+
+.lu_editor_camera__list_element:hover {
+	color: #FFFF00;
 }

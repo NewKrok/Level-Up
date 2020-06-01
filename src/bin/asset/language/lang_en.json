@@ -31,6 +31,17 @@
 		"Test Run": "Test Run",
 		"Normal": "Normal",
 		"Snowfall": "Snowfall",
-		"Rain": "Rain"
+		"Rain": "Rain",
+		"Camera editor": "Camera editor",
+		"Add Camera": "Add Camera",
+		"editor.camera.noCamDescription": "You don't have any camera yet. {highlight_start}You can add it with the \"Add Camera\" button{highlight_end}.",
+		"editor.camera.info": "Cameras are useful for defining custom view points in the map which will enable for you for example to create an in-game cinematics for your game.",
+		"Cameras": "Cameras",
+		"Untitled Camera": "Untitled Camera",
+		"editor.camera.deleteWarning": "Do you want to delete {highlight_start}{camName}{highlight_end}?",
+		"editor.camera.updateWarning": "Do you want to update {highlight_start}{camName}{highlight_end} with the current camera state?",
+		"Warning": "Warning",
+		"Yes": "Yes",
+		"No": "No"
 	}
 }

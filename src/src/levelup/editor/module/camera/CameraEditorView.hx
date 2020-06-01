@@ -2,13 +2,13 @@ package levelup.editor.module.camera;
 
 import coconut.ui.View;
 import coconut.data.List;
-import com.greensock.TweenMax;
+import hpp.util.Language;
 import hxd.Key;
+import js.Browser;
 import js.html.InputElement;
 import js.html.KeyboardEvent;
 import levelup.core.camera.ActionCamera.CameraData;
-
-using StringTools;
+import levelup.util.LanguageUtil;
 
 /**
  * ...
@@ -18,6 +18,7 @@ class CameraEditorView extends View
 {
 	@:skipCheck @:attr var cameras:List<CameraData>;
 	@:attr var addCamera:Void->Void;
+	@:attr var updateCamera:String->Void;
 	@:attr var removeCamera:String->Void;
 	@:attr var jumpToCamera:CameraData->Void;
 	@:attr var changeCamName:String->String->Void;
@@ -32,26 +33,26 @@ class CameraEditorView extends View
 		return hxx('
 			<div class="lu_editor__properties__container">
 				<div class="lu_title">
-					<i class="fas fa-video lu_horizontal_offset"></i>Camera editor
+					<i class="fas fa-video lu_horizontal_offset"></i>{Language.get("Camera editor")}
 				</div>
 				<div class="lu_editor__properties__block lu_editor_camera__add_button" onclick=$addCamera>
-					<i class="fas fa-plus-circle lu_right_offset"></i> Add Camera
+					<i class="fas fa-plus-circle lu_right_offset"></i>{Language.get("Add Camera")}
 				</div>
 				<div class="lu_editor__properties__block">
 					<if {cameras.length == 0}>
 						<div class="lu_offset">
-							You don\'t have any camera yet. <span class="lu_highlight">You can add it with the "Add Camera" button</span>.
+							{LanguageUtil.replaceGeneralPlaceHolders("editor.camera.noCamDescription")}
 						</div>
 						<div class="lu_offset">
-							<i class="fas fa-info-circle"></i> Cameras are useful for defining custom view points in the map which will enable for you for example to create an in-game cinematics for your game.
+							<i class="fas fa-info-circle lu_right_offset"></i>{Language.get("editor.camera.info")}
 						</div>
 					<else>
 						<div class="lu_bottom_offset">
-							<i class="fas fa-list lu_right_offset"></i>Cameras
+							<i class="fas fa-list lu_right_offset"></i>{Language.get("Cameras")}
 						</div>
 						<div class="lu_editor_camera__list">
 							<for {c in cameras}>
-								<div onClick={jumpToCamera(c)} class="lu_editor_camera__list_element lu_row lu_row--space_between">
+								<div onClick={jumpToCamera(c)} onDoubleClick={selectCamForNameChange.bind(c.name)} class="lu_editor_camera__list_element lu_row lu_row--space_between">
 									<if {c.name == selectedCamera}>
 										<input
 											class="lu_input"
@@ -67,8 +68,9 @@ class CameraEditorView extends View
 										{c.name}
 									</if>
 									<div class="lu_row">
-										<i class="fas fa-edit lu_editor_camera__edit_button lu_right_offset" onclick={e -> { selectedCamera = c.name; newCamName = c.name; TweenMax.delayedCall(0.1, inputFocus); }}></i>
-										<i class="fas fa-trash lu_editor_camera__remove_button" onclick={e -> removeCamera(c.name)}></i>
+										<i class="fas fa-edit lu_editor_camera__action_button lu_right_offset" onclick={selectCamForNameChange.bind(c.name)}></i>
+										<i class="fas fa-sync-alt lu_editor_camera__action_button lu_right_offset" onclick={e -> { e.stopPropagation(); updateCamera(c.name);}}></i>
+										<i class="fas fa-trash lu_editor_camera__action_button lu_editor_camera__action_button--remove" onclick={e -> removeCamera(c.name)}></i>
 									</div>
 								</div>
 							</for>
@@ -77,6 +79,13 @@ class CameraEditorView extends View
 				</div>
 			</div>
 		');
+	}
+
+	function selectCamForNameChange(camName)
+	{
+		selectedCamera = camName;
+		newCamName = camName;
+		Browser.window.requestAnimationFrame(_ -> inputFocus());
 	}
 
 	function inputFocus() if (selectedInput != null) selectedInput.focus();

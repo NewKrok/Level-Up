@@ -3,11 +3,13 @@ package levelup.editor.module.camera;
 import coconut.data.List;
 import coconut.Ui.hxx;
 import h3d.scene.Object;
+import hpp.util.Language;
 import levelup.core.camera.ActionCamera.CameraData;
 import levelup.editor.EditorModel.ToolState;
 import levelup.editor.EditorState.EditorCore;
 import levelup.editor.EditorState.EditorViewId;
 import levelup.editor.html.ConfirmationDialog;
+import levelup.util.LanguageUtil;
 import tink.state.State;
 
 /**
@@ -26,6 +28,7 @@ import tink.state.State;
 		core.registerView(EditorViewId.VCameraModule, CameraEditorView.fromHxx({
 			cameras: cameras,
 			addCamera: addCamera,
+			updateCamera: updateCamera,
 			removeCamera: removeCamera,
 			changeCamName: changeCamName,
 			jumpToCamera: cam -> {
@@ -54,11 +57,11 @@ import tink.state.State;
 	function addCamera()
 	{
 		var nameIndex = cameras.value.length;
-		var name = "Untitled Camera " + nameIndex;
+		var name = Language.get("Untitled Camera") + " " + nameIndex;
 		while (cameras.value.length != 0 && cameras.value.toArray().filter(cam -> cam.name == name).length > 0)
 		{
 			nameIndex++;
-			name = "Untitled Camera " + nameIndex;
+			name = Language.get("Untitled Camera") + " " + nameIndex;
 		}
 
 		cameras.set(
@@ -75,7 +78,7 @@ import tink.state.State;
 	function removeCamera(camName:String)
 	{
 		core.dialogManager.openDialog({view: new ConfirmationDialog({
-			question: hxx('<div class="lu_offset">Do you want to delete <span class="lu_highlight">$camName</span>?</div>'),
+			question: LanguageUtil.replaceGeneralPlaceHolders("editor.camera.deleteWarning", "lu_offset", ["{camName}" => camName]),
 			onAccept: () ->
 			{
 				core.dialogManager.closeCurrentDialog();
@@ -99,6 +102,30 @@ import tink.state.State;
 				: c
 			))
 		);
+	}
+
+	function updateCamera(camName:String)
+	{
+		core.dialogManager.openDialog({view: new ConfirmationDialog({
+			question: LanguageUtil.replaceGeneralPlaceHolders("editor.camera.updateWarning", "lu_offset", ["{camName}" => camName]),
+			onAccept: () ->
+			{
+				core.dialogManager.closeCurrentDialog();
+				cameras.set(
+					List.fromArray(cameras.value.toArray().map(c -> return c.name == camName
+						? {
+							name: camName,
+							position: core.s3d.camera.target.clone(),
+							camDistance: core.camDistance,
+							camAngle: core.camAngle,
+							camRotation: core.camRotation
+						}
+						: c
+					))
+				);
+			},
+			onCancel: core.dialogManager.closeCurrentDialog
+		}).reactify()});
 	}
 
 	public function getCameras() return cameras.value.toArray();

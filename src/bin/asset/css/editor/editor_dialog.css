@@ -31,6 +31,10 @@
 	height: 50%;
 }
 
+.lu_edialog__content--small {
+	width: 30%;
+}
+
 .lu_dialog_close {
 	position: absolute;
 	right: 7px;

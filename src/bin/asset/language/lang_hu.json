@@ -31,6 +31,17 @@
 		"Test Run": "Tesztfutás",
 		"Normal": "Normál",
 		"Snowfall": "Hóesés",
-		"Rain": "Eső"
+		"Rain": "Eső",
+		"Camera editor": "Kamera szerkesztő",
+		"Add Camera": "Kamera hozzáadás",
+		"editor.camera.noCamDescription": "Jelenleg nincs egy kamerád se. {highlight_start}Készíts egyet a \"Kamera hozzáadás\" gombbal{highlight_end}.",
+		"editor.camera.info": "A kamerák hasznosak hogy saját nézőpontot hozz létre a térképen amiket például felhasználhatsz arra hogy játékbeli videókat készíts",
+		"Cameras": "Kamerák",
+		"Untitled Camera": "Névtelen Kamera",
+		"editor.camera.deleteWarning": "Biztosan törölni szeretnéd {highlight_start}{camName}{highlight_end}?",
+		"editor.camera.updateWarning": "Biztosan szeretnéd felülírni {highlight_start}{camName}{highlight_end} értékeit a jelenlegi kamera értékeivel?",
+		"Warning": "Figyelem",
+		"Yes": "Igen",
+		"No": "Nem"
 	}
 }
