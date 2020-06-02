@@ -1,6 +1,7 @@
 package levelup.game;
 
 import h2d.Anim;
+import h2d.Bitmap;
 import h2d.Tile;
 import h3d.Matrix;
 import h3d.Quat;
@@ -98,7 +99,7 @@ class GameWorld extends World
 	public var skybox:Mesh;
 
 	var shadow:DefaultShadowMap;
-	var shadowColor:Vector = new Vector(0.4, 0.4, 0.4);
+	var shadowColor:Vector = new Vector(0.6, 0.6, 0.6);
 	var sunAndMoon:DirLight;
 	var moonLight:DirLight;
 	var sunObj:Mesh;
@@ -113,6 +114,7 @@ class GameWorld extends World
 	var isDayTimeEnabled:Bool = true;
 
 	var globalWeather:GpuParticles;
+	var fadeFilter:h2d.Object;
 
 	public function new(s3d:Scene, size:SimplePoint, worldConfig:WorldConfig, blockSize:Float, chunkSize:Int, worldSize:Int, ?autoCollect = true)
 	{
@@ -189,11 +191,11 @@ class GameWorld extends World
 		moonObj.material.receiveShadows = false;
 
 		setDayColor(worldConfig.dayColor);
-		setNightColor(worldConfig.dayColor);
-		setSunsetColor(worldConfig.dayColor);
-		setDawnColor(worldConfig.dayColor);
-		setTime(worldConfig.startingTime);
+		setNightColor(worldConfig.nightColor);
+		setSunsetColor(worldConfig.sunsetColor);
+		setDawnColor(worldConfig.dawnColor);
 		setSunAndMoonOffsetPercent(worldConfig.sunAndMoonOffsetPercent);
+		setTime(worldConfig.startingTime);
 
 		addWeatherEffects();
 	}
@@ -433,6 +435,8 @@ class GameWorld extends World
 	{
 		sunAngle = Math.PI * 2 * (time / 24) - Math.PI / 2;
 		if (sunAngle < 0) sunAngle = Math.PI * 2 + sunAngle;
+		if (sunAngle > Math.PI * 2) sunAngle -= Math.PI * 2;
+		updateDayTime(0);
 	}
 
 	public function disableDayTime():Void isDayTimeEnabled = false;
@@ -466,7 +470,7 @@ class GameWorld extends World
 	{
 		var now = Date.now().getTime();
 
-		updateDayTime(d);
+		if (!worldConfig.hasFixedWorldTime || !isDayTimeEnabled) updateDayTime(d);
 
 		var isRerouteNeeded = isWorldGraphDirty && now - lastRerouteTime >= 3000;
 		if (isRerouteNeeded) lastRerouteTime = now;
@@ -480,6 +484,16 @@ class GameWorld extends World
 
 		for (p in projectiles) p.update(d);
 		for (o in staticObjects) o.instance.z = GeomUtil3D.getHeightByPosition(heightGrid, o.instance.x, o.instance.y) + o.zOffset;
+
+		if (fadeFilter != null)
+		{
+			var fadeBmp:Bitmap = cast fadeFilter.getChildAt(0);
+			if (fadeBmp.width != HppG.stage2d.width || fadeBmp.height != HppG.stage2d.height)
+			{
+				fadeBmp.width = HppG.stage2d.width;
+				fadeBmp.height = HppG.stage2d.height;
+			}
+		}
 
 		resetWorldWeight();
 		calculateUnitInteractions(d);
@@ -558,7 +572,7 @@ class GameWorld extends World
 		moonObj.y = size.x / 2 + size.y * 0.6 * Math.cos(moonObjAngle);
 		moonObj.z = size.y * 0.6 * Math.sin(moonObjAngle);
 
-		if (isDayTimeEnabled)
+		if (isDayTimeEnabled && !worldConfig.hasFixedWorldTime)
 		{
 			sunAngle += d * dayTimeSpeed;
 			if (sunAngle > Math.PI * 2) sunAngle -= Math.PI * 2;
@@ -717,6 +731,22 @@ class GameWorld extends World
 		}
 	}
 
+	public function addFadeFilter(fadeFilter)
+	{
+		disposeFadeFilter();
+
+		this.fadeFilter = fadeFilter;
+	}
+
+	public function disposeFadeFilter()
+	{
+		if (fadeFilter != null)
+		{
+			fadeFilter.remove();
+			fadeFilter = null;
+		}
+	}
+
 	function disposeSkybox()
 	{
 		if (skybox != null)
@@ -731,6 +761,7 @@ class GameWorld extends World
 	{
 		super.dispose();
 
+		disposeFadeFilter();
 		disposeSkybox();
 
 		for (i in 0...units.length)

@@ -1,6 +1,9 @@
 package levelup.core.trigger;
 
 import com.greensock.TweenMax;
+import h2d.Bitmap;
+import h2d.Object;
+import h2d.Tile;
 import hpp.heaps.HppG;
 import hpp.util.GeomUtil.SimplePoint;
 import levelup.core.camera.ActionCamera;
@@ -125,40 +128,36 @@ class TriggerExecutor
 						else runActions(elseActions, p);
 
 					case JumpCameraToUnit(playerId, unitDefinition):
-					{
 						// TODO Define own player id, it could be different during multiplayer games
 						if (playerId == PlayerId.Player1)
 						{
 							var unit:BaseUnit = resolveUnitDefinition(unitDefinition, localVariables);
 							camera.jumpCamera(unit.view.x, unit.view.y);
 						}
-					}
 
 					case JumpCameraToCamera(playerId, cameraName):
-					{
 						// TODO Define own player id, it could be different during multiplayer games
 						if (playerId == PlayerId.Player1)
 						{
 							var resolvedCameraName = resolveVariableDefinition(cameraName, localVariables);
 							var selectedCamera = cameras.filter(r -> return r.name == resolvedCameraName)[0];
-							camera.camDistance = selectedCamera.camDistance;
-							camera.camAngle = selectedCamera.camAngle;
-							camera.camRotation = selectedCamera.camRotation;
 							camera.jumpCamera(
 								selectedCamera.position.x,
 								selectedCamera.position.y,
 								selectedCamera.position.z
 							);
+							camera.camDistance = selectedCamera.camDistance;
+							camera.camAngle = selectedCamera.camAngle;
+							camera.camRotation = selectedCamera.camRotation;
 						}
-					}
 
 					case AnimateCameraToCamera(playerId, cameraName, time, ease):
-					{
 						// TODO Define own player id, it could be different during multiplayer games
 						if (playerId == PlayerId.Player1)
 						{
 							var resolvedCameraName = resolveVariableDefinition(cameraName, localVariables);
 							var selectedCamera = cameras.filter(r -> return r.name == resolvedCameraName)[0];
+							// TODO use tweenmax instead of actuate
 							camera.animateCameraTo(
 								selectedCamera,
 								resolveVariableDefinition(time, localVariables),
@@ -171,16 +170,62 @@ class TriggerExecutor
 								}
 							);
 						}
-					}
 
-					case StartCameraShake(amplitude, time): camera.startCameraShake(resolveVariableDefinition(amplitude, localVariables), resolveVariableDefinition(time, localVariables));
-					case StopCameraShake: camera.stopCameraShake();
+					case StartCameraShake(playerId, amplitude, time, ease):
+						// TODO Define own player id, it could be different during multiplayer games
+						if (playerId == PlayerId.Player1)
+						{
+							camera.startCameraShake(
+								resolveVariableDefinition(amplitude, localVariables),
+								resolveVariableDefinition(time, localVariables),
+								switch(resolveVariableDefinition(ease, localVariables))
+								{
+									case "quad-ease-out": com.greensock.easing.Quad.easeOut;
+									case "quad-ease-in-out": com.greensock.easing.Quad.easeInOut;
+									case "quad-ease-in": com.greensock.easing.Quad.easeIn;
+									case _: com.greensock.easing.Linear.easeNone;
+								}
+							);
+						}
+
+					// TODO Define own player id, it could be different during multiplayer games
+					case StopCameraShake(playerId): if (playerId == PlayerId.Player1) camera.stopCameraShake();
+
+					case FadeOut(playerId, color, time):
+						// TODO Define own player id, it could be different during multiplayer games
+						if (playerId == PlayerId.Player1)
+						{
+							world.disposeFadeFilter();
+							var filterContainer:Object = new Object(s2d);
+							var filter:Bitmap = new Bitmap(Tile.fromColor(resolveVariableDefinition(color, localVariables)), filterContainer);
+							filter.width = HppG.stage2d.width;
+							filter.height = HppG.stage2d.height;
+							TweenMax.to(filterContainer, resolveVariableDefinition(time, localVariables), {
+								alpha: 0,
+								onComplete: world.disposeFadeFilter
+							});
+							world.addFadeFilter(filterContainer);
+						}
+
+					case FadeIn(playerId, color, time):
+						// TODO Define own player id, it could be different during multiplayer games
+						if (playerId == PlayerId.Player1)
+						{
+							world.disposeFadeFilter();
+							var filterContainer:Object = new Object(s2d);
+							var filter:Bitmap = new Bitmap(Tile.fromColor(resolveVariableDefinition(color, localVariables)), filterContainer);
+							filter.width = HppG.stage2d.width;
+							filter.height = HppG.stage2d.height;
+							filterContainer.alpha = 0;
+							TweenMax.to(filterContainer, resolveVariableDefinition(time, localVariables), {
+								alpha: 1
+							});
+							world.addFadeFilter(filterContainer);
+						}
 
 					case SelectUnit(playerId, unitDefinition):
-					{
 						// TODO Define own player id, it could be different during multiplayer games
 						//if (playerId == PlayerId.Player1) selectUnit(resolveUnitDefinition(unitDefinition, localVariables));
-					}
 
 					case CreateUnit(unitId, owner, positionDefinition):
 						var position = resolvePositionDefinition(positionDefinition);
@@ -204,6 +249,7 @@ class TriggerExecutor
 	function resolveConditionDefinition(conditionDefinition, localVariables:Map<String, Dynamic>):Dynamic return switch(conditionDefinition)
 	{
 		case Equal(v1, v2): return resolveVariableDefinition(v1, localVariables) == resolveVariableDefinition(v2, localVariables);
+		case NotEqual(v1, v2): return resolveVariableDefinition(v1, localVariables) != resolveVariableDefinition(v2, localVariables);
 	}
 
 	function resolveVariableDefinition(variableDefinition, localVariables:Map<String, Dynamic>):Dynamic return switch(variableDefinition)
@@ -217,6 +263,18 @@ class TriggerExecutor
 	function resolveMathDefinition(mathDefinition, localVariables:Map<String, Dynamic>) return switch (mathDefinition)
 	{
 		case Multiply(v1, v2): return resolveVariableDefinition(v1, localVariables) * resolveVariableDefinition(v2, localVariables);
+		case Division(v1, v2): return resolveVariableDefinition(v1, localVariables) / resolveVariableDefinition(v2, localVariables);
+		case Addition(v1, v2): return resolveVariableDefinition(v1, localVariables) + resolveVariableDefinition(v2, localVariables);
+		case Subtraction(v1, v2): return resolveVariableDefinition(v1, localVariables) - resolveVariableDefinition(v2, localVariables);
+		case ATan2(v1, v2): return Math.atan2(resolveVariableDefinition(v1, localVariables), resolveVariableDefinition(v2, localVariables));
+		case Cos(radians): return Math.cos(resolveVariableDefinition(radians, localVariables));
+		case Sin(radians): return Math.sin(resolveVariableDefinition(radians, localVariables));
+		case Tan(radians): return Math.tan(resolveVariableDefinition(radians, localVariables));
+		case Sqrt(v): return Math.sqrt(resolveVariableDefinition(v, localVariables));
+		case Floor(v): return Math.floor(resolveVariableDefinition(v, localVariables));
+		case Ceil(v): return Math.ceil(resolveVariableDefinition(v, localVariables));
+		case Round(v): return Math.round(resolveVariableDefinition(v, localVariables));
+		case Random: return Math.random();
 	}
 
 	function resolveUnitDefinition(unitDefinition, localVariables:Map<String, Dynamic>) return switch(unitDefinition)
@@ -283,84 +341,3 @@ class TriggerExecutor
 
 	}
 }
-/*
-typedef Trigger =
-{
-	var id:String;
-	var isEnabled:Bool;
-	var events:Array<TriggerEvent>;
-	var condition:TriggerCondition;
-	var actions:Array<TriggerAction>;
-}
-
-enum TriggerEvent {
-	OnInit;
-	EnterRegion(region:Region);
-	TimeElapsed(time:Float);
-	TimePeriodic(time:Float);
-}
-
-typedef TriggerParams =
-{
-	var triggeringUnit:BaseUnit;
-}
-
-enum TriggerCondition {
-	OwnerOf(unit:UnitDefinition, player:PlayerId);
-}
-
-enum UnitDefinition {
-	TriggeringUnit;
-	LastCreatedUnit;
-	GetUnit(definition:GetUnitDefinition);
-	GetLocalVariable(name:String);
-}
-
-enum GetUnitDefinition {
-	UnitOfPlayer(player:PlayerId, filter:Filter);
-}
-
-enum Filter {
-	Index(value:Int);
-}
-
-enum TriggerAction {
-	Log(message:VariableDefinition);
-	LoadLevel(levelName:String);
-	EnableTrigger(id:String);
-	RunTrigger(id:String);
-	IfElse(condition:ConditionDefinition, ifActions:Array<TriggerAction>, elseActions:Array<TriggerAction>);
-	SetLocalVariable(name:String, value:VariableDefinition);
-	SetGlobalVariable(name:String, value:VariableDefinition);
-	JumpCameraToUnit(player:PlayerId, unit:UnitDefinition);
-	JumpCameraToCamera(player:PlayerId, camera:VariableDefinition);
-	AnimateCameraToCamera(player:PlayerId, camera:VariableDefinition, time:VariableDefinition, ease:VariableDefinition);
-	SelectUnit(player:PlayerId, unit:UnitDefinition);
-	CreateUnit(unitId:String, owner:PlayerId, position:PositionDefinition);
-	AttackMoveToRegion(unit:UnitDefinition, position:PositionDefinition);
-}
-
-enum VariableDefinition {
-	Value(value:Dynamic);
-	GetGlobalVariable(variableName:String);
-	GetLocalVariable(variableName:String);
-	MathOperation(value:MathDefinition);
-}
-
-enum ConditionDefinition {
-	Equal(var1:VariableDefinition, var2:VariableDefinition);
-}
-
-enum MathDefinition {
-	Multiply(var1:VariableDefinition, var2:VariableDefinition);
-}
-
-enum PositionDefinition {
-	RegionPosition(value:RegionPositionDefinition);
-	WorldPoint(position:SimplePoint);
-}
-
-enum RegionPositionDefinition {
-	CenterOf(regionId:String);
-	RandomPointOf(regionId:String);
-}*/

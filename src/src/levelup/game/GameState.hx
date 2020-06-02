@@ -322,6 +322,8 @@ typedef AdventureConfig =
 typedef WorldConfig =
 {
 	var skybox(default, never):SkyboxConfig;
+	var hasFixedWorldTime(default, never):Bool;
+	var startingTime(default, never):Float;
 	@:optional var regions(default, never):Array<Region>;
 	@:optional var triggers(default, never):Array<Trigger>;
 	@:optional var units(default, never):Array<InitialUnitData>;
@@ -329,7 +331,6 @@ typedef WorldConfig =
 	@:optional var terrainLayers(default, never):Array<TerrainLayerInfo>;
 	@:optional var heightMap(default, never):String;
 	@:optional var editorLastCamPosition(default, never):Vector;
-	@:optional var startingTime(default, never):Float;
 	@:optional var sunAndMoonOffsetPercent(default, never):Float;
 	@:optional var dayColor(default, never):String;
 	@:optional var nightColor(default, never):String;
@@ -431,8 +432,10 @@ enum TriggerAction {
 	JumpCameraToUnit(player:PlayerId, unit:UnitDefinition);
 	JumpCameraToCamera(player:PlayerId, camera:VariableDefinition);
 	AnimateCameraToCamera(player:PlayerId, camera:VariableDefinition, time:VariableDefinition, ease:VariableDefinition);
-	StartCameraShake(amplitude:VariableDefinition, time:VariableDefinition);
-	StopCameraShake;
+	StartCameraShake(player:PlayerId, amplitude:VariableDefinition, time:VariableDefinition, ease:VariableDefinition);
+	StopCameraShake(player:PlayerId);
+	FadeIn(player:PlayerId, color:VariableDefinition, time:VariableDefinition);
+	FadeOut(player:PlayerId, color:VariableDefinition, time:VariableDefinition);
 	SelectUnit(player:PlayerId, unit:UnitDefinition);
 	CreateUnit(unitId:String, owner:PlayerId, position:PositionDefinition);
 	AttackMoveToRegion(unit:UnitDefinition, position:PositionDefinition);
@@ -446,11 +449,24 @@ enum VariableDefinition {
 }
 
 enum ConditionDefinition {
-	Equal(var1:VariableDefinition, var2:VariableDefinition);
+	Equal(v1:VariableDefinition, v2:VariableDefinition);
+	NotEqual(v1:VariableDefinition, v2:VariableDefinition);
 }
 
 enum MathDefinition {
-	Multiply(var1:VariableDefinition, var2:VariableDefinition);
+	Multiply(v1:VariableDefinition, v2:VariableDefinition);
+	Division(v1:VariableDefinition, v2:VariableDefinition);
+	Addition(v1:VariableDefinition, v2:VariableDefinition);
+	Subtraction(v1:VariableDefinition, v2:VariableDefinition);
+	ATan2(v1:VariableDefinition, v2:VariableDefinition);
+	Cos(radians:VariableDefinition);
+	Sin(radians:VariableDefinition);
+	Tan(radians:VariableDefinition);
+	Sqrt(v:VariableDefinition);
+	Floor(v:VariableDefinition);
+	Ceil(v:VariableDefinition);
+	Round(v:VariableDefinition);
+	Random;
 }
 
 enum PositionDefinition {

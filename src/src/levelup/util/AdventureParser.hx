@@ -39,7 +39,6 @@ class AdventureParser
 
 		var neededModelGroups:Array<String> = [];
 
-		var startingTime = rawWorldConfig.startingTime == null ? 12 : rawWorldConfig.startingTime;
 		var sunAndMoonOffsetPercent = rawWorldConfig.sunAndMoonOffsetPercent == null ? 20 : rawWorldConfig.sunAndMoonOffsetPercent;
 		var dayColor = rawWorldConfig.dayColor == null ? "#E0E0E0" : rawWorldConfig.dayColor;
 		var nightColor = rawWorldConfig.nightColor == null ? "#333399" : rawWorldConfig.nightColor;
@@ -96,9 +95,10 @@ class AdventureParser
 				condition: null,
 				actions: [
 					TriggerAction.JumpCameraToCamera(PlayerId.Player1, VariableDefinition.Value("InitialCamera")),
-					TriggerAction.AnimateCameraToCamera(PlayerId.Player1, VariableDefinition.Value("IdleCamera"), VariableDefinition.Value(5), VariableDefinition.Value("linear")),
-					TriggerAction.Wait(VariableDefinition.Value(5)),
-					TriggerAction.StartCameraShake(VariableDefinition.Value(0.5), VariableDefinition.Value(5))
+					TriggerAction.FadeOut(PlayerId.Player1, VariableDefinition.Value(0x000000), VariableDefinition.Value(2)),
+					TriggerAction.AnimateCameraToCamera(PlayerId.Player1, VariableDefinition.Value("IdleCamera"), VariableDefinition.Value(2), VariableDefinition.Value("quad-ease-in-out")),
+					TriggerAction.Wait(VariableDefinition.Value(2)),
+					TriggerAction.StartCameraShake(PlayerId.Player1, VariableDefinition.Value(1), VariableDefinition.Value(5), VariableDefinition.Value("quad-ease-in-out")),
 				]
 			}
 		];
@@ -224,7 +224,8 @@ class AdventureParser
 			size: rawData.size,
 			worldConfig: {
 				skybox: rawWorldConfig.skybox,
-				startingTime: startingTime,
+				startingTime: rawWorldConfig.startingTime == null ? 12 : rawWorldConfig.startingTime,
+				hasFixedWorldTime: rawWorldConfig.hasFixedWorldTime == null ? false : rawWorldConfig.hasFixedWorldTime,
 				sunAndMoonOffsetPercent: sunAndMoonOffsetPercent,
 				dayColor: dayColor,
 				nightColor: nightColor,

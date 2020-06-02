@@ -34,7 +34,14 @@ import motion.easing.Linear;
 
 	public function update(d:Float)
 	{
-		if (hasCameraAnimation || cameraTarget == null)
+		if (hasCameraAnimation)
+		{
+			currentCameraPoint.x = camAnimationPosition.x;
+			currentCameraPoint.y = camAnimationPosition.y;
+			currentCameraPoint.z = camAnimationPosition.z;
+			currentCamDistance = camDistance;
+		}
+		else if (cameraTarget == null)
 		{
 			currentCameraPoint.x = camAnimationPosition.x;
 			currentCameraPoint.y = camAnimationPosition.y;
@@ -145,16 +152,16 @@ import motion.easing.Linear;
 		update(0);
 	}
 
-	public function startCameraShake(amplitude, time) shakeRoutine(amplitude, time);
+	public function startCameraShake(amplitude, time, ease) shakeRoutine(amplitude, time, ease);
 
-	private function shakeRoutine(amplitude, time)
+	private function shakeRoutine(amplitude, time, ease)
 	{
 		TweenMax.to(cameraPositionModifier, time, {
 			x: Math.random() * (amplitude * 2) - amplitude,
 			y: Math.random() * (amplitude * 2) - amplitude,
 			z: Math.random() * (amplitude * 2) - amplitude,
-			onComplete: shakeRoutine.bind(amplitude, time),
-			ease: com.greensock.easing.Linear.easeNone
+			onComplete: shakeRoutine.bind(amplitude, time, ease),
+			ease: ease
 		});
 	}
 

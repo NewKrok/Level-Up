@@ -1131,6 +1131,8 @@ class EditorState extends Base2dState
 				scale: 1,
 			},
 			globalWeather: 0,
+			startingTime: 12,
+			hasFixedWorldTime: false,
 			regions: [],
 			cameras: [],
 			triggers: [],
@@ -1207,6 +1209,7 @@ class EditorState extends Base2dState
 			height: cast(r.instance.primitive, Grid).height
 		}];
 
+		var worldSettingsModule = cast(getModule(WorldSettingsModule), WorldSettingsModule);
 		var skyboxModule = cast(getModule(SkyboxModule), SkyboxModule);
 		var cameraModule = cast(getModule(CameraModule), CameraModule);
 		var watherModule = cast(getModule(WeatherModule), WeatherModule);
@@ -1214,6 +1217,7 @@ class EditorState extends Base2dState
 		var worldConfig:WorldConfig =
 		{
 			skybox: skyboxModule.getSkyboxData(),
+			hasFixedWorldTime: worldSettingsModule.getHasFixedWorldTime(),
 			startingTime: model.startingTime,
 			sunAndMoonOffsetPercent: model.sunAndMoonOffsetPercent,
 			dayColor: model.dayColor,
