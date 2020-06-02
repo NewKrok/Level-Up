@@ -49,6 +49,7 @@ import levelup.editor.module.camera.CameraModule;
 import levelup.editor.module.dayandnight.DayAndNightModule;
 import levelup.editor.module.heightmap.HeightMapModule;
 import levelup.editor.module.itemeditor.ItemEditorModule;
+import levelup.editor.module.library.EditorLibraryModule;
 import levelup.editor.module.region.RegionModule;
 import levelup.editor.module.script.ScriptModule;
 import levelup.editor.module.skilleditor.SkillEditorModule;
@@ -443,6 +444,7 @@ class EditorState extends Base2dState
 		modules.push(cast new RegionModule(cast this));
 		modules.push(cast new ScriptModule(cast this));
 		modules.push(cast new CameraModule(cast this));
+		modules.push(cast new EditorLibraryModule(cast this, createPreview));
 		modules.push(cast new UnitEditorModule(cast this));
 		modules.push(cast new SkillEditorModule(cast this));
 		modules.push(cast new ItemEditorModule(cast this));
@@ -470,12 +472,6 @@ class EditorState extends Base2dState
 			}),
 			save: save,
 			testRun: () -> HppG.changeState(GameState, [stage, s3d, save(), cf, { isTestRun: true }]),
-			previewRequest: createPreview,
-			environmentsList: List.fromArray(Asset.environment),
-			propsList: List.fromArray(Asset.props),
-			buildingList: List.fromArray(Asset.buildings),
-			unitsList: List.fromArray(Asset.units),
-			selectedWorldAsset: selectedWorldAsset,
 			model: model,
 			getModuleView: getModuleView
 		});
@@ -701,7 +697,9 @@ class EditorState extends Base2dState
 					cameraObject.x += 5 * Math.sin(camRotation - Math.PI / 2);
 					cameraObject.y += 5 * Math.cos(camRotation - Math.PI / 2);
 
-				case Key.SPACE if (previewInstance != null): editorUi.removeSelection();
+				case Key.SPACE if (previewInstance != null):
+					var libraryModule = cast(getModule(EditorLibraryModule), EditorLibraryModule);
+					libraryModule.removeSelection();
 
 				case Key.ESCAPE if (selectedWorldAsset.value != null): selectedWorldAsset.set(null);
 
@@ -709,7 +707,8 @@ class EditorState extends Base2dState
 					var now = Date.now().getTime();
 					if (now - lastEscPressTime < 500)
 					{
-						editorUi.removeSelection();
+						var libraryModule = cast(getModule(EditorLibraryModule), EditorLibraryModule);
+						libraryModule.removeSelection();
 						return;
 					}
 					lastEscPressTime = now;
@@ -1120,7 +1119,7 @@ class EditorState extends Base2dState
 	function createNewAdventureRawData(data:InitialAdventureData)
 	{
 		var rawHeightMap = new BitmapData(Std.int(data.size.x), Std.int(data.size.y));
-		rawHeightMap.fill(0, 0, Std.int(data.size.x), Std.int(data.size.y), 0x888888FF);
+		rawHeightMap.fill(0, 0, Std.int(data.size.x), Std.int(data.size.y), 0x666666);
 
 		var worldConfig:WorldConfig =
 		{
@@ -1347,6 +1346,7 @@ enum EditorViewId
 	VDayAndNightModule;
 	VRegionModule;
 	VCameraModule;
+	VEditorLibraryModule;
 	VWeatherModule;
 	VScriptModule;
 	VTeamSettingsModule;

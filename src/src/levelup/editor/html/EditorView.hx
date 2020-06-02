@@ -3,14 +3,9 @@ package levelup.editor.html;
 import coconut.ui.RenderResult;
 import coconut.ui.View;
 import levelup.Asset.AssetConfig;
-import levelup.TerrainAssets.TerrainConfig;
 import levelup.component.FpsView;
 import levelup.editor.EditorModel;
-import levelup.editor.EditorState.AssetItem;
 import levelup.editor.EditorState.EditorViewId;
-import levelup.editor.component.editortools.EditorTools;
-import levelup.editor.html.EditorLibrary;
-import tink.pure.List;
 
 /**
  * ...
@@ -22,19 +17,9 @@ class EditorView extends View
 	@:attr var save:Void->Void;
 	@:attr var createNewAdventure:Void->Void;
 	@:attr var testRun:Void->Void;
-	@:attr var previewRequest:AssetConfig->Void;
 	@:attr var model:EditorModel;
 	@:attr var getModuleView:EditorViewId->RenderResult;
 
-	@:skipCheck @:attr var environmentsList:List<AssetConfig>;
-	@:skipCheck @:attr var propsList:List<AssetConfig>;
-	@:skipCheck @:attr var buildingList:List<AssetConfig>;
-	@:skipCheck @:attr var unitsList:List<AssetConfig>;
-	@:skipCheck @:attr var selectedWorldAsset:AssetItem;
-
-	@:state var selectedRightMenu:Int = 0;
-
-	@:ref var editorLibrary:EditorLibrary;
 	@:ref var snapGridInfo:SnapGridInfo;
 
 	function render() '
@@ -59,18 +44,11 @@ class EditorView extends View
 					<case {ToolState.HeightMapEditor}> {getModuleView(EditorViewId.VHeightMapModule)}
 					<case {ToolState.RegionEditor}> {getModuleView(EditorViewId.VRegionModule)}
 					<case {ToolState.CameraEditor}> {getModuleView(EditorViewId.VCameraModule)}
+					<case {ToolState.Library}> {getModuleView(EditorViewId.VEditorLibraryModule)}
 					<case {ToolState.ScriptEditor}> {getModuleView(EditorViewId.VScriptModule)}
 					<case {ToolState.UnitEditor}> {getModuleView(EditorViewId.VUnitEditorModule)}
 					<case {ToolState.SkillEditor}> {getModuleView(EditorViewId.VSkillEditorModule)}
 					<case {ToolState.ItemEditor}> {getModuleView(EditorViewId.VItemEditorModule)}
-
-					<case {ToolState.Library}>
-						<EditorLibrary
-							ref={editorLibrary}
-							previewRequest={previewRequest}
-							onPlayerSelect={id -> model.selectedPlayer = id}
-							selectedPlayer={model.observables.selectedPlayer}
-						/>
 
 					<case {_}>
 				</switch>
@@ -93,6 +71,5 @@ class EditorView extends View
 		</div>
 	';
 
-	public function removeSelection() editorLibrary.removeSelection();
 	public function increaseSnap() snapGridInfo.increaseSnap();
 }

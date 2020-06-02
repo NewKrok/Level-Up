@@ -12,27 +12,7 @@ import levelup.UnitData.RaceId;
  */
 class Asset
 {
-	static public function getAsset(id)
-	{
-		var foundEnvElements = environment.filter(function (e) { return e.id == id; });
-		if (foundEnvElements != null && foundEnvElements.length > 0) return foundEnvElements[0];
-
-		var foundPropElements = props.filter(function (e) { return e.id == id; });
-		if (foundPropElements != null && foundPropElements.length > 0) return foundPropElements[0];
-
-		var foundBuildingElements = buildings.filter(function (e) { return e.id == id; });
-		if (foundBuildingElements != null && foundBuildingElements.length > 0) return foundBuildingElements[0];
-
-		var foundUnitElements = units.filter(function (e) { return e.id == id; });
-		if (foundUnitElements != null && foundUnitElements.length > 0) return foundUnitElements[0];
-
-		return null;
-	}
-
-	static public var environment(default, null):Array<AssetConfig> = [];
-	static public var props(default, null):Array<AssetConfig> = [];
-	static public var buildings(default, null):Array<AssetConfig> = [];
-	static public var units(default, null):Array<AssetConfig> = [];
+	// TODO remove this class
 }
 
 typedef AssetConfig = {

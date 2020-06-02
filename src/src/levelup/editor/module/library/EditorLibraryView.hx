@@ -1,4 +1,4 @@
-package levelup.editor.html;
+package levelup.editor.module.library;
 
 import coconut.ui.View;
 import js.html.SelectElement;
@@ -14,9 +14,11 @@ using StringTools;
  * ...
  * @author Krisztian Somoracz
  */
-class EditorLibrary extends View
+class EditorLibraryView extends View
 {
 	@:attr var previewRequest:AssetConfig->Void;
+	@:attr var selectedRace:RaceId;
+	@:attr var setSelectedRace:RaceId->Void;
 	@:attr var onPlayerSelect:PlayerId->Void;
 	@:attr var selectedPlayer:PlayerId;
 
@@ -52,7 +54,6 @@ class EditorLibrary extends View
 
 	@:state var itemSize:Int = 1;
 	@:state var selectedListIndex:Int = 0;
-	@:state var selectedRace:RaceId = RaceId.Human;
 	@:skipCheck @:state var selectedAsset:AssetConfig = null;
 
 	function render() '
@@ -70,7 +71,7 @@ class EditorLibrary extends View
 				</select>
 
 				<if {selectedListIndex == 0}>
-					<select class="lu_form__select lu_fill_width lu_vertical_offset" onchange={e -> selectedRace = cast(e.currentTarget, SelectElement).value}>
+					<select class="lu_form__select lu_fill_width lu_vertical_offset" onchange={e -> setSelectedRace(cast(e.currentTarget, SelectElement).value)}>
 						<option selected={selectedRace == RaceId.Human} value="human">({UnitData.humanCount}) Human</option>
 						<option selected={selectedRace == RaceId.Elf} value="elf">({UnitData.elfCount}) Elf</option>
 						<option selected={selectedRace == RaceId.Orc} value="orc">({UnitData.orcCount}) Orc</option>

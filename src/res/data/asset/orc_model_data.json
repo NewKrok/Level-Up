@@ -28,7 +28,7 @@
 		},
 		{
 			"id": "orc.unit.grunt",
-			"previewUrl": "asset/img/preview/unit/orc/_grunt.jpg",
+			"previewUrl": "asset/img/preview/unit/orc/grunt.jpg",
 			"models": [
 				{
 					"id": "orc.unit.grunt.death",
@@ -79,6 +79,84 @@
 			]
 		},
 		{
+			"id": "orc.unit.berserker",
+			"previewUrl": "asset/img/preview/unit/orc/berserker.jpg",
+			"models": [
+				{
+					"id": "orc.unit.berserker.death",
+					"url": "asset/model/orc/unit/berserker/DeathAnim.hmd"
+				},
+				{
+					"id": "orc.unit.berserker.idle",
+					"url": "asset/model/orc/unit/berserker/IdleAnim.hmd"
+				},
+				{
+					"id": "orc.unit.berserker.walk",
+					"url": "asset/model/orc/unit/berserker/WalkAnim.hmd"
+				},
+				{
+					"id": "orc.unit.berserker.attack",
+					"url": "asset/model/orc/unit/berserker/Attack01Anim.hmd"
+				}
+			],
+			"textures": [
+				{"id": "model/character/orc/Albedo.jpg", "url": "asset/model/orc/unit/Albedo.jpg"},
+				{"id": "model/character/orc/ForPainting2_lambert1_Normal.jpg", "url": "asset/model/orc/unit/ForPainting2_lambert1_Normal.jpg"}
+			]
+		},
+		{
+			"id": "orc.unit.warrock",
+			"previewUrl": "asset/img/preview/unit/orc/warrock.jpg",
+			"models": [
+				{
+					"id": "orc.unit.warrock.death",
+					"url": "asset/model/orc/unit/warrock/DeathAnim.hmd"
+				},
+				{
+					"id": "orc.unit.warrock.idle",
+					"url": "asset/model/orc/unit/warrock/IdleAnim.hmd"
+				},
+				{
+					"id": "orc.unit.warrock.walk",
+					"url": "asset/model/orc/unit/warrock/WalkAnim.hmd"
+				},
+				{
+					"id": "orc.unit.warrock.attack",
+					"url": "asset/model/orc/unit/warrock/Attack01Anim.hmd"
+				}
+			],
+			"textures": [
+				{"id": "model/character/orc/Albedo.jpg", "url": "asset/model/orc/unit/Albedo.jpg"},
+				{"id": "model/character/orc/ForPainting2_lambert1_Normal.jpg", "url": "asset/model/orc/unit/ForPainting2_lambert1_Normal.jpg"}
+			]
+		},
+		{
+			"id": "orc.unit.hogrider",
+			"previewUrl": "asset/img/preview/unit/orc/hogrider.jpg",
+			"models": [
+				{
+					"id": "orc.unit.hogrider.death",
+					"url": "asset/model/orc/unit/hogrider/DeathAnim.hmd"
+				},
+				{
+					"id": "orc.unit.hogrider.idle",
+					"url": "asset/model/orc/unit/hogrider/IdleAnim.hmd"
+				},
+				{
+					"id": "orc.unit.hogrider.walk",
+					"url": "asset/model/orc/unit/hogrider/WalkAnim.hmd"
+				},
+				{
+					"id": "orc.unit.hogrider.attack",
+					"url": "asset/model/orc/unit/hogrider/Attack01Anim.hmd"
+				}
+			],
+			"textures": [
+				{"id": "model/character/orc/Albedo.jpg", "url": "asset/model/orc/unit/Albedo.jpg"},
+				{"id": "model/character/orc/ForPainting2_lambert1_Normal.jpg", "url": "asset/model/orc/unit/ForPainting2_lambert1_Normal.jpg"}
+			]
+		},
+		{
 			"id": "orc.unit.bandwagon",
 			"previewUrl": "asset/img/preview/unit/orc/bandwagon.jpg",
 			"models": [
@@ -97,6 +175,32 @@
 				{
 					"id": "orc.unit.bandwagon.attack",
 					"url": "asset/model/orc/unit/bandwagon/Attack01Anim.hmd"
+				}
+			],
+			"textures": [
+				{"id": "model/character/orc/Albedo.jpg", "url": "asset/model/orc/unit/Albedo.jpg"},
+				{"id": "model/character/orc/ForPainting2_lambert1_Normal.jpg", "url": "asset/model/orc/unit/ForPainting2_lambert1_Normal.jpg"}
+			]
+		},
+		{
+			"id": "orc.unit.drake",
+			"previewUrl": "asset/img/preview/unit/orc/drake.jpg",
+			"models": [
+				{
+					"id": "orc.unit.drake.death",
+					"url": "asset/model/orc/unit/drake/DeathAnim.hmd"
+				},
+				{
+					"id": "orc.unit.drake.idle",
+					"url": "asset/model/orc/unit/drake/IdleAnim.hmd"
+				},
+				{
+					"id": "orc.unit.drake.walk",
+					"url": "asset/model/orc/unit/drake/FlyAnim.hmd"
+				},
+				{
+					"id": "orc.unit.drake.attack",
+					"url": "asset/model/orc/unit/drake/Attack01Anim.hmd"
 				}
 			],
 			"textures": [
