@@ -20,7 +20,7 @@ Editor
 
 ## TODO - general
 - Fix for some render issues like some unit has a black "shadow"
-- Add missing Human, Orc, Elf, Undead characters
+- Add missing Human, Elf, Undead characters
 - Team based colorization
 - Fix z-index render problem when the camera distance is to big
 - Fix "shadow-jump" bug during Day/Night change
@@ -38,12 +38,10 @@ Editor
 ## TODO - Adventure editor
 - Add missing preview images (Is it possible to generate it like the heightmap?)
 - Script editor
-- Weather editor
 - Unit editor
 - Team editor
 - Pathfinding editor
 - Define map sizes
-- Possibility to change the cam view angle
 - Fix asset selection - there is a problem with colliders
 - etc...
 
@@ -53,7 +51,6 @@ Editor
 - Fix paint bug when the position is locked - after mouse up
 
 ## TODO - Camera editor
-- Possibility to modify/delete/rename cameras
 - Create cam preview 3d object
 - Undo / Redo functionality
 
@@ -62,7 +59,6 @@ Editor
 
 ## TODO - Day and Night settings
 - Possibility to set the exact duration of a day like 1 day is 5 mins
-- Add ambient color which multiply the current color with the selected one
 - Undo / Redo functionality
 
 ## TODO - Region editor
