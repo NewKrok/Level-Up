@@ -22,7 +22,7 @@ import tink.state.State;
 	public function new()
 	{
 		// TODO remove selectedPlayer from the editor model
-		var view = new EditorLibraryView({
+		view = new EditorLibraryView({
 			previewRequest: previewRequest,
 			selectedRace: selectedRace,
 			setSelectedRace: v -> selectedRace.set(v),

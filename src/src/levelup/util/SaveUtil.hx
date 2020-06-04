@@ -23,7 +23,8 @@ class SaveUtil
 	{
 		var defaultAppData:SavedAppData = {
 			graphics: {
-				resolutionQuality: 1
+				resolutionQuality: 1,
+				textureQuality: 1
 			},
 			sound: {
 				masterVolume: 0.8,
@@ -42,6 +43,7 @@ class SaveUtil
 			}
 		};
 		appData = Save.load(defaultAppData, savedAppDataName);
+		if (appData.graphics.textureQuality == null) appData.graphics.textureQuality = 1;
 
 		var defaultGameData:SavedGameData = {
 		};
@@ -51,6 +53,7 @@ class SaveUtil
 			showGrid: true,
 			customAdventures: []
 		};
+
 		editorData = Save.load(defaultEditorData, savedEditorDataName);
 	}
 
@@ -75,6 +78,7 @@ typedef SavedAppData = {
 
 typedef VideoSettings = {
 	var resolutionQuality:Float;
+	var textureQuality:Int;
 }
 
 typedef SoundSettings = {

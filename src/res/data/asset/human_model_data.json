@@ -1,0 +1,30 @@
+{
+	"groups":[
+		{
+			"id": "human.unit.archer",
+			"previewUrl": "asset/img/preview/unit/human/archer.jpg",
+			"models": [
+				{
+					"id": "human.unit.archer.death",
+					"url": "asset/model/human/unit/archer/DeathAnim.hmd"
+				},
+				{
+					"id": "human.unit.archer.idle",
+					"url": "asset/model/human/unit/archer/IdleAnim.hmd"
+				},
+				{
+					"id": "human.unit.archer.walk",
+					"url": "asset/model/human/unit/archer/WalkAnim.hmd"
+				},
+				{
+					"id": "human.unit.archer.attack",
+					"url": "asset/model/human/unit/archer/Attack01Anim.hmd"
+				}
+			],
+			"textures": [
+				{"id": "model/character/human/BaseColorTex_q1.jpg", "url": "asset/model/human/unit/BaseColorTex_q1.jpg"},
+				{"id": "model/character/human/NormalTex_q1.jpg", "url": "asset/model/human/unit/NormalTex_q1.jpg"}
+			]
+		}
+	]
+}

@@ -22,6 +22,7 @@ class SettingsView extends View
 	@:attr var onTextLanguageChange:Void->Void;
 
 	@:state var selectedResolutionQuality:Float = 0.0;
+	@:state var selectedTextureQuality:Int = 1;
 	@:state var selectedShowFPS:Bool = false;
 	@:state var selectedMenuBackground:Int = 0;
 	@:state var selectedTextLanguage:Int = 0;
@@ -38,6 +39,7 @@ class SettingsView extends View
 	override function viewDidMount()
 	{
 		selectedResolutionQuality = SaveUtil.appData.graphics.resolutionQuality;
+		selectedTextureQuality = SaveUtil.appData.graphics.textureQuality;
 		selectedShowFPS = SaveUtil.appData.gameplay.showFPS;
 		selectedMenuBackground = SaveUtil.appData.gameplay.menuBackground == "main_menu_elf_theme" ? 0 : 1;
 		selectedTextLanguage = SaveUtil.appData.language.textLanguage == LanguageKey.English ? 0 : 1;
@@ -66,6 +68,20 @@ class SettingsView extends View
 								<option selected={selectedResolutionQuality == 0.75} value="0.75">{Language.get("Medium")}</option>
 								<option selected={selectedResolutionQuality == 1} value="1">{Language.get("High")}</option>
 							</select>
+						</div>
+						<div class="lu_main_menu_settings__entry lu_row">
+							<div class="lu_right_offset">{Language.get("Texture quality")}</div>
+							<if {isMenuBackgroundInLoadingState}>
+								<div class="lu_form__select lu_disabled">
+									{Language.get("loading...")}
+								</div>
+							<else>
+								<select onChange=$setTextureQuality class="lu_form__select">
+									<option selected={selectedTextureQuality == 0} value="0">{Language.get("Low")}</option>
+									<option selected={selectedTextureQuality == 1} value="1">{Language.get("Medium")}</option>
+									<option selected={selectedTextureQuality == 2} value="2">{Language.get("High")}</option>
+								</select>
+							</if>
 						</div>
 
 					<case {2}>
@@ -120,6 +136,16 @@ class SettingsView extends View
 			Math.floor(Browser.window.innerWidth * SaveUtil.appData.graphics.resolutionQuality),
 			Math.floor(Browser.window.innerHeight * SaveUtil.appData.graphics.resolutionQuality)
 		);
+	}
+
+	function setTextureQuality(e:Event)
+	{
+		var element:SelectElement = cast e.currentTarget;
+		SaveUtil.appData.graphics.textureQuality = selectedTextureQuality = Std.parseInt(element.value);
+
+		AssetCache.instance.setTextureQuality(selectedTextureQuality);
+
+		onMenuBackgroundChange(); // To force relload the background
 	}
 
 	function setShowFPS(e:Event)

@@ -56,6 +56,8 @@ class Main extends Base2dApp
 
 		//Engine.ANTIALIASING = SaveUtil.gameData.app.antialias;
 
+		assetCache.setTextureQuality(SaveUtil.appData.graphics.textureQuality);
+
 		SkyboxData.addData(Json.parse(Res.data.asset.skybox_data.entry.getText()));
 
 		ProjectileAnimationData.addData(Json.parse(Res.data.asset.projectile_animation_data.entry.getText()));
@@ -66,6 +68,9 @@ class Main extends Base2dApp
 
 		UnitData.addData(Json.parse(Res.data.asset.neutral_unit_data.entry.getText()));
 		assetCache.addData(Json.parse(Res.data.asset.neutral_model_data.entry.getText()));
+
+		UnitData.addData(Json.parse(Res.data.asset.human_unit_data.entry.getText()));
+		assetCache.addData(Json.parse(Res.data.asset.human_model_data.entry.getText()));
 
 		UnitData.addData(Json.parse(Res.data.asset.elf_unit_data.entry.getText()));
 		assetCache.addData(Json.parse(Res.data.asset.elf_model_data.entry.getText()));

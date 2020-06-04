@@ -18,6 +18,8 @@ import h3d.mat.Texture;
 import h3d.prim.Sphere;
 import tink.state.State;
 
+using StringTools;
+
 /**
  * ...
  * @author Krisztian Somoracz
@@ -32,6 +34,8 @@ class AssetCache
 	private var textureDirectory:Map<String, Texture> = new Map<String, Texture>();
 	private var imageDirectory:Map<String, Image> = new Map<String, Image>();
 
+	private var textureQuality:Int = 1;
+
 	private var isLoadingInProgress:Bool;
 
 	private var totalAssetCount = 0;
@@ -42,6 +46,8 @@ class AssetCache
 	public var loadPercentage:State<Float> = new State<Float>(0);
 
 	public function new() instance = this;
+
+	public function setTextureQuality(q) textureQuality = Std.int(Math.min(Math.max(q, 0), 2));
 
 	public function addData(rawData:Dynamic)
 	{
@@ -174,7 +180,10 @@ class AssetCache
 
 		var loadRoutine = t ->
 		{
-			var loader = new BinaryLoader(t.data.url);
+			var url:String = t.data.url;
+			var hasMultiplyTexture = url.indexOf("_q1") > -1;
+
+			var loader = new BinaryLoader(hasMultiplyTexture ? url.replace("_q1", "_q" + textureQuality) : url);
 			loader.onError = e -> result.trigger(Failure(e));
 			loader.load();
 			loader.onLoaded = data -> onLoaded(data, t);
@@ -261,7 +270,7 @@ class AssetCache
 			if (loadedTextureCount == list.length) result.trigger(Success(Noise));
 		}
 
-		var loadRoutine = t ->
+		var loadRoutine = (t) ->
 		{
 			var loader = new BinaryLoader(t);
 			loader.onError = e -> result.trigger(Failure(e));
@@ -269,7 +278,10 @@ class AssetCache
 			loader.onLoaded = data -> onLoaded(data, t);
 		}
 
-		for (t in list) loadRoutine(t);
+		for (t in list)
+		{
+			loadRoutine(t);
+		}
 
 		return result;
 	}
