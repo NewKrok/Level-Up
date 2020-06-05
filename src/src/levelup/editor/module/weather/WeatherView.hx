@@ -15,7 +15,7 @@ class WeatherView extends View
 	function render() '
 		<div class="lu_editor__properties__container">
 			<div class="lu_title">
-				<i class="fas fa-cloud lu_horizontal_offset"></i>Weather
+				<i class="fas fa-cloud lu_right_offset"></i>Weather
 			</div>
 			<div class="lu_editor__properties__block">
 				<div class="lu_bottom_offset">

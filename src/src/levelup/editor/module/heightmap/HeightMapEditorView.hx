@@ -37,7 +37,7 @@ class HeightMapEditorView extends View
 	function render() '
 		<div class="lu_editor__properties__container">
 			<div class="lu_title">
-				<i class="fas fa-map lu_horizontal_offset"></i>Heightmap editor
+				<i class="fas fa-map lu_right_offset"></i>Heightmap editor
 			</div>
 			<div class="lu_editor__properties__block">
 				<div class="lu_bottom_offset">
@@ -96,7 +96,7 @@ class HeightMapEditorView extends View
 					</div>
 					<Slider
 						min={0.0025}
-						max = {0.01}
+						max = {0.05}
 						startValue={brushOpacity}
 						step={0.0001}
 						onChange=$changeBrushOpacity

@@ -72,6 +72,9 @@ class Main extends Base2dApp
 		UnitData.addData(Json.parse(Res.data.asset.human_unit_data.entry.getText()));
 		assetCache.addData(Json.parse(Res.data.asset.human_model_data.entry.getText()));
 
+		UnitData.addData(Json.parse(Res.data.asset.undead_unit_data.entry.getText()));
+		assetCache.addData(Json.parse(Res.data.asset.undead_model_data.entry.getText()));
+
 		UnitData.addData(Json.parse(Res.data.asset.elf_unit_data.entry.getText()));
 		assetCache.addData(Json.parse(Res.data.asset.elf_model_data.entry.getText()));
 
@@ -85,12 +88,12 @@ class Main extends Base2dApp
 				{
 					case Success(_):
 						//changeState(MainMenuState, [s3d, cast this]);
-						changeState(EditorState, [stage, s3d, SaveUtil.editorData.customAdventures[0], cast this]);
+						//changeState(EditorState, [stage, s3d, SaveUtil.editorData.customAdventures[0], cast this]);
 
-						/*Browser.window.fetch("data/level/mainmenu/main_menu_elf_theme.json").then(res -> res.text()).then(res -> {
+						Browser.window.fetch("data/level/mainmenu/main_menu_elf_theme.json").then(res -> res.text()).then(res -> {
 							changeState(EditorState, [stage, s3d, res, cast this]);
 							onResize();
-						});*/
+						});
 
 						onResize();
 

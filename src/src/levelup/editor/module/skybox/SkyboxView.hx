@@ -21,7 +21,7 @@ class SkyboxView extends View
 	function render() '
 		<div class="lu_editor__properties__container">
 			<div class="lu_title">
-				<i class="fas fa-cloud-moon lu_horizontal_offset"></i>Skybox settings
+				<i class="fas fa-cloud-moon lu_right_offset"></i>Skybox settings
 			</div>
 			<div class="lu_editor__properties__block">
 				<div class="lu_bottom_offset">

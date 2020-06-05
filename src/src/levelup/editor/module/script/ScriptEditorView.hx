@@ -1,6 +1,8 @@
 package levelup.editor.module.script;
 
+import coconut.data.List;
 import coconut.ui.View;
+import levelup.game.GameState.Trigger;
 
 using StringTools;
 
@@ -10,34 +12,44 @@ using StringTools;
  */
 class ScriptEditorView extends View
 {
+	@:skipCheck @:attr var scripts:List<Trigger>;
+	@:skipCheck @:attr var selectedScript:Trigger;
+
 	function render() '
-		<div class="lu_editor__base_panel">
-			<div class="lu_relative lu_fill_height">
-				<div class="lu_title"><i class="fas fa-code lu_right_offset"></i>Script Editor</div>
+		<div class="lu_editor__properties__container">
+			<div class="lu_title">
+				<i class="fas fa-code lu_right_offset"></i>Script Editor
 			</div>
-			<div>
-				<div>
-					<div class="lu_title">Packages</div>
+			<div class="lu_script__container">
+				<div class="lu_script__list">
+					<div class="lu_title">Scripts</div>
 					<div>
-						Folder A
-						<div>Script A</div>
+						<for {script in scripts}>
+							{script.id}
+						</for>
 					</div>
 				</div>
-				<div>
+				<div class="lu_fill">
 					<div class="lu_title">Selected Script</div>
 					<div>
-						<div>Events</div>
-						<div>OnInit</div>
-						<div>TimePeriodic(10)</div>
-					</div>
-					<div>
-						<div>Conditions</div>
-						<div>OwnerOf(TriggeringUnit, Player1)</div>
-					</div>
-					<div>
-						<div>Actions</div>
-						<div>CreateUnit(minion, Player1, "Region 0")</div>
-						<div>AttackMoveToRegion(LastCreatedUnit, "Region 3")</div>
+						<div class="lu_script__block">
+							<div class="lu_script__block_label">Events</div>
+							<for {event in selectedScript.events}>
+								<EventView event=$event />
+							</for>
+						</div>
+						<div class="lu_script__block">
+							<div class="lu_script__block_label">Conditions</div>
+							<div>
+								<ConditionView condition={selectedScript.condition} />
+							</div>
+						</div>
+						<div class="lu_script__block">
+							<div class="lu_script__block_label">Actions</div>
+							<for {action in  selectedScript.actions}>
+								<ActionView action=$action />
+							</for>
+						</div>
 					</div>
 				</div>
 			</div>

@@ -1198,16 +1198,6 @@ class EditorState extends Base2dState
 			isPathBlocker: o.isPathBlocker
 		}];
 
-		var regions = [for (r in model.regions)
-		{
-			id: r.id,
-			name: r.name,
-			x: Math.floor(r.instance.x),
-			y: Math.floor(r.instance.y),
-			width: cast(r.instance.primitive, Grid).width,
-			height: cast(r.instance.primitive, Grid).height
-		}];
-
 		var worldSettingsModule = cast(getModule(WorldSettingsModule), WorldSettingsModule);
 		var skyboxModule = cast(getModule(SkyboxModule), SkyboxModule);
 		var cameraModule = cast(getModule(CameraModule), CameraModule);
@@ -1224,7 +1214,7 @@ class EditorState extends Base2dState
 			sunsetColor: model.sunsetColor,
 			dawnColor: model.dawnColor,
 			globalWeather: watherModule.getGlobalWeather(),
-			regions: regions,
+			regions: model.regions,
 			cameras: cameraModule.getCameras(),
 			triggers: model.triggers,
 			units: units,

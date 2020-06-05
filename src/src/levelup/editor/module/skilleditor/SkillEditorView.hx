@@ -12,7 +12,7 @@ class SkillEditorView extends View
 	function render() '
 		<div class="lu_relative lu_fill">
 			<div class="lu_title">
-				<i class="fas fa-book-medical lu_horizontal_offset"></i>Skill Editor
+				<i class="fas fa-book-medical lu_right_offset"></i>Skill Editor
 			</div>
 			<div class="lu_row">
 

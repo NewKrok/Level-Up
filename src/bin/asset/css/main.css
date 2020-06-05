@@ -191,7 +191,7 @@ a {
 .lu_title {
 	font-size: 1em;
 	font-weight: bold;
-	padding: 5px;
+	padding: 5px 10px;
 	background: #00000077;
 	user-select: none;
 }

@@ -19,12 +19,21 @@ Editor
 ![image](https://user-images.githubusercontent.com/13141660/70577990-c1532d00-1bac-11ea-96a5-d91d6f23c0ce.png)
 
 ## TODO - general
+- Create q0/q2 textures for terrains
+- Create q0/q2 textures for neutral units
+- Create q0/q2different quality textures for skyboxes
 - Fix for some render issues like some unit has a black "shadow"
-- Add missing Human, Elf, Undead characters
+- Import missing Undead units
+- Import missing Neutral units
+- Import missing environments
 - Team based colorization
 - Fix z-index render problem when the camera distance is to big
 - Fix "shadow-jump" bug during Day/Night change
+- Create custom select form component
 - etc...
+
+## TODO - Settings
+- Add shadow quality settings
 
 ## TODO - Game
 - Height map based pathfinding
@@ -40,10 +49,12 @@ Editor
 - Script editor
 - Unit editor
 - Team editor
-- Pathfinding editor
 - Define map sizes
 - Fix asset selection - there is a problem with colliders
 - etc...
+
+## TODO - World settings
+- Possibility to set the exact duration of a day like 1 day is 5 mins
 
 ## TODO - Terrain editor
 - Possibility to change the layer order
@@ -57,8 +68,8 @@ Editor
 ## TODO - HeightMap editor
 - Undo / Redo functionality
 
-## TODO - Day and Night settings
-- Possibility to set the exact duration of a day like 1 day is 5 mins
+## TODO - Light settings
+- Possibility to configure shadow
 - Undo / Redo functionality
 
 ## TODO - Region editor
@@ -67,6 +78,7 @@ Editor
 - Add resize logic
 - Add possibility to rename the region
 - Add possibility to change the region order
+- Move regions from EditorModel to RegionModule
 - Add mouse over effect
 - Camera focus to the region after selecting it on the list
 - Undo / Redo functionality

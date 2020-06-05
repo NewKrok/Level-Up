@@ -1,0 +1,82 @@
+{
+	"groups":[
+		{
+			"id": "undead.unit.deathrider",
+			"previewUrl": "asset/img/preview/unit/undead/deathrider.jpg",
+			"models": [
+				{
+					"id": "undead.unit.deathrider.death",
+					"url": "asset/model/undead/unit/deathrider/DeathAnim.hmd"
+				},
+				{
+					"id": "undead.unit.deathrider.idle",
+					"url": "asset/model/undead/unit/deathrider/IdleAnim.hmd"
+				},
+				{
+					"id": "undead.unit.deathrider.walk",
+					"url": "asset/model/undead/unit/deathrider/WalkAnim.hmd"
+				},
+				{
+					"id": "undead.unit.deathrider.attack",
+					"url": "asset/model/undead/unit/deathrider/Attack01Anim.hmd"
+				}
+			],
+			"textures": [
+				{"id": "model/character/undead/BaseColorTex.jpg", "url": "asset/model/undead/unit/BaseColorTex_q1.jpg"},
+				{"id": "model/character/undead/NormalTex.jpg", "url": "asset/model/undead/unit/NormalTex_q1.jpg"}
+			]
+		},
+		{
+			"id": "undead.unit.deathknight",
+			"previewUrl": "asset/img/preview/unit/undead/deathknight.jpg",
+			"models": [
+				{
+					"id": "undead.unit.deathknight.death",
+					"url": "asset/model/undead/unit/deathknight/DeathAnim.hmd"
+				},
+				{
+					"id": "undead.unit.deathknight.idle",
+					"url": "asset/model/undead/unit/deathknight/IdleAnim.hmd"
+				},
+				{
+					"id": "undead.unit.deathknight.walk",
+					"url": "asset/model/undead/unit/deathknight/WalkAnim.hmd"
+				},
+				{
+					"id": "undead.unit.deathknight.attack",
+					"url": "asset/model/undead/unit/deathknight/Attack01Anim.hmd"
+				}
+			],
+			"textures": [
+				{"id": "model/character/undead/BaseColorTex.jpg", "url": "asset/model/undead/unit/BaseColorTex_q1.jpg"},
+				{"id": "model/character/undead/NormalTex.jpg", "url": "asset/model/undead/unit/NormalTex_q1.jpg"}
+			]
+		},
+		{
+			"id": "undead.unit.gargoyle",
+			"previewUrl": "asset/img/preview/unit/undead/gargoyle.jpg",
+			"models": [
+				{
+					"id": "undead.unit.gargoyle.death",
+					"url": "asset/model/undead/unit/gargoyle/DeathAnim.hmd"
+				},
+				{
+					"id": "undead.unit.gargoyle.idle",
+					"url": "asset/model/undead/unit/gargoyle/IdleAnim.hmd"
+				},
+				{
+					"id": "undead.unit.gargoyle.walk",
+					"url": "asset/model/undead/unit/gargoyle/FlyAnim.hmd"
+				},
+				{
+					"id": "undead.unit.gargoyle.attack",
+					"url": "asset/model/undead/unit/gargoyle/Attack01Anim.hmd"
+				}
+			],
+			"textures": [
+				{"id": "model/character/undead/BaseColorTex.jpg", "url": "asset/model/undead/unit/BaseColorTex_q1.jpg"},
+				{"id": "model/character/undead/NormalTex.jpg", "url": "asset/model/undead/unit/NormalTex_q1.jpg"}
+			]
+		}
+	]
+}

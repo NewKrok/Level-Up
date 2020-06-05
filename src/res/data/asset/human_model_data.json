@@ -1,6 +1,58 @@
 {
 	"groups":[
 		{
+			"id": "human.unit.peasant",
+			"previewUrl": "asset/img/preview/unit/human/peasant.jpg",
+			"models": [
+				{
+					"id": "human.unit.peasant.death",
+					"url": "asset/model/human/unit/peasant/DeathAnim.hmd"
+				},
+				{
+					"id": "human.unit.peasant.idle",
+					"url": "asset/model/human/unit/peasant/IdleAnim.hmd"
+				},
+				{
+					"id": "human.unit.peasant.walk",
+					"url": "asset/model/human/unit/peasant/WalkAnim.hmd"
+				},
+				{
+					"id": "human.unit.peasant.attack",
+					"url": "asset/model/human/unit/peasant/WorkStartAnim.hmd"
+				}
+			],
+			"textures": [
+				{"id": "model/character/human/BaseColorTex.jpg", "url": "asset/model/human/unit/BaseColorTex_q1.jpg"},
+				{"id": "model/character/human/NormalTex.jpg", "url": "asset/model/human/unit/NormalTex_q1.jpg"}
+			]
+		},
+		{
+			"id": "human.unit.footman",
+			"previewUrl": "asset/img/preview/unit/human/footman.jpg",
+			"models": [
+				{
+					"id": "human.unit.footman.death",
+					"url": "asset/model/human/unit/footman/DeathAnim.hmd"
+				},
+				{
+					"id": "human.unit.footman.idle",
+					"url": "asset/model/human/unit/footman/IdleAnim.hmd"
+				},
+				{
+					"id": "human.unit.footman.walk",
+					"url": "asset/model/human/unit/footman/WalkAnim.hmd"
+				},
+				{
+					"id": "human.unit.footman.attack",
+					"url": "asset/model/human/unit/footman/Attack01Anim.hmd"
+				}
+			],
+			"textures": [
+				{"id": "model/character/human/BaseColorTex.jpg", "url": "asset/model/human/unit/BaseColorTex_q1.jpg"},
+				{"id": "model/character/human/NormalTex.jpg", "url": "asset/model/human/unit/NormalTex_q1.jpg"}
+			]
+		},
+		{
 			"id": "human.unit.archer",
 			"previewUrl": "asset/img/preview/unit/human/archer.jpg",
 			"models": [
@@ -22,8 +74,138 @@
 				}
 			],
 			"textures": [
-				{"id": "model/character/human/BaseColorTex_q1.jpg", "url": "asset/model/human/unit/BaseColorTex_q1.jpg"},
-				{"id": "model/character/human/NormalTex_q1.jpg", "url": "asset/model/human/unit/NormalTex_q1.jpg"}
+				{"id": "model/character/human/BaseColorTex.jpg", "url": "asset/model/human/unit/BaseColorTex_q1.jpg"},
+				{"id": "model/character/human/NormalTex.jpg", "url": "asset/model/human/unit/NormalTex_q1.jpg"}
+			]
+		},
+		{
+			"id": "human.unit.horseman",
+			"previewUrl": "asset/img/preview/unit/human/horseman.jpg",
+			"models": [
+				{
+					"id": "human.unit.horseman.death",
+					"url": "asset/model/human/unit/horseman/DeathAnim.hmd"
+				},
+				{
+					"id": "human.unit.horseman.idle",
+					"url": "asset/model/human/unit/horseman/IdleAnim.hmd"
+				},
+				{
+					"id": "human.unit.horseman.walk",
+					"url": "asset/model/human/unit/horseman/WalkAnim.hmd"
+				},
+				{
+					"id": "human.unit.horseman.attack",
+					"url": "asset/model/human/unit/horseman/Attack01Anim.hmd"
+				}
+			],
+			"textures": [
+				{"id": "model/character/human/BaseColorTex.jpg", "url": "asset/model/human/unit/BaseColorTex_q1.jpg"},
+				{"id": "model/character/human/NormalTex.jpg", "url": "asset/model/human/unit/NormalTex_q1.jpg"}
+			]
+		},
+		{
+			"id": "human.unit.mage",
+			"previewUrl": "asset/img/preview/unit/human/mage.jpg",
+			"models": [
+				{
+					"id": "human.unit.mage.death",
+					"url": "asset/model/human/unit/mage/DeathAnim.hmd"
+				},
+				{
+					"id": "human.unit.mage.idle",
+					"url": "asset/model/human/unit/mage/IdleAnim.hmd"
+				},
+				{
+					"id": "human.unit.mage.walk",
+					"url": "asset/model/human/unit/mage/WalkAnim.hmd"
+				},
+				{
+					"id": "human.unit.mage.attack",
+					"url": "asset/model/human/unit/mage/Attack01Anim.hmd"
+				}
+			],
+			"textures": [
+				{"id": "model/character/human/BaseColorTex.jpg", "url": "asset/model/human/unit/BaseColorTex_q1.jpg"},
+				{"id": "model/character/human/NormalTex.jpg", "url": "asset/model/human/unit/NormalTex_q1.jpg"}
+			]
+		},
+		{
+			"id": "human.unit.knight",
+			"previewUrl": "asset/img/preview/unit/human/knight.jpg",
+			"models": [
+				{
+					"id": "human.unit.knight.death",
+					"url": "asset/model/human/unit/knight/DeathAnim.hmd"
+				},
+				{
+					"id": "human.unit.knight.idle",
+					"url": "asset/model/human/unit/knight/IdleAnim.hmd"
+				},
+				{
+					"id": "human.unit.knight.walk",
+					"url": "asset/model/human/unit/knight/WalkAnim.hmd"
+				},
+				{
+					"id": "human.unit.knight.attack",
+					"url": "asset/model/human/unit/knight/Attack01Anim.hmd"
+				}
+			],
+			"textures": [
+				{"id": "model/character/human/BaseColorTex.jpg", "url": "asset/model/human/unit/BaseColorTex_q1.jpg"},
+				{"id": "model/character/human/NormalTex.jpg", "url": "asset/model/human/unit/NormalTex_q1.jpg"}
+			]
+		},
+		{
+			"id": "human.unit.siegeengine",
+			"previewUrl": "asset/img/preview/unit/human/siegeengine.jpg",
+			"models": [
+				{
+					"id": "human.unit.siegeengine.death",
+					"url": "asset/model/human/unit/siegeengine/DeathAnim.hmd"
+				},
+				{
+					"id": "human.unit.siegeengine.idle",
+					"url": "asset/model/human/unit/siegeengine/IdleAnim.hmd"
+				},
+				{
+					"id": "human.unit.siegeengine.walk",
+					"url": "asset/model/human/unit/siegeengine/MoveAnim.hmd"
+				},
+				{
+					"id": "human.unit.siegeengine.attack",
+					"url": "asset/model/human/unit/siegeengine/Attack01Anim.hmd"
+				}
+			],
+			"textures": [
+				{"id": "model/character/human/BaseColorTex.jpg", "url": "asset/model/human/unit/BaseColorTex_q1.jpg"},
+				{"id": "model/character/human/NormalTex.jpg", "url": "asset/model/human/unit/NormalTex_q1.jpg"}
+			]
+		},
+		{
+			"id": "human.unit.griffin",
+			"previewUrl": "asset/img/preview/unit/human/griffin.jpg",
+			"models": [
+				{
+					"id": "human.unit.griffin.death",
+					"url": "asset/model/human/unit/griffin/DeathAnim.hmd"
+				},
+				{
+					"id": "human.unit.griffin.idle",
+					"url": "asset/model/human/unit/griffin/IdleAnim.hmd"
+				},
+				{
+					"id": "human.unit.griffin.walk",
+					"url": "asset/model/human/unit/griffin/FlyAnim.hmd"
+				},
+				{
+					"id": "human.unit.griffin.attack",
+					"url": "asset/model/human/unit/griffin/Attack01Anim.hmd"
+				}
+			],
+			"textures": [
+				{"id": "model/character/human/BaseColorTex.jpg", "url": "asset/model/human/unit/BaseColorTex_q1.jpg"},
+				{"id": "model/character/human/NormalTex.jpg", "url": "asset/model/human/unit/NormalTex_q1.jpg"}
 			]
 		}
 	]

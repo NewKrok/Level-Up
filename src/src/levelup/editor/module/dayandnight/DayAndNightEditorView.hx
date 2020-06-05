@@ -34,7 +34,7 @@ class DayAndNightEditorView extends View
 	function render() '
 		<div class="lu_editor__properties__container">
 			<div class="lu_title">
-				<i class="fas fa-sun lu_horizontal_offset"></i>Light Settings
+				<i class="fas fa-sun lu_right_offset"></i>Light Settings
 			</div>
 			<div class="lu_editor__properties__block">
 				<div class="lu_bottom_offset">

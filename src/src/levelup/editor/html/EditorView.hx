@@ -33,7 +33,7 @@ class EditorView extends View
 				testRun=$testRun
 			/>
 			{getModuleView(EditorViewId.VEditorTools)}
-			<div class="lu_editor__properties">
+			<div class={"lu_editor__properties" + (model.toolState == ToolState.ScriptEditor ? " lu_editor__properties--full_screen" : "")}>
 				<switch {model.toolState}>
 					<case {ToolState.WorldSettingsEditor}> {getModuleView(EditorViewId.VWorldSettingsModule)}
 					<case {ToolState.TeamSettingsEditor}> {getModuleView(EditorViewId.VTeamSettingsModule)}

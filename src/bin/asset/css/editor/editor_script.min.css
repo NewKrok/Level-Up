@@ -1,0 +1,5 @@
+.lu_script__container{display:flex;margin:5px;align-items:start;font-size:0.9em;}
+.lu_script__list{width:20%;margin-right:5px;}
+.lu_script__block{}
+.lu_script__block:not(:first-child){margin-top:25px;}
+.lu_script__block_label{border-bottom:1px solid #FFFFFF55;padding:5px;}

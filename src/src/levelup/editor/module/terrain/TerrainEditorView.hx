@@ -47,7 +47,7 @@ class TerrainEditorView extends View
 		return hxx('
 			<div class="lu_editor__properties__container">
 				<div class="lu_title">
-					<i class="fas fa-paint-brush lu_horizontal_offset"></i>Terrain painter
+					<i class="fas fa-paint-brush lu_right_offset"></i>Terrain painter
 				</div>
 				<div class="lu_editor__properties__block">
 					<div class="lu_bottom_offset">

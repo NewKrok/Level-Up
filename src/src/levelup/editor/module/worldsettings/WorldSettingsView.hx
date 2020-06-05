@@ -15,7 +15,7 @@ class WorldSettingsView extends View
 	function render() '
 		<div class="lu_editor__properties__container">
 			<div class="lu_title">
-				<i class="fas fa-globe-americas lu_horizontal_offset"></i>World settings
+				<i class="fas fa-globe-americas lu_right_offset"></i>World settings
 			</div>
 			<div class="lu_editor__properties__block">
 				<div class="lu_bottom_offset">

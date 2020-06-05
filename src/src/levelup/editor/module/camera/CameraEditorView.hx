@@ -33,7 +33,7 @@ class CameraEditorView extends View
 		return hxx('
 			<div class="lu_editor__properties__container">
 				<div class="lu_title">
-					<i class="fas fa-video lu_horizontal_offset"></i>{Language.get("Camera editor")}
+					<i class="fas fa-video lu_right_offset"></i>{Language.get("Camera editor")}
 				</div>
 				<div class="lu_editor__properties__block lu_editor_camera__add_button" onclick=$addCamera>
 					<i class="fas fa-plus-circle lu_right_offset"></i>{Language.get("Add Camera")}

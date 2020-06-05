@@ -20,7 +20,7 @@ class RegionEditorView extends View
 		return hxx('
 			<div class="lu_editor__properties__container">
 				<div class="lu_title">
-					<i class="fas fa-object-ungroup lu_horizontal_offset"></i>Region editor
+					<i class="fas fa-object-ungroup lu_right_offset"></i>Region editor
 				</div>
 				<div class="lu_editor__properties__block">
 					<div class="lu_relative">

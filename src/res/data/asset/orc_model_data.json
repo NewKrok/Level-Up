@@ -22,8 +22,8 @@
 				}
 			],
 			"textures": [
-				{"id": "model/character/orc/Albedo.jpg", "url": "asset/model/orc/unit/Albedo.jpg"},
-				{"id": "model/character/orc/ForPainting2_lambert1_Normal.jpg", "url": "asset/model/orc/unit/ForPainting2_lambert1_Normal.jpg"}
+				{"id": "model/character/orc/Albedo.jpg", "url": "asset/model/orc/unit/Albedo_q1.jpg"},
+				{"id": "model/character/orc/ForPainting2_lambert1_Normal.jpg", "url": "asset/model/orc/unit/ForPainting2_lambert1_Normal_q1.jpg"}
 			]
 		},
 		{
@@ -48,8 +48,8 @@
 				}
 			],
 			"textures": [
-				{"id": "model/character/orc/Albedo.jpg", "url": "asset/model/orc/unit/Albedo.jpg"},
-				{"id": "model/character/orc/ForPainting2_lambert1_Normal.jpg", "url": "asset/model/orc/unit/ForPainting2_lambert1_Normal.jpg"}
+				{"id": "model/character/orc/Albedo.jpg", "url": "asset/model/orc/unit/Albedo_q1.jpg"},
+				{"id": "model/character/orc/ForPainting2_lambert1_Normal.jpg", "url": "asset/model/orc/unit/ForPainting2_lambert1_Normal_q1.jpg"}
 			]
 		},
 		{
@@ -74,8 +74,8 @@
 				}
 			],
 			"textures": [
-				{"id": "model/character/orc/Albedo.jpg", "url": "asset/model/orc/unit/Albedo.jpg"},
-				{"id": "model/character/orc/ForPainting2_lambert1_Normal.jpg", "url": "asset/model/orc/unit/ForPainting2_lambert1_Normal.jpg"}
+				{"id": "model/character/orc/Albedo.jpg", "url": "asset/model/orc/unit/Albedo_q1.jpg"},
+				{"id": "model/character/orc/ForPainting2_lambert1_Normal.jpg", "url": "asset/model/orc/unit/ForPainting2_lambert1_Normal_q1.jpg"}
 			]
 		},
 		{
@@ -100,8 +100,8 @@
 				}
 			],
 			"textures": [
-				{"id": "model/character/orc/Albedo.jpg", "url": "asset/model/orc/unit/Albedo.jpg"},
-				{"id": "model/character/orc/ForPainting2_lambert1_Normal.jpg", "url": "asset/model/orc/unit/ForPainting2_lambert1_Normal.jpg"}
+				{"id": "model/character/orc/Albedo.jpg", "url": "asset/model/orc/unit/Albedo_q1.jpg"},
+				{"id": "model/character/orc/ForPainting2_lambert1_Normal.jpg", "url": "asset/model/orc/unit/ForPainting2_lambert1_Normal_q1.jpg"}
 			]
 		},
 		{
@@ -126,8 +126,8 @@
 				}
 			],
 			"textures": [
-				{"id": "model/character/orc/Albedo.jpg", "url": "asset/model/orc/unit/Albedo.jpg"},
-				{"id": "model/character/orc/ForPainting2_lambert1_Normal.jpg", "url": "asset/model/orc/unit/ForPainting2_lambert1_Normal.jpg"}
+				{"id": "model/character/orc/Albedo.jpg", "url": "asset/model/orc/unit/Albedo_q1.jpg"},
+				{"id": "model/character/orc/ForPainting2_lambert1_Normal.jpg", "url": "asset/model/orc/unit/ForPainting2_lambert1_Normal_q1.jpg"}
 			]
 		},
 		{
@@ -152,8 +152,8 @@
 				}
 			],
 			"textures": [
-				{"id": "model/character/orc/Albedo.jpg", "url": "asset/model/orc/unit/Albedo.jpg"},
-				{"id": "model/character/orc/ForPainting2_lambert1_Normal.jpg", "url": "asset/model/orc/unit/ForPainting2_lambert1_Normal.jpg"}
+				{"id": "model/character/orc/Albedo.jpg", "url": "asset/model/orc/unit/Albedo_q1.jpg"},
+				{"id": "model/character/orc/ForPainting2_lambert1_Normal.jpg", "url": "asset/model/orc/unit/ForPainting2_lambert1_Normal_q1.jpg"}
 			]
 		},
 		{
@@ -178,8 +178,8 @@
 				}
 			],
 			"textures": [
-				{"id": "model/character/orc/Albedo.jpg", "url": "asset/model/orc/unit/Albedo.jpg"},
-				{"id": "model/character/orc/ForPainting2_lambert1_Normal.jpg", "url": "asset/model/orc/unit/ForPainting2_lambert1_Normal.jpg"}
+				{"id": "model/character/orc/Albedo.jpg", "url": "asset/model/orc/unit/Albedo_q1.jpg"},
+				{"id": "model/character/orc/ForPainting2_lambert1_Normal.jpg", "url": "asset/model/orc/unit/ForPainting2_lambert1_Normal_q1.jpg"}
 			]
 		},
 		{
@@ -204,8 +204,8 @@
 				}
 			],
 			"textures": [
-				{"id": "model/character/orc/Albedo.jpg", "url": "asset/model/orc/unit/Albedo.jpg"},
-				{"id": "model/character/orc/ForPainting2_lambert1_Normal.jpg", "url": "asset/model/orc/unit/ForPainting2_lambert1_Normal.jpg"}
+				{"id": "model/character/orc/Albedo.jpg", "url": "asset/model/orc/unit/Albedo_q1.jpg"},
+				{"id": "model/character/orc/ForPainting2_lambert1_Normal.jpg", "url": "asset/model/orc/unit/ForPainting2_lambert1_Normal_q1.jpg"}
 			]
 		}
 	]
