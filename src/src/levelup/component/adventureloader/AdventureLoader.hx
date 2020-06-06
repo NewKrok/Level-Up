@@ -91,6 +91,9 @@ import tink.state.State;
 		img.className = "lu_hidden";
 		Browser.document.body.appendChild(img);
 
+		// Temporary while I'm testing the player based colorization
+		adventureConfig.neededTextures.push("asset/model/elf/unit/MaskTex.jpg");
+
 		img.onload = () ->
 		{
 			Browser.document.body.removeChild(img);

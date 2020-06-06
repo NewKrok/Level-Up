@@ -22,9 +22,11 @@ a{color:unset;text-decoration:none;}
 .lu_left_offset{margin-left:10px;}
 .lu_right_offset{margin-right:10px;}
 .lu_right_offset--s{margin-right:5px;}
+.lu_bottom_offset--s{margin-bottom:5px;}
 .lu_bottom_offset{margin-bottom:10px;}
 .lu_bottom_offset--l{margin-bottom:20px;}
 .lu_width_30_p{width:30%;}
+.lu_vertical_overflow{overflow-x:hidden;overflow-y:auto;}
 .lu_info{color:#999;}
 .lu_highlight{color:#6afd75!important;}
 .lu_warning{color:#f93535!important;}

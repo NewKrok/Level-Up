@@ -59,6 +59,10 @@ import tink.state.State;
 		Browser.window.fetch("data/level/mainmenu/" + SaveUtil.appData.gameplay.menuBackground + ".json").then(res -> res.text()).then(res ->
 		{
 			adventureConfig = AdventureParser.loadLevel(res);
+
+			// Temporary while I'm testing the player based colorization
+			adventureConfig.neededTextures.push("asset/model/elf/unit/MaskTex.jpg");
+
 			cf.assetCache.load(adventureConfig.neededModelGroups, adventureConfig.neededTextures, adventureConfig.neededImages).handle(o -> switch (o)
 			{
 				case Success(_): loaded(s3d);

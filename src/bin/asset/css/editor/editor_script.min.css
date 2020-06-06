@@ -1,5 +1,9 @@
-.lu_script__container{display:flex;margin:5px;align-items:start;font-size:0.9em;}
-.lu_script__list{width:20%;margin-right:5px;}
+.lu_script__container{display:flex;margin:5px;align-items:start;font-size:0.9em;height:100%;overflow:hidden;}
+.lu_script__list{width:20%;height:100%;margin-right:5px;background-color:#00000033;}
 .lu_script__block{}
 .lu_script__block:not(:first-child){margin-top:25px;}
-.lu_script__block_label{border-bottom:1px solid #FFFFFF55;padding:5px;}
+.lu_script__block_label{border-bottom:1px solid #FFFFFF55;padding:5px;font-weight:bold;}
+.lu_script__entry{margin-top:5px;padding:5px 10px;background-color:#00000022;border-radius:3px;}
+.lu_script__entry:first-child{margin-top:0;}
+.lu_script__entry:nth-child(odd){background-color:#00000033;}
+.lu_entry__name_highlight{font-weight:bold;color:#FFFF00;}

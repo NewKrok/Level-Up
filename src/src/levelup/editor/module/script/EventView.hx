@@ -14,6 +14,7 @@ class EventView extends View
 	function render() '
 		<div class="lu_row">
 			<i class="fas fa-circle"></i>
+			{/*ScriptConfig.getEventData(event)*/}
 			<switch {event}>
 				<case {TriggerEvent.EnterRegion(_)}>
 					<div>EnterRegion</div>

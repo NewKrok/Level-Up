@@ -69,6 +69,7 @@ import levelup.game.unit.BaseUnit;
 import levelup.mainmenu.MainMenuState;
 import levelup.shader.Opacity;
 import levelup.shader.ForcedZIndex;
+import levelup.shader.PlayerColor;
 import levelup.util.AdventureParser;
 import levelup.util.GeomUtil3D;
 import levelup.util.SaveUtil;
@@ -535,6 +536,15 @@ class EditorState extends Base2dState
 				owner: owner,
 				instance: instance
 			});
+
+			if (config.race == RaceId.Elf)
+			{
+				var colorMask = AssetCache.instance.getTexture("asset/model/elf/unit/MaskTex.jpg");
+
+				instance.getMaterials()[0].mainPass.addShader(
+					new PlayerColor(colorMask, Std.parseInt("0x" + Player.colors[owner]))
+				);
+			}
 		}
 
 		worldInstances.push(

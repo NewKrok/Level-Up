@@ -11,6 +11,7 @@ import h3d.shader.ColorMult;
 import h3d.shader.FixedColor;
 import levelup.AsyncUtil;
 import levelup.AsyncUtil.Result;
+import levelup.UnitData.RaceId;
 import levelup.UnitData.UnitConfig;
 import levelup.game.GameState.PlayerId;
 import levelup.game.GameWorld;
@@ -34,6 +35,7 @@ import hxd.res.Model;
 import js.lib.Date;
 import levelup.game.ui.UnitInfo;
 import levelup.shader.Opacity;
+import levelup.shader.PlayerColor;
 import levelup.util.GeomUtil3D;
 import motion.Actuate;
 import motion.easing.Linear;
@@ -105,6 +107,15 @@ import tink.state.State;
 		view.z = config.zOffset;
 		view.scale(config.modelScale);
 		parent.addChild(view);
+
+		if (config.race == RaceId.Elf)
+		{
+			var colorMask = AssetCache.instance.getTexture("asset/model/elf/unit/MaskTex.jpg");
+
+			view.getMaterials()[0].mainPass.addShader(
+				new PlayerColor(colorMask, Std.parseInt("0x" + Player.colors[owner]))
+			);
+		}
 
 		var s = new FixedColor(0x000000);
 		for (m in view.getMaterials())
