@@ -21,9 +21,12 @@
 					"url": "asset/model/elf/unit/knome/WorkRoutineAnim.hmd"
 				}
 			],
-			"textures": [
+			"modelTextures": [
 				{"id": "model/character/elf/Albedo.jpg", "url": "asset/model/elf/unit/Albedo_q1.jpg"},
 				{"id": "model/character/elf/ForPainting_lambert1_Normal.jpg", "url": "asset/model/elf/unit/ForPainting_lambert1_Normal_q1.jpg"}
+			],
+			"textures": [
+				"asset/model/elf/unit/MaskTex.jpg"
 			]
 		},
 		{
@@ -47,9 +50,12 @@
 					"url": "asset/model/elf/unit/battleowl/Attack01Anim.hmd"
 				}
 			],
-			"textures": [
+			"modelTextures": [
 				{"id": "model/character/elf/Albedo.jpg", "url": "asset/model/elf/unit/Albedo_q1.jpg"},
 				{"id": "model/character/elf/ForPainting_lambert1_Normal.jpg", "url": "asset/model/elf/unit/ForPainting_lambert1_Normal_q1.jpg"}
+			],
+			"textures": [
+				"asset/model/elf/unit/MaskTex.jpg"
 			]
 		},
 		{
@@ -73,9 +79,12 @@
 					"url": "asset/model/elf/unit/ranger/Attack01StartAnim.hmd"
 				}
 			],
-			"textures": [
+			"modelTextures": [
 				{"id": "model/character/elf/Albedo.jpg", "url": "asset/model/elf/unit/Albedo_q1.jpg"},
 				{"id": "model/character/elf/ForPainting_lambert1_Normal.jpg", "url": "asset/model/elf/unit/ForPainting_lambert1_Normal_q1.jpg"}
+			],
+			"textures": [
+				"asset/model/elf/unit/MaskTex.jpg"
 			]
 		},
 		{
@@ -99,9 +108,12 @@
 					"url": "asset/model/elf/unit/demonhunter/Attack01Anim.hmd"
 				}
 			],
-			"textures": [
+			"modelTextures": [
 				{"id": "model/character/elf/Albedo.jpg", "url": "asset/model/elf/unit/Albedo_q1.jpg"},
 				{"id": "model/character/elf/ForPainting_lambert1_Normal.jpg", "url": "asset/model/elf/unit/ForPainting_lambert1_Normal_q1.jpg"}
+			],
+			"textures": [
+				"asset/model/elf/unit/MaskTex.jpg"
 			]
 		},
 		{
@@ -125,9 +137,12 @@
 					"url": "asset/model/elf/unit/druid/Attack01Anim.hmd"
 				}
 			],
-			"textures": [
+			"modelTextures": [
 				{"id": "model/character/elf/Albedo.jpg", "url": "asset/model/elf/unit/Albedo_q1.jpg"},
 				{"id": "model/character/elf/ForPainting_lambert1_Normal.jpg", "url": "asset/model/elf/unit/ForPainting_lambert1_Normal_q1.jpg"}
+			],
+			"textures": [
+				"asset/model/elf/unit/MaskTex.jpg"
 			]
 		},
 		{
@@ -151,9 +166,12 @@
 					"url": "asset/model/elf/unit/dryad/Attack01Anim.hmd"
 				}
 			],
-			"textures": [
+			"modelTextures": [
 				{"id": "model/character/elf/Albedo.jpg", "url": "asset/model/elf/unit/Albedo_q1.jpg"},
 				{"id": "model/character/elf/ForPainting_lambert1_Normal.jpg", "url": "asset/model/elf/unit/ForPainting_lambert1_Normal_q1.jpg"}
+			],
+			"textures": [
+				"asset/model/elf/unit/MaskTex.jpg"
 			]
 		},
 		{
@@ -177,9 +195,12 @@
 					"url": "asset/model/elf/unit/treeant/Attack01Anim.hmd"
 				}
 			],
-			"textures": [
+			"modelTextures": [
 				{"id": "model/character/elf/Albedo.jpg", "url": "asset/model/elf/unit/Albedo_q1.jpg"},
 				{"id": "model/character/elf/ForPainting_lambert1_Normal.jpg", "url": "asset/model/elf/unit/ForPainting_lambert1_Normal_q1.jpg"}
+			],
+			"textures": [
+				"asset/model/elf/unit/MaskTex.jpg"
 			]
 		},
 		{
@@ -203,9 +224,12 @@
 					"url": "asset/model/elf/unit/rockgolem/Attack01Anim.hmd"
 				}
 			],
-			"textures": [
+			"modelTextures": [
 				{"id": "model/character/elf/Albedo.jpg", "url": "asset/model/elf/unit/Albedo_q1.jpg"},
 				{"id": "model/character/elf/ForPainting_lambert1_Normal.jpg", "url": "asset/model/elf/unit/ForPainting_lambert1_Normal_q1.jpg"}
+			],
+			"textures": [
+				"asset/model/elf/unit/MaskTex.jpg"
 			]
 		}
 	]

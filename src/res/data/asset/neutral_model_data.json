@@ -21,7 +21,7 @@
 					"url": "asset/model/neutral/building/crystaltower/Tow_Crystal1_Anim.hmd"
 				}
 			],
-			"textures": [
+			"modelTextures": [
 				{"id": "Tow_Crystals_MainTex.png", "url": "asset/model/neutral/building/crystaltower/Tow_Crystals_MainTex.png"},
 				{"id": "Tow_Crystals_MainTex_n.jpg", "url": "asset/model/neutral/building/crystaltower/Tow_Crystals_MainTex_n.jpg"}
 			]
@@ -47,7 +47,7 @@
 					"url": "asset/model/neutral/building/crystaltower2/Tow_Crystal2_Anim.hmd"
 				}
 			],
-			"textures": [
+			"modelTextures": [
 				{"id": "Tow_Crystals_MainTex.png", "url": "asset/model/neutral/building/crystaltower/Tow_Crystals_MainTex.png"},
 				{"id": "Tow_Crystals_MainTex_n.jpg", "url": "asset/model/neutral/building/crystaltower/Tow_Crystals_MainTex_n.jpg"}
 			]
@@ -73,7 +73,7 @@
 					"url": "asset/model/neutral/building/crystaltower3/Tow_Crystal3_Anim.hmd"
 				}
 			],
-			"textures": [
+			"modelTextures": [
 				{"id": "Tow_Crystals_MainTex.png", "url": "asset/model/neutral/building/crystaltower/Tow_Crystals_MainTex.png"},
 				{"id": "Tow_Crystals_MainTex_n.jpg", "url": "asset/model/neutral/building/crystaltower/Tow_Crystals_MainTex_n.jpg"}
 			]

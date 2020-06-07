@@ -21,9 +21,12 @@
 					"url": "asset/model/human/unit/peasant/WorkStartAnim.hmd"
 				}
 			],
-			"textures": [
+			"modelTextures": [
 				{"id": "model/character/human/BaseColorTex.jpg", "url": "asset/model/human/unit/BaseColorTex_q1.jpg"},
 				{"id": "model/character/human/NormalTex.jpg", "url": "asset/model/human/unit/NormalTex_q1.jpg"}
+			],
+			"textures": [
+				"asset/model/human/unit/MaskTex.jpg"
 			]
 		},
 		{
@@ -47,9 +50,12 @@
 					"url": "asset/model/human/unit/footman/Attack01Anim.hmd"
 				}
 			],
-			"textures": [
+			"modelTextures": [
 				{"id": "model/character/human/BaseColorTex.jpg", "url": "asset/model/human/unit/BaseColorTex_q1.jpg"},
 				{"id": "model/character/human/NormalTex.jpg", "url": "asset/model/human/unit/NormalTex_q1.jpg"}
+			],
+			"textures": [
+				"asset/model/human/unit/MaskTex.jpg"
 			]
 		},
 		{
@@ -73,9 +79,12 @@
 					"url": "asset/model/human/unit/archer/Attack01Anim.hmd"
 				}
 			],
-			"textures": [
+			"modelTextures": [
 				{"id": "model/character/human/BaseColorTex.jpg", "url": "asset/model/human/unit/BaseColorTex_q1.jpg"},
 				{"id": "model/character/human/NormalTex.jpg", "url": "asset/model/human/unit/NormalTex_q1.jpg"}
+			],
+			"textures": [
+				"asset/model/human/unit/MaskTex.jpg"
 			]
 		},
 		{
@@ -99,9 +108,12 @@
 					"url": "asset/model/human/unit/horseman/Attack01Anim.hmd"
 				}
 			],
-			"textures": [
+			"modelTextures": [
 				{"id": "model/character/human/BaseColorTex.jpg", "url": "asset/model/human/unit/BaseColorTex_q1.jpg"},
 				{"id": "model/character/human/NormalTex.jpg", "url": "asset/model/human/unit/NormalTex_q1.jpg"}
+			],
+			"textures": [
+				"asset/model/human/unit/MaskTex.jpg"
 			]
 		},
 		{
@@ -125,9 +137,12 @@
 					"url": "asset/model/human/unit/mage/Attack01Anim.hmd"
 				}
 			],
-			"textures": [
+			"modelTextures": [
 				{"id": "model/character/human/BaseColorTex.jpg", "url": "asset/model/human/unit/BaseColorTex_q1.jpg"},
 				{"id": "model/character/human/NormalTex.jpg", "url": "asset/model/human/unit/NormalTex_q1.jpg"}
+			],
+			"textures": [
+				"asset/model/human/unit/MaskTex.jpg"
 			]
 		},
 		{
@@ -151,9 +166,12 @@
 					"url": "asset/model/human/unit/knight/Attack01Anim.hmd"
 				}
 			],
-			"textures": [
+			"modelTextures": [
 				{"id": "model/character/human/BaseColorTex.jpg", "url": "asset/model/human/unit/BaseColorTex_q1.jpg"},
 				{"id": "model/character/human/NormalTex.jpg", "url": "asset/model/human/unit/NormalTex_q1.jpg"}
+			],
+			"textures": [
+				"asset/model/human/unit/MaskTex.jpg"
 			]
 		},
 		{
@@ -177,9 +195,12 @@
 					"url": "asset/model/human/unit/siegeengine/Attack01Anim.hmd"
 				}
 			],
-			"textures": [
+			"modelTextures": [
 				{"id": "model/character/human/BaseColorTex.jpg", "url": "asset/model/human/unit/BaseColorTex_q1.jpg"},
 				{"id": "model/character/human/NormalTex.jpg", "url": "asset/model/human/unit/NormalTex_q1.jpg"}
+			],
+			"textures": [
+				"asset/model/human/unit/MaskTex.jpg"
 			]
 		},
 		{
@@ -203,9 +224,12 @@
 					"url": "asset/model/human/unit/griffin/Attack01Anim.hmd"
 				}
 			],
-			"textures": [
+			"modelTextures": [
 				{"id": "model/character/human/BaseColorTex.jpg", "url": "asset/model/human/unit/BaseColorTex_q1.jpg"},
 				{"id": "model/character/human/NormalTex.jpg", "url": "asset/model/human/unit/NormalTex_q1.jpg"}
+			],
+			"textures": [
+				"asset/model/human/unit/MaskTex.jpg"
 			]
 		}
 	]

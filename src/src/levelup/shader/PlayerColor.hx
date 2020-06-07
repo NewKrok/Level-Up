@@ -5,6 +5,7 @@ class PlayerColor extends hxsl.Shader {
 	static var SRC = {
 
 		@param var playerColor:Vec4;
+		@param var maskKeyColor:Vec4;
 		@param var texture:Sampler2D;
 
 		var calculatedUV:Vec2;
@@ -12,21 +13,28 @@ class PlayerColor extends hxsl.Shader {
 
 		function fragment()
 		{
-			var maskColor:Vec3 = texture.get(calculatedUV).rgb;
-			if (maskColor.r > 0.1)
+			var maskPixelColor = texture.get(calculatedUV).rgb;
+
+			var diff =
+				abs(maskPixelColor.r - maskKeyColor.r) +
+				abs(maskPixelColor.g - maskKeyColor.g) +
+				abs(maskPixelColor.b - maskKeyColor.b);
+
+			if (diff < 0.1)
 			{
-				pixelColor.r = abs(pixelColor.r - playerColor.r) / 2;
-				pixelColor.g = abs(pixelColor.g - playerColor.g) / 2;
-				pixelColor.b = abs(pixelColor.b - playerColor.b) / 2;
+				pixelColor.r = (pixelColor.r / 10 + playerColor.r * .5);
+				pixelColor.g = (pixelColor.g / 10 + playerColor.g * .5);
+				pixelColor.b = (pixelColor.b / 10 + playerColor.b * .5);
 			}
 		}
 	}
 
-	public function new(tex, playerColor)
+	public function new(tex, playerColor, maskKeyColor)
 	{
 		super();
 
 		this.texture = tex;
 		this.playerColor.setColor(playerColor);
+		this.maskKeyColor.setColor(maskKeyColor);
 	}
 }

@@ -21,9 +21,12 @@
 					"url": "asset/model/undead/unit/deathrider/Attack01Anim.hmd"
 				}
 			],
-			"textures": [
+			"modelTextures": [
 				{"id": "model/character/undead/BaseColorTex.jpg", "url": "asset/model/undead/unit/BaseColorTex_q1.jpg"},
 				{"id": "model/character/undead/NormalTex.jpg", "url": "asset/model/undead/unit/NormalTex_q1.jpg"}
+			],
+			"textures": [
+				"asset/model/undead/unit/MaskTex.jpg"
 			]
 		},
 		{
@@ -47,9 +50,12 @@
 					"url": "asset/model/undead/unit/deathknight/Attack01Anim.hmd"
 				}
 			],
-			"textures": [
+			"modelTextures": [
 				{"id": "model/character/undead/BaseColorTex.jpg", "url": "asset/model/undead/unit/BaseColorTex_q1.jpg"},
 				{"id": "model/character/undead/NormalTex.jpg", "url": "asset/model/undead/unit/NormalTex_q1.jpg"}
+			],
+			"textures": [
+				"asset/model/undead/unit/MaskTex.jpg"
 			]
 		},
 		{
@@ -73,9 +79,12 @@
 					"url": "asset/model/undead/unit/gargoyle/Attack01Anim.hmd"
 				}
 			],
-			"textures": [
+			"modelTextures": [
 				{"id": "model/character/undead/BaseColorTex.jpg", "url": "asset/model/undead/unit/BaseColorTex_q1.jpg"},
 				{"id": "model/character/undead/NormalTex.jpg", "url": "asset/model/undead/unit/NormalTex_q1.jpg"}
+			],
+			"textures": [
+				"asset/model/undead/unit/MaskTex.jpg"
 			]
 		}
 	]

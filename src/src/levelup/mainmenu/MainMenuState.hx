@@ -60,9 +60,6 @@ import tink.state.State;
 		{
 			adventureConfig = AdventureParser.loadLevel(res);
 
-			// Temporary while I'm testing the player based colorization
-			adventureConfig.neededTextures.push("asset/model/elf/unit/MaskTex.jpg");
-
 			cf.assetCache.load(adventureConfig.neededModelGroups, adventureConfig.neededTextures, adventureConfig.neededImages).handle(o -> switch (o)
 			{
 				case Success(_): loaded(s3d);

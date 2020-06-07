@@ -537,12 +537,18 @@ class EditorState extends Base2dState
 				instance: instance
 			});
 
-			if (config.race == RaceId.Elf)
+			if (config.race != RaceId.Neutral)
 			{
-				var colorMask = AssetCache.instance.getTexture("asset/model/elf/unit/MaskTex.jpg");
+				var colorMask = AssetCache.instance.getTexture("asset/model/" + config.race + "/unit/MaskTex.jpg");
 
+				var maskKey = [
+					RaceId.Elf => 0xFF0000,
+					RaceId.Orc => 0x00FF00,
+					RaceId.Undead => 0xFF0000,
+					RaceId.Human => 0xFF0000
+				];
 				instance.getMaterials()[0].mainPass.addShader(
-					new PlayerColor(colorMask, Std.parseInt("0x" + Player.colors[owner]))
+					new PlayerColor(colorMask, Std.parseInt("0x" + Player.colors[owner]), maskKey.get(config.race))
 				);
 			}
 		}
@@ -576,6 +582,7 @@ class EditorState extends Base2dState
 
 		var onOverRoutines = [];
 		var onOutRoutines = [];
+
 		for (m in instance.getMaterials())
 		{
 			var p = new Pass("editorHighlight", null, m.mainPass);
@@ -584,6 +591,7 @@ class EditorState extends Base2dState
 			onOverRoutines.push(() -> m.addPass(p));
 			onOutRoutines.push(() -> m.removePass(p));
 		}
+
 		interactive.onOver = e -> { onOverRoutines.map(fv -> fv()); };
 		interactive.onOut = e ->
 		{

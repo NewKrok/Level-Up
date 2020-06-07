@@ -75,10 +75,11 @@ class AssetCache
 							id: StringTools.replace(modelInfo.id, "{counter}", countStr),
 							url: StringTools.replace(modelInfo.url, "{counter}", countStr)
 						}}],
-						textures: [for (textureInfo in d.textures) {{
+						modelTextures: [for (textureInfo in d.modelTextures) {{
 							id: StringTools.replace(textureInfo.id, "{counter}", countStr),
 							url: StringTools.replace(textureInfo.url, "{counter}", countStr)
-						}}]
+						}}],
+						textures: d.textures == null ? [] : [for (texture in d.textures) StringTools.replace(texture, "{counter}", countStr)]
 					}
 					newGroups.push(group);
 				}
@@ -131,13 +132,21 @@ class AssetCache
 
 		var collectedModelDatas:Array<RawModelData> = [];
 		var collectedModelTextures:Array<TextureDataWithModelReferences> = [];
+		var collectedTextures:Array<String> = [];
 
 		for (group in modelGroupList)
 		{
 			var selectedGroup:RawModelGroupData = rawCache.groups.filter(data -> return data.id == group)[0];
 			collectedModelDatas = collectedModelDatas.concat(selectedGroup.models);
 
-			for (texture in selectedGroup.textures)
+			if (selectedGroup.textures != null)
+			{
+				for (texture in selectedGroup.textures)
+					if (collectedTextures.filter(t -> return t == texture).length == 0)
+						collectedTextures.push(texture);
+			}
+
+			for (texture in selectedGroup.modelTextures)
 				if (collectedModelTextures.filter(t -> return t.data.id == texture.id).length == 0)
 					collectedModelTextures.push({data: texture, modelReferences: []});
 
@@ -148,16 +157,33 @@ class AssetCache
 
 		totalAssetCount += collectedModelDatas.length;
 		totalAssetCount += collectedModelTextures.length;
+		totalAssetCount += collectedTextures.length;
 
-		loadModelTextures(collectedModelTextures).handle(function (o):Void { switch(o)
+		var loadModelAssets = () ->
 		{
-			case Success(_):
-				loadModels(collectedModelDatas).handle(result.trigger);
+			loadModelTextures(collectedModelTextures).handle(function (o):Void { switch(o)
+			{
+				case Success(_):
+					loadModels(collectedModelDatas).handle(result.trigger);
 
-			case Failure(e): result.trigger(o);
-		}});
+				case Failure(e): result.trigger(o);
+			}});
 
-		if (modelGroupList.length == 0) result.trigger(Success(Noise));
+			if (modelGroupList.length == 0) result.trigger(Success(Noise));
+		}
+
+		if (collectedTextures.length > 0)
+		{
+			loadTextures(collectedTextures).handle(function (o):Void { switch(o)
+			{
+				case Success(_): loadModelAssets();
+				case Failure(e): result.trigger(o);
+			}});
+		}
+		else
+		{
+			loadModelAssets();
+		}
 
 		return result;
 	}
@@ -260,10 +286,10 @@ class AssetCache
 		var result = Future.trigger();
 		loadedTextureCount = 0;
 
-		var onLoaded = (data, url) ->
+		var onLoaded = (data, t) ->
 		{
-			var texture = hxd.res.Any.fromBytes(url, data).toTexture();
-			textureDirectory.set(url, texture);
+			var texture = hxd.res.Any.fromBytes(t, data).toTexture();
+			textureDirectory.set(t, texture);
 
 			loadedTextureCount++;
 			updateLoadPercentage();
@@ -278,10 +304,7 @@ class AssetCache
 			loader.onLoaded = data -> onLoaded(data, t);
 		}
 
-		for (t in list)
-		{
-			loadRoutine(t);
-		}
+		for (t in list) loadRoutine(t);
 
 		return result;
 	}
@@ -332,9 +355,10 @@ typedef RawModelCache =
 typedef RawModelGroupData =
 {
 	var id:String;
-	@:optional var previewUrl:String; // TODO remove optional
 	var models:Array<RawModelData>;
-	var textures:Array<RawTextureData>;
+	var modelTextures:Array<RawTextureData>;
+	@:optional var previewUrl:String; // TODO remove optional
+	@:optional var textures:Array<String>;
 }
 
 typedef RawModelData =

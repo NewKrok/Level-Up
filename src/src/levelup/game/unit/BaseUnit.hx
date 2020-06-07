@@ -108,12 +108,19 @@ import tink.state.State;
 		view.scale(config.modelScale);
 		parent.addChild(view);
 
-		if (config.race == RaceId.Elf)
+		if (config.race != RaceId.Neutral)
 		{
-			var colorMask = AssetCache.instance.getTexture("asset/model/elf/unit/MaskTex.jpg");
+			var colorMask = AssetCache.instance.getTexture("asset/model/" + config.race + "/unit/MaskTex.jpg");
+
+			var maskKey = [
+				RaceId.Elf => 0xFF0000,
+				RaceId.Orc => 0x00FF00,
+				RaceId.Undead => 0xFF0000,
+				RaceId.Human => 0xFF0000
+			];
 
 			view.getMaterials()[0].mainPass.addShader(
-				new PlayerColor(colorMask, Std.parseInt("0x" + Player.colors[owner]))
+				new PlayerColor(colorMask, Std.parseInt("0x" + Player.colors[owner]), maskKey.get(config.race))
 			);
 		}
 

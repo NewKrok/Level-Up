@@ -1,21 +1,6 @@
 {
 	"groups":[
 		{
-			"id": "environment.bridge.Bridge01",
-			"models": [
-				{
-					"id": "environment.bridge.Bridge01",
-					"url": "asset/model/environment/bridge/Bridge01.hmd"
-				}
-			],
-			"textures": [
-				{"id": "texture/Manmade01Diffuse.jpg", "url": "asset/model/environment/Manmade01Diffuse.jpg"},
-				{"id": "texture/Manmade01Normal.jpg", "url": "asset/model/environment/Manmade01Normal.jpg"},
-				{"id": "texture/Rocks01Normal.jpg", "url": "asset/model/environment/Rocks01Normal.jpg"},
-				{"id": "texture/Rocks01Diffuse.jpg", "url": "asset/model/environment/Rocks01Diffuse.jpg"}
-			]
-		},
-		{
 			"id": "environment.rock.Rock{1...28}",
 			"models": [
 				{
@@ -23,7 +8,7 @@
 					"url": "asset/model/environment/rock/Rock{counter}.hmd"
 				}
 			],
-			"textures": [
+			"modelTextures": [
 				{"id": "texture/Rocks01Diffuse.jpg", "url": "asset/model/environment/Rocks01Diffuse.jpg"},
 				{"id": "texture/Rocks01Normal.jpg", "url": "asset/model/environment/Rocks01Normal.jpg"}
 			]
@@ -36,7 +21,7 @@
 					"url": "asset/model/environment/tree/Tree{counter}.hmd"
 				}
 			],
-			"textures": [
+			"modelTextures": [
 				{"id": "texture/Coniferous01Diffuse.png", "url": "asset/model/environment/Coniferous01Diffuse.png"},
 				{"id": "texture/Coniferous01Normal.jpg", "url": "asset/model/environment/Coniferous01Normal.jpg"},
 				{"id": "texture/Trunk01Diffuse.jpg", "url": "asset/model/environment/Trunk01Diffuse.jpg"},
@@ -51,7 +36,7 @@
 					"url": "asset/model/environment/tree/Tree{counter}.hmd"
 				}
 			],
-			"textures": [
+			"modelTextures": [
 				{"id": "texture/Decidious01Diffuse.png", "url": "asset/model/environment/Decidious01Diffuse.png"},
 				{"id": "texture/Decidious01Normal.jpg", "url": "asset/model/environment/Decidious01Normal.jpg"},
 				{"id": "texture/Trunk01Diffuse.jpg", "url": "asset/model/environment/Trunk01Diffuse.jpg"},
@@ -66,7 +51,7 @@
 					"url": "asset/model/environment/tree/Tree40.hmd"
 				}
 			],
-			"textures": [
+			"modelTextures": [
 				{"id": "texture/Trunk01Diffuse.jpg", "url": "asset/model/environment/Trunk01Diffuse.jpg"},
 				{"id": "texture/Trunk01Normal.jpg", "url": "asset/model/environment/Trunk01Normal.jpg"}
 			]
@@ -79,7 +64,7 @@
 					"url": "asset/model/environment/tree/mtd/Tree_{counter}.hmd"
 				}
 			],
-			"textures": [
+			"modelTextures": [
 				{"id": "texture/Tree_bark.jpg", "url": "asset/model/environment/Tree_bark.jpg"},
 				{"id": "texture/Tree_bark_n.jpg", "url": "asset/model/environment/Tree_bark_n.jpg"},
 				{"id": "texture/Tree_leaves.png", "url": "asset/model/environment/Tree_leaves.png"},
@@ -94,7 +79,7 @@
 					"url": "asset/model/environment/tree/mtd/Tree_Dead{counter}.hmd"
 				}
 			],
-			"textures": [
+			"modelTextures": [
 				{"id": "texture/Tree_bark.jpg", "url": "asset/model/environment/Tree_bark.jpg"},
 				{"id": "texture/Tree_bark_n.jpg", "url": "asset/model/environment/Tree_bark_n.jpg"},
 				{"id": "texture/Tree_leaves.png", "url": "asset/model/environment/Tree_leaves.png"},
@@ -109,7 +94,7 @@
 					"url": "asset/model/environment/tree/mtd/Tree_Fall{counter}.hmd"
 				}
 			],
-			"textures": [
+			"modelTextures": [
 				{"id": "texture/Tree_bark.jpg", "url": "asset/model/environment/Tree_bark.jpg"},
 				{"id": "texture/Tree_bark_n.jpg", "url": "asset/model/environment/Tree_bark_n.jpg"},
 				{"id": "texture/Tree_leaves.png", "url": "asset/model/environment/Tree_leaves.png"},
@@ -124,7 +109,7 @@
 					"url": "asset/model/environment/tree/mtd/Tree_Pine_{counter}.hmd"
 				}
 			],
-			"textures": [
+			"modelTextures": [
 				{"id": "texture/Tree_bark.jpg", "url": "asset/model/environment/Tree_bark.jpg"},
 				{"id": "texture/Tree_bark_n.jpg", "url": "asset/model/environment/Tree_bark_n.jpg"},
 				{"id": "texture/Tree_leaves.png", "url": "asset/model/environment/Tree_leaves.png"},
@@ -139,7 +124,7 @@
 					"url": "asset/model/environment/tree/mtd/Tree_Small_{counter}.hmd"
 				}
 			],
-			"textures": [
+			"modelTextures": [
 				{"id": "texture/Tree_bark.jpg", "url": "asset/model/environment/Tree_bark.jpg"},
 				{"id": "texture/Tree_bark_n.jpg", "url": "asset/model/environment/Tree_bark_n.jpg"},
 				{"id": "texture/Tree_leaves.png", "url": "asset/model/environment/Tree_leaves.png"},
@@ -154,7 +139,7 @@
 					"url": "asset/model/environment/tree/mtd/Trunk_{counter}.hmd"
 				}
 			],
-			"textures": [
+			"modelTextures": [
 				{"id": "texture/Tree_bark.jpg", "url": "asset/model/environment/Tree_bark.jpg"},
 				{"id": "texture/Tree_bark_n.jpg", "url": "asset/model/environment/Tree_bark_n.jpg"},
 				{"id": "texture/Tree_leaves.png", "url": "asset/model/environment/Tree_leaves.png"},
@@ -169,7 +154,7 @@
 					"url": "asset/model/environment/plant/Plant{counter}.hmd"
 				}
 			],
-			"textures": [
+			"modelTextures": [
 				{"id": "texture/Plants01Diffuse.png", "url": "asset/model/environment/Plants01Diffuse.png"},
 				{"id": "texture/Plants01Normal.jpg", "url": "asset/model/environment/Plants01Normal.jpg"}
 			]
@@ -182,7 +167,7 @@
 					"url": "asset/model/environment/trunk/Trunk{counter}.hmd"
 				}
 			],
-			"textures": [
+			"modelTextures": [
 				{"id": "texture/Trunk01Diffuse.jpg", "url": "asset/model/environment/Trunk01Diffuse.jpg"},
 				{"id": "texture/Trunk01Normal.jpg", "url": "asset/model/environment/Trunk01Normal.jpg"}
 			]
@@ -195,7 +180,7 @@
 					"url": "asset/model/environment/trunk/Trunk{counter}.hmd"
 				}
 			],
-			"textures": [
+			"modelTextures": [
 				{"id": "texture/Trunk01Diffuse.jpg", "url": "asset/model/environment/Trunk01Diffuse.jpg"},
 				{"id": "texture/Trunk01Normal.jpg", "url": "asset/model/environment/Trunk01Normal.jpg"}
 			]
@@ -208,7 +193,7 @@
 					"url": "asset/model/environment/trunk/Trunk04.hmd"
 				}
 			],
-			"textures": [
+			"modelTextures": [
 				{"id": "texture/Trunk01Diffuse.jpg", "url": "asset/model/environment/Trunk01Diffuse.jpg"},
 				{"id": "texture/Trunk01Normal.jpg", "url": "asset/model/environment/Trunk01Normal.jpg"},
 				{"id": "texture/Coniferous01Diffuse.png", "url": "asset/model/environment/Coniferous01Diffuse.png"},
@@ -223,7 +208,7 @@
 					"url": "asset/model/environment/bush/Bush_{counter}.hmd"
 				}
 			],
-			"textures": [
+			"modelTextures": [
 				{"id": "texture/Tree_leaves.png", "url": "asset/model/environment/Tree_leaves.png"},
 				{"id": "texture/Tree_leaves_n.jpg", "url": "asset/model/environment/Tree_leaves_n.jpg"}
 			]
@@ -236,7 +221,7 @@
 					"url": "asset/model/environment/ground/Floor{counter}.hmd"
 				}
 			],
-			"textures": [
+			"modelTextures": [
 				{"id": "texture/Stone_elements.jpg", "url": "asset/model/environment/Stone_elements.jpg"},
 				{"id": "texture/Stone_elements_n.jpg", "url": "asset/model/environment/Stone_elements_n.jpg"}
 			]
@@ -249,7 +234,7 @@
 					"url": "asset/model/environment/ground/Ground_Decal_Leaves{counter}.hmd"
 				}
 			],
-			"textures": [
+			"modelTextures": [
 				{"id": "texture/Ground_decals.png", "url": "asset/model/environment/Ground_decals.png"},
 				{"id": "texture/Ground_decals_n.jpg", "url": "asset/model/environment/Ground_decals_n.jpg"}
 			]
@@ -262,7 +247,7 @@
 					"url": "asset/model/environment/ground/Ground_Decal{counter}.hmd"
 				}
 			],
-			"textures": [
+			"modelTextures": [
 				{"id": "texture/Ground_decals.png", "url": "asset/model/environment/Ground_decals.png"},
 				{"id": "texture/Ground_decals_n.jpg", "url": "asset/model/environment/Ground_decals_n.jpg"}
 			]
@@ -275,7 +260,7 @@
 					"url": "asset/model/environment/ground/Ground_Decal_grass1.hmd"
 				}
 			],
-			"textures": [
+			"modelTextures": [
 				{"id": "texture/Ground_decals.png", "url": "asset/model/environment/Ground_decals.png"},
 				{"id": "texture/Ground_decals_n.jpg", "url": "asset/model/environment/Ground_decals_n.jpg"}
 			]
@@ -288,7 +273,7 @@
 					"url": "asset/model/environment/stone/Column{counter}.hmd"
 				}
 			],
-			"textures": [
+			"modelTextures": [
 				{"id": "texture/Stone_elements.jpg", "url": "asset/model/environment/Stone_elements.jpg"},
 				{"id": "texture/Stone_elements_n.jpg", "url": "asset/model/environment/Stone_elements_n.jpg"}
 			]

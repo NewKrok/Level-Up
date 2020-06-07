@@ -8,7 +8,7 @@
 					"url": "asset/model/projectile/elf/ArrowSM.hmd"
 				}
 			],
-			"textures": [
+			"modelTextures": [
 				{"id": "model/character/elf/Albedo.jpg", "url": "asset/model/elf/unit/Albedo.jpg"},
 				{"id": "model/character/elf/ForPainting_lambert1_Normal.jpg", "url": "asset/model/elf/unit/ForPainting_lambert1_Normal.jpg"}
 			]
@@ -21,7 +21,7 @@
 					"url": "asset/model/effect/NoiseSphere1.hmd"
 				}
 			],
-			"textures": [
+			"modelTextures": [
 				{"id": "texture/effect/gradient/gradient_1.jpg", "url": "asset/texture/effect/gradient/gradient_1.jpg"}
 			]
 		}

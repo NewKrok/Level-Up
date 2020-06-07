@@ -21,9 +21,12 @@
 					"url": "asset/model/orc/unit/minion/WorkRoutineAnim.hmd"
 				}
 			],
-			"textures": [
+			"modelTextures": [
 				{"id": "model/character/orc/Albedo.jpg", "url": "asset/model/orc/unit/Albedo_q1.jpg"},
 				{"id": "model/character/orc/ForPainting2_lambert1_Normal.jpg", "url": "asset/model/orc/unit/ForPainting2_lambert1_Normal_q1.jpg"}
+			],
+			"textures": [
+				"asset/model/orc/unit/MaskTex.jpg"
 			]
 		},
 		{
@@ -47,9 +50,12 @@
 					"url": "asset/model/orc/unit/grunt/Attack01Anim.hmd"
 				}
 			],
-			"textures": [
+			"modelTextures": [
 				{"id": "model/character/orc/Albedo.jpg", "url": "asset/model/orc/unit/Albedo_q1.jpg"},
 				{"id": "model/character/orc/ForPainting2_lambert1_Normal.jpg", "url": "asset/model/orc/unit/ForPainting2_lambert1_Normal_q1.jpg"}
+			],
+			"textures": [
+				"asset/model/orc/unit/MaskTex.jpg"
 			]
 		},
 		{
@@ -73,9 +79,12 @@
 					"url": "asset/model/orc/unit/headhunter/Attack01Anim.hmd"
 				}
 			],
-			"textures": [
+			"modelTextures": [
 				{"id": "model/character/orc/Albedo.jpg", "url": "asset/model/orc/unit/Albedo_q1.jpg"},
 				{"id": "model/character/orc/ForPainting2_lambert1_Normal.jpg", "url": "asset/model/orc/unit/ForPainting2_lambert1_Normal_q1.jpg"}
+			],
+			"textures": [
+				"asset/model/orc/unit/MaskTex.jpg"
 			]
 		},
 		{
@@ -99,9 +108,12 @@
 					"url": "asset/model/orc/unit/berserker/Attack01Anim.hmd"
 				}
 			],
-			"textures": [
+			"modelTextures": [
 				{"id": "model/character/orc/Albedo.jpg", "url": "asset/model/orc/unit/Albedo_q1.jpg"},
 				{"id": "model/character/orc/ForPainting2_lambert1_Normal.jpg", "url": "asset/model/orc/unit/ForPainting2_lambert1_Normal_q1.jpg"}
+			],
+			"textures": [
+				"asset/model/orc/unit/MaskTex.jpg"
 			]
 		},
 		{
@@ -125,9 +137,12 @@
 					"url": "asset/model/orc/unit/warrock/Attack01Anim.hmd"
 				}
 			],
-			"textures": [
+			"modelTextures": [
 				{"id": "model/character/orc/Albedo.jpg", "url": "asset/model/orc/unit/Albedo_q1.jpg"},
 				{"id": "model/character/orc/ForPainting2_lambert1_Normal.jpg", "url": "asset/model/orc/unit/ForPainting2_lambert1_Normal_q1.jpg"}
+			],
+			"textures": [
+				"asset/model/orc/unit/MaskTex.jpg"
 			]
 		},
 		{
@@ -151,9 +166,12 @@
 					"url": "asset/model/orc/unit/hogrider/Attack01Anim.hmd"
 				}
 			],
-			"textures": [
+			"modelTextures": [
 				{"id": "model/character/orc/Albedo.jpg", "url": "asset/model/orc/unit/Albedo_q1.jpg"},
 				{"id": "model/character/orc/ForPainting2_lambert1_Normal.jpg", "url": "asset/model/orc/unit/ForPainting2_lambert1_Normal_q1.jpg"}
+			],
+			"textures": [
+				"asset/model/orc/unit/MaskTex.jpg"
 			]
 		},
 		{
@@ -177,9 +195,12 @@
 					"url": "asset/model/orc/unit/bandwagon/Attack01Anim.hmd"
 				}
 			],
-			"textures": [
+			"modelTextures": [
 				{"id": "model/character/orc/Albedo.jpg", "url": "asset/model/orc/unit/Albedo_q1.jpg"},
 				{"id": "model/character/orc/ForPainting2_lambert1_Normal.jpg", "url": "asset/model/orc/unit/ForPainting2_lambert1_Normal_q1.jpg"}
+			],
+			"textures": [
+				"asset/model/orc/unit/MaskTex.jpg"
 			]
 		},
 		{
@@ -203,9 +224,12 @@
 					"url": "asset/model/orc/unit/drake/Attack01Anim.hmd"
 				}
 			],
-			"textures": [
+			"modelTextures": [
 				{"id": "model/character/orc/Albedo.jpg", "url": "asset/model/orc/unit/Albedo_q1.jpg"},
 				{"id": "model/character/orc/ForPainting2_lambert1_Normal.jpg", "url": "asset/model/orc/unit/ForPainting2_lambert1_Normal_q1.jpg"}
+			],
+			"textures": [
+				"asset/model/orc/unit/MaskTex.jpg"
 			]
 		}
 	]

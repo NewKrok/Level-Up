@@ -1,17 +1,6 @@
 {
 	"environments":[
 		{
-			"id": "Bridge01",
-			"name": "Bridge 01",
-			"modelScale": 0.005,
-			"environmentId": "bridge",
-			"assetGroup": "environment.bridge.Bridge01",
-			"previewUrl": "",
-			"zOffset": 1,
-			"isPathBlocker": false,
-			"hasTransparentTexture": false
-		},
-		{
 			"id": "Rock{1...28}",
 			"name": "Rock {counter}",
 			"modelScale": 0.005,
