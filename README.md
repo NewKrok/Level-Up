@@ -6,8 +6,8 @@ http://flashplusplus.net/haxe/levelup/index.html
 
 ## Screenshot(s)
 Main Menu
-![image](https://user-images.githubusercontent.com/13141660/82105383-61445200-971b-11ea-8392-63b6198534ac.png)
-![image](https://user-images.githubusercontent.com/13141660/82105407-7b7e3000-971b-11ea-819f-d65350c6b2de.png)
+![image](https://user-images.githubusercontent.com/13141660/83974895-dfe27880-a8f0-11ea-9235-962b7dd252c9.png)
+![image](https://user-images.githubusercontent.com/13141660/83974906-ecff6780-a8f0-11ea-9668-0428758937db.png)
 
 Ingame
 ![image](https://user-images.githubusercontent.com/13141660/80431506-e5ac6d80-88f1-11ea-8a47-8f10b47400e2.png)
@@ -15,8 +15,7 @@ Ingame
 
 Editor
 ![image](https://user-images.githubusercontent.com/13141660/72680806-66232d00-3abe-11ea-8fc9-c322a524a330.png)
-![image](https://user-images.githubusercontent.com/13141660/70577969-b00a2080-1bac-11ea-9702-de1203783941.png)
-![image](https://user-images.githubusercontent.com/13141660/70577990-c1532d00-1bac-11ea-96a5-d91d6f23c0ce.png)
+![image](https://user-images.githubusercontent.com/13141660/83974918-06a0af00-a8f1-11ea-9121-163b3835c016.png)
 
 ## TODO - general
 - Create q0/q2 textures for terrains
@@ -26,7 +25,6 @@ Editor
 - Import missing Undead units
 - Import missing Neutral units
 - Import missing environments
-- Team based colorization
 - Fix z-index render problem when the camera distance is to big
 - Fix "shadow-jump" bug during Day/Night change
 - Create custom select form component
@@ -42,11 +40,13 @@ Editor
 - Html based hero ui
 - Add team system
 - Implement a Moba custom game
+- Fix asset selection - there is a problem with colliders
+- Add group selection possibility
 - etc...
 
 ## TODO - Adventure editor
-- Add missing preview images (Is it possible to generate it like the heightmap?)
-- Script editor
+- Add group selection possibility
+- Add missing preview images
 - Unit editor
 - Team editor
 - Define map sizes
@@ -66,6 +66,7 @@ Editor
 - Undo / Redo functionality
 
 ## TODO - HeightMap editor
+- Fix decrease height logic
 - Undo / Redo functionality
 
 ## TODO - Light settings
@@ -81,6 +82,10 @@ Editor
 - Move regions from EditorModel to RegionModule
 - Add mouse over effect
 - Camera focus to the region after selecting it on the list
+- Undo / Redo functionality
+
+## TODO - Script editor
+- Currently it's just a viewer, let's make it to dynamic
 - Undo / Redo functionality
 
 
