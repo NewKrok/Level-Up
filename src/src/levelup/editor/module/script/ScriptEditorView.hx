@@ -1,7 +1,9 @@
 package levelup.editor.module.script;
 
 import coconut.data.List;
+import coconut.ui.RenderResult;
 import coconut.ui.View;
+import levelup.editor.module.script.ScriptConfig.ScriptData;
 import levelup.game.GameState.Trigger;
 
 using StringTools;
@@ -12,11 +14,14 @@ using StringTools;
  */
 class ScriptEditorView extends View
 {
+	@:attr var openSelector:ScriptData->Int->Void;
+	@:skipCheck @:attr var selectors:List<RenderResult>;
 	@:skipCheck @:attr var scripts:List<Trigger>;
 	@:skipCheck @:attr var selectedScript:Trigger;
 
 	function render() '
 		<div class="lu_editor__properties__container">
+			{...selectors}
 			<div class="lu_title">
 				<i class="fas fa-code lu_right_offset"></i>Script Editor
 			</div>
@@ -40,7 +45,7 @@ class ScriptEditorView extends View
 								Events
 							</div>
 							<for {event in selectedScript.events}>
-								<EntryView data={ScriptConfig.getEventData(event)} />
+								<EntryView data={ScriptConfig.getEventData(event)} openSelector=$openSelector />
 							</for>
 						</div>
 						<div class="lu_script__block">
@@ -48,15 +53,15 @@ class ScriptEditorView extends View
 								<i class="fas fa-project-diagram lu_right_offset"></i>
 								Conditions
 							</div>
-							<EntryView data={ScriptConfig.getConditionData(selectedScript.condition)} />
+							<EntryView data={ScriptConfig.getConditionData(selectedScript.condition)} openSelector=$openSelector />
 						</div>
 						<div class="lu_script__block">
 							<div class="lu_script__block_label">
 								<i class="fas fa-terminal lu_right_offset"></i>
 								Actions
 							</div>
-							<for {action in  selectedScript.actions}>
-								<EntryView data={ScriptConfig.getActionData(action)} />
+							<for {action in selectedScript.actions}>
+								<EntryView data={ScriptConfig.getActionData(action)} openSelector=$openSelector />
 							</for>
 						</div>
 					</div>

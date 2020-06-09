@@ -7,3 +7,6 @@
 .lu_script__entry:first-child{margin-top:0;}
 .lu_script__entry:nth-child(odd){background-color:#00000033;}
 .lu_entry__name_highlight{font-weight:bold;color:#FFFF00;}
+.lu_script__param{text-decoration:underline;cursor:pointer;border:1px solid #6afd7533;border-radius:3px;padding:1px 5px;}
+.lu_script__param_selector__background{position:absolute;background-color:#00000066;width:100%;height:100%;display:flex;justify-content:center;align-items:center;}
+.lu_script__param_selector__container{width:400px;min-height:200px;background-color:#999;position:relative;border-radius:3px;}
