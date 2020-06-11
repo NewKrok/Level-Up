@@ -11,8 +11,10 @@ using StringTools;
  */
 class EntryView extends View
 {
-	@:skipCheck @:attr var openSelector:ScriptData->Int->Void;
+	@:skipCheck @:attr var openSelector:String->Int->ScriptData->Int->Void;
 	@:skipCheck @:attr var data:ScriptData;
+	@:attr var type:String;
+	@:attr var index:Int;
 
 	function render() '
 		<div class="lu_script__entry">
@@ -41,7 +43,7 @@ class EntryView extends View
 					<else>
 						<span
 							class="lu_highlight lu_script__param"
-							onclick={openSelector(data, i - 1)}
+							onclick={openSelector(type, index, data, i - 1)}
 						>
 							{getParamAsString(i - 1)}
 						</span>
@@ -52,5 +54,12 @@ class EntryView extends View
 		');
 	}
 
-	function getParamAsString(index):String return Std.string(data.values[index]);
+	function getParamAsString(index:Int):String
+	{
+		var modifier = data.descriptionParamModifier != null && data.descriptionParamModifier.get(index) != null ? data.descriptionParamModifier.get(index) : null;
+
+		return Std.string(modifier == null
+			? data.values[index]
+			: modifier(data.values[index]));
+	}
 }

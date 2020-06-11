@@ -14,7 +14,7 @@ using StringTools;
  */
 class ScriptEditorView extends View
 {
-	@:attr var openSelector:ScriptData->Int->Void;
+	@:attr var openSelector:String->Int->ScriptData->Int->Void;
 	@:skipCheck @:attr var selectors:List<RenderResult>;
 	@:skipCheck @:attr var scripts:List<Trigger>;
 	@:skipCheck @:attr var selectedScript:Trigger;
@@ -44,8 +44,8 @@ class ScriptEditorView extends View
 								<i class="fas fa-calendar-check lu_right_offset"></i>
 								Events
 							</div>
-							<for {event in selectedScript.events}>
-								<EntryView data={ScriptConfig.getEventData(event)} openSelector=$openSelector />
+							<for {i in 0...selectedScript.events.length}>
+								<EntryView data={ScriptConfig.getEventData(selectedScript.events[i])} openSelector=$openSelector type="event" index=$i />
 							</for>
 						</div>
 						<div class="lu_script__block">
@@ -53,15 +53,15 @@ class ScriptEditorView extends View
 								<i class="fas fa-project-diagram lu_right_offset"></i>
 								Conditions
 							</div>
-							<EntryView data={ScriptConfig.getConditionData(selectedScript.condition)} openSelector=$openSelector />
+							<EntryView data={ScriptConfig.getConditionData(selectedScript.condition)} openSelector=$openSelector type="condition" index=${0} />
 						</div>
 						<div class="lu_script__block">
 							<div class="lu_script__block_label">
 								<i class="fas fa-terminal lu_right_offset"></i>
 								Actions
 							</div>
-							<for {action in selectedScript.actions}>
-								<EntryView data={ScriptConfig.getActionData(action)} openSelector=$openSelector />
+							<for {i in 0...selectedScript.actions.length}>
+								<EntryView data={ScriptConfig.getActionData(selectedScript.actions[i])} openSelector=$openSelector type="action" index=$i />
 							</for>
 						</div>
 					</div>

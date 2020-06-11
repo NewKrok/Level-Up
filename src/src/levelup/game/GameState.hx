@@ -16,6 +16,7 @@ import js.Browser;
 import levelup.core.camera.ActionCamera;
 import levelup.core.trigger.TriggerExecutor;
 import levelup.editor.EditorState;
+import levelup.editor.module.script.ScriptConfig.ParamType;
 import levelup.game.GameModel.PlayState;
 import levelup.game.GameState.Trigger;
 import levelup.game.GameWorld.Region;
@@ -367,6 +368,14 @@ typedef Trigger =
 	var events:Array<TriggerEvent>;
 	var condition:TriggerCondition;
 	var actions:Array<TriggerAction>;
+	@:optional var localVariables:Array<Variable>;
+}
+
+typedef Variable =
+{
+	var name:String;
+	var type:ParamType;
+	var initialValue:Dynamic;
 }
 
 enum TriggerEvent {

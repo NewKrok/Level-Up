@@ -2,10 +2,12 @@ package levelup.editor.module.script;
 
 import coconut.data.List;
 import coconut.ui.RenderResult;
+import haxe.EnumTools;
 import levelup.editor.EditorState.EditorCore;
 import levelup.editor.EditorState.EditorViewId;
 import levelup.editor.module.script.ScriptConfig.ScriptData;
 import levelup.game.GameState.Trigger;
+import levelup.game.GameState.TriggerAction;
 import tink.state.State;
 
 /**
@@ -33,11 +35,48 @@ import tink.state.State;
 		}));
 	}
 
-	function openSelector(data:ScriptData, paramIndex:Int):Void
+	function openSelector(type:String, index:Int, data:ScriptData, paramIndex:Int):Void
 	{
 		var selector = new ParamSelector({
+			script: selectedScript,
 			close: closeLastSelector,
 			data: data,
+			setValue: v ->
+			{
+				switch(type)
+				{
+					case "action":
+						var name = selectedScript.value.actions[index].getName();
+						var params = selectedScript.value.actions[index].getParameters();
+						var newParams:Array<Dynamic> = [];
+
+						for (i in 0...params.length)
+						{
+							if (i == paramIndex)
+							{
+								newParams.push(v);
+							}
+							else
+							{
+								newParams.push(params[i]);
+							}
+						}
+
+						var newActions = selectedScript.value.actions.concat([]);
+						newActions[index] = EnumTools.createByName(TriggerAction, name, newParams);
+						var newValue:Trigger = {
+							id: selectedScript.value.id,
+							isEnabled: selectedScript.value.isEnabled,
+							events: selectedScript.value.events,
+							condition: selectedScript.value.condition,
+							localVariables: selectedScript.value.localVariables,
+							actions: newActions
+						}
+						selectedScript.set(newValue);
+
+					case _:
+				}
+			},
 			paramIndex: paramIndex
 		});
 		selectors.set(selectors.value.append(selector.reactify()));

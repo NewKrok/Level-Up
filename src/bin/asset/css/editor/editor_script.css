@@ -67,9 +67,28 @@
 }
 
 .lu_script__param_selector__container {
-	width: 400px;
+	max-width: 90%;
 	min-height: 200px;
-	background-color: #999;
+	background-color: #FFFFFF66;
 	position: relative;
 	border-radius: 3px;
+	backdrop-filter: blur(5px);
+	filter: drop-shadow(0 2px 4px #000);
+}
+
+.lu_script__param_selector__entry {
+	font-size: 0.9em;
+	margin-bottom: 1px;
+	padding: 10px;
+	background-color: rgba(0, 0, 0, 0.2);
+	display: flex;
+	align-items: center;
+}
+
+.lu_script__param_selector__entry:nth-child(odd) {
+	background-color: rgba(0, 0, 0, 0.1);
+}
+
+.lu_script__param_selector__entry:last-of-type {
+	margin-bottom: 0;
 }

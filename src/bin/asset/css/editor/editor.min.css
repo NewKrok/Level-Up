@@ -1,4 +1,5 @@
-@import "editor_dialog.css";@import "editor_tools.css";@import "editor_properties.css";@import "editor_script.css";@import "editor_skybox.css";@import "editor_library.css";@import "editor_camera.css";.lu_editor{pointer-events:none;width:100%;height:100%;display:flex;flex-direction:column;overflow:hidden;}
+@import "editor_dialog.css";@import "editor_tools.css";@import "editor_properties.css";@import "editor_script.css";@import "editor_skybox.css";@import "editor_library.css";@import "editor_camera.css";.lu_grab{cursor:grab;}
+.lu_editor{pointer-events:none;width:100%;height:100%;display:flex;flex-direction:column;overflow:hidden;}
 .lu_editor_header{width:100%;display:flex;z-index:1;height:50px;padding:0 5px;justify-content:space-between;align-items:center;background-color:rgba(0,0,0,0.2);filter:drop-shadow(0 2px 4px #000);backdrop-filter:blur(5px);box-sizing:border-box;pointer-events:all;border-bottom:1px solid #FFFFFF22;pointer-events:visible;}
 .lu_editor_header__button{color:#FFF;height:100%;align-items:center;display:flex;padding:0 10px;user-select:none;cursor:pointer;}
 .lu_editor_header__button:hover{color:#FFFF00;}
