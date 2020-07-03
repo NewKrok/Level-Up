@@ -368,6 +368,7 @@ typedef Trigger =
 	var events:Array<TriggerEvent>;
 	var condition:TriggerCondition;
 	var actions:Array<TriggerAction>;
+	@:optional var comment:String;
 	@:optional var localVariables:Array<Variable>;
 }
 

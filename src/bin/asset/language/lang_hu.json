@@ -43,6 +43,7 @@
 		"editor.camera.updateWarning": "Biztosan szeretnéd felülírni {highlight_start}{camName}{highlight_end} értékeit a jelenlegi kamera értékeivel?",
 		"Warning": "Figyelem",
 		"Yes": "Igen",
-		"No": "Nem"
+		"No": "Nem",
+		"editor.script.commentPlaceholder": "Add ide a megjegyzéseidet..."
 	}
 }

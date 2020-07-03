@@ -7,7 +7,6 @@ import levelup.TerrainAssets.TerrainConfig;
 import levelup.game.GameState.InitialUnitData;
 import levelup.game.GameState.PlayerId;
 import levelup.game.GameState.StaticObjectConfig;
-import levelup.game.GameState.Trigger;
 import levelup.game.GameWorld.Region;
 import levelup.game.GameWorld.SkyboxConfig;
 
@@ -35,7 +34,6 @@ class EditorModel implements Model
 
 	@:skipCheck @:editable var size:SimplePoint;
 	@:skipCheck @:editable var regions:Array<Region>;
-	@:skipCheck @:editable var triggers:Array<Trigger>;
 	@:skipCheck @:editable var units:Array<InitialUnitData>;
 	@:skipCheck @:editable var staticObjects:Array<StaticObjectConfig>;
 

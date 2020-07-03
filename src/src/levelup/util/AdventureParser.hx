@@ -87,7 +87,7 @@ class AdventureParser
 		}];
 
 		// TODO remove it
-		rawWorldConfig.triggers = [
+		/*rawWorldConfig.triggers = [
 			{
 				id: "initial",
 				isEnabled: true,
@@ -101,7 +101,7 @@ class AdventureParser
 					TriggerAction.StartCameraShake(PlayerId.Player1, VariableDefinition.Value(1), VariableDefinition.Value(5), VariableDefinition.Value("quad-ease-in-out")),
 				]
 			}
-		];
+		];*/
 /*
 			{
 				id: "initial",

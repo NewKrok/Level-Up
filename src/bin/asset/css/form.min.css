@@ -27,3 +27,5 @@ ul{list-style:none;padding:0;margin:0;}
 .lu_form__select{background:#44382cb0;color:#FFF;border-radius:3px;outline:none;border:1px solid rgba(255,255,255,0.2);font:inherit;font-size:0.8em;padding:5px 10px;box-sizing:content-box;align-items:center;display:flex;cursor:pointer;-webkit-appearance:none;-moz-appearance:none;text-overflow:'';box-sizing:border-box;}
 .lu_form__select:hover,.lu_form__select:active{outline:none;border:1px solid rgba(255,255,255,0.6);}
 .lu_form__radio{padding:0;margin:0;border:none;outline:none;width:27px;height:27px;opacity:0.5;cursor:pointer;}
+.lu_textarea{resize:none;background-color:#F8EDC8;border:none;outline:none;font-family:'Source Code Pro',monospace;border-radius:3px;padding:1rem;min-height:10rem;}
+.lu_textarea::placeholder{color:#666;}

@@ -199,7 +199,6 @@ class EditorState extends Base2dState
 			sunsetColor: adventureConfig.worldConfig.sunsetColor,
 			dawnColor: adventureConfig.worldConfig.dawnColor,
 			regions: adventureConfig.worldConfig.regions,
-			triggers: adventureConfig.worldConfig.triggers,
 			units: [],
 			staticObjects: [],
 			showGrid: SaveUtil.editorData.showGrid,
@@ -1220,6 +1219,7 @@ class EditorState extends Base2dState
 		var skyboxModule = cast(getModule(SkyboxModule), SkyboxModule);
 		var cameraModule = cast(getModule(CameraModule), CameraModule);
 		var watherModule = cast(getModule(WeatherModule), WeatherModule);
+		var scriptModule = cast(getModule(ScriptModule), ScriptModule);
 
 		var worldConfig:WorldConfig =
 		{
@@ -1234,7 +1234,7 @@ class EditorState extends Base2dState
 			globalWeather: watherModule.getGlobalWeather(),
 			regions: model.regions,
 			cameras: cameraModule.getCameras(),
-			triggers: model.triggers,
+			triggers: scriptModule.getScripts(),
 			units: units,
 			staticObjects: staticObjects,
 			terrainLayers: terrainLayers,

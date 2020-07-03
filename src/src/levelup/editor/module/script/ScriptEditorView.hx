@@ -15,9 +15,17 @@ using StringTools;
 class ScriptEditorView extends View
 {
 	@:attr var openSelector:String->Int->ScriptData->Int->Void;
+	@:attr var setComment:String->Void;
 	@:skipCheck @:attr var selectors:List<RenderResult>;
 	@:skipCheck @:attr var scripts:List<Trigger>;
 	@:skipCheck @:attr var selectedScript:Trigger;
+
+	@:state var scriptViewState:ScriptViewState = ScriptViewState.Code;
+	var scriptViewFeatures:Array<Dynamic> = [
+		{ icon: "code", target: ScriptViewState.Code },
+		{ icon: "database", target: ScriptViewState.LocalVariables },
+		{ icon: "comment-alt", target: ScriptViewState.Comment }
+	];
 
 	function render() '
 		<div class="lu_editor__properties__container">
@@ -37,36 +45,39 @@ class ScriptEditorView extends View
 					</div>
 				</div>
 				<div class="lu_fill lu_col">
-					<div class="lu_title lu_bottom_offset--s">{selectedScript.id}</div>
+					<div class="lu_title lu_bottom_offset--s lu_row lu_row--space_between">
+						{selectedScript.id}
+						<div class="lu_row">
+							<div class="lu_script__entry">
+								<for {entry in scriptViewFeatures}>
+									<i
+										class={"lu_horizontal_offset lu_icon_button fas fa-" + entry.icon + (entry.target == scriptViewState ? " lu_highlight" : "")}
+										onClick={scriptViewState = entry.target}
+									></i>
+								</for>
+							</div>
+						</div>
+					</div>
 					<div class="lu_vertical_overflow">
-						<div class="lu_script__block">
-							<div class="lu_script__block_label">
-								<i class="fas fa-calendar-check lu_right_offset"></i>
-								Events
-							</div>
-							<for {i in 0...selectedScript.events.length}>
-								<EntryView data={ScriptConfig.getEventData(selectedScript.events[i])} openSelector=$openSelector type="event" index=$i />
-							</for>
-						</div>
-						<div class="lu_script__block">
-							<div class="lu_script__block_label">
-								<i class="fas fa-project-diagram lu_right_offset"></i>
-								Conditions
-							</div>
-							<EntryView data={ScriptConfig.getConditionData(selectedScript.condition)} openSelector=$openSelector type="condition" index=${0} />
-						</div>
-						<div class="lu_script__block">
-							<div class="lu_script__block_label">
-								<i class="fas fa-terminal lu_right_offset"></i>
-								Actions
-							</div>
-							<for {i in 0...selectedScript.actions.length}>
-								<EntryView data={ScriptConfig.getActionData(selectedScript.actions[i])} openSelector=$openSelector type="action" index=$i />
-							</for>
-						</div>
+						<switch {scriptViewState}>
+							<case {ScriptViewState.Code}> <ScriptView {...this} />
+							<case {ScriptViewState.LocalVariables}> <LocalVariablesView scriptId={selectedScript.id} />
+							<case {ScriptViewState.Comment}>
+								<ScriptCommentView
+									scriptId={selectedScript.id}
+									comment={selectedScript.comment}
+									setComment=$setComment
+								/>
+						</switch>
 					</div>
 				</div>
 			</div>
 		</div>
 	';
+}
+
+enum ScriptViewState {
+	Code;
+	Comment;
+	LocalVariables;
 }

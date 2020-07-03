@@ -8,6 +8,7 @@ import levelup.editor.EditorState.EditorViewId;
 import levelup.editor.module.script.ScriptConfig.ScriptData;
 import levelup.game.GameState.Trigger;
 import levelup.game.GameState.TriggerAction;
+import levelup.util.TriggerUtil;
 import tink.state.State;
 
 /**
@@ -31,8 +32,20 @@ import tink.state.State;
 			selectors: selectors,
 			scripts: scripts,
 			selectedScript: selectedScript,
-			openSelector: openSelector
+			openSelector: openSelector,
+			setComment: setComment
 		}));
+	}
+
+	function setComment(comment:String):Void
+	{
+		var newScript = TriggerUtil.merge(selectedScript.value, { comment: comment });
+		scripts.set(TriggerUtil.updateList(
+			selectedScript.value,
+			newScript,
+			scripts.value
+		));
+		selectedScript.set(newScript);
 	}
 
 	function openSelector(type:String, index:Int, data:ScriptData, paramIndex:Int):Void
@@ -64,15 +77,13 @@ import tink.state.State;
 
 						var newActions = selectedScript.value.actions.concat([]);
 						newActions[index] = EnumTools.createByName(TriggerAction, name, newParams);
-						var newValue:Trigger = {
-							id: selectedScript.value.id,
-							isEnabled: selectedScript.value.isEnabled,
-							events: selectedScript.value.events,
-							condition: selectedScript.value.condition,
-							localVariables: selectedScript.value.localVariables,
-							actions: newActions
-						}
-						selectedScript.set(newValue);
+						var newScript = TriggerUtil.merge(selectedScript.value, { actions: newActions });
+						scripts.set(TriggerUtil.updateList(
+							selectedScript.value,
+							newScript,
+							scripts.value
+						));
+						selectedScript.set(newScript);
 
 					case _:
 				}
@@ -86,4 +97,6 @@ import tink.state.State;
 	{
 		selectors.set(List.fromArray(selectors.value.toArray().slice(0, selectors.value.length - 2)));
 	}
+
+	public function getScripts() return scripts.value.toArray();
 }

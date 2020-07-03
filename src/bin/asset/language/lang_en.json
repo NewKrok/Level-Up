@@ -43,6 +43,7 @@
 		"editor.camera.updateWarning": "Do you want to update {highlight_start}{camName}{highlight_end} with the current camera state?",
 		"Warning": "Warning",
 		"Yes": "Yes",
-		"No": "No"
+		"No": "No",
+		"editor.script.commentPlaceholder": "Add your comments here..."
 	}
 }

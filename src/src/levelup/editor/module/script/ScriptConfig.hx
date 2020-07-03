@@ -45,7 +45,7 @@ class ScriptConfig
 				ParamType.PString
 			],
 			values: [playerId, camera, time, ease],
-			descriptionParamModifier: [0 => v -> Std.int(v) + 1],
+			descriptionParamModifier: [0 => playerIdDescriptionModifier],
 			description: "{highlight_start}Animate camera{highlight_end} for player {p0} to {p1} under {p2} second(s) with {p3}."
 		}
 
@@ -56,7 +56,7 @@ class ScriptConfig
 				ParamType.PNumber
 			],
 			values: [playerId, color, time],
-			descriptionParamModifier: [0 => v -> Std.int(v) + 1],
+			descriptionParamModifier: [0 => playerIdDescriptionModifier],
 			description: "{highlight_start}Fade out{highlight_end} the screen for player {p0} to color {p1} under {p2} second(s)."
 		}
 
@@ -66,7 +66,7 @@ class ScriptConfig
 				ParamType.PCamera
 			],
 			values: [playerId, camera],
-			descriptionParamModifier: [0 => v -> Std.int(v) + 1],
+			descriptionParamModifier: [0 => playerIdDescriptionModifier],
 			description: "{highlight_start}Jump camera{highlight_end} for player {p0} to {p1}."
 		}
 
@@ -78,8 +78,8 @@ class ScriptConfig
 				ParamType.PString
 			],
 			values: [playerId, amplitude, time, ease],
-			descriptionParamModifier: [0 => v -> Std.int(v) + 1],
-			description: "{highlight_start}Start camera shake{highlight_end} for player {p0} with amplitude {p1} and with frequency time {p2} second(s) with {p3}."
+			descriptionParamModifier: [0 => playerIdDescriptionModifier],
+			description: "{highlight_start}Start camera shake{highlight_end} for {p0} with amplitude {p1} and with frequency time {p2} second(s) with {p3}."
 		}
 
 		case TriggerAction.Wait(time): {
@@ -92,6 +92,8 @@ class ScriptConfig
 
 		case _: { paramTypes: [], values: [], description: "This action is not implemented yet: " + action.getName() }
 	};
+
+	private static function playerIdDescriptionModifier(v) return "Player " + (Std.int(v) + 1);
 }
 
 typedef ScriptData = {

@@ -199,3 +199,18 @@ ul {
 	opacity: 0.5;
 	cursor: pointer;
 }
+
+.lu_textarea {
+	resize: none;
+	background-color: #F8EDC8;
+	border: none;
+	outline: none;
+	font-family: 'Source Code Pro', monospace;
+	border-radius: 3px;
+	padding: 1rem;
+	min-height: 10rem;
+}
+
+.lu_textarea::placeholder {
+	color: #666;
+}
