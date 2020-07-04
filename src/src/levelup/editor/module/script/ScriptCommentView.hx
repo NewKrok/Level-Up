@@ -16,10 +16,6 @@ class ScriptCommentView extends View
 
 	function render() '
 		<div class="lu_script__block">
-			<div class="lu_script__block_label">
-				<i class="fas fa-comment-alt lu_right_offset"></i>
-				Comment for $scriptId script
-			</div>
 			<MultilineInput
 				className="lu_top_offset lu_fill"
 				value=$comment

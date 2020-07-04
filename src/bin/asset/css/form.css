@@ -106,13 +106,19 @@ ul {
 	border: 1px solid rgba(255, 255, 255, 0.2);
 	border-radius: 3px;
 	color: #FFF;
-	padding: 5px 5px;
+	padding: 0.5rem 1rem;
+	font-size: 1rem;
 	outline: none;
+}
+
+.lu_input::placeholder {
+	color: #666;
 }
 
 .lu_input:focus,
 .lu_input:active {
-	border: 1px solid rgba(255, 255, 255, 0.6);
+	border: 1px solid #FFFF00;
+	filter: drop-shadow(2px 4px 5px #00000066);
 }
 
 .lu_slider {
@@ -208,9 +214,50 @@ ul {
 	font-family: 'Source Code Pro', monospace;
 	border-radius: 3px;
 	padding: 1rem;
-	min-height: 10rem;
+	min-height: 5rem;
 }
 
 .lu_textarea::placeholder {
 	color: #666;
+}
+
+.lu_dropdown {
+	background-color: #44382cb0;
+	padding: 0.5rem 1rem;
+	border-radius: 3px;
+	user-select: none;
+	cursor: pointer;
+	border: 1px solid rgba(255,255,255,0.2);
+}
+
+.lu_dropdown--opened {
+	filter: drop-shadow(2px 4px 5px #00000066);
+	border-color: #FFFF00;
+}
+
+.lu_dropdown__list {
+	display: flex;
+	flex-direction: column;
+	position: absolute;
+	z-index: 1;
+	background-color: #44382c;
+	left: 0;
+	top: 2.25rem;
+	width: fit-content;
+	min-width: 100%;
+	border-radius: 3px;
+	padding: 4px;
+}
+
+.lu_dropdown__value {
+	padding: 0.5rem;
+	white-space: nowrap;
+}
+
+.lu_dropdown__value:nth-child(odd) {
+	background-color: #00000033;
+}
+
+.lu_dropdown__value:hover {
+	background-color: #FFFFFF33;
 }

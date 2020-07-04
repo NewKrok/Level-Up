@@ -23,8 +23,7 @@ class ScriptEditorView extends View
 	@:state var scriptViewState:ScriptViewState = ScriptViewState.Code;
 	var scriptViewFeatures:Array<Dynamic> = [
 		{ icon: "code", target: ScriptViewState.Code },
-		{ icon: "database", target: ScriptViewState.LocalVariables },
-		{ icon: "comment-alt", target: ScriptViewState.Comment }
+		{ icon: "database", target: ScriptViewState.LocalVariables }
 	];
 
 	function render() '
@@ -58,16 +57,15 @@ class ScriptEditorView extends View
 							</div>
 						</div>
 					</div>
-					<div class="lu_vertical_overflow">
+					<div class="lu_vertical_overflow lu_fill">
+						<ScriptCommentView
+							scriptId={selectedScript.id}
+							comment={selectedScript.comment}
+							setComment=$setComment
+						/>
 						<switch {scriptViewState}>
 							<case {ScriptViewState.Code}> <ScriptView {...this} />
 							<case {ScriptViewState.LocalVariables}> <LocalVariablesView scriptId={selectedScript.id} />
-							<case {ScriptViewState.Comment}>
-								<ScriptCommentView
-									scriptId={selectedScript.id}
-									comment={selectedScript.comment}
-									setComment=$setComment
-								/>
 						</switch>
 					</div>
 				</div>
@@ -78,6 +76,5 @@ class ScriptEditorView extends View
 
 enum ScriptViewState {
 	Code;
-	Comment;
 	LocalVariables;
 }

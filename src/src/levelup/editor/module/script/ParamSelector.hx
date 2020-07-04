@@ -1,11 +1,13 @@
 package levelup.editor.module.script;
 
 import coconut.ui.View;
+import coconut.Ui.hxx;
 import hpp.util.GeomUtil.SimplePoint;
 import js.Browser;
 import js.html.Element;
 import js.html.MouseEvent;
 import levelup.Player;
+import levelup.component.Dropdown;
 import levelup.editor.module.script.ScriptConfig.ParamType;
 import levelup.editor.module.script.ScriptConfig.ScriptData;
 import levelup.game.GameState.Trigger;
@@ -56,26 +58,27 @@ class ParamSelector extends View
 
 	// Create different views for different selectors
 
+	var playerConstantArray = [for (i in 0...10)
+		hxx('
+			<div class="lu_row">
+				<div class="lu_player_color_box lu_right_offset" style={"background-color: #" + Player.colors[i]}></div>
+				Player {i + 1}
+			</div>
+		')
+	];
 	function createPlayerConstants() return hxx('
 		<div class="lu_script__param_selector__entry">
 			<input class="lu_form__radio" type="radio" id="constant" name="option" value="constant" />
 			<div class="lu_right_offset">Constants</div>
-			<div class="lu_player_color_box lu_right_offset" style={"background-color: #" + Player.colors[playerConstantIndex == -1 ? data.values[paramIndex] : playerConstantIndex]}></div>
-			<select class="lu_form__select" onChange={v ->
-			{
-				playerConstantIndex = Std.parseInt(v.currentTarget.value);
-				setValue(playerConstantIndex);
-			}}>
-				<for {i in 0...10}>
-					<option
-						selected={i == data.values[paramIndex]}
-						style={"color: #" + Player.colors[i]}
-						value={Std.string(i)}
-					>
-						Player {i + 1}
-					</option>
-				</for>
-			</select>
+			<Dropdown
+				selectedIndex={playerConstantIndex == -1 ? data.values[paramIndex] : playerConstantIndex}
+				setSelectedIndex = {v ->
+				{
+					playerConstantIndex = v;
+					setValue(playerConstantIndex);
+				}}
+				values=$playerConstantArray
+			/>
 		</div>
 	');
 

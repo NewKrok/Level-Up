@@ -46,7 +46,7 @@ class ScriptConfig
 			],
 			values: [playerId, camera, time, ease],
 			descriptionParamModifier: [0 => playerIdDescriptionModifier],
-			description: "{highlight_start}Animate camera{highlight_end} for player {p0} to {p1} under {p2} second(s) with {p3}."
+			description: "{highlight_start}Animate camera{highlight_end} for {p0} to {p1} under {p2} second(s) with {p3}."
 		}
 
 		case TriggerAction.FadeOut(playerId, color, time): {
@@ -57,7 +57,7 @@ class ScriptConfig
 			],
 			values: [playerId, color, time],
 			descriptionParamModifier: [0 => playerIdDescriptionModifier],
-			description: "{highlight_start}Fade out{highlight_end} the screen for player {p0} to color {p1} under {p2} second(s)."
+			description: "{highlight_start}Fade out{highlight_end} the screen for {p0} to color {p1} under {p2} second(s)."
 		}
 
 		case TriggerAction.JumpCameraToCamera(playerId, camera): {
@@ -67,7 +67,7 @@ class ScriptConfig
 			],
 			values: [playerId, camera],
 			descriptionParamModifier: [0 => playerIdDescriptionModifier],
-			description: "{highlight_start}Jump camera{highlight_end} for player {p0} to {p1}."
+			description: "{highlight_start}Jump camera{highlight_end} for {p0} to {p1}."
 		}
 
 		case TriggerAction.StartCameraShake(playerId, amplitude, time, ease): {

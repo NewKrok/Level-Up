@@ -13,3 +13,5 @@
 .lu_script__param_selector__entry{font-size:0.9em;margin-bottom:1px;padding:10px;background-color:rgba(0,0,0,0.2);display:flex;align-items:center;}
 .lu_script__param_selector__entry:nth-child(odd){background-color:rgba(0,0,0,0.1);}
 .lu_script__param_selector__entry:last-of-type{margin-bottom:0;}
+.lu_var_content{margin:0 1rem;}
+.lu_var_icon{width:1.2rem;}

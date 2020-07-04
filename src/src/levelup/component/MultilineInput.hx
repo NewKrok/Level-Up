@@ -10,9 +10,9 @@ import js.html.TextAreaElement;
 class MultilineInput extends View
 {
 	@:attr var value:String;
-	@:attr var placeHolder:String;
-	@:attr var className:String;
-	@:attr var onValueChange:String->Void;
+	@:attr var placeHolder:String = "";
+	@:attr var className:String = "";
+	@:attr var onValueChange:String->Void = null;
 
 	@:ref var component:TextAreaElement;
 
@@ -32,6 +32,6 @@ class MultilineInput extends View
 		component.style.height = "5px";
 		component.style.height = (component.scrollHeight) + "px";
 
-		onValueChange(component.value);
+		if (onValueChange != null) onValueChange(component.value);
 	}
 }
