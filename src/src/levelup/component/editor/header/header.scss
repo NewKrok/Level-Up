@@ -1,0 +1,42 @@
+.lu_editor_header {
+	width: 100%;
+	display: flex;
+	z-index: 2;
+	height: 40px;
+	padding: 0 5px;
+	justify-content: space-between;
+	align-items: center;
+    color: var(--color-primary-contrast);
+    pointer-events: all;
+    background: var(--linear-background-primary);
+
+    .lu_menu {
+        display: flex;
+        flex-grow: 1;
+        margin: 5px;
+        pointer-events: all;
+    }
+    
+    .lu_button {
+        font-size: var(--font-size-m);
+        height: 100%;
+        align-items: center;
+        display: flex;
+        padding: 0 10px;
+        user-select: none;
+        cursor: pointer;
+
+        &:hover {
+            color: var(--color-highlight);
+        }
+    }
+
+    .lu_controls {
+        display: flex;
+
+        .lu_button {
+            margin: 0 10px;
+            padding: 0;
+        }
+    }
+}

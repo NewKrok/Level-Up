@@ -18,8 +18,6 @@
 		"Medium": "Medium",
 		"High": "High",
 		"Show FPS": "Show FPS",
-		"On": "On",
-		"Off": "Off",
 		"Menu background": "Menu background",
 		"loading...": "loading...",
 		"Text language": "Text language",
@@ -44,6 +42,11 @@
 		"Warning": "Warning",
 		"Yes": "Yes",
 		"No": "No",
+		"common.general": "General",
+		"common.on": "On",
+		"common.off": "Off",
+		"editor.worldconfig.title": "World settings",
+		"editor.worldconfig.staticTime": "Static world time",
 		"editor.script.commentPlaceholder": "💬 Add your comments here..."
 	}
 }

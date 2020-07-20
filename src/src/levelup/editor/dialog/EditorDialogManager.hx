@@ -1,8 +1,8 @@
 package levelup.editor.dialog;
 
 import coconut.ui.RenderResult;
+import levelup.editor.EditorModel.EditorViewId;
 import levelup.editor.EditorState.EditorCore;
-import levelup.editor.EditorState.EditorViewId;
 import levelup.editor.dialog.EditorDialogManagerModel.EditorDialog;
 
 /**
@@ -17,7 +17,7 @@ import levelup.editor.dialog.EditorDialogManagerModel.EditorDialog;
 
 	public function new()
 	{
-		core.registerView(EditorViewId.VDialogManager, EditorDialogManagerView.fromHxx({
+		core.model.registerView(EditorViewId.VDialogManager, EditorDialogManagerView.fromHxx({
 			currentDialog: model.currentDialog
 		}));
 	}

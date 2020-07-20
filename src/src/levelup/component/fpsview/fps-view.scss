@@ -1,0 +1,21 @@
+.lu_fps_view {
+	position: absolute;
+	font-size: var(--font-size-m);
+	font-weight: bold;
+	padding: 5px 10px;
+	background-color: var(--color-highly-transparent-dark);
+	color: var(--color-positive);
+	user-select: none;
+	backdrop-filter: var(--backdrop-filter);
+    border-radius: var(--border-radius);
+    border: var(--border-primary);
+}
+
+.lu_fps_view--bl {
+	bottom: 10px;
+	left: 10px;
+}
+
+.lu_fps_view--low {
+	color: var(--color-negative);
+}

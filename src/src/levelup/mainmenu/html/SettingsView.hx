@@ -88,8 +88,8 @@ class SettingsView extends View
 						<div class="lu_main_menu_settings__entry lu_row">
 							<div class="lu_right_offset">{Language.get("Show FPS")}</div>
 							<select onChange=$setShowFPS class="lu_form__select">
-								<option selected={selectedShowFPS} value="1">{Language.get("On")}</option>
-								<option selected={!selectedShowFPS} value="0">{Language.get("Off")}</option>
+								<option selected={selectedShowFPS} value="1">{Language.get("common.on")}</option>
+								<option selected={!selectedShowFPS} value="0">{Language.get("common.off")}</option>
 							</select>
 						</div>
 						<div class="lu_main_menu_settings__entry lu_row">

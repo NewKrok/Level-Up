@@ -18,8 +18,6 @@
 		"Medium": "Közepes",
 		"High": "Magas",
 		"Show FPS": "FPS mutatása",
-		"On": "Be",
-		"Off": "Ki",
 		"Menu background": "Menü háttér",
 		"loading...": "Betöltés...",
 		"Text language": "Szöveg nyelve",
@@ -44,6 +42,11 @@
 		"Warning": "Figyelem",
 		"Yes": "Igen",
 		"No": "Nem",
-		"editor.script.commentPlaceholder": "💬 Add ide a megjegyzéseidet..."
+		"common.general": "Általános",
+		"common.on": "Be",
+		"common.off": "Ki",
+		"editor.worldconfig.title": "Világ beállítások",
+		"editor.worldconfig.staticTime": "Statikus idő",
+		"editor.script.commentPlaceholder": "💬 Add ide a megjegyzéseidet...",
 	}
 }

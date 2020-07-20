@@ -1,0 +1,31 @@
+:root {
+  --color-main-background: #111;
+  --color-primary: #1e1e1e;
+  --color-primary-light: #4c3a3a;
+  --color-primary-contrast: #F9FAFE;
+  --color-secondary: #F293B7;
+  --color-secondary-light: #ffe3ee;
+  --color-secondary-contrast: #1e1e1e;
+  --color-highlight: #ffff64;
+  --color-positive: #9BC53D;
+  --color-negative: #E55934;
+  --color-slightly-transparent-dark: rgba(0, 0, 0, 0.8);
+  --color-transparent-dark: rgba(0, 0, 0, 0.6);
+  --color-highly-transparent-dark: rgba(0, 0, 0, 0.1);
+  --color-slightly-transparent-light: rgba(0, 0, 0, 0.8);
+  --color-transparent-light: rgba(0, 0, 0, 0.6);
+  --color-highly-transparent-light: rgba(0, 0, 0, 0.1);
+  --linear-background-primary: linear-gradient(45deg, var(--color-primary), var(--color-primary-light));
+  --linear-background-secondary: linear-gradient(45deg, var(--color-secondary), var(--color-secondary-light));
+  --border-primary: 1px solid var(--color-primary-light);
+  --border-secondary: 1px solid var(--color-secondary-contrast);
+  --backdrop-filter: blur(20px);
+  --shadow: drop-shadow(0 2px 4px #000);
+  --border-radius: 3px;
+  --font-size-s: 0.8rem;
+  --font-size-m: 1rem;
+  --font-size-l: 1.2rem;
+  --font-size-xl: 1.5rem;
+}
+
+/*# sourceMappingURL=default.css.map */

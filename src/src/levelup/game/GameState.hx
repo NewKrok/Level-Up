@@ -16,7 +16,7 @@ import js.Browser;
 import levelup.core.camera.ActionCamera;
 import levelup.core.trigger.TriggerExecutor;
 import levelup.editor.EditorState;
-import levelup.editor.module.script.ScriptConfig.ParamType;
+import levelup.component.editor.modules.script.ScriptConfig.ParamType;
 import levelup.game.GameModel.PlayState;
 import levelup.game.GameState.Trigger;
 import levelup.game.GameWorld.Region;

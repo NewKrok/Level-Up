@@ -1,0 +1,31 @@
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Source+Code+Pro&display=swap');
+
+@import url('./theme/default.min.css');
+
+* {
+	box-sizing: border-box;
+}
+
+html, body {
+	margin: 0;
+	padding: 0;
+	width: 100%;
+	height: 100%;
+	font-family: 'Open Sans', sans-serif;
+	font-size: 1em;
+	background-color: var(--color-main-background);
+}
+
+@import '../../src/levelup/component/adventureloader/adventure-loader.scss';
+@import '../../src/levelup/component/layout/layout.scss';
+@import '../../src/levelup/component/fpsview/fps-view.scss';
+@import '../../src/levelup/component/editor/editor.scss';
+@import '../../src/levelup/component/editor/header/header.scss';
+@import '../../src/levelup/component/editor/modules/camera/camera.scss';
+@import '../../src/levelup/component/editor/modules/library/library.scss';
+@import '../../src/levelup/component/editor/modules/script/script.scss';
+@import '../../src/levelup/component/editor/modules/skybox/skybox.scss';
+@import '../../src/levelup/component/editor/moduleselector/module-selector.scss';
+@import '../../src/levelup/component/form/dropdown/dropdown.scss';
+@import '../../src/levelup/editor/dialog/dialog.scss';

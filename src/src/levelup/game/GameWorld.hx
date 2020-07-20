@@ -46,6 +46,7 @@ import levelup.game.Projectile.ProjectileState;
 import levelup.game.js.AStar.GridNode;
 import levelup.game.js.Graph;
 import levelup.game.unit.BaseUnit;
+import levelup.shader.ForcedZIndex;
 import levelup.shader.Hovering;
 import levelup.shader.KillColor;
 import levelup.shader.Wave;
@@ -285,6 +286,7 @@ class GameWorld extends World
 
 		var mesh = new Mesh(layer, Material.create(AssetCache.instance.getTexture(terrainConfig.textureUrl)), s3d);
 		mesh.material.mainPass.addShader(alphaMask);
+		//mesh.material.mainPass.addShader(new ForcedZIndex(terrainLayers.length * 0.001));
 		mesh.material.mainPass.isStatic = true;
 		mesh.material.texture.wrap = Wrap.Repeat;
 		mesh.material.blendMode = BlendMode.Alpha;

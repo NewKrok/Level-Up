@@ -1,0 +1,116 @@
+.lu_adventure_loader {
+	pointer-events: all;
+	width: 100%;
+	height: 100%;
+	position: absolute;
+	z-index: 2;
+	background: linear-gradient(to bottom, #222, #000);
+	opacity: 1;
+	transition: opacity 1s;
+	background-position: center;
+	background-repeat: no-repeat;
+    background-size: cover;
+    
+    .lu_adventure_loader__container {
+        bottom: 80px;
+        width: 600px;
+        height: 25px;
+        background-color: #111;
+        position: absolute;
+        transform: translateX(-50%);
+        left: 50%;
+        filter: drop-shadow(2px 0 4px #000);
+        border-radius: 15px;
+    }
+    
+    .lu_adventure_loader__line {
+        width: 0%;
+        min-width: 25px;
+        height: 100%;
+        filter: drop-shadow(0 0 5px #FF7F00);
+        transition: width 1s;
+    }
+    
+    .lu_adventure_loader__line_background {
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(to right,#FF7F00,#FFFF00);
+        border-radius: 15px;
+        position: absolute;
+    }
+    
+    .lu_adventure_loader__circle {
+        border-radius: 15px;
+        width: 25px;
+        max-width: 100%;
+        height: 100%;
+        background-color: #FFFF00;
+        right: 0;
+        position: absolute;
+        filter: drop-shadow(0 0 15px #FFFF00AA);
+        opacity: 1;
+        transition: opacity 1s 1s;
+    }
+    
+    .lu_adventure_loader__circle--loaded {
+        opacity: 0;
+    }
+    
+    .lu_adventure_loader__loaded_text {
+        position: absolute;
+        text-align: center;
+        width: 100%;
+        height: 100%;
+        line-height: 25px;
+        top: 0;
+        color: #FFF;
+        text-shadow: 1px 1px 3px #000;
+        transition: opacity 1s 1s;
+        opacity: 0;
+    }
+    
+    .lu_adventure_loader__loaded_text--loaded {
+        opacity: 1;
+    }
+    
+    .lu_adventure_loader__level_info {
+        color: #FFF;
+        top: 80px;
+        padding: 30px;
+        border-radius: 15px;
+        backdrop-filter: blur(10px);
+        width: calc(50% - 120px);
+        background-color: #00000055;
+        position: absolute;
+        left: 50%;
+    }
+    
+    .lu_adventure_loader__level_info--centered {
+        top: 50%;
+        transform: translate(-50%, -50%);
+    }
+    
+    .lu_adventure_loader__title {
+        text-align: center;
+        font-size: 30px;
+    }
+    
+    .lu_adventure_loader__sub_title {
+        text-align: center;
+        margin: 10px 0 20px 0;
+    }
+    
+    .lu_adventure_loader__description {
+        white-space: pre-wrap;
+    }
+}
+
+.lu_adventure_loader--loaded {
+	cursor: pointer;
+}
+
+.lu_adventure_loader--fadeOut {
+	cursor: default;
+	opacity: 0;
+	pointer-events: none;
+}

@@ -5,6 +5,7 @@ import haxe.Json;
 import haxe.Timer;
 import hpp.heaps.Base2dApp;
 import hpp.heaps.Base2dStage.StageScaleMode;
+import hpp.util.JsFullScreenUtil;
 import hxd.Res;
 import js.Browser;
 import levelup.AssetCache;
@@ -45,6 +46,8 @@ class Main extends Base2dApp
 
 		super.init();
 		stage.stageScaleMode = StageScaleMode.NO_SCALE;
+
+		JsFullScreenUtil.init("lu-root");
 
 		assetCache = new AssetCache();
 		soundFxAssets = new SoundFxAssets();
@@ -88,12 +91,12 @@ class Main extends Base2dApp
 				{
 					case Success(_):
 						//changeState(MainMenuState, [s3d, cast this]);
-						//changeState(EditorState, [stage, s3d, SaveUtil.editorData.customAdventures[0], cast this]);
+						changeState(EditorState, [stage, s3d, SaveUtil.editorData.customAdventures[0], cast this]);
 
-						Browser.window.fetch("data/level/mainmenu/main_menu_elf_theme.json").then(res -> res.text()).then(res -> {
+						/*Browser.window.fetch("data/level/mainmenu/main_menu_elf_theme.json").then(res -> res.text()).then(res -> {
 							changeState(EditorState, [stage, s3d, res, cast this]);
 							onResize();
-						});
+						});*/
 
 						onResize();
 

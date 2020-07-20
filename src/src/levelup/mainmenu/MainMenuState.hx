@@ -7,7 +7,6 @@ import hpp.heaps.Base2dStage;
 import hpp.heaps.Base2dState;
 import hpp.heaps.HppG;
 import js.Browser;
-import levelup.component.FpsView;
 import levelup.component.layout.LayoutView.LayoutId;
 import levelup.core.camera.ActionCamera;
 import levelup.core.trigger.TriggerExecutor;

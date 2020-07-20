@@ -3,7 +3,7 @@ package levelup.mainmenu.html;
 import coconut.ui.View;
 import hpp.util.Language;
 import levelup.SoundFxAssets.SoundFxKey;
-import levelup.component.FpsView;
+import levelup.component.fpsview.FpsView;
 import levelup.util.LanguageUtil;
 import levelup.util.SaveUtil;
 

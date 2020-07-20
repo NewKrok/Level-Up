@@ -2,81 +2,65 @@ package levelup.editor;
 
 import Main.CoreFeatures;
 import coconut.ui.RenderResult;
-import format.jpg.Data;
-import format.jpg.Writer;
-import h2d.Bitmap;
 import h2d.Scene;
 import h3d.Quat;
 import h3d.Vector;
-import h3d.mat.BlendMode;
-import h3d.mat.Data.Face;
 import h3d.mat.Material;
 import h3d.mat.Pass;
 import h3d.mat.Texture;
-import h3d.pass.DefaultShadowMap;
 import h3d.prim.Grid;
 import h3d.scene.Graphics;
 import h3d.scene.Interactive;
 import h3d.scene.Mesh;
 import h3d.scene.Object;
 import h3d.shader.AlphaMap;
-import h3d.shader.ColorMult;
-import h3d.shader.FixedColor;
 import haxe.Json;
 import haxe.crypto.Base64;
-import haxe.io.BytesOutput;
 import hpp.heaps.Base2dStage;
 import hpp.heaps.Base2dState;
 import hpp.heaps.HppG;
 import hpp.util.GeomUtil;
 import hpp.util.GeomUtil.SimplePoint;
+import hpp.util.JsFullScreenUtil;
 import hxd.BitmapData;
 import hxd.Event;
 import hxd.Key;
-import hxd.Res;
 import hxd.Window;
-import hxd.clipper.Rect;
 import js.Browser;
-import levelup.Asset;
+import levelup.Asset.AssetConfig;
 import levelup.UnitData;
+import levelup.component.editor.modules.camera.CameraModule;
+import levelup.component.editor.modules.dayandnight.DayAndNightModule;
+import levelup.component.editor.modules.heightmap.HeightMapModule;
+import levelup.component.editor.modules.itemeditor.ItemEditorModule;
+import levelup.component.editor.modules.library.EditorLibraryModule;
+import levelup.component.editor.modules.region.RegionModule;
+import levelup.component.editor.modules.script.ScriptModule;
+import levelup.component.editor.modules.skilleditor.SkillEditorModule;
+import levelup.component.editor.modules.skybox.SkyboxModule;
+import levelup.component.editor.modules.teamsettings.TeamSettingsModule;
+import levelup.component.editor.modules.terrain.TerrainChooser;
+import levelup.component.editor.modules.terrain.TerrainModule;
+import levelup.component.editor.modules.uniteditor.UnitEditorModule;
+import levelup.component.editor.modules.weather.WeatherModule;
+import levelup.component.editor.modules.worldsettings.WorldSettingsModule;
+import levelup.component.editor.moduleselector.ModuleSelector;
 import levelup.component.layout.LayoutView.LayoutId;
-import levelup.editor.EditorModel.ToolState;
-import levelup.editor.component.editortools.EditorTools;
 import levelup.editor.dialog.EditorDialogManager;
 import levelup.editor.html.EditorView;
 import levelup.editor.html.NewAdventureDialog;
-import levelup.editor.module.camera.CameraModule;
-import levelup.editor.module.dayandnight.DayAndNightModule;
-import levelup.editor.module.heightmap.HeightMapModule;
-import levelup.editor.module.itemeditor.ItemEditorModule;
-import levelup.editor.module.library.EditorLibraryModule;
-import levelup.editor.module.region.RegionModule;
-import levelup.editor.module.script.ScriptModule;
-import levelup.editor.module.skilleditor.SkillEditorModule;
-import levelup.editor.module.skybox.SkyboxModule;
-import levelup.editor.module.teamsettings.TeamSettingsModule;
-import levelup.editor.module.terrain.TerrainChooser;
-import levelup.editor.module.terrain.TerrainModule;
-import levelup.editor.module.uniteditor.UnitEditorModule;
-import levelup.editor.module.weather.WeatherModule;
-import levelup.editor.module.worldsettings.WorldSettingsModule;
+import levelup.editor.EditorModel;
 import levelup.game.GameState;
-import levelup.game.GameState.StaticObjectConfig;
 import levelup.game.GameState.WorldConfig;
 import levelup.game.GameWorld;
-import levelup.game.GameWorld.Region;
-import levelup.game.unit.BaseUnit;
 import levelup.mainmenu.MainMenuState;
-import levelup.shader.Opacity;
 import levelup.shader.ForcedZIndex;
 import levelup.shader.PlayerColor;
-import levelup.util.AdventureParser;
 import levelup.util.GeomUtil3D;
 import levelup.util.SaveUtil;
-import motion.Actuate;
-import tink.pure.List;
-import tink.state.State;
 import lzstring.LZString;
+import motion.Actuate;
+import tink.state.State;
 
 /**
  * ...
@@ -97,8 +81,8 @@ class EditorState extends Base2dState
 
 	var editorUi:EditorView;
 	var dialogManager:EditorDialogManager;
-	var views:Map<EditorViewId, RenderResult> = [];
-	var modules:Array<EditorModule> = [];
+
+	var moduleSelector:ModuleSelector;
 
 	var grid:Grid;
 	var gridMesh:Mesh;
@@ -212,15 +196,15 @@ class EditorState extends Base2dState
 		model.observables.sunsetColor.bind(v -> world.setSunsetColor(v));
 		model.observables.dawnColor.bind(v -> world.setDawnColor(v));
 		model.observables.showGrid.bind(v -> v ? showGrid() : hideGrid());
-		model.observables.toolState.bind(v ->
+		/*model.observables.toolState.bind(v ->
 		{
-			if (v == ToolState.Library) enableAssetInteractives();
+			if (v == ModuleId.Library) enableAssetInteractives();
 			else
 			{
 				disableAssetInteractives();
 				createPreview(null);
 			}
-		});
+		});*/
 
 		dialogManager = new EditorDialogManager(cast this);
 
@@ -240,11 +224,11 @@ class EditorState extends Base2dState
 
 		world.onWorldClick = e ->
 		{
-			for (m in modules) if (m.onWorldClick != null) m.onWorldClick(e);
+			/*for (m in modules) if (m.onWorldClick != null) m.onWorldClick(e);*/
 		}
 		world.onWorldMouseDown = e ->
 		{
-			for (m in modules) if (m.onWorldMouseDown != null) m.onWorldMouseDown(e);
+			/*for (m in modules) if (m.onWorldMouseDown != null) m.onWorldMouseDown(e);*/
 
 			if (e.button == 0)
 			{
@@ -264,11 +248,11 @@ class EditorState extends Base2dState
 		}
 		world.onWorldMouseUp = e ->
 		{
-			for (m in modules) if (m.onWorldMouseUp != null) m.onWorldMouseUp(e);
+			//for (m in modules) if (m.onWorldMouseUp != null) m.onWorldMouseUp(e);
 
 			if (e.button == 0)
 			{
-				if (model.toolState == ToolState.Library && previewInstance == null) enableAssetInteractives();
+				/*if (model.toolState == ModuleId.Library && previewInstance == null) enableAssetInteractives();*/
 
 				if (draggedInstance == null)
 				{
@@ -313,14 +297,14 @@ class EditorState extends Base2dState
 			else if (e.button == 1)
 			{
 				isMapDragActive = false;
-				if (model.toolState == ToolState.Library && previewInstance == null) enableAssetInteractives();
+				/*if (model.toolState == ModuleId.Library && previewInstance == null) enableAssetInteractives();*/
 			}
 		}
 		world.onWorldMouseMove = e ->
 		{
 			currentMouseMove2dPoint = s3d.camera.project(e.relX, e.relY, e.relZ, HppG.stage2d.width, HppG.stage2d.height);
 
-			for (m in modules) if (m.onWorldMouseMove != null) m.onWorldMouseMove(e);
+			/*for (m in modules) if (m.onWorldMouseMove != null) m.onWorldMouseMove(e);*/
 
 			if (previewInstance != null)
 			{
@@ -397,7 +381,7 @@ class EditorState extends Base2dState
 			}
 			else
 			{
-				for (m in modules) if (m.onWorldWheel != null) m.onWorldWheel(e);
+				/*for (m in modules) if (m.onWorldWheel != null) m.onWorldWheel(e);*/
 
 				camDistance += e.wheelDelta * 8;
 			}
@@ -428,30 +412,27 @@ class EditorState extends Base2dState
 			jumpCamera(adventureConfig.worldConfig.editorLastCamPosition.x, adventureConfig.worldConfig.editorLastCamPosition.y);
 		}
 
-		var editorTools = new EditorTools({
-			toolState: model.observables.toolState,
-			changeToolState: s -> model.toolState = s
-		});
-		registerView(EditorViewId.VEditorTools, editorTools.reactify());
+		moduleSelector = new ModuleSelector(cast this);
 
-		modules.push(cast new WorldSettingsModule(cast this));
-		modules.push(cast new TeamSettingsModule(cast this));
-		modules.push(cast new SkyboxModule(cast this));
-		modules.push(cast new DayAndNightModule(cast this));
-		modules.push(cast new WeatherModule(cast this));
-		modules.push(cast new TerrainModule(cast this));
-		modules.push(cast new HeightMapModule(cast this));
-		modules.push(cast new RegionModule(cast this));
-		modules.push(cast new ScriptModule(cast this));
-		modules.push(cast new CameraModule(cast this));
-		modules.push(cast new EditorLibraryModule(cast this, createPreview));
-		modules.push(cast new UnitEditorModule(cast this));
-		modules.push(cast new SkillEditorModule(cast this));
-		modules.push(cast new ItemEditorModule(cast this));
+		new WorldSettingsModule(cast this);
+		new TeamSettingsModule(cast this);
+		new SkyboxModule(cast this);
+		new DayAndNightModule(cast this);
+		new WeatherModule(cast this);
+		new HeightMapModule(cast this);
+		new TerrainModule(cast this);
+		new RegionModule(cast this);
+		new CameraModule(cast this);
+		new EditorLibraryModule(cast this, createPreview);
+		new UnitEditorModule(cast this);
+		new SkillEditorModule(cast this);
+		new ItemEditorModule(cast this);
+		new ScriptModule(cast this);
 
 		editorUi = new EditorView(
 		{
 			backToLobby: () -> HppG.changeState(MainMenuState, [s3d, cf]),
+			toggleFullScreen: JsFullScreenUtil.toggleFullScreen,
 			createNewAdventure: dialogManager.openDialog.bind({
 				view: new NewAdventureDialog({
 					createNewAdventure: createNewAdventure,
@@ -472,27 +453,15 @@ class EditorState extends Base2dState
 			}),
 			save: save,
 			testRun: () -> HppG.changeState(GameState, [stage, s3d, save(), cf, { isTestRun: true }]),
-			model: model,
-			getModuleView: getModuleView
+			model: model
 		});
+
 		cf.layout.registerView(LayoutId.EditorUi, editorUi.reactify());
 
 		createGrid();
 
 		Window.getInstance().addEventTarget(onKeyEvent);
 		isLevelLoaded = true;
-	}
-
-	function getModule(c:Dynamic) return modules.filter(m ->Std.is(m, c))[0];
-
-	public function registerView(id:EditorViewId, view:RenderResult)
-	{
-		views.set(id, view);
-	}
-
-	function getModuleView(id:EditorViewId)
-	{
-		return views.get(id);
 	}
 
 	function createAsset(config:AssetConfig, x, y, z, scale, rotation, owner = null)
@@ -715,7 +684,7 @@ class EditorState extends Base2dState
 					cameraObject.y += 5 * Math.cos(camRotation - Math.PI / 2);
 
 				case Key.SPACE if (previewInstance != null):
-					var libraryModule = cast(getModule(EditorLibraryModule), EditorLibraryModule);
+					var libraryModule = cast(model.getModule(EditorLibraryModule), EditorLibraryModule);
 					libraryModule.removeSelection();
 
 				case Key.ESCAPE if (selectedWorldAsset.value != null): selectedWorldAsset.set(null);
@@ -724,7 +693,7 @@ class EditorState extends Base2dState
 					var now = Date.now().getTime();
 					if (now - lastEscPressTime < 500)
 					{
-						var libraryModule = cast(getModule(EditorLibraryModule), EditorLibraryModule);
+						var libraryModule = cast(model.getModule(EditorLibraryModule), EditorLibraryModule);
 						libraryModule.removeSelection();
 						return;
 					}
@@ -1056,7 +1025,7 @@ class EditorState extends Base2dState
 		drawDebugInteractionRadius();*/
 
 		for (i in worldInstances) i.instance.z = GeomUtil3D.getHeightByPosition(world.heightGrid, i.instance.x, i.instance.y);
-		for (m in modules) if (m.update != null) m.update(d);
+		/*for (m in modules) if (m.update != null) m.update(d);*/
 
 		updateCamera(d);
 
@@ -1175,7 +1144,7 @@ class EditorState extends Base2dState
 	public function save()
 	{
 		var terrainLayers = [];
-		var terrainModule = cast(getModule(TerrainModule), TerrainModule);
+		var terrainModule = cast(model.getModule(TerrainModule), TerrainModule);
 		for (i in 0...world.terrainLayers.length)
 		{
 			var l = world.terrainLayers[i];
@@ -1215,11 +1184,11 @@ class EditorState extends Base2dState
 			isPathBlocker: o.isPathBlocker
 		}];
 
-		var worldSettingsModule = cast(getModule(WorldSettingsModule), WorldSettingsModule);
-		var skyboxModule = cast(getModule(SkyboxModule), SkyboxModule);
-		var cameraModule = cast(getModule(CameraModule), CameraModule);
-		var watherModule = cast(getModule(WeatherModule), WeatherModule);
-		var scriptModule = cast(getModule(ScriptModule), ScriptModule);
+		var worldSettingsModule = cast(model.getModule(WorldSettingsModule), WorldSettingsModule);
+		var skyboxModule = cast(model.getModule(SkyboxModule), SkyboxModule);
+		var cameraModule = cast(model.getModule(CameraModule), CameraModule);
+		var watherModule = cast(model.getModule(WeatherModule), WeatherModule);
+		var scriptModule = cast(model.getModule(ScriptModule), ScriptModule);
 
 		var worldConfig:WorldConfig =
 		{
@@ -1297,16 +1266,6 @@ class EditorState extends Base2dState
 	}
 }
 
-typedef EditorModule =
-{
-	var onWorldClick:Event->Void;
-	var onWorldMouseDown:Event->Void;
-	var onWorldMouseUp:Event->Void;
-	var onWorldMouseMove:Event->Void;
-	var onWorldWheel:Event->Void;
-	var update:Float->Void;
-}
-
 typedef AssetItem =
 {
 	var instance:Object;
@@ -1343,28 +1302,9 @@ enum EditorActionType
 	Scale;
 }
 
-enum EditorViewId
-{
-	VDialogManager;
-	VEditorTools;
-	VWorldSettingsModule;
-	VSkyboxModule;
-	VTerrainModule;
-	VHeightMapModule;
-	VDayAndNightModule;
-	VRegionModule;
-	VCameraModule;
-	VEditorLibraryModule;
-	VWeatherModule;
-	VScriptModule;
-	VTeamSettingsModule;
-	VUnitEditorModule;
-	VSkillEditorModule;
-	VItemEditorModule;
-}
-
 typedef EditorCore =
 {
+	public var moduleSelector:ModuleSelector;
 	public var adventureConfig:AdventureConfig;
 	public var snapPosition:Float->Float;
 	public var model:EditorModel;
@@ -1372,7 +1312,6 @@ typedef EditorCore =
 	public var s3d:h3d.scene.Scene;
 	public var world:GameWorld;
 	public var logAction:EditorAction->Void;
-	public var registerView:EditorViewId->RenderResult->Void;
 	public var dialogManager:EditorDialogManager;
 	public var updateGrid:Void->Void;
 	public var isPathFindingLayerDirty:Bool;

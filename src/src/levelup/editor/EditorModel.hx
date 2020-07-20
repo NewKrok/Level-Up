@@ -1,8 +1,11 @@
 package levelup.editor;
 
+import coconut.data.List;
 import coconut.data.Model;
+import coconut.ui.RenderResult;
 import format.agal.Tools;
 import hpp.util.GeomUtil.SimplePoint;
+import hxd.Event;
 import levelup.TerrainAssets.TerrainConfig;
 import levelup.game.GameState.InitialUnitData;
 import levelup.game.GameState.PlayerId;
@@ -37,29 +40,53 @@ class EditorModel implements Model
 	@:skipCheck @:editable var units:Array<InitialUnitData>;
 	@:skipCheck @:editable var staticObjects:Array<StaticObjectConfig>;
 
+	@:skipCheck @:observable var views:Map<EditorViewId, RenderResult> = [];
+
 	@:editable var isXDragLocked:Bool = false;
 	@:editable var isYDragLocked:Bool = false;
 	@:editable var selectedPlayer:PlayerId = PlayerId.Player1;
-	@:editable var toolState:ToolState = WorldSettingsEditor;
+	@:editable var selectedModule:EditorModule = null;
+
+	@:observable var modules:List<EditorModule> = null;
 
 	@:transition function toggleXDragLock() return { isXDragLocked: !isXDragLocked };
 	@:transition function toggleYDragLock() return { isYDragLocked: !isYDragLocked };
+
+	@:transition function registerModule(module:EditorModule)
+	{
+		var newModules:List<EditorModule> = modules.append(module);
+
+		return {
+			modules: newModules,
+			selectedModule: selectedModule == null ? module : selectedModule
+		};
+	}
+	public function getModule(c:Dynamic) return modules.toArray().filter(m ->Std.is(m, c))[0];
+
+	public function registerView(id:EditorViewId, view:RenderResult) return views.set(id, view);
+
+	public function getView(id:EditorViewId) return views.get(id);
 }
 
-enum ToolState
+typedef EditorModule = {
+	var id(default, never):String;
+	var icon(default, never):String;
+	var instance(default, never):EditorModuleInstance;
+}
+
+typedef EditorModuleInstance =
 {
-	Library;
-	WorldSettingsEditor;
-	SkyboxEditor;
-	TerrainEditor;
-	HeightMapEditor;
-	DayAndNightEditor;
-	RegionEditor;
-	CameraEditor;
-	WeatherEditor;
-	ScriptEditor;
-	UnitEditor;
-	SkillEditor;
-	ItemEditor;
-	TeamSettingsEditor;
+	@:optional var onWorldClick(default, never):Event->Void;
+	@:optional var onWorldMouseDown(default, never):Event->Void;
+	@:optional var onWorldMouseUp(default, never):Event->Void;
+	@:optional var onWorldMouseMove(default, never):Event->Void;
+	@:optional var onWorldWheel(default, never):Event->Void;
+	@:optional var update(default, never):Float->Void;
+	@:optional var view(default, never):RenderResult;
+}
+
+enum EditorViewId
+{
+	VDialogManager;
+	VEditorTools;
 }

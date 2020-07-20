@@ -1,0 +1,27 @@
+.lu_editor__tools {
+	color: var(--color-secondary-contrast);
+	width: 100%;
+	background: var(--linear-background-secondary);
+	filter: var(--shadow);
+	pointer-events: visible;
+	display: flex;
+	z-index: 1;
+
+	.lu_editor__tools__button {
+		user-select: none;
+		cursor: pointer;
+		padding: 5px 10px;
+
+		&:hover,
+		&:active {
+			color: var(--color-highlight);
+			filter: var(--shadow);
+		}
+	}
+
+	.lu_editor__tools__button--selected {
+		cursor: default;
+		color: var(--color-highlight);
+		filter: var(--shadow);
+	}
+}
