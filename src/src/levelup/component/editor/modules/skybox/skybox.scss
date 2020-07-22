@@ -1,60 +1,65 @@
-.lu_editor_skybox__list {
-	display: flex;
-	flex-wrap: wrap;
+.lu_skybox__list {
+	display: grid;
+	grid-template-columns: repeat(3, 1fr);
 	justify-content: center;
-}
+	grid-gap: 2px;
+    width: 100%;
 
-.lu_editor_skybox__list_element {
-	width: 75px;
-	height: 75px;
-	border: 2px solid #FFFFFF00;
-	user-select: none;
-	cursor: pointer;
-	transform: rotate(90deg);
-	opacity: 1;
-	border-radius: 6px;
-	margin: 1px;
-}
+	.lu_skybox {
+		border: var(--border-primary);
+		user-select: none;
+		cursor: pointer;
+		transform: rotate(90deg);
+		opacity: 1;
+		border-radius: var(--border-radius);
+		overflow: hidden;
 
-.lu_editor_skybox__list_element:hover {
-	border-color: #FFFF00;
-}
+		&:hover,
+		&:active {
+			border-color: var(--color-highlight);
+		}
 
-.lu_editor_skybox__list_element--selected {
-	border-color: #FFFF00;
-}
+		.lu_skybox__image {
+			width: 100%;
+			height: 100%;
+			display: block;
+			opacity: 1;
+			transition: transform 0.2s;
 
-.lu_editor_skybox__list_element--disabled {
-	pointer-events: none;
-}
+			&:hover{
+				transform: scale(1.2);
+			}
+		}
 
-.lu_editor_skybox__list_element__image {
-	width: 100%;
-	height: 100%;
-	display: block;
-	opacity: 1;
-	border-radius: 3px;
-}
+		.lu_skybox__image--disabled {
+			opacity: 0.5;
+		}
 
-.lu_editor_skybox__list_element__image--disabled {
-	opacity: 0.5;
-}
+		.lu_skybox__loader {
+			pointer-events: none;
+			position: absolute;
+			top: 50%;
+			left: 50%;
+			transform: translate(-12px, -12px) scale(0.6);
+			transition: opacity 0.3s, transform 0.3s;
+			opacity: 0;
+			width: 20px;
+			height: 20px;
+			display: inline-block;
+		}
 
-.lu_editor_skybox__list_element_loader {
-	pointer-events: none;
-	position: absolute;
-	top: 50%;
-	left: 50%;
-	transform: translate(-12px, -12px) scale(0.6);
-	transition: opacity 0.3s, transform 0.3s;
-	opacity: 0;
-	width: 20px;
-	height: 20px;
-	display: inline-block;
-}
+		.lu_skybox__loader--active {
+			opacity: 1;
+			transform: translate(-15px, -15px) scale(1);
+			transition: opacity 0.3s, transform 0.3s;
+		}
+	}
 
-.lu_editor_skybox__list_element_loader--active {
-	opacity: 1;
-	transform: translate(-15px, -15px) scale(1);
-	transition: opacity 0.3s, transform 0.3s;
+	.lu_skybox--selected {
+		border-color: var(--color-highlight);
+	}
+
+	.lu_skybox--disabled {
+		pointer-events: none;
+	}
 }

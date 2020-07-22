@@ -2,7 +2,7 @@ package levelup.component.editor.modules.dayandnight;
 
 import coconut.ui.View;
 import js.html.InputElement;
-import levelup.component.Slider;
+import levelup.component.form.slider.Slider;
 import tink.pure.List;
 
 using StringTools;

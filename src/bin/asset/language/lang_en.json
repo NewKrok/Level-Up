@@ -47,6 +47,10 @@
 		"common.off": "Off",
 		"editor.worldconfig.title": "World settings",
 		"editor.worldconfig.staticTime": "Static world time",
+		"editor.skybox.title": "Skybox settings",
+		"editor.skybox.voffset": "Vertical Offset",
+		"editor.skybox.scale": "Scale",
+		"editor.skybox.select": "Select skybox",
 		"editor.script.commentPlaceholder": "💬 Add your comments here..."
 	}
 }

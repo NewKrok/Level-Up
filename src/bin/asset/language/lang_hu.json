@@ -47,6 +47,10 @@
 		"common.off": "Ki",
 		"editor.worldconfig.title": "Világ beállítások",
 		"editor.worldconfig.staticTime": "Statikus idő",
-		"editor.script.commentPlaceholder": "💬 Add ide a megjegyzéseidet...",
+		"editor.skybox.title": "Égbolt beállítások",
+		"editor.skybox.voffset": "Függőleges eltolás",
+		"editor.skybox.scale": "Méretarány",
+		"editor.skybox.select": "Válassz égboltot",
+		"editor.script.commentPlaceholder": "💬 Add ide a megjegyzéseidet..."
 	}
 }

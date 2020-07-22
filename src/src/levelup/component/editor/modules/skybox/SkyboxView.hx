@@ -3,7 +3,7 @@ package levelup.component.editor.modules.skybox;
 import coconut.ui.View;
 import hpp.util.Language;
 import levelup.SkyboxData.SkyboxAssetConfig;
-import levelup.component.Slider;
+import levelup.component.form.slider.Slider;
 
 /**
  * ...
@@ -21,73 +21,62 @@ class SkyboxView extends View
 	function render() '
 		<div class="lu_editor__properties">
 			<div class="lu_title">
-				<i class="fas fa-cloud-moon lu_right_offset"></i>Skybox settings
+				<i class="fas fa-cloud-moon lu_icon"></i>{Language.get("editor.skybox.title")}
 			</div>
-			<div class="lu_editor__properties__block">
-				<div class="lu_bottom_offset">
-					<i class="fas fa-arrows-alt-v lu_right_offset"></i>Vertical Offset
+			<div class="lu_block">
+				<div class="lu_sub-title">
+					<i class="fas fa-sliders-h lu_icon"></i>{Language.get("common.general")}
 				</div>
-				<Slider
-					min={-100}
-					max={100}
-					startValue={0}
-					step={1}
-					onChange=$setSkyboxZOffset
-				/>
-			</div>
-			{/**<div class="lu_editor__properties__block">
-				<div class="lu_bottom_offset">
-					<i class="fas fa-sync-alt lu_right_offset"></i>Rotation
+				<div class="lu_entry">
+				{Language.get("editor.skybox.voffset")}
+					<Slider
+						min={-100}
+						max={100}
+						startValue={0}
+						step={1}
+						onChange=$setSkyboxZOffset
+					/>
 				</div>
-				<Slider
-					min={0}
-					max={Math.PI * 2}
-					startValue={0}
-					step={Math.PI / 90}
-					onChange=$setSkyboxRotation
-				/>
-			</div>*/}
-			<div class="lu_editor__properties__block">
-				<div class="lu_bottom_offset">
-					<i class="fas fa-expand-alt lu_right_offset"></i>Scale
-				</div>
-				<Slider
-					min={0.1}
-					max={4}
-					startValue={1}
-					step={0.05}
-					onChange=$setSkyboxScale
-				/>
-			</div>
-			<div class="lu_editor__properties__block lu_editor__properties__block--header">
-				<div class="lu_bottom_offset">
-					<i class="fas fa-images lu_right_offset"></i>Select skybox
+				<div class="lu_entry">
+					{Language.get("editor.skybox.scale")}
+					<Slider
+						min={0.1}
+						max={4}
+						startValue={1}
+						step={0.001}
+						onChange=$setSkyboxScale
+					/>
 				</div>
 			</div>
-			<div class="lu_editor__properties__block lu_editor__properties__block--content">
-				<div class="lu_editor_skybox__list">
-					<for {skybox in SkyboxData.config}>
-						<div class={"lu_editor_skybox__list_element"
-								+ (selectedSkybox == skybox.id ? " lu_editor_skybox__list_element--selected" : "")
-								+ (isSkyboxLoadingInProgress ? " lu_editor_skybox__list_element--disabled" : "")
-							}
-						>
-							<img
-								class={"lu_editor_skybox__list_element__image"
-									+ (isSkyboxLoadingInProgress ? " lu_editor_skybox__list_element__image--disabled" : "")
-								}
-								src={skybox.assets[1]}
-								onClick={changeSkyBox(skybox)}
-							/>
-							<div
-								class={"lu_editor_skybox__list_element_loader"
-									+ (selectedSkybox == skybox.id && isSkyboxLoadingInProgress ? " lu_editor_skybox__list_element_loader--active" : "")
+			<div class="lu_block">
+				<div class="lu_sub-title">
+					<i class="fas fa-sliders-h lu_icon"></i>{Language.get("editor.skybox.select")}
+				</div>
+				<div class="lu_entry">
+					<div class="lu_skybox__list">
+						<for {skybox in SkyboxData.config}>
+							<div key={skybox.id} class={"lu_skybox"
+									+ (selectedSkybox == skybox.id ? " lu_skybox--selected" : "")
+									+ (isSkyboxLoadingInProgress ? " lu_skybox--disabled" : "")
 								}
 							>
-								<div class="lu_circle_loader lu_circle_loader--s"></div>
+								<img
+									class={"lu_skybox__image"
+										+ (isSkyboxLoadingInProgress ? " lu_skybox__image--disabled" : "")
+									}
+									src={skybox.assets[1]}
+									onClick={changeSkyBox(skybox)}
+								/>
+								<div
+									class={"lu_skybox__loader"
+										+ (selectedSkybox == skybox.id && isSkyboxLoadingInProgress ? " lu_skybox__loader--active" : "")
+									}
+								>
+									<div class="lu_circle_loader lu_circle_loader--s"></div>
+								</div>
 							</div>
-						</div>
-					</for>
+						</for>
+					</div>
 				</div>
 			</div>
 		</div>

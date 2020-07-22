@@ -10,12 +10,11 @@ import hpp.util.Language;
 class TeamSettingsView extends View
 {
 	function render() '
-		<div class="lu_editor__properties lu_relative lu_fill">
+		<div class="lu_editor__properties">
 			<div class="lu_title">
-				<i class="fas fa-users-cog lu_right_offset"></i>Team settings
+				<i class="fas fa-users-cog lu_icon"></i>Team settings
 			</div>
-			<div class="lu_row">
-
+			<div class="lu_block lu_block--fit-content">
 			</div>
 		</div>
 	';

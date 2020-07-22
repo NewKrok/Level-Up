@@ -2,7 +2,7 @@ package levelup.editor.html;
 
 import coconut.ui.View;
 import hpp.util.GeomUtil.SimplePoint;
-import levelup.component.Slider;
+import levelup.component.form.slider.Slider;
 import levelup.editor.EditorState.AssetItem;
 import levelup.editor.EditorState.InitialAdventureData;
 

@@ -1,4 +1,4 @@
-package levelup.component;
+package levelup.component.form.slider;
 
 import coconut.ui.View;
 
@@ -30,7 +30,7 @@ class Slider extends View
 				min={Std.string(min)}
 				max={Std.string(max)}
 				step={Std.string(step)}
-				class="lu_native_slider lu_non_visible lu_fill"
+				class="lu_native_slider"
 				onchange={e -> {
 					e.preventDefault();
 					value = Std.parseFloat(e.currentTarget.value);
@@ -39,14 +39,14 @@ class Slider extends View
 			/>
 			<div class="lu_slider__thumb_container">
 				<div class="lu_slider__thumb" style=${getStyle()}>
-			</div>
+				</div>
 			</div>
 		</div>
 	';
 
 	function getStyle()
 	{
-		return "left:" + Math.max(((value - min) / (max - min) * 100), 0) + "%";
+		return "width:" + Math.max((value - min) / (max - min) * 100, 0) + "%";
 	}
 
 	function normalizeValue()

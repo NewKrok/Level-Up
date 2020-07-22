@@ -10,7 +10,7 @@ import levelup.TerrainAssets.TerrainConfig;
 import levelup.editor.EditorState.AssetItem;
 import levelup.component.editor.modules.heightmap.HeightMapModel.BrushType;
 import levelup.component.editor.modules.terrain.TerrainModel.TerrainLayer;
-import levelup.component.Slider;
+import levelup.component.form.slider.Slider;
 import tink.pure.List;
 
 using StringTools;

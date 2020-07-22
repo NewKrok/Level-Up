@@ -303,15 +303,18 @@
 		margin-left: 10px;
 		font-weight: bold;
 		font-size: var(--font-size-s);
+		user-select: none;
 	}
 
 	.lu_block {
 		width: 100%;
 		border-bottom: var(--border-primary);
-		padding-top: 0;
+		padding-top: 10px;
 		overflow-x: hidden;
 		overflow-y: auto;
-		margin: 10px 0;
+		margin-bottom: 10px;
+		background: var(--color-highly-transparent-light);
+		filter: var(--shadow);
 
 		.lu_entry {
 			display: flex;
@@ -320,6 +323,15 @@
 			background: var(--color-highly-transparent-dark);
 			padding: 5px 10px;
 			font-size: var(--font-size-s);
+			min-height: 40px;
+
+			&:nth-child(even) {
+				background: var(--color-highly-transparent-light);
+			}
+		}
+
+		.lu_entry--column {
+			flex-direction: column;
 		}
 
 		&:last-of-type {
