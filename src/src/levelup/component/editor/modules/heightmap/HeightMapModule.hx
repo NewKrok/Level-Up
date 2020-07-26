@@ -12,6 +12,7 @@ import hpp.util.GeomUtil.SimplePoint;
 import hxd.Event;
 import hxd.Res;
 import hxd.clipper.Rect;
+import levelup.editor.EditorModel.EditorModuleId;
 import levelup.editor.EditorState.EditorCore;
 import levelup.component.editor.modules.heightmap.HeightMapModel.BrushType;
 import levelup.shader.ForcedZIndex;
@@ -43,7 +44,7 @@ import levelup.util.GeomUtil3D;
 	public function new()
 	{
 		core.model.registerModule({
-			id: "HeightMapModule",
+			id: EditorModuleId.MHeightMap,
 			icon: "fa-map",
 			instance: cast this
 		});

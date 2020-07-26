@@ -101,6 +101,7 @@ class GameWorld extends World
 
 	var shadow:DefaultShadowMap;
 	var shadowColor:Vector = new Vector(0.6, 0.6, 0.6);
+	var shadowPowerPercent:Float = 1;
 	var sunAndMoon:DirLight;
 	var moonLight:DirLight;
 	var sunObj:Mesh;
@@ -191,16 +192,19 @@ class GameWorld extends World
 		moonObj.material.castShadows = false;
 		moonObj.material.receiveShadows = false;
 
-		setDayColor(worldConfig.dayColor);
-		setNightColor(worldConfig.nightColor);
-		setSunsetColor(worldConfig.sunsetColor);
-		setDawnColor(worldConfig.dawnColor);
-		setSunAndMoonOffsetPercent(worldConfig.sunAndMoonOffsetPercent);
-		setTime(worldConfig.startingTime);
+		setTime(worldConfig.general.startingTime);
+		setSunAndMoonOffsetPercent(worldConfig.light.sunAndMoonOffsetPercent);
+		setShadowPowerPercent(worldConfig.light.shadowPower);
+		setDayColor(worldConfig.light.dayColor);
+		setNightColor(worldConfig.light.nightColor);
+		setSunsetColor(worldConfig.light.sunsetColor);
+		setDawnColor(worldConfig.light.dawnColor);
 
 		addWeatherEffects();
 	}
 
+	public function setSunAndMoonOffsetPercent(value:Float):Void sunAndMoonOffset = -100 + (size.x + 200) * (value / 100);
+	public function setShadowPowerPercent(value:Float):Void shadowPowerPercent = value;
 	public function setDayColor(c:String) dayColor.setColor(Std.parseInt("0x" + c.substr(1)));
 	public function setNightColor(c:String) nightColor.setColor(Std.parseInt("0x" + c.substr(1)));
 	public function setSunsetColor(c:String) sunsetColor.setColor(Std.parseInt("0x" + c.substr(1)));
@@ -443,8 +447,6 @@ class GameWorld extends World
 
 	public function disableDayTime():Void isDayTimeEnabled = false;
 
-	public function setSunAndMoonOffsetPercent(offsetPercent:Float):Void sunAndMoonOffset = -100 + (size.x + 200) * (offsetPercent / 100);
-
 	public function resetWorldWeight()
 	{
 		for (r in pathBlocksByUnits) r.weight = 1;
@@ -472,7 +474,7 @@ class GameWorld extends World
 	{
 		var now = Date.now().getTime();
 
-		if (!worldConfig.hasFixedWorldTime || !isDayTimeEnabled) updateDayTime(d);
+		if (!worldConfig.general.hasFixedWorldTime || !isDayTimeEnabled) updateDayTime(d);
 
 		var isRerouteNeeded = isWorldGraphDirty && now - lastRerouteTime >= 3000;
 		if (isRerouteNeeded) lastRerouteTime = now;
@@ -574,13 +576,13 @@ class GameWorld extends World
 		moonObj.y = size.x / 2 + size.y * 0.6 * Math.cos(moonObjAngle);
 		moonObj.z = size.y * 0.6 * Math.sin(moonObjAngle);
 
-		if (isDayTimeEnabled && !worldConfig.hasFixedWorldTime)
+		if (isDayTimeEnabled && !worldConfig.general.hasFixedWorldTime)
 		{
 			sunAngle += d * dayTimeSpeed;
 			if (sunAngle > Math.PI * 2) sunAngle -= Math.PI * 2;
 		}
 
-		shadow.power = 25 * (
+		shadow.power = shadowPowerPercent * 25 * (
 			isInTransitionStartState
 				? 1 - dayTimeColorPercent
 				: isInTransitionFinishState

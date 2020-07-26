@@ -3,6 +3,7 @@ package levelup.component.editor.modules.script;
 import coconut.data.List;
 import coconut.ui.RenderResult;
 import haxe.EnumTools;
+import levelup.editor.EditorModel.EditorModuleId;
 import levelup.editor.EditorState.EditorCore;
 import levelup.component.editor.modules.script.ScriptConfig.ScriptData;
 import levelup.game.GameState.Trigger;
@@ -27,7 +28,7 @@ import tink.state.State;
 	public function new()
 	{
 		core.model.registerModule({
-			id: "ScriptModule",
+			id: EditorModuleId.MScript,
 			icon: "fa-code",
 			instance: cast this
 		});

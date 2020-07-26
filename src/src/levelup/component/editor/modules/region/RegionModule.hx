@@ -12,6 +12,7 @@ import h3d.scene.Object;
 import h3d.shader.LineShader;
 import hpp.util.GeomUtil.SimplePoint;
 import hxd.Event;
+import levelup.editor.EditorModel.EditorModuleId;
 import levelup.editor.EditorState.EditorCore;
 import levelup.shader.ForcedZIndex;
 
@@ -39,7 +40,7 @@ import levelup.shader.ForcedZIndex;
 	public function new()
 	{
 		core.model.registerModule({
-			id: "RegionModule",
+			id: EditorModuleId.MRegion,
 			icon: "fa-object-ungroup",
 			instance: cast this
 		});

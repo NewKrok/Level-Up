@@ -24,12 +24,6 @@ class EditorModel implements Model
 	@:editable var subTitle:String;
 	@:editable var description:String;
 	@:editable var preloaderImage:String;
-	@:editable var startingTime:Float;
-	@:editable var sunAndMoonOffsetPercent:Float;
-	@:editable var dayColor:String;
-	@:editable var nightColor:String;
-	@:editable var sunsetColor:String;
-	@:editable var dawnColor:String;
 	@:editable var showGrid:Bool;
 	@:editable var defaultTerrainIdForNewAdventure:String;
 
@@ -40,36 +34,29 @@ class EditorModel implements Model
 	@:skipCheck @:editable var units:Array<InitialUnitData>;
 	@:skipCheck @:editable var staticObjects:Array<StaticObjectConfig>;
 
-	@:skipCheck @:observable var views:Map<EditorViewId, RenderResult> = [];
-
 	@:editable var isXDragLocked:Bool = false;
 	@:editable var isYDragLocked:Bool = false;
 	@:editable var selectedPlayer:PlayerId = PlayerId.Player1;
 	@:editable var selectedModule:EditorModule = null;
 
-	@:observable var modules:List<EditorModule> = null;
-
 	@:transition function toggleXDragLock() return { isXDragLocked: !isXDragLocked };
 	@:transition function toggleYDragLock() return { isYDragLocked: !isYDragLocked };
 
-	@:transition function registerModule(module:EditorModule)
+	@:skipCheck @:observable var modules:Map<EditorModuleId, EditorModule> = [];
+	public function registerModule(module:EditorModule)
 	{
-		var newModules:List<EditorModule> = modules.append(module);
-
-		return {
-			modules: newModules,
-			selectedModule: selectedModule == null ? module : selectedModule
-		};
+		modules.set(module.id, module);
+		if (selectedModule == null) selectedModule = module;
 	}
-	public function getModule(c:Dynamic) return modules.toArray().filter(m ->Std.is(m, c))[0];
+	public function getModule(id:EditorModuleId) return modules.get(id);
 
+	@:skipCheck @:observable var views:Map<EditorViewId, RenderResult> = [];
 	public function registerView(id:EditorViewId, view:RenderResult) return views.set(id, view);
-
 	public function getView(id:EditorViewId) return views.get(id);
 }
 
 typedef EditorModule = {
-	var id(default, never):String;
+	var id(default, never):EditorModuleId;
 	var icon(default, never):String;
 	var instance(default, never):EditorModuleInstance;
 }
@@ -89,4 +76,23 @@ enum EditorViewId
 {
 	VDialogManager;
 	VEditorTools;
+}
+
+// The order of this list is define the order of the module selector list
+enum EditorModuleId
+{
+	MWorldSettings;
+	MTeamSettings;
+	MSkybox;
+	MLight;
+	MWeather;
+	MHeightMap;
+	MTerrain;
+	MRegion;
+	MCamera;
+	MEditorLibrary;
+	MUnitEditor;
+	MSkillEditor;
+	MItemEditor;
+	MScript;
 }

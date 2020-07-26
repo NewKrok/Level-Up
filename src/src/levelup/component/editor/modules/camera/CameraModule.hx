@@ -6,6 +6,7 @@ import coconut.ui.RenderResult;
 import h3d.scene.Object;
 import hpp.util.Language;
 import levelup.core.camera.ActionCamera.CameraData;
+import levelup.editor.EditorModel.EditorModuleId;
 import levelup.editor.EditorState.EditorCore;
 import levelup.editor.html.ConfirmationDialog;
 import levelup.util.LanguageUtil;
@@ -27,7 +28,7 @@ import tink.state.State;
 	public function new()
 	{
 		core.model.registerModule({
-			id: "CameraModule",
+			id: EditorModuleId.MCamera,
 			icon: "fa-video",
 			instance: cast this
 		});

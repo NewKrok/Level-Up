@@ -30,7 +30,7 @@ import js.Browser;
 import levelup.Asset.AssetConfig;
 import levelup.UnitData;
 import levelup.component.editor.modules.camera.CameraModule;
-import levelup.component.editor.modules.dayandnight.DayAndNightModule;
+import levelup.component.editor.modules.light.LightModule;
 import levelup.component.editor.modules.heightmap.HeightMapModule;
 import levelup.component.editor.modules.itemeditor.ItemEditorModule;
 import levelup.component.editor.modules.library.EditorLibraryModule;
@@ -56,6 +56,7 @@ import levelup.game.GameWorld;
 import levelup.mainmenu.MainMenuState;
 import levelup.shader.ForcedZIndex;
 import levelup.shader.PlayerColor;
+import levelup.util.AdventureParser;
 import levelup.util.GeomUtil3D;
 import levelup.util.SaveUtil;
 import lzstring.LZString;
@@ -176,12 +177,6 @@ class EditorState extends Base2dState
 			description: adventureConfig.description,
 			preloaderImage: adventureConfig.preloaderImage,
 			size: adventureConfig.size,
-			startingTime: adventureConfig.worldConfig.startingTime,
-			sunAndMoonOffsetPercent: adventureConfig.worldConfig.sunAndMoonOffsetPercent,
-			dayColor: adventureConfig.worldConfig.dayColor,
-			nightColor: adventureConfig.worldConfig.nightColor,
-			sunsetColor: adventureConfig.worldConfig.sunsetColor,
-			dawnColor: adventureConfig.worldConfig.dawnColor,
 			regions: adventureConfig.worldConfig.regions,
 			units: [],
 			staticObjects: [],
@@ -189,12 +184,6 @@ class EditorState extends Base2dState
 			defaultTerrainIdForNewAdventure: TerrainAssets.terrains[0].id
 		});
 
-		model.observables.startingTime.bind(v -> world.setTime(v));
-		model.observables.sunAndMoonOffsetPercent.bind(v -> world.setSunAndMoonOffsetPercent(v));
-		model.observables.dayColor.bind(v -> world.setDayColor(v));
-		model.observables.nightColor.bind(v -> world.setNightColor(v));
-		model.observables.sunsetColor.bind(v -> world.setSunsetColor(v));
-		model.observables.dawnColor.bind(v -> world.setDawnColor(v));
 		model.observables.showGrid.bind(v -> v ? showGrid() : hideGrid());
 		/*model.observables.toolState.bind(v ->
 		{
@@ -417,7 +406,7 @@ class EditorState extends Base2dState
 		new WorldSettingsModule(cast this);
 		new TeamSettingsModule(cast this);
 		new SkyboxModule(cast this);
-		new DayAndNightModule(cast this);
+		new LightModule(cast this);
 		new WeatherModule(cast this);
 		new HeightMapModule(cast this);
 		new TerrainModule(cast this);
@@ -684,7 +673,7 @@ class EditorState extends Base2dState
 					cameraObject.y += 5 * Math.cos(camRotation - Math.PI / 2);
 
 				case Key.SPACE if (previewInstance != null):
-					var libraryModule = cast(model.getModule(EditorLibraryModule), EditorLibraryModule);
+					var libraryModule = cast(model.getModule(EditorModuleId.MEditorLibrary).instance, EditorLibraryModule);
 					libraryModule.removeSelection();
 
 				case Key.ESCAPE if (selectedWorldAsset.value != null): selectedWorldAsset.set(null);
@@ -693,7 +682,7 @@ class EditorState extends Base2dState
 					var now = Date.now().getTime();
 					if (now - lastEscPressTime < 500)
 					{
-						var libraryModule = cast(model.getModule(EditorLibraryModule), EditorLibraryModule);
+						var libraryModule = cast(model.getModule(EditorModuleId.MEditorLibrary).instance, EditorLibraryModule);
 						libraryModule.removeSelection();
 						return;
 					}
@@ -1104,29 +1093,6 @@ class EditorState extends Base2dState
 
 	function createNewAdventureRawData(data:InitialAdventureData)
 	{
-		var rawHeightMap = new BitmapData(Std.int(data.size.x), Std.int(data.size.y));
-		rawHeightMap.fill(0, 0, Std.int(data.size.x), Std.int(data.size.y), 0x666666);
-
-		var worldConfig:WorldConfig =
-		{
-			skybox: {
-				id: SkyboxData.getConfig("skybox.ls_nigth_01").id,
-				zOffset: 0,
-				rotation: 0,
-				scale: 1,
-			},
-			globalWeather: 0,
-			startingTime: 12,
-			hasFixedWorldTime: false,
-			regions: [],
-			cameras: [],
-			triggers: [],
-			units: [],
-			staticObjects: [],
-			terrainLayers: [{ textureId: data.defaultTerrainTextureId, texture: null, uvScale: 1 }],
-			heightMap: Base64.encode(rawHeightMap.getPixels().bytes),
-			editorLastCamPosition: new Vector(data.size.x / 2, data.size.y / 2, data.size.y / 2)
-		};
 		var result = Json.stringify(
 		{
 			id: "Local-" + Date.now().getTime(),
@@ -1135,7 +1101,7 @@ class EditorState extends Base2dState
 			description: "",
 			editorVersion: Main.editorVersion,
 			size: data.size,
-			worldConfig: compressor.compressToEncodedURIComponent(Json.stringify(worldConfig))
+			worldConfig: compressor.compressToEncodedURIComponent(Json.stringify(AdventureParser.createDefaultWorld(data)))
 		});
 
 		return result;
@@ -1143,8 +1109,16 @@ class EditorState extends Base2dState
 
 	public function save()
 	{
+		var worldSettingsModule = cast(model.getModule(EditorModuleId.MWorldSettings).instance, WorldSettingsModule);
+		var skyboxModule = cast(model.getModule(EditorModuleId.MSkybox).instance, SkyboxModule);
+		var lightModule = cast(model.getModule(EditorModuleId.MLight).instance, LightModule);
+		var terrainModule = cast(model.getModule(EditorModuleId.MTerrain).instance, TerrainModule);
+		var cameraModule = cast(model.getModule(EditorModuleId.MCamera).instance, CameraModule);
+		var watherModule = cast(model.getModule(EditorModuleId.MWeather).instance, WeatherModule);
+		var scriptModule = cast(model.getModule(EditorModuleId.MScript).instance, ScriptModule);
+
 		var terrainLayers = [];
-		var terrainModule = cast(model.getModule(TerrainModule), TerrainModule);
+
 		for (i in 0...world.terrainLayers.length)
 		{
 			var l = world.terrainLayers[i];
@@ -1184,22 +1158,11 @@ class EditorState extends Base2dState
 			isPathBlocker: o.isPathBlocker
 		}];
 
-		var worldSettingsModule = cast(model.getModule(WorldSettingsModule), WorldSettingsModule);
-		var skyboxModule = cast(model.getModule(SkyboxModule), SkyboxModule);
-		var cameraModule = cast(model.getModule(CameraModule), CameraModule);
-		var watherModule = cast(model.getModule(WeatherModule), WeatherModule);
-		var scriptModule = cast(model.getModule(ScriptModule), ScriptModule);
-
 		var worldConfig:WorldConfig =
 		{
-			skybox: skyboxModule.getSkyboxData(),
-			hasFixedWorldTime: worldSettingsModule.getHasFixedWorldTime(),
-			startingTime: model.startingTime,
-			sunAndMoonOffsetPercent: model.sunAndMoonOffsetPercent,
-			dayColor: model.dayColor,
-			nightColor: model.nightColor,
-			sunsetColor: model.sunsetColor,
-			dawnColor: model.dawnColor,
+			general: worldSettingsModule.getData(),
+			skybox: skyboxModule.getData(),
+			light: lightModule.getData(),
 			globalWeather: watherModule.getGlobalWeather(),
 			regions: model.regions,
 			cameras: cameraModule.getCameras(),

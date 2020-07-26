@@ -3,6 +3,7 @@ package levelup.component.editor.modules.library;
 import coconut.ui.RenderResult;
 import levelup.Asset.AssetConfig;
 import levelup.UnitData.RaceId;
+import levelup.editor.EditorModel.EditorModuleId;
 import levelup.editor.EditorState.EditorCore;
 import tink.state.State;
 
@@ -23,7 +24,7 @@ import tink.state.State;
 	public function new()
 	{
 		core.model.registerModule({
-			id: "EditorLibraryModule",
+			id: EditorModuleId.MEditorLibrary,
 			icon: "fa-folder-open",
 			instance: cast this
 		});

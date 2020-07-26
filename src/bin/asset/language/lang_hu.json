@@ -47,10 +47,19 @@
 		"common.off": "Ki",
 		"editor.worldconfig.title": "Világ beállítások",
 		"editor.worldconfig.staticTime": "Statikus idő",
+		"editor.worldconfig.startingTime": "Kezdő idő",
 		"editor.skybox.title": "Égbolt beállítások",
 		"editor.skybox.voffset": "Függőleges eltolás",
 		"editor.skybox.scale": "Méretarány",
 		"editor.skybox.select": "Válassz égboltot",
+		"editor.light.title": "Fény beállítások",
+		"editor.light.vOffset": "Függőleges eltolás",
+		"editor.light.shadowPower": "Árnyék erősség",
+		"editor.light.colors": "Válassz színeket",
+		"editor.light.dayColor": "Nappal szín",
+		"editor.light.nightColor": "Éjszaka szín",
+		"editor.light.sunsetColor": "Naplemente szín",
+		"editor.light.dawnColor": "Hajnal szín",
 		"editor.script.commentPlaceholder": "💬 Add ide a megjegyzéseidet..."
 	}
 }

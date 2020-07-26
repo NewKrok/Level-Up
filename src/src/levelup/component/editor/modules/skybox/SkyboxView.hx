@@ -28,7 +28,7 @@ class SkyboxView extends View
 					<i class="fas fa-sliders-h lu_icon"></i>{Language.get("common.general")}
 				</div>
 				<div class="lu_entry">
-				{Language.get("editor.skybox.voffset")}
+					{Language.get("editor.skybox.voffset")}
 					<Slider
 						min={-100}
 						max={100}

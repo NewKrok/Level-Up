@@ -811,6 +811,36 @@ html, body {
   filter: var(--shadow);
 }
 
+.lu_color_picker {
+  padding: 0;
+  margin: 0;
+  background: none;
+  width: 30px;
+  height: 30px;
+  outline: none;
+  border-radius: var(--border-radius);
+  border: var(--border-secondary);
+  overflow: hidden;
+}
+
+.lu_color_picker:active,
+.lu_color_picker:active {
+  border: var(--border-secondary);
+  outline: none;
+}
+
+input[type=color] {
+  -webkit-appearance: none;
+}
+
+input[type=color]::-webkit-color-swatch-wrapper {
+  padding: 0;
+}
+
+input[type=color]::-webkit-color-swatch {
+  border: none;
+}
+
 .lu_dropdown {
   background: var(--linear-background-secondary);
   color: var(--color-secondary-contrast);
@@ -1096,24 +1126,6 @@ ul {
 .lu_input:active {
   border: 1px solid #FFFF00;
   filter: drop-shadow(2px 4px 5px #00000066);
-}
-
-.lu_color_picker {
-  padding: 0;
-  margin: 0;
-  border: none;
-  background: none;
-  height: 25px;
-}
-
-.lu_color_picker:active {
-  border: none;
-  outline: none;
-}
-
-.lu_color_picker:focus {
-  border: none;
-  outline: none;
 }
 
 .lu_form__select {

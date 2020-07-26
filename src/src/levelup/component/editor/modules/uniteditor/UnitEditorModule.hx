@@ -1,6 +1,7 @@
 package levelup.component.editor.modules.uniteditor;
 
 import coconut.ui.RenderResult;
+import levelup.editor.EditorModel.EditorModuleId;
 import levelup.editor.EditorState.EditorCore;
 
 /**
@@ -16,7 +17,7 @@ import levelup.editor.EditorState.EditorCore;
 	public function new()
 	{
 		core.model.registerModule({
-			id: "UnitEditorModule",
+			id: EditorModuleId.MUnitEditor,
 			icon: "fa-user-cog",
 			instance: cast this
 		});

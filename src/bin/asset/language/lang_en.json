@@ -47,10 +47,19 @@
 		"common.off": "Off",
 		"editor.worldconfig.title": "World settings",
 		"editor.worldconfig.staticTime": "Static world time",
+		"editor.worldconfig.startingTime": "Starting Time",
 		"editor.skybox.title": "Skybox settings",
 		"editor.skybox.voffset": "Vertical Offset",
 		"editor.skybox.scale": "Scale",
 		"editor.skybox.select": "Select skybox",
+		"editor.light.title": "Light Settings",
+		"editor.light.vOffset": "Vertical Offset",
+		"editor.light.shadowPower": "Shadow strength",
+		"editor.light.colors": "Select colors",
+		"editor.light.dayColor": "Day Color",
+		"editor.light.nightColor": "Night Color",
+		"editor.light.sunsetColor": "Sunset Color",
+		"editor.light.dawnColor": "Dawn Color",
 		"editor.script.commentPlaceholder": "💬 Add your comments here..."
 	}
 }

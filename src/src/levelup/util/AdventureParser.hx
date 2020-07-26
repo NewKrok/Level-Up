@@ -3,6 +3,9 @@ package levelup.util;
 import h3d.Quat;
 import h3d.Vector;
 import haxe.Json;
+import haxe.crypto.Base64;
+import hxd.BitmapData;
+import levelup.editor.EditorState.InitialAdventureData;
 import levelup.game.GameState.AdventureConfig;
 import levelup.game.GameState.InitialUnitData;
 import levelup.game.GameState.MathDefinition;
@@ -36,14 +39,31 @@ class AdventureParser
 		var compressor:LZString = new LZString();
 		var rawData = Json.parse(rawDataStr);
 		var rawWorldConfig = Json.parse(compressor.decompressFromEncodedURIComponent(rawData.worldConfig));
+		var defaultWorld = createDefaultWorld();
 
 		var neededModelGroups:Array<String> = [];
 
-		var sunAndMoonOffsetPercent = rawWorldConfig.sunAndMoonOffsetPercent == null ? 20 : rawWorldConfig.sunAndMoonOffsetPercent;
-		var dayColor = rawWorldConfig.dayColor == null ? "#E0E0E0" : rawWorldConfig.dayColor;
-		var nightColor = rawWorldConfig.nightColor == null ? "#333399" : rawWorldConfig.nightColor;
-		var sunsetColor = rawWorldConfig.sunsetColor == null ? "#CC9919" : rawWorldConfig.sunsetColor;
-		var dawnColor = rawWorldConfig.dawnColor == null ? "#808080" : rawWorldConfig.dawnColor;
+		var sunAndMoonOffsetPercent = rawWorldConfig.light == null
+			? 20
+			: rawWorldConfig.light.sunAndMoonOffsetPercent;
+
+		var shadowPower = rawWorldConfig.light == null ? 20 : rawWorldConfig.light.shadowPower;
+
+		var dayColor = rawWorldConfig.light == null
+			? "#E0E0E0"
+			: rawWorldConfig.light.dayColor;
+
+		var nightColor = rawWorldConfig.light == null
+			? "#333399"
+			: rawWorldConfig.light.nightColor;
+
+		var sunsetColor = rawWorldConfig.light == null
+			? "#CC9919"
+			: rawWorldConfig.light.sunsetColor;
+
+		var dawnColor = rawWorldConfig.light == null
+			? "#808080"
+			: rawWorldConfig.light.dawnColor;
 
 		var staticObjects:Array<StaticObjectConfig> = [for (o in cast(rawWorldConfig.staticObjects, Array<Dynamic>)) {
 			id: o.id,
@@ -224,13 +244,18 @@ class AdventureParser
 			size: rawData.size,
 			worldConfig: {
 				skybox: rawWorldConfig.skybox,
-				startingTime: rawWorldConfig.startingTime == null ? 12 : rawWorldConfig.startingTime,
-				hasFixedWorldTime: rawWorldConfig.hasFixedWorldTime == null ? false : rawWorldConfig.hasFixedWorldTime,
-				sunAndMoonOffsetPercent: sunAndMoonOffsetPercent,
-				dayColor: dayColor,
-				nightColor: nightColor,
-				sunsetColor: sunsetColor,
-				dawnColor: dawnColor,
+				general: {
+					startingTime: merge(rawWorldConfig, defaultWorld, ["general", "startingTime"]),
+					hasFixedWorldTime: merge(rawWorldConfig, defaultWorld, ["general", "hasFixedWorldTime"])
+				},
+				light: {
+					sunAndMoonOffsetPercent: sunAndMoonOffsetPercent,
+					shadowPower: shadowPower,
+					dayColor: dayColor,
+					nightColor: nightColor,
+					sunsetColor: sunsetColor,
+					dawnColor: dawnColor
+				},
 				globalWeather: rawWorldConfig.globalWeather == null ? 0 : rawWorldConfig.globalWeather,
 				regions: regions,
 				cameras: rawWorldConfig.cameras == null ? [] : rawWorldConfig.cameras,
@@ -247,5 +272,56 @@ class AdventureParser
 		};
 	}
 
+	static function merge(objA, objB, propBlocks:Array<String>):Dynamic
+	{
+		var resA = Reflect.field(objA, propBlocks[0]);
+		var resB = Reflect.field(objB, propBlocks[0]);
+
+		return if (propBlocks.length == 1)
+		{
+			resA == null ? resB : resA;
+		}
+		else
+		{
+			merge(resA, resB, propBlocks.slice(1));
+		}
+	}
+
 	static function getRegion(regions:Array<Region>, id:String) return regions.filter(function (r) { return r.id == id; })[0];
+
+	public static function createDefaultWorld(data:InitialAdventureData = null):WorldConfig
+	{
+		if (data == null)
+		{
+			data = {
+				size: { x: 100, y: 100 },
+				defaultTerrainTextureId: TerrainAssets.terrains[0].id
+			};
+		}
+
+		var rawHeightMap = new BitmapData(Std.int(data.size.x), Std.int(data.size.y));
+		rawHeightMap.fill(0, 0, Std.int(data.size.x), Std.int(data.size.y), 0x666666);
+
+		return {
+			general: {
+				startingTime: 12,
+				hasFixedWorldTime: false
+			},
+			skybox: {
+				id: SkyboxData.getConfig("skybox.ls_nigth_01").id,
+				zOffset: 0,
+				rotation: 0,
+				scale: 1,
+			},
+			globalWeather: 0,
+			regions: [],
+			cameras: [],
+			triggers: [],
+			units: [],
+			staticObjects: [],
+			terrainLayers: [{ textureId: data.defaultTerrainTextureId, texture: null, uvScale: 1 }],
+			heightMap: Base64.encode(rawHeightMap.getPixels().bytes),
+			editorLastCamPosition: new Vector(data.size.x / 2, data.size.y / 2, data.size.y / 2)
+		}
+	}
 }

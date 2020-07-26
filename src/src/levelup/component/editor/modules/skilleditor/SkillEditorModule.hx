@@ -1,6 +1,7 @@
 package levelup.component.editor.modules.skilleditor;
 
 import coconut.ui.RenderResult;
+import levelup.editor.EditorModel.EditorModuleId;
 import levelup.editor.EditorState.EditorCore;
 
 /**
@@ -16,7 +17,7 @@ import levelup.editor.EditorState.EditorCore;
 	public function new()
 	{
 		core.model.registerModule({
-			id: "SkillEditorModule",
+			id: EditorModuleId.MSkillEditor,
 			icon: "fa-book-medical",
 			instance: cast this
 		});

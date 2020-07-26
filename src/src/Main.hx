@@ -32,7 +32,7 @@ import tink.CoreApi.Outcome;
  */
 class Main extends Base2dApp
 {
-	public static var editorVersion:String = "0.0.1";
+	public static var editorVersion:String = "0.1.0";
 
 	var assetCache:AssetCache;
 	var soundFxAssets:SoundFxAssets;

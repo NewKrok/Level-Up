@@ -322,9 +322,9 @@ typedef AdventureConfig =
 
 typedef WorldConfig =
 {
-	var skybox(default, never):SkyboxConfig;
-	var hasFixedWorldTime(default, never):Bool;
-	var startingTime(default, never):Float;
+	@:optional var general(default, never):GeneralConfig;
+	@:optional var skybox(default, never):SkyboxConfig;
+	@:optional var light(default, never):LightConfig;
 	@:optional var regions(default, never):Array<Region>;
 	@:optional var triggers(default, never):Array<Trigger>;
 	@:optional var units(default, never):Array<InitialUnitData>;
@@ -332,13 +332,24 @@ typedef WorldConfig =
 	@:optional var terrainLayers(default, never):Array<TerrainLayerInfo>;
 	@:optional var heightMap(default, never):String;
 	@:optional var editorLastCamPosition(default, never):Vector;
-	@:optional var sunAndMoonOffsetPercent(default, never):Float;
-	@:optional var dayColor(default, never):String;
-	@:optional var nightColor(default, never):String;
-	@:optional var sunsetColor(default, never):String;
-	@:optional var dawnColor(default, never):String;
-	var cameras(default, never):Array<CameraData>;
-	var globalWeather(default, never):Int;
+	@:optional var cameras(default, never):Array<CameraData>;
+	@:optional var globalWeather(default, never):Int;
+}
+
+typedef GeneralConfig =
+{
+	var hasFixedWorldTime(default, never):Bool;
+	var startingTime(default, never):Float;
+}
+
+typedef LightConfig =
+{
+	var sunAndMoonOffsetPercent(default, never):Float;
+	var shadowPower(default, never):Float;
+	var dayColor(default, never):String;
+	var nightColor(default, never):String;
+	var sunsetColor(default, never):String;
+	var dawnColor(default, never):String;
 }
 
 typedef StaticObjectConfig =

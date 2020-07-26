@@ -4,6 +4,7 @@ import coconut.data.List;
 import coconut.ui.View;
 import hpp.util.Language;
 import levelup.component.form.dropdown.Dropdown;
+import levelup.component.form.slider.Slider;
 
 /**
  * ...
@@ -13,6 +14,8 @@ class WorldSettingsView extends View
 {
 	@:attr var hasFixedWorldTime:Bool;
 	@:attr var setHasFixedWorldTime:Bool->Void;
+	@:attr var changeStartingTime:Float->Void;
+	@:attr var defaultStartTime:Float;
 
 	function render() '
 		<div class="lu_editor__properties">
@@ -29,6 +32,16 @@ class WorldSettingsView extends View
 						selectedIndex={hasFixedWorldTime ? 1 : 0}
 						setSelectedIndex={v -> setHasFixedWorldTime(v == 1)}
 						values={cast List.fromArray([Language.get("common.on"), Language.get("common.off")])}
+					/>
+				</div>
+				<div class="lu_entry">
+					{Language.get("editor.worldconfig.startingTime")}
+					<Slider
+						min={0}
+						max={24}
+						startValue=$defaultStartTime
+						step={0.1}
+						onChange=$changeStartingTime
 					/>
 				</div>
 			</div>

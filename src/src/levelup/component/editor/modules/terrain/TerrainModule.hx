@@ -1,6 +1,7 @@
 package levelup.component.editor.modules.terrain;
 import coconut.ui.RenderResult;
 import levelup.component.editor.modules.heightmap.HeightMapModel;
+import levelup.editor.EditorModel.EditorModuleId;
 
 import h2d.Graphics;
 import h3d.mat.Data.Wrap;
@@ -43,7 +44,7 @@ import tink.state.Observable;
 	public function new()
 	{
 		core.model.registerModule({
-			id: "TerrainModule",
+			id: EditorModuleId.MTerrain,
 			icon: "fa-paint-brush",
 			instance: cast this
 		});

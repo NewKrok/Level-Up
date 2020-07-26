@@ -3,6 +3,7 @@ package levelup.component.editor.modules.skybox;
 import coconut.ui.RenderResult;
 import h3d.Matrix;
 import h3d.Vector;
+import levelup.editor.EditorModel.EditorModuleId;
 import levelup.editor.EditorState.EditorCore;
 import tink.state.State;
 
@@ -25,7 +26,7 @@ import tink.state.State;
 	public function new()
 	{
 		core.model.registerModule({
-			id: "SkyboxModule",
+			id: EditorModuleId.MSkybox,
 			icon: "fa-cloud-moon",
 			instance: cast this
 		});
@@ -69,7 +70,7 @@ import tink.state.State;
 		});
 	}
 
-	public function getSkyboxData() return {
+	public function getData() return {
 		id: selectedSkybox.value,
 		zOffset: skyboxZOffset.value,
 		rotation: skyboxRotation.value,

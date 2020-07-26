@@ -1,0 +1,27 @@
+.lu_color_picker {
+	padding: 0;
+	margin: 0;
+	background: none;
+    width: 30px;
+    height: 30px;
+    outline: none;
+    border-radius: var(--border-radius);
+    border: var(--border-secondary);
+    overflow: hidden;
+}
+
+.lu_color_picker:active,
+.lu_color_picker:active {
+	border: var(--border-secondary);
+	outline: none;
+}
+
+input[type="color"] {
+	-webkit-appearance: none;
+}
+input[type="color"]::-webkit-color-swatch-wrapper {
+	padding: 0;
+}
+input[type="color"]::-webkit-color-swatch {
+	border: none;
+}
