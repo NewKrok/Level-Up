@@ -148,7 +148,7 @@ class TriggerExecutor
 							);
 							camera.camDistance = selectedCamera.camDistance;
 							camera.camAngle = selectedCamera.camAngle;
-							camera.camRotation = selectedCamera.camRotation;
+							camera.cameraRotation = selectedCamera.cameraRotation;
 						}
 
 					case AnimateCameraToCamera(playerId, cameraName, time, ease):

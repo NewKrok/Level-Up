@@ -19,8 +19,8 @@ import levelup.core.camera.ActionCamera;
 	var posChanged = false;
 	var isMouseInsideTheWindow = true;
 
-	var camTargetPoint = { x: 0.0, y: 0.0 };
-	var camTargetPointObject = { getPosition: () -> return { x: 0.0, y: 0.0 } };
+	var camTargetPoint = { x: 0.0, y: 0.0, z: 0.0 };
+	var camTargetPointObject = { getPosition: () -> return { x: 0.0, y: 0.0, z: 0.0 } };
 
 	public function new()
 	{
@@ -28,7 +28,7 @@ import levelup.core.camera.ActionCamera;
 		camTargetPoint.y = camera.currentCameraPoint.y;
 
 		camTargetPointObject.getPosition = () -> return camTargetPoint;
-		camera.setCameraTarget(camTargetPointObject);
+		camera.setCameraTarget(cast camTargetPointObject);
 
 		Browser.document.addEventListener("mouseenter", onMouseEnter);
 		Browser.document.addEventListener("mouseleave", onMouseLeave);

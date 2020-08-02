@@ -1,0 +1,33 @@
+{
+	"groups":[
+		{
+			"id": "car.monstertruck11a",
+			"previewUrl": "asset/levelup/car/monster-truck-11a/preview.jpg",
+			"models": [
+				{
+					"id": "car.monstertruck11a.body",
+					"url": "asset/levelup/car/monster-truck-11a/Monster_Truck_11A_Monster_Truck_11A_Body.hmd"
+				},
+				{
+					"id": "car.monstertruck11a.leftsuspension",
+					"url": "asset/levelup/car/monster-truck-11a/Monster_Truck_11A_Monster_Truck_11A_Suspension_F_L.hmd"
+				},
+				{
+					"id": "car.monstertruck11a.rightsuspension",
+					"url": "asset/levelup/car/monster-truck-11a/Monster_Truck_11A_Monster_Truck_11A_Suspension_F_R.hmd"
+				},
+				{
+					"id": "car.monstertruck11a.leftwheel",
+					"url": "asset/levelup/car/monster-truck-11a/Monster_Truck_11A_Wheel_11A_F_L.hmd"
+				},
+				{
+					"id": "car.monstertruck11a.rightwheel",
+					"url": "asset/levelup/car/monster-truck-11a/Monster_Truck_11A_Wheel_11A_F_R.hmd"
+				}
+			],
+			"modelTextures": [
+				{"id": "Monster_Truck_10A_D-0.jpg", "url": "asset/levelup/car/monster-truck-11a/Monster_Truck_10A_D-0.jpg"}
+			]
+		}
+	]
+}

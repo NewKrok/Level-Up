@@ -12,7 +12,14 @@ class ForcedZIndex extends hxsl.Shader
 
 		function vertex()
 		{
-			projectedPosition.z = zIndex;
+			/*worldDist = zIndex;*/
+		}
+
+		function fragment() {
+			output.color = pixelColor;
+			output.depth = zIndex;
+			output.normal = transformedNormal;
+			output.worldDist = worldDist;
 		}
 	}
 

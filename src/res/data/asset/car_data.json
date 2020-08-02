@@ -1,0 +1,12 @@
+{
+	"units":[
+		{
+			"id": "car.monstertruck11a",
+			"type": "monstertruck",
+			"name": "MonsterTruck 11A",
+			"icon": "asset/levelup/car/monster-truck-11a/icon.jpg",
+			"assetGroup": "car.monstertruck11a",
+			"modelScale": 0.008
+		}
+	]
+}

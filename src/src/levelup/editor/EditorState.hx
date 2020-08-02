@@ -2,6 +2,7 @@ package levelup.editor;
 
 import Main.CoreFeatures;
 import coconut.ui.RenderResult;
+import com.greensock.easing.Quad;
 import h2d.Scene;
 import h3d.Quat;
 import h3d.Vector;
@@ -46,6 +47,7 @@ import levelup.component.editor.modules.weather.WeatherModule;
 import levelup.component.editor.modules.worldsettings.WorldSettingsModule;
 import levelup.component.editor.moduleselector.ModuleSelector;
 import levelup.component.layout.LayoutView.LayoutId;
+import levelup.core.camera.ActionCamera;
 import levelup.editor.dialog.EditorDialogManager;
 import levelup.editor.html.EditorView;
 import levelup.editor.html.NewAdventureDialog;
@@ -109,6 +111,8 @@ class EditorState extends Base2dState
 	var camAngle:Float = Math.PI - Math.PI / 4;
 	var camRotation:Float = Math.PI / 2;
 	var camDistance:Float = 30;
+	// --
+	var camera:ActionCamera;
 
 	var lastMouseMove2dPoint:Vector = new Vector();
 	var currentMouseMove2dPoint:Vector = new Vector();
@@ -398,7 +402,7 @@ class EditorState extends Base2dState
 		else
 		{
 			camDistance = adventureConfig.worldConfig.editorLastCamPosition.z;
-			jumpCamera(adventureConfig.worldConfig.editorLastCamPosition.x, adventureConfig.worldConfig.editorLastCamPosition.y);
+			//jumpCamera(adventureConfig.worldConfig.editorLastCamPosition.x, adventureConfig.worldConfig.editorLastCamPosition.y);
 		}
 
 		moduleSelector = new ModuleSelector(cast this);
@@ -448,6 +452,19 @@ class EditorState extends Base2dState
 		cf.layout.registerView(LayoutId.EditorUi, editorUi.reactify());
 
 		createGrid();
+
+		camera = new ActionCamera(s3d.camera);
+		camera.camDistance = 55;
+		camera.cameraRotationSpeed = 20;
+		camera.cameraAngleSpeed = 40;
+		camera.startCameraShake(3, 2, Quad.easeInOut);
+		camera.setCameraTarget(cast world.car, {
+			useTargetsAngle: true,
+			maxCamAngle: Math.PI / 4,
+			minCamAngle: -Math.PI / 4,
+			useTargetsRotation: true,
+			offset: { x: 0, y: 10, z: -15 }
+		});
 
 		Window.getInstance().addEventTarget(onKeyEvent);
 		isLevelLoaded = true;
@@ -656,7 +673,7 @@ class EditorState extends Base2dState
 						newValueQuat: selectedInstance.getRotationQuat().clone()
 					});
 
-				case Key.UP | Key.W:
+				/*case Key.UP | Key.W:
 					cameraObject.x += 5 * Math.sin(camRotation);
 					cameraObject.y += 5 * Math.cos(camRotation);
 
@@ -670,7 +687,7 @@ class EditorState extends Base2dState
 
 				case Key.RIGHT | Key.D:
 					cameraObject.x += 5 * Math.sin(camRotation - Math.PI / 2);
-					cameraObject.y += 5 * Math.cos(camRotation - Math.PI / 2);
+					cameraObject.y += 5 * Math.cos(camRotation - Math.PI / 2);*/
 
 				case Key.SPACE if (previewInstance != null):
 					var libraryModule = cast(model.getModule(EditorModuleId.MEditorLibrary).instance, EditorLibraryModule);
@@ -1007,6 +1024,7 @@ class EditorState extends Base2dState
 		var now = Date.now().getTime();
 
 		world.update(d);
+		camera.update(d);
 		if (isDisposed) return;
 
 		/*
@@ -1016,7 +1034,7 @@ class EditorState extends Base2dState
 		for (i in worldInstances) i.instance.z = GeomUtil3D.getHeightByPosition(world.heightGrid, i.instance.x, i.instance.y);
 		/*for (m in modules) if (m.update != null) m.update(d);*/
 
-		updateCamera(d);
+		//updateCamera(d);
 
 		if (isPathFindingLayerDirty && now - lastPathRenderTime > 100)
 		{

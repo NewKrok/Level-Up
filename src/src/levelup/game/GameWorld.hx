@@ -16,9 +16,11 @@ import h3d.mat.Material;
 import h3d.mat.Texture;
 import h3d.parts.GpuParticles;
 import h3d.pass.DefaultShadowMap;
+import h3d.prim.Cube;
+import h3d.prim.Cylinder;
 import h3d.prim.Grid;
-import h3d.prim.ModelCache;
 import h3d.prim.Sphere;
+import h3d.scene.Box;
 import h3d.scene.Interactive;
 import h3d.scene.Mesh;
 import h3d.scene.Object;
@@ -36,9 +38,11 @@ import hpp.util.GeomUtil;
 import hpp.util.GeomUtil.SimplePoint;
 import hxd.BitmapData;
 import hxd.Event;
+import hxd.Key;
 import hxd.PixelFormat;
 import hxd.Pixels;
 import hxd.Res;
+import js.Browser;
 import levelup.TerrainAssets.TerrainConfig;
 import levelup.TerrainAssets.TerrainEffect;
 import levelup.game.GameState.WorldConfig;
@@ -46,12 +50,24 @@ import levelup.game.Projectile.ProjectileState;
 import levelup.game.js.AStar.GridNode;
 import levelup.game.js.Graph;
 import levelup.game.unit.BaseUnit;
+import levelup.heaps.component.car.Car;
+import levelup.heaps.component.car.CarController;
 import levelup.shader.ForcedZIndex;
 import levelup.shader.Hovering;
 import levelup.shader.KillColor;
 import levelup.shader.Wave;
 import levelup.util.GeomUtil3D;
 import lzstring.LZString;
+import levelup.extern.Cannon.CannonWorld;
+import levelup.extern.Cannon.CannonSAPBroadphase;
+import levelup.extern.Cannon.CannonMaterial;
+import levelup.extern.Cannon.CannonContactMaterial;
+import levelup.extern.Cannon.CannonBox;
+import levelup.extern.Cannon.CannonBody;
+import levelup.extern.Cannon.CannonVec3;
+import levelup.extern.Cannon.CannonHeightfield;
+
+using Lambda;
 
 /**
  * ...
@@ -166,7 +182,7 @@ class GameWorld extends World
 				r,
 				u -> if (onUnitEntersToRegion != null) onUnitEntersToRegion(r, u),
 				u -> if (onUnitLeavesFromRegion != null) onUnitLeavesFromRegion(r, u)
-			);
+				);
 			regionDatas.push(rData);
 		}
 
@@ -201,7 +217,47 @@ class GameWorld extends World
 		setDawnColor(worldConfig.light.dawnColor);
 
 		addWeatherEffects();
+
+		physicsWorld = new CannonWorld();
+		physicsWorld.broadphase = new CannonSAPBroadphase(physicsWorld);
+		physicsWorld.gravity.set(0, 0, -10);
+		physicsWorld.defaultContactMaterial.friction = 10000;
+
+		car = new Car(s3d, physicsWorld, CarData.getConfig("car.monstertruck11a"));
+		car.setPosition(20, 20, 30);
+		carController = new CarController();
+		carController.setTarget(car);
+
+		var matrix = [];
+		var gridIndex = 0;
+		for (i in 0...Math.floor(size.x))
+		{
+			matrix.push([]);
+			for (j in 0...Math.floor(size.y))
+			{
+				matrix[i].push(0.0);
+			}
+		}
+
+		for (i in 0...Math.floor(size.x))
+		{
+			for (j in 0...Math.floor(size.y))
+			{
+				matrix[j][i] = Math.max(0, heightGridCache[gridIndex++]);
+			}
+		}
+
+		var hfShape = new CannonHeightfield(matrix, {
+			elementSize: 1
+		});
+		var hfBody = new CannonBody({ mass: 0 });
+		hfBody.addShape(hfShape);
+		physicsWorld.addBody(hfBody);
 	}
+
+	var physicsWorld:CannonWorld;
+	public var car:Car;
+	public var carController:CarController;
 
 	public function setSunAndMoonOffsetPercent(value:Float):Void sunAndMoonOffset = -100 + (size.x + 200) * (value / 100);
 	public function setShadowPowerPercent(value:Float):Void shadowPowerPercent = value;
@@ -248,6 +304,7 @@ class GameWorld extends World
 		setGridByHeightMap(layer);
 
 		var mesh = new Mesh(layer, Material.create(AssetCache.instance.getTexture(terrainConfig.textureUrl)), s3d);
+		mesh.material.mainPass.addShader(new ForcedZIndex(0));
 		mesh.material.mainPass.isStatic = true;
 		mesh.material.texture.wrap = Wrap.Repeat;
 
@@ -290,7 +347,7 @@ class GameWorld extends World
 
 		var mesh = new Mesh(layer, Material.create(AssetCache.instance.getTexture(terrainConfig.textureUrl)), s3d);
 		mesh.material.mainPass.addShader(alphaMask);
-		//mesh.material.mainPass.addShader(new ForcedZIndex(terrainLayers.length * 0.001));
+		mesh.material.mainPass.addShader(new ForcedZIndex(terrainLayers.length * 1));
 		mesh.material.mainPass.isStatic = true;
 		mesh.material.texture.wrap = Wrap.Repeat;
 		mesh.material.blendMode = BlendMode.Alpha;
@@ -338,7 +395,7 @@ class GameWorld extends World
 			{
 				var pixelIntensity:Float = heightMap.getPixel(cast point.x, cast point.y) | 0xFF000000;
 				var calculatedZ:Float = 15 + ((pixelIntensity - maxColor) / (maxDiff)) * 20;
-
+				calculatedZ = 2 + 1.5 * Math.sin(i * 0.001);
 				heightGridCache.push(calculatedZ);
 				point.z = calculatedZ;
 			}
@@ -474,6 +531,10 @@ class GameWorld extends World
 	{
 		var now = Date.now().getTime();
 
+		physicsWorld.step(1.0 / 60.0);
+		car.update(d);
+		carController.update(d);
+
 		if (!worldConfig.general.hasFixedWorldTime || !isDayTimeEnabled) updateDayTime(d);
 
 		var isRerouteNeeded = isWorldGraphDirty && now - lastRerouteTime >= 3000;
@@ -583,12 +644,12 @@ class GameWorld extends World
 		}
 
 		shadow.power = shadowPowerPercent * 25 * (
-			isInTransitionStartState
-				? 1 - dayTimeColorPercent
-				: isInTransitionFinishState
-					? dayTimeColorPercent
-					: 1
-		);
+						   isInTransitionStartState
+						   ? 1 - dayTimeColorPercent
+						   : isInTransitionFinishState
+						   ? dayTimeColorPercent
+						   : 1
+					   );
 		shadow.blur.radius = isDayTime ? 5 : 25;
 	}
 
@@ -603,7 +664,8 @@ class GameWorld extends World
 				if (
 					p.x + u.config.unitSize > r.data.x && p.x - u.config.unitSize < r.data.x + r.data.width
 					&& p.y + u.config.unitSize > r.data.y && p.y - u.config.unitSize < r.data.y + r.data.height
-				){
+				)
+				{
 					collidedUnits.push(u);
 				}
 			}
@@ -663,7 +725,8 @@ class GameWorld extends World
 							(!uA.config.isFlyingUnit && !uB.config.isFlyingUnit)
 							|| (uA.config.isFlyingUnit && uB.config.isFlyingUnit)
 						)
-					){
+					)
+					{
 						var angle = GeomUtil.getAngle(uA.getPosition(), uB.getPosition());
 						var cosAngle = Math.cos(angle);
 						var sinAngle = Math.sin(angle);

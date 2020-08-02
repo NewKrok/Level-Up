@@ -9,6 +9,7 @@ import hpp.util.JsFullScreenUtil;
 import hxd.Res;
 import js.Browser;
 import levelup.AssetCache;
+import levelup.CarData;
 import levelup.EnvironmentData;
 import levelup.ProjectileAnimationData;
 import levelup.SkyboxData;
@@ -83,6 +84,9 @@ class Main extends Base2dApp
 
 		UnitData.addData(Json.parse(Res.data.asset.orc_unit_data.entry.getText()));
 		assetCache.addData(Json.parse(Res.data.asset.orc_model_data.entry.getText()));
+
+		CarData.addData(Json.parse(Res.data.asset.car_data.entry.getText()));
+		assetCache.addData(Json.parse(Res.data.asset.car_model_data.entry.getText()));
 
 		soundFxAssets.load([SoundFxKey.Click]).handle(function (o):Void switch(o)
 		{

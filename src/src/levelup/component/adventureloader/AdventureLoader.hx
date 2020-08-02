@@ -59,6 +59,7 @@ import tink.state.State;
 		userActionTrigger = Future.trigger();
 
 		var adventureConfig = AdventureParser.loadLevel(rawMap);
+		adventureConfig.neededModelGroups.push("car.monstertruck11a");
 
 		this.isEditorMode.set(isEditorMode);
 
