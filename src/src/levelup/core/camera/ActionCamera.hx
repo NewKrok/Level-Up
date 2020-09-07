@@ -24,17 +24,24 @@ import motion.easing.Linear;
 	public var camAngle:Float = Math.PI - Math.PI / 4;
 	public var cameraRotation:Float = Math.PI / 2;
 	public var camDistance:Float = 40;
+	public var minCameraDistance:Float = 20;
+	public var maxCameraDistance:Float = 60;
+
+	public var currentCamDistance(default, null):Float = 0;
 
 	var camAnimationPosition:{ x:Float, y:Float, z:Float } = { x: 0, y: 0, z: 0 };
 	var cameraPositionModifier:{ x:Float, y:Float, z:Float } = { x: 0, y: 0, z: 0 };
-	var currentCamDistance:Float = 0;
 	var hasCameraAnimation:Bool = false;
 	var camAnimationResult:Result;
 	var cameraTarget:CameraTarget;
 	var cameraTargetConfig:CameraTargetConfig;
 	var prevTargetRotation:Float = 0;
 
-	public function new() {}
+	public function new()
+	{
+		camera.zNear = 1;
+		camera.zFar = 500;
+	}
 
 	public function update(d:Float)
 	{
@@ -94,7 +101,7 @@ import motion.easing.Linear;
 					}
 					if (cameraTargetConfig.useTargetsAngle)
 					{
-						camAngle += (-euler.y - camAngle) / cameraAngleSpeed;
+						camAngle += ((-euler.y + (cameraTargetConfig.angleOffset != null ? cameraTargetConfig.angleOffset : 0)) - camAngle) / cameraAngleSpeed;
 					}
 				}
 				if (cameraTargetConfig.offset != null)
@@ -114,8 +121,8 @@ import motion.easing.Linear;
 				if (cameraTargetConfig.minCamAngle != null) camAngle = Math.max(camAngle, cameraTargetConfig.minCamAngle);
 			}
 
-			camDistance = Math.max(20, camDistance);
-			camDistance = Math.min(60, camDistance);
+			camDistance = Math.max(minCameraDistance, camDistance);
+			camDistance = Math.min(maxCameraDistance, camDistance);
 
 			currentCameraPoint.x += (targetPoint.x - currentCameraPoint.x) / cameraSpeed.x * d * 30;
 			currentCameraPoint.y += (targetPoint.y - currentCameraPoint.y) / cameraSpeed.y * d * 30;
@@ -137,7 +144,7 @@ import motion.easing.Linear;
 				: currentCamDistance * Math.sin(camAngle))
 					+ cameraPositionModifier.z
 					+ (cameraTarget != null && !hasCameraAnimation
-						? targetPoint.z + (cameraTargetConfig.offset.z != null
+						? targetPoint.z + (cameraTargetConfig != null && cameraTargetConfig.offset != null && cameraTargetConfig.offset.z != null
 							? -cameraTargetConfig.offset.z
 							: 0
 						)
@@ -285,6 +292,7 @@ typedef CameraTargetConfig =
 {
 	@:optional var offset:Simple3DPoint;
 	@:optional var useTargetsAngle:Bool;
+	@:optional var angleOffset:Float;
 	@:optional var minCamAngle:Float;
 	@:optional var maxCamAngle:Float;
 	@:optional var useTargetsRotation:Bool;

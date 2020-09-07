@@ -16,6 +16,7 @@ package levelup.extern;
 	var step:Float->?Float->?Float->Void;
 	var add:CannonBody->Void;
 	var addBody:CannonBody->Void;
+	var removeBody:CannonBody->Void;
 }
 
 @:native("CANNON.Heightfield") extern class CannonHeightfield
@@ -59,8 +60,10 @@ package levelup.extern;
 	var angularVelocity:CannonVec3;
 	var type:CannonBodyType;
 	var collisionFilterGroup:Int;
+	var collisionFilterMask:Int;
 	var linearDamping:Float;
 	var angularDamping:Float;
+	var material:CannonMaterial;
 }
 
 @:native("CANNON.Vec3") extern class CannonVec3

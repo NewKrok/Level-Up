@@ -12,6 +12,7 @@ import levelup.extern.Cannon.CannonRaycastVehicle;
 import levelup.extern.Cannon.CannonVec3;
 import levelup.extern.Cannon.CannonWheelConfig;
 import levelup.extern.Cannon.CannonWorld;
+import levelup.extern.Cannon.CannonMaterial;
 
 using Lambda;
 
@@ -32,6 +33,7 @@ using Lambda;
 	var vehicle:CannonRaycastVehicle;
 	var chassisBody:CannonBody;
 	var wheelBodies:Array<CannonBody>;
+	var scale:Float = 1;
 
 	public function new()
 	{
@@ -49,15 +51,19 @@ using Lambda;
 	{
 		carBodyModel = AssetCache.instance.getModel(config.id + ".body");
 		carBodyModel.defaultTransform.rotate(Math.PI / 2, 0, Math.PI + Math.PI / 2);
-		carBodyModel.defaultTransform.translate(0, 0, -150);
-		carBodyModel.scale(config.modelScale);
+		carBodyModel.defaultTransform.translate(0, 0, -300 * scale);
+		carBodyModel.scale(config.modelScale * scale * 0.5);
 		parent.addChild(carBodyModel);
 	}
 
 	function createBodyPhysics()
 	{
-		var chassisShape = new CannonBox(new CannonVec3(2, 1, 0.5));
-		chassisBody = new CannonBody({ mass: 50 });
+		var material = new CannonMaterial("car-body");
+		material.friction = 0.01;
+
+		var chassisShape = new CannonBox(new CannonVec3(1 * scale, 0.8 * scale, 0.25 * scale));
+		chassisBody = new CannonBody({ mass: 150 });
+		chassisBody.material = material;
 		chassisBody.addShape(chassisShape);
 
 		vehicle = new CannonRaycastVehicle({
@@ -105,11 +111,11 @@ using Lambda;
 				suspensionModel.defaultTransform.rotate(-Math.PI / 2, Math.PI, Math.PI / 2);
 			}
 
-			wheelModel.scale(config.modelScale);
+			wheelModel.scale(config.modelScale * scale * 0.5);
 			wheelModels.push(wheelModel);
 			parent.addChild(wheelModel);
 
-			suspensionModel.scale(config.modelScale);
+			suspensionModel.scale(config.modelScale * scale * 0.5);
 			suspensionModels.push(suspensionModel);
 			parent.addChild(suspensionModel);
 		}
@@ -118,26 +124,26 @@ using Lambda;
 	function createWheelPhysics()
 	{
 		var options:CannonWheelConfig = {
-			radius: 1,
+			radius: 0.5 * scale,
 			directionLocal: new CannonVec3(0, 0, -1),
 			suspensionStiffness: 20,
-			suspensionRestLength: 0.85,
-			maxSuspensionTravel: 0.4,
-			frictionSlip: 10,
-			dampingRelaxation: 2.3,
-			dampingCompression: 0.01,
-			maxSuspensionForce: 1000000.0,
-			rollInfluence: 0.001,
+			suspensionRestLength: 0.85 * scale * scale,
+			maxSuspensionTravel: 0.4 * scale,
+			frictionSlip: 3,
+			dampingRelaxation: 0.01,
+			dampingCompression: 4.4,
+			rollInfluence: 0.00001,
 			axleLocal: new CannonVec3(0, 1, 0),
 			chassisConnectionPointLocal: new CannonVec3(1, 1, 0),
 			customSlidingRotationalSpeed: -1,
 			useCustomSlidingRotationalSpeed: true
 		};
+
 		var wheelOffsets = [
-			[1.9, 1.65, 0.35],
-			[1.9, -1.65, 0.35],
-			[-1.9, 1.65, 0.35],
-			[-1.9, -1.65, 0.35]
+			[1 * scale, 0.8 * scale, 0],
+			[1 * scale, -0.8 * scale, 0],
+			[-1 * scale, 0.8 * scale, 0],
+			[-1 * scale, -0.8 * scale, 0]
 		];
 		for (i in 0...4)
 		{
@@ -152,7 +158,7 @@ using Lambda;
 		wheelBodies = [];
 		vehicle.wheelInfos.foreach(wheel ->
 		{
-			var cylinderShape = new CannonCylinder(wheel.radius, wheel.radius, 1, 20);
+			var cylinderShape = new CannonCylinder(wheel.radius, wheel.radius, wheel.radius / 2 * scale, 20);
 			var wheelBody = new CannonBody({ mass: 0 });
 			wheelBody.type = CannonBodyType.KINEMATIC;
 			wheelBody.collisionFilterGroup = 0;
@@ -205,8 +211,6 @@ using Lambda;
 	{
 		vehicle.setBrake(force, 0);
 		vehicle.setBrake(force, 1);
-		vehicle.setBrake(force, 2);
-		vehicle.setBrake(force, 3);
 	}
 
 	public function applyEngineForce(force:Float)

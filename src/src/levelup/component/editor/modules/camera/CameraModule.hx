@@ -40,7 +40,7 @@ import tink.state.State;
 			removeCamera: removeCamera,
 			changeCamName: changeCamName,
 			jumpToCamera: cam -> {
-				core.camDistance = cam.camDistance;
+				core.camera.camDistance = cam.camDistance;
 				core.camAngle = cam.camAngle;
 				core.camRotation = cam.cameraRotation;
 				core.jumpCamera(
@@ -76,7 +76,7 @@ import tink.state.State;
 			cameras.value.append({
 				name: name,
 				position: core.s3d.camera.target.clone(),
-				camDistance: core.camDistance,
+				camDistance: core.camera.camDistance,
 				camAngle: core.camAngle,
 				cameraRotation: core.camRotation
 			})
@@ -124,7 +124,7 @@ import tink.state.State;
 						? {
 							name: camName,
 							position: core.s3d.camera.target.clone(),
-							camDistance: core.camDistance,
+							camDistance: core.camera.camDistance,
 							camAngle: core.camAngle,
 							cameraRotation: core.camRotation
 						}

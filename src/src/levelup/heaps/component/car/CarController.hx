@@ -28,15 +28,15 @@ class CarController
 	{
 		if (config == null) config = {};
 
-		if (config.maxSteer == null) config.maxSteer = 0.5;
-		if (config.steerSpeed == null) config.steerSpeed = 1.7;
-		if (config.steerSpeedAtMaxSpeed == null) config.steerSpeedAtMaxSpeed = 0.2;
+		if (config.maxSteer == null) config.maxSteer = 0.6;
+		if (config.steerSpeed == null) config.steerSpeed = 1.9;
+		if (config.steerSpeedAtMaxSpeed == null) config.steerSpeedAtMaxSpeed = 0.5;
 		if (config.steerResetSpeed == null) config.steerResetSpeed = 0.85;
-		if (config.acceleration == null) config.acceleration = 100;
-		if (config.maxSpeed == null) config.maxSpeed = 250;
-		if (config.backwardAcceleration == null) config.backwardAcceleration = 50;
-		if (config.backwardMaxSpeed == null) config.backwardMaxSpeed = 150;
-		if (config.brake == null) config.brake = 10;
+		if (config.acceleration == null) config.acceleration = 800;
+		if (config.maxSpeed == null) config.maxSpeed = 400;
+		if (config.backwardAcceleration == null) config.backwardAcceleration = 400;
+		if (config.backwardMaxSpeed == null) config.backwardMaxSpeed = 250;
+		if (config.brake == null) config.brake = 5;
 
 		this.config = config;
 	}

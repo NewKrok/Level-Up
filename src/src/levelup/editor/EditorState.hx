@@ -106,11 +106,9 @@ class EditorState extends Base2dState
 	// TODO: Create a separated cam class
 	var cameraObject:Object = new Object();
 	var currentCameraPoint: { x:Float, y:Float, z:Float } = { x: 0, y: 0, z: 0 };
-	var currentCamDistance:Float = 0;
 	var cameraSpeed:Vector = new Vector(10, 10, 5);
 	var camAngle:Float = Math.PI - Math.PI / 4;
 	var camRotation:Float = Math.PI / 2;
-	var camDistance:Float = 30;
 	// --
 	var camera:ActionCamera;
 
@@ -376,7 +374,7 @@ class EditorState extends Base2dState
 			{
 				/*for (m in modules) if (m.onWorldWheel != null) m.onWorldWheel(e);*/
 
-				camDistance += e.wheelDelta * 8;
+				camera.camDistance += e.wheelDelta * 8;
 			}
 		}
 
@@ -398,12 +396,7 @@ class EditorState extends Base2dState
 		s3d.camera.target.x = s3d.camera.pos.x;
 		s3d.camera.target.y = s3d.camera.pos.y;
 
-		if (adventureConfig.worldConfig.editorLastCamPosition == null) jumpCamera(10, 10);
-		else
-		{
-			camDistance = adventureConfig.worldConfig.editorLastCamPosition.z;
-			//jumpCamera(adventureConfig.worldConfig.editorLastCamPosition.x, adventureConfig.worldConfig.editorLastCamPosition.y);
-		}
+		initCamera();
 
 		moduleSelector = new ModuleSelector(cast this);
 
@@ -453,21 +446,33 @@ class EditorState extends Base2dState
 
 		createGrid();
 
+		Window.getInstance().addEventTarget(onKeyEvent);
+		isLevelLoaded = true;
+	}
+
+	function initCamera()
+	{
 		camera = new ActionCamera(s3d.camera);
-		camera.camDistance = 55;
+		camera.maxCameraDistance = 200;
+		camera.camDistance = 30;
 		camera.cameraRotationSpeed = 20;
-		camera.cameraAngleSpeed = 40;
-		camera.startCameraShake(3, 2, Quad.easeInOut);
+		camera.cameraAngleSpeed = 10;
+		/*camera.startCameraShake(1, 2, Quad.easeInOut);
 		camera.setCameraTarget(cast world.car, {
 			useTargetsAngle: true,
+			angleOffset: 0,
 			maxCamAngle: Math.PI / 4,
 			minCamAngle: -Math.PI / 4,
 			useTargetsRotation: true,
-			offset: { x: 0, y: 10, z: -15 }
-		});
-
-		Window.getInstance().addEventTarget(onKeyEvent);
-		isLevelLoaded = true;
+			offset: { x: 0, y: 3, z: -10 }
+		});*/
+		camera.setCameraTarget(cast cameraObject);
+		if (adventureConfig.worldConfig.editorLastCamPosition == null) camera.jumpCamera(10, 10);
+		else
+		{
+			camera.camDistance = adventureConfig.worldConfig.editorLastCamPosition.z;
+			camera.jumpCamera(adventureConfig.worldConfig.editorLastCamPosition.x, adventureConfig.worldConfig.editorLastCamPosition.y);
+		}
 	}
 
 	function createAsset(config:AssetConfig, x, y, z, scale, rotation, owner = null)
@@ -712,7 +717,7 @@ class EditorState extends Base2dState
 					var now = Date.now().getTime();
 					if (now - lastEscPressTime < 500)
 					{
-						camDistance = 30;
+						camera.camDistance = 30;
 						camAngle = Math.PI - Math.PI / 4;
 						camRotation = Math.PI / 2;
 						return;
@@ -1046,49 +1051,6 @@ class EditorState extends Base2dState
 		//grid.visible = model.showGrid && camDistance < 90;
 	}
 
-	function updateCamera(d:Float)
-	{
-		camDistance = Math.max(10, camDistance);
-		camDistance = Math.min(300, camDistance);
-
-		cameraObject.x = Math.min(Math.max(cameraObject.x, 0), adventureConfig.size.x);
-		currentCameraPoint.x += (cameraObject.x - currentCameraPoint.x) / cameraSpeed.x * d * 30;
-
-		cameraObject.y = Math.min(Math.max(cameraObject.y, 0), adventureConfig.size.y);
-		currentCameraPoint.y += (cameraObject.y - currentCameraPoint.y) / cameraSpeed.y * d * 30;
-
-		var distanceOffset = (camDistance - currentCamDistance) / cameraSpeed.z * d * 30;
-		if (Math.abs(distanceOffset) < 0.001) currentCamDistance = camDistance;
-		else currentCamDistance += distanceOffset;
-
-		s3d.camera.target.set(
-			currentCameraPoint.x,
-			currentCameraPoint.y
-		);
-
-		var newDistance = currentCamDistance * Math.cos(camAngle);
-
-		s3d.camera.pos.set(
-			currentCameraPoint.x + newDistance * Math.sin(camRotation),
-			currentCameraPoint.y + newDistance * Math.cos(camRotation),
-			cameraObject.z + currentCamDistance * Math.sin(camAngle)
-		);
-	}
-
-	function jumpCamera(x:Float, y:Float, z:Float = null)
-	{
-		cameraObject.x = x;
-		cameraObject.y = y;
-
-		currentCameraPoint.x = x;
-		currentCameraPoint.y = y;
-		if (z != null) currentCameraPoint.z = z;
-
-		currentCamDistance = camDistance;
-
-		updateCamera(0);
-	}
-
 	function snapPosition(p:Float)
 	{
 		var pos = model.currentSnap == 0 ? p : Math.round(p / model.currentSnap) * model.currentSnap;
@@ -1189,7 +1151,7 @@ class EditorState extends Base2dState
 			staticObjects: staticObjects,
 			terrainLayers: terrainLayers,
 			heightMap: Base64.encode(world.heightMap.getPixels().bytes),
-			editorLastCamPosition: new Vector(cameraObject.x, cameraObject.y, currentCamDistance)
+			editorLastCamPosition: new Vector(cameraObject.x, cameraObject.y, camera.currentCamDistance)
 		};
 		var result = Json.stringify(
 		{
@@ -1297,7 +1259,7 @@ typedef EditorCore =
 	public var updateGrid:Void->Void;
 	public var isPathFindingLayerDirty:Bool;
 	public var jumpCamera:Float->Float->Float->Void;
-	public var camDistance:Float;
+	public var camera:ActionCamera;
 	public var camAngle:Float;
 	public var camRotation:Float;
 }

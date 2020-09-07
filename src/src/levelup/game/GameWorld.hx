@@ -9,6 +9,7 @@ import h3d.Vector;
 import h3d.col.Bounds;
 import h3d.col.Point;
 import h3d.mat.BlendMode;
+import h3d.mat.Data.MipMap;
 import h3d.mat.Data.TextureFlags;
 import h3d.mat.Data.TextureFormat;
 import h3d.mat.Data.Wrap;
@@ -55,6 +56,7 @@ import levelup.heaps.component.car.CarController;
 import levelup.shader.ForcedZIndex;
 import levelup.shader.Hovering;
 import levelup.shader.KillColor;
+import levelup.shader.TerrainShader;
 import levelup.shader.Wave;
 import levelup.util.GeomUtil3D;
 import lzstring.LZString;
@@ -221,10 +223,10 @@ class GameWorld extends World
 		physicsWorld = new CannonWorld();
 		physicsWorld.broadphase = new CannonSAPBroadphase(physicsWorld);
 		physicsWorld.gravity.set(0, 0, -10);
-		physicsWorld.defaultContactMaterial.friction = 10000;
+		physicsWorld.defaultContactMaterial.friction = 0;
 
 		car = new Car(s3d, physicsWorld, CarData.getConfig("car.monstertruck11a"));
-		car.setPosition(20, 20, 30);
+		car.setPosition(15, 20, 5);
 		carController = new CarController();
 		carController.setTarget(car);
 
@@ -347,7 +349,7 @@ class GameWorld extends World
 
 		var mesh = new Mesh(layer, Material.create(AssetCache.instance.getTexture(terrainConfig.textureUrl)), s3d);
 		mesh.material.mainPass.addShader(alphaMask);
-		mesh.material.mainPass.addShader(new ForcedZIndex(terrainLayers.length * 1));
+		mesh.material.mainPass.addShader(new TerrainShader());
 		mesh.material.mainPass.isStatic = true;
 		mesh.material.texture.wrap = Wrap.Repeat;
 		mesh.material.blendMode = BlendMode.Alpha;
@@ -395,7 +397,7 @@ class GameWorld extends World
 			{
 				var pixelIntensity:Float = heightMap.getPixel(cast point.x, cast point.y) | 0xFF000000;
 				var calculatedZ:Float = 15 + ((pixelIntensity - maxColor) / (maxDiff)) * 20;
-				calculatedZ = 2 + 1.5 * Math.sin(i * 0.001);
+				calculatedZ = 2 + 3 * Math.sin(i * 0.001);
 				heightGridCache.push(calculatedZ);
 				point.z = calculatedZ;
 			}
@@ -531,7 +533,7 @@ class GameWorld extends World
 	{
 		var now = Date.now().getTime();
 
-		physicsWorld.step(1.0 / 60.0);
+		physicsWorld.step(1.0 / 60.0, d, 3);
 		car.update(d);
 		carController.update(d);
 

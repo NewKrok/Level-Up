@@ -1,5 +1,7 @@
 package levelup;
 
+import h3d.mat.Data.MipMap;
+import h3d.mat.Data.TextureFlags;
 import h3d.prim.Cube;
 import h3d.prim.ModelCache;
 import haxe.ds.Map;
@@ -196,6 +198,9 @@ class AssetCache
 		var onLoaded = (data, t:TextureDataWithModelReferences) ->
 		{
 			var texture = hxd.res.Any.fromBytes(t.data.url, data).toTexture();
+			texture.flags.set(TextureFlags.MipMapped);
+			texture.mipMap = MipMap.Linear;
+
 			for (modelRef in t.modelReferences)
 				modelCache.textures.set(modelRef + "@" + t.data.id, texture);
 
@@ -289,6 +294,8 @@ class AssetCache
 		var onLoaded = (data, t) ->
 		{
 			var texture = hxd.res.Any.fromBytes(t, data).toTexture();
+			texture.flags.set(TextureFlags.MipMapped);
+			texture.mipMap = MipMap.Linear;
 			textureDirectory.set(t, texture);
 
 			loadedTextureCount++;
