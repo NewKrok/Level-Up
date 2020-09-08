@@ -25,7 +25,6 @@ Editor
 - Import missing Undead units
 - Import missing Neutral units
 - Import missing environments
-- Fix z-index render problem when the camera distance is to big
 - Fix "shadow-jump" bug during Day/Night change
 - Create custom select form component
 - etc...
